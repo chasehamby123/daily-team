@@ -4,12 +4,12 @@ import assert from 'node:assert/strict';
 import { spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { createServer } from 'node:http';
-import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { addCsp, checkArtifact, decisionLine, extractHtml, findBanned } from './run.mjs';
-import { buildSite, loadDays, readmeBlock, updateReadme } from './publish.mjs';
+import { archive, buildSite, dayReadme, loadDays, publish, recentBlock, teamSvg, todayBlock } from './publish.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const TEAM = join(HERE, 'team.sh');
@@ -85,7 +85,7 @@ test('text follows the writing rules', () => {
   const listLine = prompt.split('\n').find((l) => l.startsWith('- Do not use these words:'));
   for (const file of ['README.md', 'SKILL.md', 'prompt.md', 'SECURITY.md', 'team.sh']) {
     const text = readFileSync(join(HERE, file), 'utf8')
-      .replace(/<!-- TODAY:START -->[\s\S]*<!-- TODAY:END -->/, '') // model output, checked when generated
+      .replace(/<!-- (TODAY|RECENT):START -->[\s\S]*?<!-- \1:END -->/g, '') // generated, checked when made
       .split('\n').filter((l) => l !== listLine).join('\n');
     assert.deepEqual(findBanned(text), [], file);
     assert.doesNotMatch(text, /\p{Extended_Pictographic}/u, `${file}: emoji`);
@@ -163,9 +163,9 @@ async function withServer(replies, fn) {
   }
 }
 
-function run(args, env, cwd = HERE) {
+function run(args, env) {
   return new Promise((resolve) => {
-    const p = spawn(process.execPath, [join(cwd, 'run.mjs'), ...args], { env: { ...process.env, RETRY_MS: '0', ...env } });
+    const p = spawn(process.execPath, [RUN, ...args], { env: { ...process.env, RETRY_MS: '0', PROVIDER: '', ...env } });
     let stdout = '';
     let stderr = '';
     p.stdout.on('data', (c) => { stdout += c; });
@@ -173,6 +173,10 @@ function run(args, env, cwd = HERE) {
     p.on('close', (status) => resolve({ status, stdout, stderr }));
   });
 }
+
+const readDay = (out, date) => JSON.parse(readFileSync(join(out, date, 'day.json'), 'utf8'));
+const BAD = '```html\n<html><body>no title</body></html>\n```';
+const GOOD_REPLY = `\`\`\`html\n${GOOD}\n\`\`\``;
 
 test('run.mjs --dry-run uses the daily task when there is no brief', async () => {
   const r = await run(['--dry-run', '--date', '2026-10-03'], { OPENROUTER_API_KEY: '' });
@@ -184,22 +188,21 @@ test('run.mjs --dry-run uses the daily task when there is no brief', async () =>
   assert.match(custom.stdout, /<brief>\\nA clock/);
 });
 
-test('run.mjs refuses to run without a key, with an empty brief, or with a bad count', async () => {
+test('run.mjs refuses to run without a key, with an empty brief, or with bad options', async () => {
   const out = tmp();
   assert.equal((await run(['--out', out], { OPENROUTER_API_KEY: '' })).status, 2);
   assert.equal((await run(['--out', out, '--brief', ' '], { OPENROUTER_API_KEY: 'k' })).status, 2);
   assert.equal((await run(['--artifacts', '9'], { OPENROUTER_API_KEY: 'k' })).status, 2);
+  assert.equal((await run(['--provider', 'other'], { OPENROUTER_API_KEY: 'k' })).status, 2);
   rmSync(out, { recursive: true });
 });
 
-test('run.mjs falls back, retries failed checks, records status, and skips a finished day', async () => {
+test('run.mjs falls back, retries failed checks, records status, and skips a recorded day', async () => {
   const out = tmp();
-  const bad = '```html\n<html><body>no title</body></html>\n```';
-  const good = `\`\`\`html\n${GOOD}\n\`\`\``;
   const replies = [
     [429, null], [429, null], [200, '## Decision\nA pace table. Done.'], // plan: model a rate-limited, b answers
-    [200, bad], [200, good], // artifact 1: fails the check, then passes on retry
-    [200, bad], [200, bad], // artifact 2: fails twice, saved as needs review
+    [200, BAD], [200, GOOD_REPLY], // artifact 1: fails the check, then passes on retry
+    [200, BAD], [200, BAD], // artifact 2: fails twice, saved as needs review
     [200, 'no file'], [200, 'still no file'], // artifact 3: no HTML at all
   ];
   await withServer(replies, async (url, calls) => {
@@ -209,76 +212,204 @@ test('run.mjs falls back, retries failed checks, records status, and skips a fin
     assert.deepEqual(calls.slice(0, 3).map((c) => c.model), ['a/one:free', 'a/one:free', 'b/two:free']);
     assert.match(calls[4].messages.at(-1).content, /Fix these problems[\s\S]*no title element/);
 
-    const day = JSON.parse(readFileSync(join(out, '2026-10-03', 'day.json'), 'utf8'));
+    const day = readDay(out, '2026-10-03');
     assert.match(day.task, /^Running pace calculator/);
+    assert.equal(day.provider, 'openrouter');
     assert.equal(day.decision, 'A pace table.');
+    assert.match(day.plan, /## Decision/);
+    assert.equal(day.status, 'needs review');
     assert.deepEqual(day.artifacts.map((a) => a.status), ['ok', 'needs review', 'failed']);
     assert.match(readFileSync(join(out, '2026-10-03', 'artifact-1.html'), 'utf8'), /Content-Security-Policy/);
-    assert.match(readFileSync(join(out, '2026-10-03', 'team.md'), 'utf8'), /Needs review: no title element/);
 
     const again = await run(['--date', '2026-10-03', '--out', out], env);
     assert.equal(again.status, 0);
-    assert.match(again.stdout, /skipping/);
+    assert.match(again.stdout, /already recorded/);
   });
   rmSync(out, { recursive: true });
 });
 
-// publish.mjs
+test('run.mjs records a day even when every model fails', async () => {
+  const out = tmp();
+  await withServer([], async (url) => {
+    const r = await run(['--date', '2026-10-04', '--out', out], { OPENROUTER_API_KEY: 'k', API_URL: url, MODEL: 'a' });
+    assert.equal(r.status, 1);
+    const day = readDay(out, '2026-10-04');
+    assert.equal(day.status, 'failed');
+    assert.match(day.error, /all models failed/);
+    assert.match(day.team, /Team for 2026-10-04/);
+  });
+  rmSync(out, { recursive: true });
+});
 
-function fakeDay(daysDir, date, artifacts) {
-  mkdirSync(join(daysDir, date), { recursive: true });
-  for (const a of artifacts) writeFileSync(join(daysDir, date, a.file), a.html ?? GOOD);
-  writeFileSync(join(daysDir, date, 'day.json'), JSON.stringify({
-    date, task: 'Tip splitter: total and people give the amount each.', brief: null,
-    team: `Team for ${date}\n\nTask: Tip splitter`, decision: 'A tip splitter.', artifacts,
-  }));
+// A stand-in for the claude CLI: logs its arguments, folder, and environment, then answers
+// from a queue.
+function fakeClaude(dir, replies) {
+  const bin = join(dir, 'claude');
+  writeFileSync(join(dir, 'replies.json'), JSON.stringify(replies));
+  writeFileSync(bin, `#!${process.execPath}
+const fs = require('fs');
+const dir = ${JSON.stringify(dir)};
+let input = '';
+process.stdin.on('data', (c) => { input += c; });
+process.stdin.on('end', () => {
+  fs.appendFileSync(dir + '/log.jsonl', JSON.stringify({ args: process.argv.slice(2), cwd: process.cwd(),
+    noClaudeMd: process.env.CLAUDE_CODE_DISABLE_CLAUDE_MDS, input }) + '\\n');
+  const replies = JSON.parse(fs.readFileSync(dir + '/replies.json', 'utf8'));
+  const next = replies.shift();
+  fs.writeFileSync(dir + '/replies.json', JSON.stringify(replies));
+  process.stdout.write(JSON.stringify({ type: 'result', is_error: !next, result: next || 'no reply',
+    modelUsage: { 'claude-test-model': {} } }));
+});
+`);
+  chmodSync(bin, 0o755);
+  return bin;
 }
 
-test('publish writes the Today block from the latest day', () => {
+test('run.mjs --provider claude calls the CLI with no tools, settings, or CLAUDE.md', async () => {
   const dir = tmp();
-  const days = join(dir, 'days');
-  fakeDay(days, '2026-10-01', [{ file: 'artifact-1.html', lead: 1, status: 'ok', problems: [] }]);
-  fakeDay(days, '2026-10-02', [{ file: 'artifact-1.html', lead: 1, status: 'needs review', problems: ['no title element'] }]);
-  writeFileSync(join(days, '2026-10-02', 'artifact-1.png'), Buffer.alloc(100));
-  const readme = join(dir, 'README.md');
-  writeFileSync(readme, 'top\n<!-- TODAY:START -->\nold\n<!-- TODAY:END -->\nbottom\n');
-
-  updateReadme(readme, readmeBlock(loadDays(days).at(-1), days, 'https://x.github.io/daily-team/'));
-  const text = readFileSync(readme, 'utf8');
-  assert.match(text, /^top\n<!-- TODAY:START -->\n### 2026-10-02: Tip splitter/);
-  assert.match(text, /\[!\[Screenshot of the 2026-10-02 example\]\(days\/2026-10-02\/artifact-1\.png\)\]/);
-  assert.match(text, /screenshot may be blank/);
-  assert.match(text, /\[Use it\]\(https:\/\/x\.github\.io\/daily-team\/2026-10-02\/\)/);
-  assert.match(text, /needs review\. no title element/);
-  assert.match(text, /<!-- TODAY:END -->\nbottom\n$/);
-  assert.doesNotMatch(text, /old/);
+  const out = join(dir, 'days');
+  const bin = fakeClaude(dir, ['## Decision\nA pace table.', GOOD_REPLY]);
+  const r = await run(['--provider', 'claude', '--date', '2026-10-03', '--out', out],
+    { CLAUDE_BIN: bin, OPENROUTER_API_KEY: '', CLAUDE_MODEL: 'opus' });
+  assert.equal(r.status, 0, r.stderr);
+  const calls = readFileSync(join(dir, 'log.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l));
+  assert.equal(calls.length, 2);
+  for (const c of calls) {
+    const arg = (name) => c.args[c.args.indexOf(name) + 1];
+    assert.equal(arg('--tools'), '');
+    assert.equal(arg('--setting-sources'), 'project');
+    assert.equal(arg('--model'), 'opus');
+    assert.ok(c.args.includes('--strict-mcp-config') && c.args.includes('--no-session-persistence'));
+    assert.ok(!c.args.includes('--bare'), '--bare ignores subscription logins');
+    assert.match(arg('--system-prompt'), /Writing rules/);
+    assert.equal(c.noClaudeMd, '1');
+    assert.ok(!c.cwd.startsWith(HERE), 'runs outside the repository');
+  }
+  assert.match(calls[0].input, /Task: Running pace calculator/);
+  const day = readDay(out, '2026-10-03');
+  assert.equal(day.provider, 'claude');
+  assert.equal(day.model, 'claude-test-model');
+  assert.equal(day.artifacts[0].status, 'ok');
   rmSync(dir, { recursive: true });
 });
 
-test('publish shows today\'s team before the first run', () => {
-  const block = readmeBlock(undefined, '/nonexistent', '');
-  assert.match(block, /first daily run adds the example/);
-  assert.match(block, /Team for \d{4}-\d{2}-\d{2}/);
+test('run.mjs --provider claude records a failed day when the CLI errors', async () => {
+  const dir = tmp();
+  const out = join(dir, 'days');
+  const bin = fakeClaude(dir, []);
+  const r = await run(['--provider', 'claude', '--date', '2026-10-03', '--out', out], { CLAUDE_BIN: bin });
+  assert.equal(r.status, 1);
+  assert.equal(readDay(out, '2026-10-03').status, 'failed');
+  rmSync(dir, { recursive: true });
 });
 
-test('the site runs artifacts only inside a sandboxed frame', () => {
+// publish.mjs
+
+function fakeDay(daysDir, date, artifacts, extra = {}) {
+  mkdirSync(join(daysDir, date), { recursive: true });
+  for (const a of artifacts) if (a.status !== 'failed') writeFileSync(join(daysDir, date, a.file), a.html ?? GOOD);
+  writeFileSync(join(daysDir, date, 'day.json'), JSON.stringify({
+    date, task: 'Tip splitter: total and people give the amount each.', brief: null,
+    team: teamFor(date), provider: 'openrouter', model: 'm', status: 'ok', error: null,
+    decision: 'A tip splitter.', plan: '## Decision\nA tip splitter.', planProblems: [],
+    artifacts: artifacts.map(({ html, ...a }) => ({ model: 'm', problems: [], ...a })), ...extra,
+  }));
+}
+const teamFor = (date) => team(date).stdout.trim();
+
+function fakeRepo() {
+  const root = tmp();
+  writeFileSync(join(root, 'README.md'), 'top\n<!-- TODAY:START -->\nold\n<!-- TODAY:END -->\nmid\n<!-- RECENT:START -->\nold\n<!-- RECENT:END -->\nbottom\n');
+  return { root, days: join(root, 'days') };
+}
+
+test('publish writes the day pages, team cards, archive, and README blocks', () => {
+  const { root, days } = fakeRepo();
+  fakeDay(days, '2026-10-01', [{ file: 'artifact-1.html', lead: 1, status: 'ok' }]);
+  fakeDay(days, '2026-10-02', [{ file: 'artifact-1.html', lead: 2, status: 'needs review', problems: ['no title element'] }]);
+  writeFileSync(join(days, '2026-10-02', 'artifact-1.png'), Buffer.alloc(100));
+  fakeDay(days, '2026-10-03', [], { status: 'failed', error: 'all models failed', plan: '', decision: '', model: null });
+
+  assert.equal(publish(root, { pagesUrl: 'https://x.github.io/daily-team/' }), 3);
+
+  const readme = readFileSync(join(root, 'README.md'), 'utf8');
+  assert.match(readme, /^top\n<!-- TODAY:START -->\n### 2026-10-03: Tip splitter/);
+  assert.match(readme, /No asset today\. all models failed/);
+  assert.match(readme, /<img src="days\/2026-10-03\/team\.svg"/);
+  assert.match(readme, /mid\n<!-- RECENT:START -->\n\| Date \| Asset \| Task \| Team \|/);
+  assert.ok(readme.indexOf('[2026-10-03]') < readme.indexOf('[2026-10-01]'), 'newest first');
+  assert.match(readme, /<img src="days\/2026-10-02\/artifact-1\.png" alt="Tip splitter" width="160">/);
+  assert.match(readme, /\[All 3 days\]\(ARCHIVE\.md\)/);
+  assert.match(readme, /<!-- RECENT:END -->\nbottom\n$/);
+  assert.doesNotMatch(readme, /\nold\n/);
+
+  const arch = readFileSync(join(root, 'ARCHIVE.md'), 'utf8');
+  assert.match(arch, /3 days recorded/);
+  assert.match(arch, /\| \[2026-10-02\]\(days\/2026-10-02\/\) \| Tip splitter \| .+ · .+ \| .+ \| \[asset, needs review\]/);
+  assert.match(arch, /\| \[2026-10-03\]\(days\/2026-10-03\/\) .* \| no asset \|/);
+
+  const page = readFileSync(join(days, '2026-10-02', 'README.md'), 'utf8');
+  assert.match(page, /^# 2026-10-02: Tip splitter/);
+  assert.match(page, /<img src="team\.svg"/);
+  assert.match(page, /<img src="artifact-1\.png"/);
+  assert.match(page, /\[Use it\]\(https:\/\/x\.github\.io\/daily-team\/2026-10-02\/\)/);
+  assert.match(page, /Needs review: no title element/);
+  assert.match(page, /## Team plan\n\n### Decision/);
+  assert.match(readFileSync(join(days, '2026-10-03', 'README.md'), 'utf8'), /No asset\. The team could not run: all models failed/);
+  assert.ok(existsSync(join(days, '2026-10-01', 'team.svg')));
+  rmSync(root, { recursive: true });
+});
+
+test('the team card is valid SVG with the team, task, and an escaped title', () => {
+  const day = { date: '2026-10-03', task: 'Bill <splitter> & co: x', brief: null, team: teamFor('2026-10-03') };
+  const svg = teamSvg(day);
+  assert.match(svg, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" width="1200" height="630"/);
+  assert.match(svg, /Bill &lt;splitter&gt; &amp; co/);
+  for (const m of ['Service designer', 'Product designer', 'Interaction designer', 'Choreographer']) assert.match(svg, new RegExp(m));
+  assert.match(svg, /Constraint: Has a dark mode/);
+  assert.doesNotMatch(svg.replace(/&(amp|lt|gt|quot);/g, ''), /&/);
+  assert.match(svg, /prefers-color-scheme: dark/);
+});
+
+test('publish shows today\'s team before the first run', () => {
+  const block = todayBlock(undefined, '/nonexistent', '');
+  assert.match(block, /first daily run adds the team card and the asset/);
+  assert.match(block, /Team for \d{4}-\d{2}-\d{2}/);
+  assert.match(recentBlock([]), /archive starts with the first daily run/);
+  assert.match(archive([]), /0 days recorded/);
+  assert.match(recentBlock([{ date: '2026-10-03', task: 'A: b', brief: null, team: teamFor('2026-10-03'), artifacts: [] }]), /\[All 1 day\]/);
+  assert.equal(typeof dayReadme, 'function');
+});
+
+test('the site runs artifacts only inside a sandboxed frame and shows images', () => {
   const dir = tmp();
   const days = join(dir, 'days');
   const site = join(dir, '_site');
   const html = GOOD.replace('ok', '<script>document.title="a&b"</script>"quoted"');
-  fakeDay(days, '2026-10-02', [{ file: 'artifact-1.html', lead: 1, status: 'ok', problems: [], html }]);
+  fakeDay(days, '2026-10-02', [{ file: 'artifact-1.html', lead: 1, status: 'ok', html }]);
+  writeFileSync(join(days, '2026-10-02', 'team.svg'), teamSvg(loadDays(days)[0]));
+  writeFileSync(join(days, '2026-10-02', 'artifact-1.png'), Buffer.alloc(9000));
   buildSite(site, loadDays(days), days, 'isas1/daily-team');
   const page = readFileSync(join(site, '2026-10-02', 'index.html'), 'utf8');
-  assert.equal(readFileSync(join(site, 'index.html'), 'utf8').includes('<iframe sandbox="allow-scripts'), true);
+  const index = readFileSync(join(site, 'index.html'), 'utf8');
   assert.match(page, /<iframe sandbox="allow-scripts allow-modals allow-downloads allow-popups allow-forms"/);
   assert.doesNotMatch(page, /allow-same-origin/);
   assert.match(page, /srcdoc="[^"]*&lt;script&gt;document\.title=&quot;a&amp;b&quot;/);
   assert.doesNotMatch(page, /<script>/);
+  assert.match(page, /img-src 'self'/);
+  assert.match(page, /<img src="team\.svg"/);
+  assert.match(index, /<img src="\.\/2026-10-02\/team\.svg"/);
+  assert.match(index, /<img src="\.\/2026-10-02\/artifact-1\.png" alt="" loading="lazy">/);
+  assert.ok(existsSync(join(site, '2026-10-02', 'team.svg')) && existsSync(join(site, '2026-10-02', 'artifact-1.png')));
   assert.ok(!existsSync(join(site, '2026-10-02', 'artifact-1.html')), 'raw artifact must not be served');
   rmSync(dir, { recursive: true });
 });
 
-// shot.sh, when Chrome is installed
+// Shell scripts
+
+test('shell scripts parse', () => {
+  for (const f of ['team.sh', 'shot.sh', 'daily.sh']) assert.equal(spawnSync('sh', ['-n', join(HERE, f)]).status, 0, f);
+});
 
 const chrome = ['google-chrome', 'chromium', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome']
   .find((c) => spawnSync('sh', ['-c', `command -v "${c}"`]).status === 0);
