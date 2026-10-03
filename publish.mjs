@@ -54,6 +54,13 @@ function assetLines(day, base, pagesUrl) {
   return lines.length ? lines : ['No asset was requested for this day.'];
 }
 
+// Guests bring a method drawn from a figure, myth, book, or idea. They never speak as it.
+function guestNote(day) {
+  const g = parseTeam(day.team).members.find((m) => m.guest);
+  if (!g) return [];
+  return [`**Guest:** ${g.role} (${g.guest.kind}; ${g.guest.source}). The method is drawn from public-domain history, myth, or literature, or invented. The guest never speaks as the figure, and nothing here is endorsed by anyone.`, ''];
+}
+
 export function dayReadme(day, daysDir, pagesUrl) {
   const { constraint, season, suggestedBy } = parseTeam(day.team);
   const dir = join(daysDir, day.date);
@@ -68,6 +75,7 @@ export function dayReadme(day, daysDir, pagesUrl) {
     ...(day.decision ? [`**Decision:** ${day.decision}`, ''] : []),
     '## Asset', '', ...assetLines(day, { dir, href: '' }, pagesUrl),
     ...(day.plan ? ['## Team plan', '', day.plan.replace(/^(#{1,5}) /gm, '#$1 '), ''] : []),
+    ...guestNote(day),
     '## Team', '', '```text', day.team, '```', '',
     `Provider: ${day.provider}. Model: ${day.model ?? 'none'}.`, '',
   ].join('\n');
@@ -134,7 +142,7 @@ export function weekBlock(root, days, suggestions) {
   const lines = [];
   if (season && seasons.includes(season)) {
     const pools = readSeason(root, season);
-    const fresh = pools.roles.filter((i) => i.fresh).map((i) => i.text);
+    const fresh = [...pools.roles, ...pools.guests.map((i) => ({ ...i, text: i.text.split(' | ')[1] }))].filter((i) => i.fresh).map((i) => i.text);
     lines.push(`**Season ${seasons.indexOf(season) + 1}**, since ${season}. ${fresh.length
       ? `New this season: ${fresh.join(', ')}.` : 'The first season, so everyone is new.'} A new season with 8 new roles and 8 new methods is drafted every Monday.`, '');
   }

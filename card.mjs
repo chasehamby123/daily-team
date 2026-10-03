@@ -37,13 +37,16 @@ export function cardHtml(day, seasonNumber = 0) {
   const { members, constraint, suggestedBy } = parseTeam(day.team);
   const title = titleCase((day.brief || day.task).split(':')[0].trim());
   const kicker = [`Daily team`, day.date, seasonNumber ? `Season ${seasonNumber}` : ''].filter(Boolean).join(' · ');
-  const cards = members.map((m, i) => `
-    <div class="member">
-      <div class="num">${i + 1}</div>${m.newRole || m.newMethod ? '\n      <div class="new">NEW</div>' : ''}
-      <div class="role">${esc(m.role)}</div>
+  const cards = members.map((m, i) => {
+    const pill = [m.guest ? m.guest.kind : '', m.newRole || m.newMethod ? 'new' : ''].filter(Boolean).join(' · ');
+    return `
+    <div class="member${m.guest ? ' guest' : ''}">
+      <div class="num">${i + 1}</div>${pill ? `\n      <div class="new">${esc(pill.toUpperCase())}</div>` : ''}
+      <div class="role">${esc(m.role)}</div>${m.guest ? `\n      <div class="source">${esc(m.guest.source)}</div>` : ''}
       <div class="method">${esc(m.method)}</div>
       <div class="stance">${esc(m.stance.replace(/\.$/, ''))}</div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   return `<!doctype html>
 <html><head><meta charset="utf-8"><style>${BASE_CSS}
 .canvas { width: 1200px; height: 630px; padding: 44px 56px; }
@@ -59,6 +62,8 @@ h1 { font-size: 80px; max-width: 840px; margin-top: 10px; }
 .new { position: absolute; top: 18px; right: 16px; padding: 4px 10px; border-radius: var(--radius-pill); background: var(--sc-red);
   color: var(--sc-white); font: 700 12.5px var(--font-headline); letter-spacing: var(--tracking-caps); }
 .role { font-family: var(--font-headline); font-weight: 700; font-stretch: 85%; font-size: 27px; line-height: 1.05; margin: 10px 0 6px; }
+.guest { border: 2px solid var(--sc-navy); }
+.source { margin: -4px 0 6px; font-size: 13px; color: var(--text-support); }
 .method { flex: 1; font-size: 15px; line-height: 1.4; color: var(--text-muted); overflow: hidden;
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
 .stance { align-self: flex-start; margin-top: 8px; padding: 4px 8px; border-radius: var(--radius-xs); background: var(--sc-red-100);

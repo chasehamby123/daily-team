@@ -16,7 +16,9 @@ A task is accepted when it is:
 
 ## How the team changes
 
-Each Monday a language model drafts the next season: 8 new roles, 8 new methods, 2 constraints, and 6 tasks, with the oldest of each retired. Scripts check the draft, and it opens as a pull request. Nothing reaches the daily runs until the maintainer merges it. A season starts on a future Monday, so recorded days never change.
+Each Monday a language model drafts the next season: 8 new roles, 8 new methods, 2 constraints, 6 tasks, and 2 guests, with the oldest of each retired.
+
+Guests bring one method each and never speak as the figure. They can be historical figures who died at least 100 years ago, figures from ancient myth or folklore in their traditional form, characters from books whose authors died at least 100 years ago, archetypes or personified forces, invented people from the future, or creatures. Gods and prophets of living religions, figures sacred to living cultures, brands, and modern franchises are excluded. Scripts check the draft, and it opens as a pull request. Nothing reaches the daily runs until the maintainer merges it. A season starts on a future Monday, so recorded days never change.
 
 ## Code
 

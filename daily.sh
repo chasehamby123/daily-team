@@ -8,7 +8,11 @@ git pull --ff-only --quiet
 status=0
 PROVIDER=${PROVIDER:-claude} node run.mjs "$@" || status=$?
 sh shot.sh days || true
-node publish.mjs
+repo=$(gh repo view --json nameWithOwner -q .nameWithOwner)
+GITHUB_TOKEN=$(gh auth token) GITHUB_REPOSITORY=$repo node github.mjs suggestions > "${TMPDIR:-/tmp}/daily-team-suggestions.json" \
+  || echo '[]' > "${TMPDIR:-/tmp}/daily-team-suggestions.json"
+pages=$(gh api "repos/$repo/pages" -q .html_url 2>/dev/null || true)
+PAGES_URL=$pages GITHUB_REPOSITORY=$repo node publish.mjs --suggestions "${TMPDIR:-/tmp}/daily-team-suggestions.json"
 git add README.md ARCHIVE.md days
 if git diff --cached --quiet; then
   echo "Nothing new to commit."
