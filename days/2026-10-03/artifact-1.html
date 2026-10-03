@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:">
+<meta charset="UTF-8">
+<title>Running Pace Calculator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+:root{--primary:#0066cc;--bg:#ffffff;--text:#333333;--panel:#f9f9f9}
+@media (prefers-color-scheme: dark){:root{--bg:#121212;--text:#e0e0e0;--panel:#1e1e1e}}
+html{font-family:system-ui, sans-serif;line-height:1.5;height:100%}
+body{margin:0;padding:1rem;background:var(--bg);color:var(--text);display:flex;flex-direction:column;min-height:100%}
+@media (prefers-reduced-motion: reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+h1{margin:0 0 1rem}
+form{display:grid;gap:.5rem;max-width:400px}
+label{display:flex;flex-direction:column;font-size:.9rem}
+input{padding:.4rem;font-size:1rem}
+button{padding:.5rem 1rem;background:var(--primary);color:#fff;border:none;cursor:pointer}
+button:hover{opacity:.9}
+.hidden{display:none}
+.error{color:#c00;margin-top:.5rem}
+#result{margin-top:1rem}
+#formula{margin-top:1rem;font-size:.85rem;background:var(--panel);padding:.5rem;border-radius:4px}
+@media print{body{background:#fff;color:#000!important}button{display:none}}
+</style>
+</head>
+<body>
+<h1>Running Pace Calculator</h1>
+<p>Enter the total distance (km) and elapsed time (hh:mm:ss) to compute pace per km and mile, and projected race times.</p>
+<form id="calcForm" novalidate>
+<label>Distance (km)
+  <input type="text" id="distance" placeholder="e.g. 10" required>
+</label>
+<label>Time (hh:mm:ss)
+  <input type="text" id="time" placeholder="e.g. 01:00:00" required>
+</label>
+<button type="submit">Calculate</button>
+</form>
+<div id="error" class="hidden"></div>
+<div id="result" class="hidden">
+  <h2>Pace</h2>
+  <p id="paceKm"></p>
+  <p id="paceMile"></p>
+  <h2>Projected Times</h2>
+  <ul>
+    <li>5 km: <span id="proj5km"></span></li>
+    <li>10 km: <span id="proj10km"></span></li>
+    <li>Half Marathon (21.0975 km): <span id="projHalf"></span></li>
+    <li>Full Marathon (42.195 km): <span id="projFull"></span></li>
+  </ul>
+</div>
+<div id="formula" class="hidden">
+  <h3>Formula Used</h3>
+  <p>Pace (min/km) = TotalMinutes ÷ DistanceKm</p>
+  <p>Pace (min/mi) = PaceKm × 1.60934</p>
+  <p>Projected Time = PaceMinPerKm × TargetDistance (converted to hh:mm:ss)</p>
+</div>
+
+<script>
+(() => {
+  const form = document.getElementById('calcForm');
+  const distanceInput = document.getElementById('distance');
+  const timeInput = document.getElementById('time');
+  const errorDiv = document.getElementById('error');
+  const resultDiv = document.getElementById('result');
+  const formulaDiv = document.getElementById('formula');
+  const paceKmEl = document.getElementById('paceKm');
+  const paceMileEl = document.getElementById('paceMile');
+  const proj5kmEl = document.getElementById('proj5km');
+  const proj10kmEl = document.getElementById('proj10km');
+  const projHalfEl = document.getElementById('projHalf');
+  const projFullEl = document.getElementById('projFull');
+
+  const targets = [
+    { name: '5 km', dist: 5 },
+    { name: '10 km', dist: 10 },
+    { name: 'Half Marathon', dist: 21.0975 },
+    { name: 'Full Marathon', dist: 42.195 }
+  ];
+
+  // Load last inputs if storage allowed
+  try {
+    const saved = localStorage.getItem('runCalcLast');
+    if (saved) {
+      const { d, t } = JSON.parse(saved);
+      distanceInput.value = d;
+      timeInput.value = t;
+    }
+  } catch (_) {}
+
+  function parseTimeToMinutes(val) {
+    const parts = val.split(':').map(Number);
+    let total = 0;
+    if (parts.length === 3) {
+      total = parts[0] * 60 + parts[1] + parts[2] / 60;
+    } else if (parts.length === 2) {
+      total = parts[0] + parts[1] / 60;
+    } else if (parts.length === 1) {
+      total = parts[0] / 60; // seconds only
+    }
+    return total;
+  }
+
+  function formatMinutes(min) {
+    const totalSec = Math.round(min * 60);
+    const m = Math.floor(totalSec / 60);
+    const s = totalSec % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  }
+
+  function showError(msg) {
+    errorDiv.textContent = msg;
+    errorDiv.classList.remove('hidden');
+    resultDiv.classList.add('hidden');
+    formulaDiv.classList.add('hidden');
+  }
+
+  function clearError() {
+    errorDiv.classList.add('hidden');
+    errorDiv.textContent = '';
+  }
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    clearError();
+    const distanceStr = distanceInput.value.trim();
+    const timeStr = timeInput.value.trim();
+    const distance = parseFloat(distanceStr);
+    const totalMinutes = parseTimeToMinutes(timeStr);
+
+    if (!distance || distance <= 0) {
+      showError('Enter a valid positive distance in km.');
+      return;
+    }
+    if (!Number.isFinite(totalMinutes) || totalMinutes <= 0) {
+      showError('Enter a valid positive time (hh:mm:ss).');
+      return;
+    }
+
+    // Store inputs for next visit (optional)
+    try {
+      localStorage.setItem('runCalcLast', JSON.stringify({ d: distanceStr, t: timeStr }));
+    } catch (_) {}
+
+    const paceKm = totalMinutes / distance;
+    const paceMile = paceKm * 1.60934;
+
+    paceKmEl.textContent = `Pace: ${formatMinutes(paceKm)} /km`;
+    paceMileEl.textContent = `Pace: ${formatMinutes(paceMile)} /mi`;
+
+    // Projected times
+    for (const tgt of targets) {
+      const projMin = paceKm * tgt.dist;
+      const el = (tgt.name.includes('5 km') ? proj5kmEl :
+                  tgt.name.includes('10 km') ? proj10kmEl :
+                  tgt.name.includes('Half') ? projHalfEl : projFullEl);
+      el.textContent = formatMinutes(projMin);
+    }
+
+    resultDiv.classList.remove('hidden');
+    formulaDiv.classList.remove('hidden');
+  });
+
+  // Optional: clear saved data on new calculation
+  // (uncomment if desired)
+  // distanceInput.addEventListener('input', () => clearError());
+  // timeInput.addEventListener('input', () => clearError());
+})();
+</script>
+</body>
+</html>

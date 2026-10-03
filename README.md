@@ -11,7 +11,9 @@ A new four-person creative team every day, and the small web tool it built. This
 
 **Task:** Running pace calculator: distance and time give pace per km and per mile and projected times for 5 km, 10 km, half, and full marathon.
 
-No asset today. claude: Failed to authenticate. API Error: 401 OAuth access token is invalid.
+**Decision:** The page calculates running pace from distance and time, providing per‑km and per‑mile pace plus projected times for 5 km, 10 km, half and full marathon.
+
+<a href="days/2026-10-03/"><img src="days/2026-10-03/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
 [Open the day](days/2026-10-03/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
@@ -21,7 +23,7 @@ No asset today. claude: Failed to authenticate. API Error: 401 OAuth access toke
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
-| [2026-10-03](days/2026-10-03/) | No asset | Running pace calculator | Service designer · Product designer · Interaction designer · Choreographer |
+| [2026-10-03](days/2026-10-03/) | <a href="days/2026-10-03/"><img src="days/2026-10-03/artifact-1.png" alt="Running pace calculator" width="160"></a> | Running pace calculator | Service designer · Product designer · Interaction designer · Choreographer |
 
 [All 1 day](ARCHIVE.md)
 <!-- RECENT:END -->
