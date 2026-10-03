@@ -12,7 +12,7 @@
 import { copyFileSync, cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { parseTeam, teamFor, today } from './run.mjs';
+import { findBanned, parseTeam, teamFor, today } from './run.mjs';
 import { listSeasons, readSeason } from './recruit.mjs';
 import { cardHtml, renderPng, titleCase } from './card.mjs';
 
@@ -21,7 +21,7 @@ const RECENT_DAYS = 7;
 const MIN_SCREENSHOT_BYTES = 8000;
 const SANDBOX = 'allow-scripts allow-modals allow-downloads allow-popups allow-forms';
 const SITE_CSP = "default-src 'none'; script-src 'unsafe-inline'; style-src 'self' 'unsafe-inline'; "
-  + "img-src 'self' data: blob:; media-src data: blob:; font-src 'self' data:";
+  + "img-src 'self' data: blob:; media-src data: blob:; font-src 'self' data:; form-action 'none'";
 
 const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -130,6 +130,11 @@ export function archive(days) {
 }
 
 const REPO = () => process.env.GITHUB_REPOSITORY || 'isas1/daily-team';
+// Visitor text reaches the README unreviewed, so only licensed suggestions with no links, handles,
+// or banned words are listed. A maintainer hides any other one with the "hidden" label.
+export const listable = (x) => Boolean(x.task?.trim()) && x.license === true
+  && !/https?:|www\.|\b[a-z0-9-]+\.[a-z]{2,}\b|@/i.test(x.task) && !findBanned(x.task).length;
+
 const userText = (s, max = 100) => {
   const t = String(s ?? '').replace(/[<>[\]()|*_`#!\\]/g, '').replace(/\s+/g, ' ').trim();
   return t.length > max ? `${t.slice(0, max - 3)}...` : t;
@@ -149,7 +154,7 @@ export function weekBlock(root, days, suggestions) {
   const repo = REPO();
   lines.push('### Vote on what gets built next', '',
     `[Suggest a task](https://github.com/${repo}/issues/new?template=task-suggestion.yml) or vote with a thumbs-up on [open suggestions](https://github.com/${repo}/issues?q=is%3Aissue+is%3Aopen+label%3Atask-suggestion+sort%3Areactions-%2B1-desc). The most voted are screened every Monday.`, '');
-  const top = (suggestions || []).filter((x) => x.task).slice(0, 5);
+  const top = (suggestions || []).filter(listable).slice(0, 5);
   if (top.length) {
     lines.push('| Votes | Suggestion |', '|---|---|',
       ...top.map((x) => `| ${Number(x.votes) || 0} | [${userText(x.task)}](https://github.com/${repo}/issues/${Number(x.number)}) |`));

@@ -24,7 +24,7 @@ const MODELS = (process.env.MODEL || 'openrouter/free,qwen/qwen3.8-27b:free,goog
   .split(',').map((m) => m.trim()).filter(Boolean);
 const MAX_BYTES = 100 * 1024;
 const CSP = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
-  + "img-src data: blob:; media-src data: blob:; font-src data:";
+  + "img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'";
 
 export function die(msg, code = 2) {
   console.error(`run.mjs: ${msg}`);
@@ -120,6 +120,7 @@ export function checkArtifact(html) {
   if (!/<meta[^>]+name=["']?viewport/i.test(html)) problems.push('no viewport meta tag');
   if (/<(script|img|iframe|link|source|video|audio|embed|object)\b[^>]*\b(src|href)\s*=\s*["']?(https?:)?\/\//i.test(html)
     || /url\(\s*["']?(https?:)?\/\//i.test(html) || /@import/i.test(html)) problems.push('loads an external resource');
+  if (/<form\b[^>]*\baction\s*=\s*["']?(https?:)?\/\//i.test(html)) problems.push('sends a form to another site');
   if (/\bfetch\s*\(|XMLHttpRequest|new\s+WebSocket|sendBeacon|new\s+EventSource/.test(html)) problems.push('makes network calls');
   const text = html.replace(/<(script|style)[\s\S]*?<\/\1>/gi, ' ').replace(/<[^>]+>/g, ' ');
   for (const w of findBanned(text)) problems.push(`uses the word "${w}"`);

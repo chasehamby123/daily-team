@@ -6,6 +6,8 @@
 
 Every Monday the open suggestions with the most votes are screened, up to 20. Accepted ones are rewritten in the house style and join the task pool for the season that starts the following Monday. Each suggestion gets a comment with the outcome and is closed.
 
+The README lists the top open suggestions. Only suggestions with the license box ticked and no links, handles, or banned words are listed. The maintainer can hide any suggestion with the `hidden` label.
+
 A task is accepted when it is:
 
 - one specific tool that fits in a single HTML file and works offline;

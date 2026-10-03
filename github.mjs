@@ -12,6 +12,8 @@ const API = () => process.env.GITHUB_API_URL || 'https://api.github.com';
 const GRAPHQL = () => process.env.GITHUB_GRAPHQL_URL || `${API()}/graphql`;
 const REPO = () => process.env.GITHUB_REPOSITORY || 'isas1/daily-team';
 export const LABEL = 'task-suggestion';
+// A maintainer adds this label to keep a suggestion out of the README and the weekly screen.
+export const HIDDEN = 'hidden';
 const MAX_FIELD = 300;
 
 async function gh(path, { method = 'GET', body } = {}) {
@@ -55,7 +57,7 @@ export async function fetchSuggestions() {
   for (let page = 1; page <= 5; page++) {
     const issues = await gh(`/repos/${REPO()}/issues?state=open&labels=${LABEL}&per_page=100&page=${page}`);
     for (const i of issues) {
-      if (i.pull_request) continue;
+      if (i.pull_request || i.labels?.some((l) => (l.name ?? l) === HIDDEN)) continue;
       out.push({ number: i.number, author: i.user.login, votes: i.reactions?.['+1'] ?? 0, url: i.html_url, title: plain(i.title), ...parseForm(i.body) });
     }
     if (issues.length < 100) break;

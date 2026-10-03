@@ -179,12 +179,15 @@ test('checkArtifact passes a clean file and names each problem', () => {
   assert.match(p(GOOD.replace('</head>', '<script src="https://cdn.example/x.js"></script></head>')), /external resource/);
   assert.match(p(GOOD.replace('</head>', '<style>@import url(//fonts.example/a.css);</style></head>')), /external resource/);
   assert.match(p(GOOD.replace('ok', '<script>fetch("/x")</script>')), /network calls/);
+  assert.match(p(GOOD.replace('ok', '<form action="https://collect.example/"><input name=q></form>')), /sends a form to another site/);
+  assert.deepEqual(checkArtifact(GOOD.replace('ok', '<form onsubmit="return false"><input name=q></form>')), []);
   assert.match(p(GOOD.replace('ok', 'A seamless tool')), /"seamless"/);
   assert.match(p(GOOD.replace('ok', 'x'.repeat(110_000))), /100 KB/);
   assert.deepEqual(checkArtifact(GOOD.replace('ok', '<a href="https://example.com">source</a>')), []);
 });
 
-test('addCsp blocks network requests', () => {
+test('addCsp blocks network requests and form submissions', () => {
+  assert.match(addCsp('<p>x</p>'), /form-action 'none'/);
   assert.match(addCsp('<html><head><title>t</title></head></html>'), /<head>\n<meta http-equiv="Content-Security-Policy" content="default-src 'none'/);
   assert.match(addCsp('<p>x</p>'), /^<meta http-equiv="Content-Security-Policy"/);
 });
@@ -696,11 +699,12 @@ async function fakeGitHub(handler, fn) {
   }
 }
 
-test('fetchSuggestions skips pull requests and sorts by votes', async () => {
+test('fetchSuggestions skips pull requests and hidden issues, and sorts by votes', async () => {
   await fakeGitHub(() => [200, [
     { number: 1, user: { login: 'a' }, reactions: { '+1': 1 }, html_url: 'u1', title: 'Task: one', body: FORM },
     { number: 2, user: { login: 'b' }, reactions: { '+1': 4 }, html_url: 'u2', title: 'Task: two', body: FORM },
     { number: 3, user: { login: 'c' }, pull_request: {}, title: 'PR', body: '' },
+    { number: 4, user: { login: 'd' }, reactions: { '+1': 9 }, labels: [{ name: 'hidden' }], html_url: 'u4', title: 'Task: hidden', body: FORM },
   ]], async (requests) => {
     const list = await fetchSuggestions();
     assert.deepEqual(list.map((s) => [s.number, s.votes, s.author]), [[2, 4, 'b'], [1, 1, 'a']]);
@@ -779,12 +783,17 @@ test('cards render to PNG at their exact size with the brand fonts', { skip: !fi
 
 test('the week block shows the season and a safe vote table', () => {
   const block = weekBlock(HERE, [], [
-    { number: 5, votes: 3, task: 'Coin <script>alert(1)</script> counter [x](http://evil.example) | yes' },
-    { number: 6, votes: 1, task: 'Tally sheet: marks in, counts out.' },
+    { number: 5, votes: 3, license: true, task: 'Coin <script>alert(1)</script> counter [x](y) | yes' },
+    { number: 6, votes: 2, license: true, task: 'Visit evil.example: free tools' },
+    { number: 7, votes: 2, license: true, task: 'Ping @someone: now' },
+    { number: 8, votes: 2, license: true, task: 'Seamless planner: plans' },
+    { number: 9, votes: 2, license: false, task: 'Unlicensed: idea' },
+    { number: 10, votes: 1, license: true, task: 'Tally sheet: marks in, counts out.' },
   ]);
   assert.match(block, /\*\*Season 1\*\*, since 2026-10-01/);
-  assert.match(block, /\| 3 \| \[Coin scriptalert1\/script counter xhttp:\/\/evil\.example yes\]\(https:\/\/github\.com\/isas1\/daily-team\/issues\/5\) \|/);
-  assert.doesNotMatch(block, /<script>|\]\(http:\/\/evil/);
+  assert.match(block, /\| 3 \| \[Coin scriptalert1\/script counter xy yes\]\(https:\/\/github\.com\/isas1\/daily-team\/issues\/5\) \|/);
+  assert.match(block, /issues\/10\) \|/);
+  assert.doesNotMatch(block, /<script>|issues\/(6|7|8|9)\)/, 'links, handles, banned words, and unlicensed text stay out');
   assert.match(weekBlock(HERE, [], []), /No open suggestions yet\./);
 });
 

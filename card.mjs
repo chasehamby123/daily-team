@@ -121,7 +121,7 @@ export function renderPng(html, out, width, height) {
   try {
     const page = join(dir, 'card.html');
     writeFileSync(page, html);
-    spawnSync(chrome, ['--headless=new', '--no-sandbox', '--disable-gpu', '--hide-scrollbars', '--allow-file-access-from-files',
+    spawnSync(chrome, ['--headless=new', ...(process.env.CI ? ['--no-sandbox'] : []), '--disable-gpu', '--hide-scrollbars', '--allow-file-access-from-files',
       `--window-size=${width},${height}`, '--virtual-time-budget=3000', '--blink-settings=preferredColorScheme=1',
       `--screenshot=${out}`, pathToFileURL(page).href], { stdio: 'ignore', timeout: 60_000 });
     return existsSync(out);
