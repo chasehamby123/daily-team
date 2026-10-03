@@ -14,7 +14,7 @@ on:
         default: false
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: daily
@@ -24,6 +24,12 @@ jobs:
   run:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: write
+    outputs:
+      pages: ${{ steps.key.outputs.ok == 'true' && vars.PAGES == 'true' }}
+    env:
+      TZ: ${{ vars.TZ || 'UTC' }}
     steps:
       - name: Check for API key
         id: key
@@ -34,6 +40,8 @@ jobs:
           else echo "::notice::Add the OPENROUTER_API_KEY secret to enable daily runs."; fi
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: steps.key.outputs.ok == 'true'
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         if: steps.key.outputs.ok == 'true'
         with:
@@ -44,19 +52,45 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           MODEL: ${{ vars.MODEL }}
           API_URL: ${{ vars.API_URL }}
-          TZ: ${{ vars.TZ || 'UTC' }}
           ARTIFACTS: ${{ inputs.artifacts || vars.ARTIFACTS || '1' }}
           FORCE: ${{ inputs.force && '--force' || '' }}
         run: node run.mjs $FORCE
+      - name: Screenshot new artifacts
+        if: always() && steps.key.outputs.ok == 'true'
+        run: sh shot.sh days || true
+      - name: Update README and site
+        if: always() && steps.key.outputs.ok == 'true'
+        env:
+          PAGES_URL: ${{ vars.PAGES == 'true' && format('https://{0}.github.io/{1}/', github.repository_owner, github.event.repository.name) || '' }}
+          SITE: ${{ vars.PAGES == 'true' && '_site' || '' }}
+        run: node publish.mjs ${SITE:+--site "$SITE"}
       - name: Commit results
         if: always() && steps.key.outputs.ok == 'true'
+        env:
+          TOKEN: ${{ github.token }}
         run: |
-          if [ ! -d days ]; then echo "No results."; exit 0; fi
-          git add days
+          git add README.md days 2>/dev/null || git add README.md
           if git diff --cached --quiet; then echo "Nothing to commit."; exit 0; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git commit -m "Daily team $(TZ="${TZ:-UTC}" date +%Y-%m-%d)"
-          git push
-        env:
-          TZ: ${{ vars.TZ || 'UTC' }}
+          git commit -m "Daily team $(date +%Y-%m-%d)"
+          git push "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:main
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        if: always() && steps.key.outputs.ok == 'true' && vars.PAGES == 'true'
+        with:
+          path: _site
+
+  pages:
+    needs: run
+    if: always() && needs.run.outputs.pages == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
