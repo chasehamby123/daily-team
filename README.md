@@ -29,7 +29,11 @@ Everything in `days/` is written by a language model and checked by scripts, not
 
 [Suggest a task](https://github.com/isas1/daily-team/issues/new?template=task-suggestion.yml) or vote with a thumbs-up on [open suggestions](https://github.com/isas1/daily-team/issues?q=is%3Aissue+is%3Aopen+label%3Atask-suggestion+sort%3Areactions-%2B1-desc). The most voted are screened every Monday.
 
-No open suggestions yet.
+| Votes | Suggestion |
+|---|---|
+| 0 | [Gut check coin: type two options and flip, then say how the result made you feel, and the page te...](https://github.com/isas1/daily-team/issues/14) |
+| 0 | [Estimate anything: break a question nobody can look up into small guesses with a low and high val...](https://github.com/isas1/daily-team/issues/15) |
+| 0 | [Price in hours: enter your take-home pay per hour and any price, and see what it costs in hours a...](https://github.com/isas1/daily-team/issues/16) |
 <!-- WEEK:END -->
 
 ## Recent days
