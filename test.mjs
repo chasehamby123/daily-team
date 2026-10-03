@@ -302,6 +302,13 @@ test('run.mjs --provider claude calls the CLI with no tools, settings, or CLAUDE
   rmSync(dir, { recursive: true });
 });
 
+test('run.mjs --provider claude rejects a malformed token without printing it', async () => {
+  const r = await run(['--provider', 'claude', '--out', tmp()], { CLAUDE_CODE_OAUTH_TOKEN: ' secret-value-xyz ' });
+  assert.equal(r.status, 2);
+  assert.match(r.stderr, /does not look like a token from claude setup-token.*length 16/);
+  assert.doesNotMatch(r.stderr, /secret-value-xyz/);
+});
+
 test('run.mjs --provider claude records a failed day when the CLI errors', async () => {
   const dir = tmp();
   const out = join(dir, 'days');

@@ -263,6 +263,13 @@ async function main() {
     }
     process.env.OPENROUTER_API_KEY = key;
   }
+  if (opts.provider === 'claude' && process.env.CLAUDE_CODE_OAUTH_TOKEN !== undefined) {
+    const token = process.env.CLAUDE_CODE_OAUTH_TOKEN.trim();
+    if (!token) delete process.env.CLAUDE_CODE_OAUTH_TOKEN; // use the local login
+    else if (!token.startsWith('sk-ant-oat')) {
+      die(`CLAUDE_CODE_OAUTH_TOKEN does not look like a token from claude setup-token: expected it to start with "sk-ant-oat" (length ${token.length})`);
+    } else process.env.CLAUDE_CODE_OAUTH_TOKEN = token;
+  }
   const complete = opts.provider === 'claude' ? completeClaude : completeOpenRouter;
 
   const day = {
