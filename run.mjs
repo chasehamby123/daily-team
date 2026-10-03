@@ -1,21 +1,27 @@
 #!/usr/bin/env node
-// Runs today's team on today's task through an OpenAI-compatible API (default: OpenRouter
-// free models) and writes days/<date>/: team.md, day.json, and artifact-<n>.html.
+// Runs today's team on today's task and records the result in days/<date>/day.json, plus one
+// HTML file per artifact. publish.mjs turns the records into pages.
 //
-// Usage: node run.mjs [--artifacts N] [--brief "text"] [--date YYYY-MM-DD] [--out dir] [--force] [--dry-run]
-// Env:   OPENROUTER_API_KEY  required unless --dry-run
-//        MODEL               comma-separated models, tried in order (default: openrouter/free)
+// Usage: node run.mjs [--provider openrouter|claude] [--artifacts N] [--brief "text"]
+//                     [--date YYYY-MM-DD] [--out dir] [--force] [--dry-run]
+// Env:   PROVIDER            openrouter (default) or claude
+//        OPENROUTER_API_KEY  required for openrouter
+//        MODEL               openrouter models, comma-separated, tried in order
 //        API_URL             chat completions endpoint (default: OpenRouter)
+//        CLAUDE_MODEL        model for the claude provider (default: the CLI default)
+//        CLAUDE_BIN          path to the claude CLI (default: claude)
 //        ARTIFACTS           default for --artifacts (default: 1)
 // A brief from --brief or a brief.md file replaces today's task.
-import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { execFileSync, spawn } from 'node:child_process';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const API_URL = process.env.API_URL || 'https://openrouter.ai/api/v1/chat/completions';
-const MODELS = (process.env.MODEL || 'openrouter/free').split(',').map((m) => m.trim()).filter(Boolean);
+const MODELS = (process.env.MODEL || 'openrouter/free,qwen/qwen3.8-27b:free,google/gemma-4-31b-it:free')
+  .split(',').map((m) => m.trim()).filter(Boolean);
 const MAX_BYTES = 100 * 1024;
 const CSP = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
   + "img-src data: blob:; media-src data: blob:; font-src data:";
@@ -26,11 +32,15 @@ function die(msg, code = 2) {
 }
 
 function parseArgs(argv) {
-  const opts = { artifacts: process.env.ARTIFACTS || '1', out: join(HERE, 'days'), force: false, dryRun: false };
+  const opts = {
+    provider: process.env.PROVIDER || 'openrouter', artifacts: process.env.ARTIFACTS || '1',
+    out: join(HERE, 'days'), force: false, dryRun: false,
+  };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     const value = () => (i + 1 < argv.length ? argv[++i] : die(`${a} needs a value`));
-    if (a === '--artifacts') opts.artifacts = value();
+    if (a === '--provider') opts.provider = value();
+    else if (a === '--artifacts') opts.artifacts = value();
     else if (a === '--brief') opts.brief = value();
     else if (a === '--date') opts.date = value();
     else if (a === '--out') opts.out = value();
@@ -38,6 +48,7 @@ function parseArgs(argv) {
     else if (a === '--dry-run') opts.dryRun = true;
     else die(`unknown argument ${a}`);
   }
+  if (!['openrouter', 'claude'].includes(opts.provider)) die('--provider must be openrouter or claude');
   opts.artifacts = Number(opts.artifacts);
   if (!Number.isInteger(opts.artifacts) || opts.artifacts < 0 || opts.artifacts > 4) die('--artifacts must be 0 to 4');
   return opts;
@@ -51,6 +62,16 @@ export function today() {
 
 export function teamFor(date) {
   return execFileSync('sh', [join(HERE, 'team.sh'), date], { encoding: 'utf8' }).trim();
+}
+
+export function parseTeam(text) {
+  const members = [...text.matchAll(/^\d\. (.+)\n {3}Method: (.+)\n {3}Stance: (.+)$/gm)]
+    .map(([, role, method, stance]) => ({ role, method, stance }));
+  return {
+    members,
+    constraint: text.match(/^Constraint: (.+)$/m)?.[1] ?? '',
+    task: text.match(/^Task: (.+)$/m)?.[1] ?? '',
+  };
 }
 
 // prompt.md sections, keyed by heading.
@@ -112,7 +133,7 @@ export function decisionLine(plan) {
   return sentence.length > 240 ? `${sentence.slice(0, 237)}...` : sentence;
 }
 
-async function complete(messages, maxTokens) {
+async function completeOpenRouter(messages, maxTokens) {
   const errors = [];
   for (const model of MODELS) {
     for (let attempt = 0; attempt < 2; attempt++) {
@@ -142,8 +163,48 @@ async function complete(messages, maxTokens) {
   throw new Error(`all models failed: ${errors.join('; ')}`);
 }
 
+// Claude Code in print mode, on the user's subscription. No tools, no MCP servers, no user
+// settings or hooks, no CLAUDE.md, and an empty working directory: it can only return text.
+export function claudeArgs(system) {
+  const args = ['-p', '--output-format', 'json', '--tools', '', '--strict-mcp-config',
+    '--setting-sources', 'project', '--no-session-persistence', '--system-prompt', system];
+  if (process.env.CLAUDE_MODEL) args.push('--model', process.env.CLAUDE_MODEL);
+  return args;
+}
+
+function completeClaude(messages) {
+  const prompt = messages.slice(1).map((m) => (m.role === 'assistant'
+    ? `<your_previous_answer>\n${m.content}\n</your_previous_answer>` : m.content)).join('\n\n');
+  const cwd = mkdtempSync(join(tmpdir(), 'daily-team-claude-'));
+  return new Promise((resolve, reject) => {
+    const child = spawn(process.env.CLAUDE_BIN || 'claude', claudeArgs(messages[0].content), {
+      cwd, env: { ...process.env, CLAUDE_CODE_DISABLE_CLAUDE_MDS: '1' }, timeout: 900_000,
+    });
+    let stdout = '';
+    let stderr = '';
+    child.stdout.on('data', (c) => { stdout += c; });
+    child.stderr.on('data', (c) => { stderr += c; });
+    child.on('error', reject);
+    child.on('close', (code) => {
+      rmSync(cwd, { recursive: true, force: true });
+      let body;
+      try {
+        body = JSON.parse(stdout);
+      } catch {
+        return reject(new Error(`claude exited ${code}: ${(stderr || stdout).trim().slice(0, 300)}`));
+      }
+      if (code !== 0 || body.is_error || !body.result?.trim()) {
+        return reject(new Error(`claude: ${String(body.result || stderr || `exit ${code}`).slice(0, 300)}`));
+      }
+      const model = Object.keys(body.modelUsage || {})[0] || process.env.CLAUDE_MODEL || 'claude';
+      resolve({ text: body.result, model });
+    });
+    child.stdin.end(prompt);
+  });
+}
+
 // One call, then one more with the problems listed if the result fails its check.
-async function completeChecked(messages, maxTokens, check) {
+async function completeChecked(complete, messages, maxTokens, check) {
   let out = await complete(messages, maxTokens);
   let problems = check(out.text);
   if (problems.length) {
@@ -165,14 +226,15 @@ async function main() {
   } catch (e) {
     die(e.stderr?.trim() || e.message);
   }
-  const task = team.match(/^Task: (.+)$/m)[1];
+  const { task } = parseTeam(team);
   const briefPath = join(HERE, 'brief.md');
   const custom = (opts.brief ?? (existsSync(briefPath) ? readFileSync(briefPath, 'utf8') : '')).trim();
   if (opts.brief !== undefined && !custom) die('--brief is empty');
 
   const dir = join(opts.out, date);
-  if (!opts.dryRun && existsSync(join(dir, 'day.json')) && !opts.force) {
-    console.log(`${dir} is done, skipping (use --force to replace)`);
+  const record = join(dir, 'day.json');
+  if (!opts.dryRun && existsSync(record) && !opts.force) {
+    console.log(`${date} is already recorded, skipping (use --force to replace)`);
     return;
   }
 
@@ -188,49 +250,56 @@ async function main() {
   if (opts.dryRun) {
     console.log(JSON.stringify(planMessages, null, 2));
     if (opts.artifacts) console.log(JSON.stringify(buildMessages('<plan from the first call>', 1), null, 2));
+    if (opts.provider === 'claude') console.log(JSON.stringify(['claude', ...claudeArgs(system.content)]));
     return;
   }
-  if (!process.env.OPENROUTER_API_KEY) die('OPENROUTER_API_KEY is not set');
+  if (opts.provider === 'openrouter' && !process.env.OPENROUTER_API_KEY) die('OPENROUTER_API_KEY is not set');
+  const complete = opts.provider === 'claude' ? completeClaude : completeOpenRouter;
 
-  const plan = await completeChecked(planMessages, 3000, (t) => findBanned(t).map((w) => `uses the word "${w}"`))
-    .catch((e) => die(e.message, 1));
+  const day = {
+    date, task, brief: custom || null, team, provider: opts.provider, model: null,
+    status: 'ok', error: null, decision: '', plan: '', planProblems: [], artifacts: [],
+  };
+  const save = () => {
+    mkdirSync(dir, { recursive: true });
+    writeFileSync(record, `${JSON.stringify(day, null, 2)}\n`);
+  };
+
+  // A failed day is still recorded, so the archive has no silent gaps.
+  let plan;
+  try {
+    plan = await completeChecked(complete, planMessages, 3000, (t) => findBanned(t).map((w) => `uses the word "${w}"`));
+  } catch (e) {
+    Object.assign(day, { status: 'failed', error: e.message });
+    save();
+    die(`plan failed, recorded ${record}: ${e.message}`, 1);
+  }
+  Object.assign(day, { model: plan.model, plan: plan.text.trim(), decision: decisionLine(plan.text), planProblems: plan.problems });
   console.log(`plan: ${plan.model}`);
   mkdirSync(dir, { recursive: true });
 
-  const artifacts = [];
   for (let n = 1; n <= opts.artifacts; n++) {
     const file = `artifact-${n}.html`;
     try {
-      const out = await completeChecked(buildMessages(plan.text, n), 16000, (t) => {
+      const out = await completeChecked(complete, buildMessages(plan.text, n), 16000, (t) => {
         const html = extractHtml(t);
         return html ? checkArtifact(html) : ['no HTML code block'];
       });
       const html = extractHtml(out.text);
       if (!html) throw new Error(`${out.model} returned no HTML`);
       writeFileSync(join(dir, file), `${addCsp(html)}\n`);
-      artifacts.push({ file, lead: n, model: out.model, status: out.problems.length ? 'needs review' : 'ok', problems: out.problems });
+      day.artifacts.push({ file, lead: n, model: out.model, status: out.problems.length ? 'needs review' : 'ok', problems: out.problems });
       console.log(`${file}: ${out.model}${out.problems.length ? `, needs review: ${out.problems.join('; ')}` : ''}`);
     } catch (e) {
-      artifacts.push({ file, lead: n, status: 'failed', problems: [e.message] });
+      day.artifacts.push({ file, lead: n, model: null, status: 'failed', problems: [e.message] });
       console.error(`${file}: ${e.message}`);
     }
   }
-
-  const day = {
-    date, task, brief: custom || null, team, model: plan.model, decision: decisionLine(plan.text),
-    planProblems: plan.problems, artifacts,
-  };
-  const lines = artifacts.map((a) => (a.status === 'failed'
-    ? `- ${a.file}: failed (${a.problems.join('; ')})`
-    : `- [${a.file}](${a.file}), led by member ${a.lead}, model ${a.model}${a.problems.length ? `. Needs review: ${a.problems.join('; ')}` : ''}`));
-  const doc = [
-    `# ${date}`, '', '```text', team, '```', '', ...(custom ? [`Brief: ${custom}`, ''] : []), `Model: ${plan.model}`, '',
-    plan.text.trim(), '', ...(lines.length ? ['## Artifacts', '', ...lines, ''] : []),
-  ].join('\n');
-  writeFileSync(join(dir, 'team.md'), doc);
-  writeFileSync(join(dir, 'day.json'), `${JSON.stringify(day, null, 2)}\n`);
-  console.log(`wrote ${dir}`);
-  if (artifacts.some((a) => a.status === 'failed')) process.exit(3);
+  if (day.artifacts.length && day.artifacts.every((a) => a.status === 'failed')) day.status = 'failed';
+  else if (day.artifacts.some((a) => a.status !== 'ok')) day.status = 'needs review';
+  save();
+  console.log(`recorded ${record}`);
+  if (day.artifacts.some((a) => a.status === 'failed')) process.exit(3);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) main();
