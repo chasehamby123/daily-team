@@ -14,7 +14,7 @@ for f in "$dir"/*/artifact-*.html; do
   [ -e "$png" ] && continue
   abs=$(cd "$(dirname "$f")" && pwd)/$(basename "$f")
   "$chrome" --headless=new --no-sandbox --disable-gpu --hide-scrollbars --window-size=1200,800 \
-    --virtual-time-budget=3000 --screenshot="$png" "file://$abs" >/dev/null 2>&1 \
+    --virtual-time-budget=3000 --blink-settings=preferredColorScheme=1 --screenshot="$png" "file://$abs" >/dev/null 2>&1 \
     || echo "shot.sh: failed for $f" >&2
   if [ -e "$png" ]; then echo "$png"; fi
 done

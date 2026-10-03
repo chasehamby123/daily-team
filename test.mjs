@@ -228,6 +228,14 @@ test('run.mjs falls back, retries failed checks, records status, and skips a rec
     const again = await run(['--date', '2026-10-03', '--out', out], env);
     assert.equal(again.status, 0);
     assert.match(again.stdout, /already recorded/);
+
+    writeFileSync(join(out, '2026-10-03', 'artifact-1.png'), 'old screenshot');
+    replies.push([200, '## Decision\nA new table.']);
+    const forced = await run(['--date', '2026-10-03', '--out', out, '--artifacts', '0', '--force'], env);
+    assert.equal(forced.status, 0, forced.stderr);
+    for (const f of ['artifact-1.png', 'artifact-1.html', 'artifact-2.html']) {
+      assert.ok(!existsSync(join(out, '2026-10-03', f)), `${f} should be removed by --force`);
+    }
   });
   rmSync(out, { recursive: true });
 });

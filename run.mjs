@@ -13,7 +13,7 @@
 //        ARTIFACTS           default for --artifacts (default: 1)
 // A brief from --brief or a brief.md file replaces today's task.
 import { execFileSync, spawn } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -276,6 +276,10 @@ async function main() {
     date, task, brief: custom || null, team, provider: opts.provider, model: null,
     status: 'ok', error: null, decision: '', plan: '', planProblems: [], artifacts: [],
   };
+  // A forced run replaces the day, so old assets and screenshots must not linger.
+  if (existsSync(dir)) {
+    for (const f of readdirSync(dir)) if (/^artifact-\d+\.(html|png)$/.test(f)) rmSync(join(dir, f));
+  }
   const save = () => {
     mkdirSync(dir, { recursive: true });
     writeFileSync(record, `${JSON.stringify(day, null, 2)}\n`);
