@@ -1,0 +1,42 @@
+name: Suggest a task
+description: Suggest a small web tool for the daily team to build.
+title: "Task: "
+labels: [task-suggestion]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Each week the open suggestions with the most thumbs-up votes are screened. Accepted ones join the task pool and run on a future day. The rules are in [CONTRIBUTING.md](https://github.com/isas1/daily-team/blob/main/CONTRIBUTING.md).
+  - type: textarea
+    id: task
+    attributes:
+      label: Task
+      description: One sentence. What the user enters and what they get back.
+      placeholder: "Tip splitter: total, tip percent, and number of people give the amount each, rounded to 0.05."
+    validations:
+      required: true
+  - type: input
+    id: helps
+    attributes:
+      label: Who it helps
+      placeholder: Anyone splitting a restaurant bill.
+    validations:
+      required: true
+  - type: input
+    id: check
+    attributes:
+      label: How you would know it works
+      placeholder: "100 with 10 percent for 3 people gives 36.65 each."
+  - type: checkboxes
+    id: credit
+    attributes:
+      label: Credit
+      options:
+        - label: Credit me by GitHub username on the day this task runs.
+  - type: checkboxes
+    id: license
+    attributes:
+      label: License
+      options:
+        - label: I agree that this suggestion can be used and changed under the repository's MIT license.
+          required: true

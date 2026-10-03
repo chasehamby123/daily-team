@@ -1,0 +1,36 @@
+name: Season
+
+# Runs when a season pull request is merged: tells each suggester the outcome and announces
+# the new members. No model credential is used here.
+on:
+  push:
+    branches: [main]
+    paths: ['pools/*.json']
+
+permissions:
+  contents: read
+
+jobs:
+  announce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      issues: write
+      discussions: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+      - name: Comment, close, and announce
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          for f in $(git diff --name-only --diff-filter=A HEAD~1 HEAD -- 'pools/*.json'); do
+            node github.mjs close-loop "$f"
+            node github.mjs announce "$f" || echo "::warning::Announcement failed for $f"
+          done

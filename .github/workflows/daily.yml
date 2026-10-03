@@ -31,6 +31,7 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: write
+      issues: read
     outputs:
       pages: ${{ steps.key.outputs.ok == 'true' && vars.PAGES == 'true' }}
     env:
@@ -73,12 +74,17 @@ jobs:
       - name: Screenshot new artifacts
         if: always() && steps.key.outputs.ok == 'true'
         run: sh shot.sh days || true
+      - name: Read suggestions for the vote table
+        if: always() && steps.key.outputs.ok == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node github.mjs suggestions > "$RUNNER_TEMP/suggestions.json" || echo '[]' > "$RUNNER_TEMP/suggestions.json"
       - name: Update README and site
         if: always() && steps.key.outputs.ok == 'true'
         env:
           PAGES_URL: ${{ vars.PAGES == 'true' && format('https://{0}.github.io/{1}/', github.repository_owner, github.event.repository.name) || '' }}
           SITE: ${{ vars.PAGES == 'true' && '_site' || '' }}
-        run: node publish.mjs ${SITE:+--site "$SITE"}
+        run: node publish.mjs --suggestions "$RUNNER_TEMP/suggestions.json" ${SITE:+--site "$SITE"}
       - name: Commit results
         if: always() && steps.key.outputs.ok == 'true'
         env:
