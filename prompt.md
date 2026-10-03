@@ -18,6 +18,7 @@ Build one artifact from the decision. Member {{LEAD}} leads: their method and st
 - No external resources: no CDNs, web fonts, remote images, iframes, or network calls. Plain links to other sites are allowed.
 - It works offline from a local file, on a phone, and when printed.
 - It follows the day's constraint.
+- It loads with a worked example: realistic values already entered and the result already shown. The user can change or clear them.
 - Calculators show the formula they use.
 - No medical, legal, or investment advice. Where a figure depends on local rules, say so and let the user enter it.
 - It respects prefers-reduced-motion.
