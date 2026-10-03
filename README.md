@@ -17,7 +17,7 @@ Everything in `days/` is written by a language model and checked by scripts, not
 
 <a href="days/2026-10-03/"><img src="days/2026-10-03/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-10-03/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-10-03/) · [Use it](https://isas1.github.io/daily-team/2026-10-03/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
