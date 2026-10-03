@@ -233,7 +233,9 @@ async function main() {
 
   const dir = join(opts.out, date);
   const record = join(dir, 'day.json');
-  if (!opts.dryRun && existsSync(record) && !opts.force) {
+  // A failed day can be run again; a finished one only with --force.
+  if (!opts.dryRun && existsSync(record) && !opts.force
+    && JSON.parse(readFileSync(record, 'utf8')).status !== 'failed') {
     console.log(`${date} is already recorded, skipping (use --force to replace)`);
     return;
   }
@@ -253,7 +255,14 @@ async function main() {
     if (opts.provider === 'claude') console.log(JSON.stringify(['claude', ...claudeArgs(system.content)]));
     return;
   }
-  if (opts.provider === 'openrouter' && !process.env.OPENROUTER_API_KEY) die('OPENROUTER_API_KEY is not set');
+  if (opts.provider === 'openrouter') {
+    const key = (process.env.OPENROUTER_API_KEY || '').trim();
+    if (!key) die('OPENROUTER_API_KEY is not set');
+    if (!process.env.API_URL && !key.startsWith('sk-or-')) {
+      die(`OPENROUTER_API_KEY does not look like an OpenRouter key: expected it to start with "sk-or-" (length ${key.length})`);
+    }
+    process.env.OPENROUTER_API_KEY = key;
+  }
   const complete = opts.provider === 'claude' ? completeClaude : completeOpenRouter;
 
   const day = {

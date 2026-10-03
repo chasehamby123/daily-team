@@ -194,6 +194,10 @@ test('run.mjs refuses to run without a key, with an empty brief, or with bad opt
   assert.equal((await run(['--out', out, '--brief', ' '], { OPENROUTER_API_KEY: 'k' })).status, 2);
   assert.equal((await run(['--artifacts', '9'], { OPENROUTER_API_KEY: 'k' })).status, 2);
   assert.equal((await run(['--provider', 'other'], { OPENROUTER_API_KEY: 'k' })).status, 2);
+  const wrong = await run(['--out', out], { OPENROUTER_API_KEY: ' not-a-key-1234', API_URL: '' });
+  assert.equal(wrong.status, 2);
+  assert.match(wrong.stderr, /does not look like an OpenRouter key/);
+  assert.doesNotMatch(wrong.stderr, /not-a-key-1234/, 'never print the key');
   rmSync(out, { recursive: true });
 });
 
@@ -228,7 +232,7 @@ test('run.mjs falls back, retries failed checks, records status, and skips a rec
   rmSync(out, { recursive: true });
 });
 
-test('run.mjs records a day even when every model fails', async () => {
+test('run.mjs records a failed day and runs it again next time', async () => {
   const out = tmp();
   await withServer([], async (url) => {
     const r = await run(['--date', '2026-10-04', '--out', out], { OPENROUTER_API_KEY: 'k', API_URL: url, MODEL: 'a' });
@@ -237,6 +241,11 @@ test('run.mjs records a day even when every model fails', async () => {
     assert.equal(day.status, 'failed');
     assert.match(day.error, /all models failed/);
     assert.match(day.team, /Team for 2026-10-04/);
+  });
+  await withServer([[200, '## Decision\nA table.']], async (url) => {
+    const r = await run(['--date', '2026-10-04', '--out', out, '--artifacts', '0'], { OPENROUTER_API_KEY: ' k ', API_URL: url, MODEL: 'a' });
+    assert.equal(r.status, 0, r.stderr);
+    assert.equal(readDay(out, '2026-10-04').status, 'ok');
   });
   rmSync(out, { recursive: true });
 });
