@@ -1,13 +1,13 @@
 # daily-team
 
-Every day a new four-person creative team builds one small, useful web tool. Each member has a role, a method, and a stance. The day adds a constraint and a task.
+A new four-person creative team every day, and the small web tool it built. This repository is the record: each day's team, its plan, and its asset, kept in [days/](days/) and listed in the [archive](ARCHIVE.md).
 
 ## Today
 
 <!-- TODAY:START -->
-### 2026-10-03: Running pace calculator: distance and time give pace per km and per mile and projected times for 5 km, 10 km, half, and full marathon.
+### 2026-10-03: Running pace calculator
 
-The first daily run adds the example here.
+The first daily run adds the team card and the asset here.
 
 ```text
 Team for 2026-10-03
@@ -30,64 +30,37 @@ Task: Running pace calculator: distance and time give pace per km and per mile a
 ```
 <!-- TODAY:END -->
 
+## Recent days
+
+<!-- RECENT:START -->
+The archive starts with the first daily run.
+<!-- RECENT:END -->
+
 ## How it works
 
-`team.sh` turns the date into a team, a constraint, and a task. Nothing needs to update: the same date always gives the same result. No role or method repeats within 7 days, no constraint within 22 days, and no task within 61 days. Run `sh team.sh 2026-12-25` to see any date.
+1. **The team.** `team.sh` turns the date into four members, each with a role, a method, and a stance, plus a constraint and a task. The same date always gives the same team. No role or method repeats within 7 days, no constraint within 22 days, and no task within 61 days.
+2. **The work.** Each morning a language model plays the team. The members propose, object, and decide, then build the task as one HTML file.
+3. **The checks.** The file must have a title and a mobile layout, stay under 100 KB, and make no network requests. A file that fails is retried once, then marked "needs review".
+4. **The record.** The workflow takes a screenshot, draws the team card, writes the day page, updates the archive and this README, and commits the result. Days that fail are recorded too.
 
-Each morning the `Daily` workflow sends the team and task to a language model. The team proposes, objects, and decides, then builds the tool as one HTML file. The workflow checks the file, takes a screenshot, updates this README, and commits the result to [days/](days/).
+## Run your own
 
-## Use in Claude Code
+Fork the repo, then add one secret:
 
-```sh
-git clone https://github.com/isas1/daily-team ~/.claude/skills/daily-team
-```
+- `OPENROUTER_API_KEY` for OpenRouter's free models (the default). Create the key with a credit limit.
+- Or `CLAUDE_CODE_OAUTH_TOKEN` from `claude setup-token` to use a Claude subscription, and set the repository variable `PROVIDER` to `claude`.
 
-```text
-/daily-team                      today's team and task
-/daily-team <brief>              the team plans your brief instead
-/daily-team build                the team builds today's task as an HTML file
-/daily-team build 2 <brief>      2 HTML files for your brief
-```
+Optional variables: `MODEL`, `CLAUDE_MODEL`, `ARTIFACTS` (0 to 4, default 1), `TZ`, and `PAGES` (`true` to publish the tools on GitHub Pages). To record a day by hand with your Claude login, run `sh daily.sh`. It commits and pushes.
 
-## Run it yourself
-
-Requires Node 20 or later. Put your key in `.env`, which git ignores:
-
-```sh
-echo "OPENROUTER_API_KEY=your-key" > .env
-node --env-file=.env run.mjs --artifacts 1
-sh shot.sh
-node publish.mjs
-```
-
-The default model is `openrouter/free`, which routes to OpenRouter's free models. Set `MODEL` to a comma-separated list to choose models, and `API_URL` for any OpenAI-compatible endpoint. A `brief.md` file, also ignored by git, replaces the daily task.
-
-## Run it daily on GitHub
-
-1. Fork the repo and enable Actions.
-2. Create an OpenRouter key with a credit limit, then add it as the secret `OPENROUTER_API_KEY`.
-3. Optional repository variables: `MODEL`, `ARTIFACTS` (0 to 4, default 1), `API_URL`, `TZ`, and `PAGES` (`true` to publish the tools on GitHub Pages).
-
-The workflow runs at 06:00 UTC. You can also start it from the Actions tab.
+The folder also works as a Claude Code skill: clone it into `~/.claude/skills/daily-team`, then use `/daily-team`.
 
 ## Safety
 
-- The key is only passed to the step that calls the API. It is never written to disk or printed.
-- Generated HTML gets a Content-Security-Policy that blocks network requests. On GitHub Pages each tool runs in a sandboxed frame, so it cannot read data from other pages on the same domain.
+- Keys are passed only to the step that calls the model. They are never written to disk or printed.
+- The Claude provider runs with no tools, no MCP servers, no user settings or hooks, and no CLAUDE.md, so the model can only return text.
+- Every asset gets a Content-Security-Policy that blocks network requests. On GitHub Pages, assets run only inside a sandboxed frame.
 - Free models can log prompts. Do not put private material in `brief.md`.
 - See [SECURITY.md](SECURITY.md) to report a problem.
-
-## Files
-
-| File | Purpose |
-|---|---|
-| `team.sh` | Date to team, constraint, and task. Pools are at the end of the file. |
-| `SKILL.md` | The Claude Code skill. |
-| `prompt.md` | Instructions and writing rules, shared by the skill and `run.mjs`. |
-| `run.mjs` | Calls the model and writes `days/<date>/`. |
-| `shot.sh` | Screenshots each new HTML file with headless Chrome. |
-| `publish.mjs` | Updates the Today block and builds the Pages site. |
-| `test.mjs` | Tests: `node --test test.mjs` |
 
 ## License
 
