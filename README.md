@@ -20,6 +20,18 @@ Everything in `days/` is written by a language model and checked by scripts, not
 [Open the day](days/2026-10-03/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
+## This week
+
+<!-- WEEK:START -->
+**Season 1**, since 2026-10-01. The first season, so everyone is new. A new season with 8 new roles and 8 new methods is drafted every Monday.
+
+### Vote on what gets built next
+
+[Suggest a task](https://github.com/isas1/daily-team/issues/new?template=task-suggestion.yml) or vote with a thumbs-up on [open suggestions](https://github.com/isas1/daily-team/issues?q=is%3Aissue+is%3Aopen+label%3Atask-suggestion+sort%3Areactions-%2B1-desc). The most voted are screened every Monday.
+
+No open suggestions yet.
+<!-- WEEK:END -->
+
 ## Recent days
 
 <!-- RECENT:START -->
@@ -32,10 +44,15 @@ Everything in `days/` is written by a language model and checked by scripts, not
 
 ## How it works
 
-1. **The team.** `team.sh` turns the date into four members, each with a role, a method, and a stance, plus a constraint and a task. The same date always gives the same team. No role or method repeats within 7 days, no constraint within 22 days, and no task within 61 days.
-2. **The work.** Each morning a language model plays the team. The members propose, object, and decide, then build the task as one HTML file.
-3. **The checks.** The file must have a title and a mobile layout, stay under 100 KB, and make no network requests. A file that fails is retried once, then marked "needs review".
-4. **The record.** The workflow takes a screenshot, draws the team card, writes the day page, updates the archive and this README, and commits the result. Days that fail are recorded too.
+1. **The team.** `team.sh` turns the date into four members, each with a role, a method, and a stance, plus a constraint and a task. The same date always gives the same team. Within a season no role or method repeats within 7 days, no constraint within 22 days, and no task within 61 days.
+2. **The cast.** Every Monday a language model drafts the next season: 8 new roles and 8 new methods join, the 8 longest-serving leave, and voted suggestions become tasks. Scripts check the draft and it opens as a pull request for review. Seasons start on a future Monday, so past days never change.
+3. **The work.** Each morning a language model plays the team. The members propose, object, and decide, then build the task as one HTML file.
+4. **The checks.** The file must have a title and a mobile layout, stay under 100 KB, and make no network requests. A file that fails is retried once, then marked "needs review".
+5. **The record.** The workflow takes a screenshot, draws the team card, writes the day page, updates the archive and this README, and commits the result. Days that fail are recorded too.
+
+## Take part
+
+[Suggest a task](https://github.com/isas1/daily-team/issues/new?template=task-suggestion.yml), vote with a thumbs-up on open suggestions, or read [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Run your own
 

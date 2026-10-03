@@ -3,16 +3,17 @@
 //   days/<date>/team.svg    a card showing the team
 //   days/<date>/README.md   the day page GitHub shows when the folder is opened
 //   ARCHIVE.md              every day, newest first
-//   README.md               the Today and Recent blocks
+//   README.md               the Today, Week (season and vote), and Recent blocks
 //   --site <dir>            a static site where artifacts run only in sandboxed frames
 //
-// Usage: node publish.mjs [--site dir] [--root dir]
+// Usage: node publish.mjs [--site dir] [--root dir] [--suggestions file.json]
 // Env:   PAGES_URL          site link to show in the README
 //        GITHUB_REPOSITORY  owner/repo, for links from the site back to the repo
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseTeam, teamFor, today } from './run.mjs';
+import { listSeasons, readSeason } from './recruit.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const RECENT_DAYS = 7;
@@ -53,8 +54,8 @@ function wrap(text, max, lines) {
 }
 
 // A 1200 x 630 card. The accent color moves around the color wheel day by day.
-export function teamSvg(day) {
-  const { members, constraint } = parseTeam(day.team);
+export function teamSvg(day, seasonNumber = 0) {
+  const { members, constraint, suggestedBy } = parseTeam(day.team);
   const hue = Math.round(((Date.parse(`${day.date}T00:00:00Z`) / 86_400_000) * 47) % 360);
   const tspans = (lines, x, y, size, gap = 1.3) => lines
     .map((l, i) => `<tspan x="${x}" y="${y + i * size * gap}">${esc(l)}</tspan>`).join('');
@@ -67,7 +68,9 @@ export function teamSvg(day) {
     const pillH = 32 + (stance.length - 1) * 20;
     return `<g>
   <rect class="card" x="${x}" y="200" width="${cardW}" height="330" rx="14"/>
-  <circle cx="${x + 34}" cy="238" r="16" class="accent-fill"/>
+  <circle cx="${x + 34}" cy="238" r="16" class="accent-fill"/>${m.newRole || m.newMethod ? `
+  <rect x="${x + cardW - 74}" y="224" width="52" height="26" rx="13" class="accent-fill"/>
+  <text x="${x + cardW - 48}" y="242" class="num" text-anchor="middle">NEW</text>` : ''}
   <text x="${x + 34}" y="244" class="num" text-anchor="middle">${i + 1}</text>
   <text class="role">${tspans(role, x + 22, 288, 24)}</text>
   <text class="method">${tspans(wrap(m.method, 26, 6), x + 22, methodY + 34, 17)}</text>
@@ -92,10 +95,11 @@ export function teamSvg(day) {
   }
 </style>
 <rect class="bg" width="1200" height="630"/>
-<text x="48" y="68" class="kicker">DAILY TEAM · ${esc(day.date)}</text>
+<text x="48" y="68" class="kicker">DAILY TEAM · ${esc(day.date)}${seasonNumber ? ` · SEASON ${seasonNumber}` : ''}</text>
 <text class="title">${tspans(wrap(title(day), 44, 2), 48, 124, 44, 1.1)}</text>
 ${cards}
-<text x="48" y="580" class="foot">Constraint: ${esc(wrap(constraint, 95, 1)[0])}</text>
+<text x="48" y="580" class="foot">Constraint: ${esc(wrap(constraint, suggestedBy ? 70 : 95, 1)[0])}</text>${suggestedBy ? `
+<text x="1152" y="580" class="foot" text-anchor="end">Task suggested by ${esc(suggestedBy)}</text>` : ''}
 </svg>
 `;
 }
@@ -115,14 +119,16 @@ function assetLines(day, base, pagesUrl) {
 }
 
 export function dayReadme(day, daysDir, pagesUrl) {
-  const { constraint } = parseTeam(day.team);
+  const { constraint, season, suggestedBy } = parseTeam(day.team);
   const dir = join(daysDir, day.date);
   return [
     `# ${day.date}: ${title(day)}`, '',
     '[Today](../../README.md) · [Archive](../../ARCHIVE.md)', '',
     `<img src="team.svg" alt="Team for ${day.date}: ${esc(roles(day))}" width="100%">`, '',
     `**Task:** ${day.brief || day.task}`, '',
+    ...(suggestedBy ? [`**Suggested by:** ${suggestedBy}`, ''] : []),
     `**Constraint:** ${constraint}`, '',
+    ...(season ? [`**Season:** ${season}`, ''] : []),
     ...(day.decision ? [`**Decision:** ${day.decision}`, ''] : []),
     '## Asset', '', ...assetLines(day, { dir, href: '' }, pagesUrl),
     ...(day.plan ? ['## Team plan', '', day.plan.replace(/^(#{1,5}) /gm, '#$1 '), ''] : []),
@@ -177,6 +183,34 @@ export function archive(days) {
     '[Today](README.md)', '',
     '| Date | Task | Team | Constraint | Asset |', '|---|---|---|---|---|', ...rows, '',
   ].join('\n');
+}
+
+const REPO = () => process.env.GITHUB_REPOSITORY || 'isas1/daily-team';
+const userText = (s, max = 100) => {
+  const t = String(s ?? '').replace(/[<>[\]()|*_`#!\\]/g, '').replace(/\s+/g, ' ').trim();
+  return t.length > max ? `${t.slice(0, max - 3)}...` : t;
+};
+
+// This week's season and the suggestion vote.
+export function weekBlock(root, days, suggestions) {
+  const seasons = listSeasons(root);
+  const season = (days.length ? parseTeam(days.at(-1).team).season : '') || parseTeam(teamFor(today())).season;
+  const lines = [];
+  if (season && seasons.includes(season)) {
+    const pools = readSeason(root, season);
+    const fresh = pools.roles.filter((i) => i.fresh).map((i) => i.text);
+    lines.push(`**Season ${seasons.indexOf(season) + 1}**, since ${season}. ${fresh.length
+      ? `New this season: ${fresh.join(', ')}.` : 'The first season, so everyone is new.'} A new season with 8 new roles and 8 new methods is drafted every Monday.`, '');
+  }
+  const repo = REPO();
+  lines.push('### Vote on what gets built next', '',
+    `[Suggest a task](https://github.com/${repo}/issues/new?template=task-suggestion.yml) or vote with a thumbs-up on [open suggestions](https://github.com/${repo}/issues?q=is%3Aissue+is%3Aopen+label%3Atask-suggestion+sort%3Areactions-%2B1-desc). The most voted are screened every Monday.`, '');
+  const top = (suggestions || []).filter((x) => x.task).slice(0, 5);
+  if (top.length) {
+    lines.push('| Votes | Suggestion |', '|---|---|',
+      ...top.map((x) => `| ${Number(x.votes) || 0} | [${userText(x.task)}](https://github.com/${repo}/issues/${Number(x.number)}) |`));
+  } else lines.push('No open suggestions yet.');
+  return lines.join('\n');
 }
 
 export function replaceBlock(text, name, block) {
@@ -256,17 +290,19 @@ export function buildSite(siteDir, days, daysDir, repo) {
     : page('daily-team', '<p>No days yet.</p>'));
 }
 
-export function publish(root, { pagesUrl = '', site = '', repo = '' } = {}) {
+export function publish(root, { pagesUrl = '', site = '', repo = '', suggestions = [] } = {}) {
   const daysDir = join(root, 'days');
   const days = loadDays(daysDir);
+  const seasons = listSeasons(root);
   for (const day of days) {
-    writeFileSync(join(daysDir, day.date, 'team.svg'), teamSvg(day));
+    writeFileSync(join(daysDir, day.date, 'team.svg'), teamSvg(day, seasons.indexOf(parseTeam(day.team).season) + 1));
     writeFileSync(join(daysDir, day.date, 'README.md'), dayReadme(day, daysDir, pagesUrl));
   }
   writeFileSync(join(root, 'ARCHIVE.md'), archive(days));
   const readme = join(root, 'README.md');
   let text = readFileSync(readme, 'utf8');
   text = replaceBlock(text, 'TODAY', todayBlock(days.at(-1), daysDir, pagesUrl));
+  text = replaceBlock(text, 'WEEK', weekBlock(root, days, suggestions));
   text = replaceBlock(text, 'RECENT', recentBlock(days));
   writeFileSync(readme, text);
   if (site) buildSite(site, days, daysDir, repo);
@@ -279,8 +315,10 @@ function main() {
     const i = args.indexOf(name);
     return i >= 0 ? args[i + 1] : '';
   };
+  const file = opt('--suggestions');
+  const suggestions = file && existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')) : [];
   const n = publish(opt('--root') || HERE, {
-    pagesUrl: process.env.PAGES_URL, site: opt('--site'), repo: process.env.GITHUB_REPOSITORY,
+    pagesUrl: process.env.PAGES_URL, site: opt('--site'), repo: process.env.GITHUB_REPOSITORY, suggestions,
   });
   console.log(`published ${n} days${opt('--site') ? ` and the site in ${opt('--site')}` : ''}`);
 }
