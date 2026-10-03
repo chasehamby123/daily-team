@@ -9,7 +9,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { addCsp, checkArtifact, decisionLine, extractHtml, findBanned, parseTeam } from './run.mjs';
-import { formatSeason, itemProblems, listSeasons, nextMonday, nextSeason, readSeason, screenSuggestions, summary, validate } from './recruit.mjs';
+import { formatSeason, guestProblems, itemProblems, listSeasons, nextMonday, nextSeason, parseGuest, readSeason, screenSuggestions, summary, validate } from './recruit.mjs';
 import { announce, closeLoop, commentFor, fetchSuggestions, parseForm } from './github.mjs';
 import { archive, buildSite, dayReadme, loadDays, publish, recentBlock, seasonNumber, todayBlock, weekBlock } from './publish.mjs';
 import { cardHtml, findChrome, renderPng, socialHtml, titleCase } from './card.mjs';
@@ -125,10 +125,11 @@ test('every season file has valid pools', () => {
   assert.equal(seasons[0], FIRST_SEASON);
   for (const start of seasons) {
     const p = readSeason(HERE, start);
-    for (const [kind, multiple] of Object.entries({ roles: 8, methods: 8, stances: 8, constraints: 2, tasks: 2 })) {
-      assert.ok(p[kind].length > 0 && p[kind].length % multiple === 0, `${start} ${kind}: size ${p[kind].length}`);
+    for (const [kind, multiple] of Object.entries({ roles: 8, methods: 8, stances: 8, constraints: 2, tasks: 2, guests: 2 })) {
+      assert.ok((p[kind].length > 0 || kind === 'guests') && p[kind].length % multiple === 0, `${start} ${kind}: size ${p[kind].length}`);
       assert.equal(new Set(p[kind].map((i) => i.text.toLowerCase())).size, p[kind].length, `${start}: duplicate in ${kind}`);
     }
+    for (const i of p.guests) assert.deepEqual(guestProblems(parseGuest(i.text), Number(start.slice(0, 4))), [], `${start}: ${i.text}`);
     if (start !== FIRST_SEASON) assert.ok(existsSync(join(HERE, 'pools', `${start}.json`)), `${start}: missing season record`);
   }
 });
@@ -785,4 +786,90 @@ test('the week block shows the season and a safe vote table', () => {
   assert.match(block, /\| 3 \| \[Coin scriptalert1\/script counter xhttp:\/\/evil\.example yes\]\(https:\/\/github\.com\/isas1\/daily-team\/issues\/5\) \|/);
   assert.doesNotMatch(block, /<script>|\]\(http:\/\/evil/);
   assert.match(weekBlock(HERE, [], []), /No open suggestions yet\./);
+});
+
+// Guests
+
+const GUEST_SEASON = '2026-10-05';
+const KINDS_ALL = ['roles', 'methods', 'stances', 'constraints', 'tasks', 'guests'];
+
+test('a season with guests makes member 4 a guest and leaves earlier dates alone', () => {
+  const dir = fixture({ [GUEST_SEASON]: readFileSync(join(HERE, 'pools', `${GUEST_SEASON}.txt`), 'utf8') });
+  for (const d of dates('2026-09-20', 15)) assert.equal(team(d, {}, dir).stdout, team(d).stdout, d);
+  const last = {};
+  let minGap = Infinity;
+  dates(GUEST_SEASON, 200).forEach((d, day) => {
+    const t = parseTeam(team(d, {}, dir).stdout);
+    assert.equal(t.members.length, 4, d);
+    assert.ok(t.members.slice(0, 3).every((m) => !m.guest), `${d}: only member 4 is a guest`);
+    const g = t.members[3];
+    assert.ok(g.guest && g.guest.kind && g.guest.source, `${d}: member 4 is a guest`);
+    if (g.role in last) minGap = Math.min(minGap, day - last[g.role]);
+    last[g.role] = day;
+  });
+  assert.ok(minGap >= 19, `guest gap ${minGap}`);
+  assert.ok(Object.keys(last).length >= 30, 'most guests appear within 200 days');
+  rmSync(dir, { recursive: true });
+});
+
+test('guestProblems allows public-domain figures and blocks legal risks', () => {
+  const ok = (g) => assert.deepEqual(guestProblems(g, 2026), [], g.name);
+  const bad = (g, re) => assert.match(guestProblems(g, 2026).join('; '), re, g.name);
+  ok({ kind: 'historical', name: 'Marcus Aurelius', method: 'Act only on what you control.', source: 'died 180' });
+  ok({ kind: 'historical', name: 'Socrates', method: 'Ask until the assumption shows.', source: 'died 399 BC' });
+  ok({ kind: 'literary', name: 'Alice', method: 'Ask why the rules are what they are.', source: 'Lewis Carroll, died 1898' });
+  ok({ kind: 'future', name: 'Gardener from 2200', method: 'Plant for the people who come after.', source: 'invented' });
+  ok({ kind: 'creature', name: 'Phoenix', method: 'Rebuild from what is left.', source: 'myth and folklore' });
+  bad({ kind: 'historical', name: 'Recent inventor', method: 'Test it.', source: 'died 1950' }, /less than 100 years/);
+  bad({ kind: 'historical', name: 'Someone', method: 'Test it.', source: 'born 1900' }, /must say "died <year>"/);
+  bad({ kind: 'literary', name: 'Modern detective', method: 'Test it.', source: 'Some author, died 1990' }, /less than 100 years/);
+  bad({ kind: 'myth', name: 'Krishna', method: 'Test it.', source: 'Hindu tradition' }, /living religion, a brand/);
+  bad({ kind: 'myth', name: 'Nike', method: 'Test it.', source: 'Greek myth' }, /living religion, a brand/);
+  bad({ kind: 'myth', name: 'Loki', method: 'Test it.', source: 'Marvel films' }, /modern franchise/);
+  bad({ kind: 'future', name: 'Famous founder', method: 'Test it.', source: 'a real company' }, /must be invented/);
+  bad({ kind: 'robot', name: 'X', method: 'Test it.', source: 'invented' }, /kind must be one of/);
+  bad({ kind: 'myth', name: 'Janus', method: 'Ask Socrates first.', source: 'Roman myth' }, /"Socrates" looks like a name/);
+  bad({ kind: 'myth', name: 'A | B', method: 'x.', source: 'y' }, /one line without/);
+});
+
+test('recruit rotates guests and checks them when the season has guests', async () => {
+  const root = tmp();
+  mkdirSync(join(root, 'pools'));
+  cpSync(join(HERE, 'pools', `${GUEST_SEASON}.txt`), join(root, 'pools', `${GUEST_SEASON}.txt`));
+  const base = readSeason(root, GUEST_SEASON);
+  const known = KINDS_ALL.flatMap((k) => base[k].map((i) => i.text));
+  const roles = ['Lamplighter', 'Ferry pilot', 'Hat maker', 'Map engraver', 'Bell founder', 'Kite maker', 'Rope maker', 'Sail maker'];
+  const draft = { ...DRAFT, roles, suggestions: [], tasks: [...DRAFT.tasks, 'Seed swap log: seeds given and received give a balance per person.'],
+    guests: [{ kind: 'creature', name: 'Griffin', method: 'Guard the one thing worth keeping.', source: 'myth and folklore' },
+      { kind: 'future', name: 'Librarian from 2400', method: 'Make it findable by someone with no context.', source: 'invented' }] };
+  const reply = (d) => `\`\`\`json\n${JSON.stringify(d)}\n\`\`\``;
+  const noGuests = { ...draft };
+  delete noGuests.guests;
+  await withServer([[200, reply(noGuests)], [200, reply(draft)]], async (url, calls) => {
+    const r = await node([join(HERE, 'recruit.mjs'), '--root', root, '--date', '2026-10-05'],
+      { PROVIDER: 'openrouter', OPENROUTER_API_KEY: 'k', API_URL: url, MODEL: 'm' });
+    assert.equal(r.status, 0, r.stderr);
+    assert.match(calls[0].messages[1].content, /<current_guests>[\s\S]*Marcus Aurelius/);
+    assert.match(calls[1].messages.at(-1).content, /guests: expected exactly 2, got none/);
+    const next = readSeason(root, '2026-10-12');
+    assert.equal(next.guests.length, 36);
+    assert.ok(!next.guests.some((i) => i.text.includes('Marcus Aurelius')), 'the oldest guests retire');
+    assert.deepEqual(next.guests.slice(-2).map((i) => [parseGuest(i.text).name, i.fresh]), [['Griffin', true], ['Librarian from 2400', true]]);
+    assert.ok(!known.includes('Griffin'));
+    const meta = JSON.parse(readFileSync(join(root, 'pools', '2026-10-12.json'), 'utf8'));
+    assert.match(summary(meta), /### New guests[\s\S]*Griffin/);
+  });
+  rmSync(root, { recursive: true });
+});
+
+test('guest cards and day pages show the kind, the source, and the note', () => {
+  const team = spawnSync('sh', [TEAM, '2026-10-05'], { encoding: 'utf8' }).stdout;
+  const t = parseTeam(team);
+  assert.deepEqual(t.members[3].guest, { kind: 'literary', source: 'Herman Melville, died 1891' });
+  assert.equal(t.members[3].role, 'Captain Ahab');
+  const day = { date: '2026-10-05', task: t.task, brief: null, team, provider: 'claude', model: 'm', status: 'ok', decision: '', plan: '', artifacts: [] };
+  const html = cardHtml(day, 2);
+  assert.match(html, />LITERARY · NEW</);
+  assert.match(html, /class="source">Herman Melville, died 1891</);
+  assert.match(dayReadme(day, '/nonexistent', ''), /\*\*Guest:\*\* Captain Ahab \(literary; Herman Melville, died 1891\)\. [\s\S]*never speaks as the figure/);
 });
