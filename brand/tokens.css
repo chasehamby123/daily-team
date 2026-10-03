@@ -1,0 +1,55 @@
+/* Sam Creates design tokens, as used by daily-team.
+   From the Sam Creates design system: colors, type, spacing, radius, and shadows. */
+
+@font-face {
+  font-family: "Mozilla Headline";
+  src: url("fonts/MozillaHeadline-Variable.ttf") format("truetype");
+  font-weight: 200 700;
+  font-stretch: 75% 125%;
+  font-display: block;
+}
+@font-face {
+  font-family: "Mozilla Text";
+  src: url("fonts/MozillaText-Variable.ttf") format("truetype");
+  font-weight: 400 700;
+  font-display: block;
+}
+
+:root {
+  --sc-navy: #0E2A47;
+  --sc-red: #BE4D4D;
+  --sc-white: #FFFFFF;
+  --sc-olive: #5A6245;
+  --sc-navy-600: #2E4664;
+  --sc-navy-100: #E7EBF0;
+  --sc-red-600: #A53F3F;
+  --sc-red-100: #F7ECEC;
+  --sc-cream: #F4EEEE;
+  --sc-canvas: #FDFDFB;
+
+  --text-heading: var(--sc-navy);
+  --text-body: var(--sc-navy);
+  --text-muted: #4A5D72;
+  --text-accent: var(--sc-red);
+  --text-support: var(--sc-olive);
+  --border-line: #DCE2E9;
+
+  --font-headline: "Mozilla Headline", "Arial Narrow", sans-serif;
+  --font-body: "Mozilla Text", Georgia, serif;
+  --stretch-condensed: 80%;
+  --leading-display: 1.02;
+  --leading-body: 1.55;
+  --tracking-caps: 0.12em;
+
+  --space-2: 8px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-7: 48px;
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+  --shadow-card: 0 1px 2px rgba(14, 42, 71, 0.06), 0 4px 12px rgba(14, 42, 71, 0.06);
+  --shadow-frame: 0 1px 3px rgba(14, 42, 71, 0.10), 0 8px 24px rgba(14, 42, 71, 0.10);
+}
