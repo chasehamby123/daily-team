@@ -2,6 +2,8 @@
 
 A new four-person creative team every day, and the small web tool it built. This repository is the record: each day's team, its plan, and its asset, kept in [days/](days/) and listed in the [archive](ARCHIVE.md).
 
+Everything in `days/` is written by a language model and checked by scripts, not by hand. The model and provider for each day are on its page.
+
 ## Today
 
 <!-- TODAY:START -->
@@ -40,7 +42,7 @@ A new four-person creative team every day, and the small web tool it built. This
 Fork the repo, then add one secret:
 
 - `OPENROUTER_API_KEY` for OpenRouter's free models (the default). Create the key with a credit limit.
-- Or `CLAUDE_CODE_OAUTH_TOKEN` from `claude setup-token` to use a Claude subscription, and set the repository variable `PROVIDER` to `claude`.
+- Or `CLAUDE_CODE_OAUTH_TOKEN` from `claude setup-token` to use a Claude subscription, and set the repository variable `PROVIDER` to `claude`. Each day uses 2 to 5 requests from your plan's limits.
 
 Optional variables: `MODEL`, `CLAUDE_MODEL`, `ARTIFACTS` (0 to 4, default 1), `TZ`, and `PAGES` (`true` to publish the tools on GitHub Pages). To record a day by hand with your Claude login, run `sh daily.sh`. It commits and pushes.
 
