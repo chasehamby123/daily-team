@@ -11,7 +11,7 @@ A new four-person creative team every day, and the small web tool it built. This
 
 **Task:** Running pace calculator: distance and time give pace per km and per mile and projected times for 5 km, 10 km, half, and full marathon.
 
-No asset today. all models failed: openrouter/free: 401 Missing Authentication header; qwen/qwen3.8-27b:free: 401 Missing Authentication header; google/gemma-4-31b-it:free: 401 Missing Authentication header
+No asset today. claude: Failed to authenticate. API Error: 401 OAuth access token is invalid.
 
 [Open the day](days/2026-10-03/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->

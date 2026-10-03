@@ -10,7 +10,7 @@
 
 ## Asset
 
-No asset. The team could not run: all models failed: openrouter/free: 401 Missing Authentication header; qwen/qwen3.8-27b:free: 401 Missing Authentication header; google/gemma-4-31b-it:free: 401 Missing Authentication header
+No asset. The team could not run: claude: Failed to authenticate. API Error: 401 OAuth access token is invalid.
 ## Team
 
 ```text
@@ -33,4 +33,4 @@ Constraint: Has a dark mode that follows the system setting.
 Task: Running pace calculator: distance and time give pace per km and per mile and projected times for 5 km, 10 km, half, and full marathon.
 ```
 
-Provider: openrouter. Model: none.
+Provider: claude. Model: none.
