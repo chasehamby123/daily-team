@@ -26,6 +26,16 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 22
+      - name: Check the season starts after every recorded day
+        run: |
+          for f in $(git diff --name-only --diff-filter=A HEAD~1 HEAD -- 'pools/*.json'); do
+            start=$(basename "$f" .json)
+            last=$(ls days | sort | tail -1)
+            if [ -n "$last" ] && [ "$(echo "$start" | tr -d -)" -le "$(echo "$last" | tr -d -)" ]; then
+              echo "::error::Season $start was merged after day $last was recorded. Revert this merge and run Recruit again."
+              exit 1
+            fi
+          done
       - name: Comment, close, and announce
         env:
           GITHUB_TOKEN: ${{ github.token }}

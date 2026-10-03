@@ -194,6 +194,7 @@ export function summary(meta) {
   const lines = [
     `Season starting **${meta.start}**, drafted by ${meta.provider} (${meta.model}) from season ${meta.base}.`, '',
     'Generated, then checked by `recruit.mjs` validation and `node --test`. Review before merging: nothing here is used until it is on `main`, and it only affects dates from the start date onward.', '',
+    `**Merge before ${meta.start} 06:00 UTC**, when the first day of the season is recorded. Later than that, close this pull request and run Recruit again.`, '',
   ];
   for (const kind of Object.keys(ROTATE)) {
     lines.push(...table(`New ${kind}`, meta.added[kind].map((i) => (i.credit ? `${i.text} (suggested by ${i.credit})` : i.text))));

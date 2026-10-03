@@ -626,6 +626,7 @@ test('recruit.mjs drafts a season, retries a failed draft, and writes the record
     assert.match(body, /### New roles[\s\S]*\| Glassblower \|/);
     assert.match(body, /### Retired roles[\s\S]*\| Typographer \|/);
     assert.match(body, /\| #12 \| 9 \| decline \|/);
+    assert.match(body, /Merge before 2026-10-12 06:00 UTC/);
   });
   rmSync(root, { recursive: true });
 });
