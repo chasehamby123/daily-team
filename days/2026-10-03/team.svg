@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="t">
+<title id="t">Team for 2026-10-03: Service designer, Product designer, Interaction designer, Choreographer. Task: Running pace calculator.</title>
+<style>
+  .bg { fill: #f6f4ef; } .card { fill: #fff; stroke: #dedad2; } .ink { fill: #1b1b1b; }
+  .accent-fill { fill: hsl(103 55% 42%); } .pill { fill: hsl(103 60% 92%); }
+  text { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: #1b1b1b; }
+  .kicker { font-size: 18px; font-weight: 600; letter-spacing: 2px; fill: hsl(103 55% 36%); }
+  .title { font-size: 44px; font-weight: 700; } .num { font-size: 17px; font-weight: 700; fill: #fff; }
+  .role { font-size: 24px; font-weight: 700; } .method { font-size: 17px; fill: #444; }
+  .stance { font-size: 15px; font-weight: 600; fill: hsl(103 55% 28%); } .foot { font-size: 20px; fill: #444; }
+  @media (prefers-color-scheme: dark) {
+    .bg { fill: #141414; } .card { fill: #1f1f1f; stroke: #333; } text { fill: #eee; }
+    .method, .foot { fill: #bbb; } .pill { fill: hsl(103 35% 22%); } .stance { fill: hsl(103 70% 80%); }
+    .kicker { fill: hsl(103 70% 70%); }
+  }
+</style>
+<rect class="bg" width="1200" height="630"/>
+<text x="48" y="68" class="kicker">DAILY TEAM · 2026-10-03</text>
+<text class="title"><tspan x="48" y="124">Running pace calculator</tspan></text>
+<g>
+  <rect class="card" x="48" y="200" width="258" height="330" rx="14"/>
+  <circle cx="82" cy="238" r="16" class="accent-fill"/>
+  <text x="82" y="244" class="num" text-anchor="middle">1</text>
+  <text class="role"><tspan x="70" y="288">Service designer</tspan></text>
+  <text class="method"><tspan x="70" y="326">Give each idea 20 minutes,</tspan><tspan x="70" y="348.1">then move on.</tspan></text>
+  <rect x="70" y="480" width="214" height="32" rx="16" class="pill"/>
+  <text class="stance" text-anchor="middle"><tspan x="177" y="501">Questions the brief</tspan></text>
+</g>
+<g>
+  <rect class="card" x="330" y="200" width="258" height="330" rx="14"/>
+  <circle cx="364" cy="238" r="16" class="accent-fill"/>
+  <text x="364" y="244" class="num" text-anchor="middle">2</text>
+  <text class="role"><tspan x="352" y="288">Product designer</tspan></text>
+  <text class="method"><tspan x="352" y="326">List the assumptions in</tspan><tspan x="352" y="348.1">the brief and check each</tspan><tspan x="352" y="370.2">one.</tspan></text>
+  <rect x="352" y="460" width="214" height="52" rx="16" class="pill"/>
+  <text class="stance" text-anchor="middle"><tspan x="459" y="481">Plans how it reaches</tspan><tspan x="459" y="500.5">people</tspan></text>
+</g>
+<g>
+  <rect class="card" x="612" y="200" width="258" height="330" rx="14"/>
+  <circle cx="646" cy="238" r="16" class="accent-fill"/>
+  <text x="646" y="244" class="num" text-anchor="middle">3</text>
+  <text class="role"><tspan x="634" y="288">Interaction</tspan><tspan x="634" y="319.2">designer</tspan></text>
+  <text class="method"><tspan x="634" y="356">Build the smallest version</tspan><tspan x="634" y="378.1">that works end to end.</tspan></text>
+  <rect x="634" y="480" width="214" height="32" rx="16" class="pill"/>
+  <text class="stance" text-anchor="middle"><tspan x="741" y="501">Guards execution quality</tspan></text>
+</g>
+<g>
+  <rect class="card" x="894" y="200" width="258" height="330" rx="14"/>
+  <circle cx="928" cy="238" r="16" class="accent-fill"/>
+  <text x="928" y="244" class="num" text-anchor="middle">4</text>
+  <text class="role"><tspan x="916" y="288">Choreographer</tspan></text>
+  <text class="method"><tspan x="916" y="326">Remove one element per</tspan><tspan x="916" y="348.1">pass until it breaks, then</tspan><tspan x="916" y="370.2">restore the last one.</tspan></text>
+  <rect x="916" y="460" width="214" height="52" rx="16" class="pill"/>
+  <text class="stance" text-anchor="middle"><tspan x="1023" y="481">Pushes for a less</tspan><tspan x="1023" y="500.5">expected result</tspan></text>
+</g>
+<text x="48" y="580" class="foot">Constraint: Has a dark mode that follows the system setting.</text>
+</svg>

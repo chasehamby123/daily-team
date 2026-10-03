@@ -7,33 +7,23 @@ A new four-person creative team every day, and the small web tool it built. This
 <!-- TODAY:START -->
 ### 2026-10-03: Running pace calculator
 
-The first daily run adds the team card and the asset here.
+<a href="days/2026-10-03/"><img src="days/2026-10-03/team.svg" alt="Team for 2026-10-03: Service designer · Product designer · Interaction designer · Choreographer" width="100%"></a>
 
-```text
-Team for 2026-10-03
+**Task:** Running pace calculator: distance and time give pace per km and per mile and projected times for 5 km, 10 km, half, and full marathon.
 
-1. Service designer
-   Method: Give each idea 20 minutes, then move on.
-   Stance: Questions the brief.
-2. Product designer
-   Method: List the assumptions in the brief and check each one.
-   Stance: Plans how it reaches people.
-3. Interaction designer
-   Method: Build the smallest version that works end to end.
-   Stance: Guards execution quality.
-4. Choreographer
-   Method: Remove one element per pass until it breaks, then restore the last one.
-   Stance: Pushes for a less expected result.
+No asset today. all models failed: openrouter/free: 401 Missing Authentication header; qwen/qwen3.8-27b:free: 401 Missing Authentication header; google/gemma-4-31b-it:free: 401 Missing Authentication header
 
-Constraint: Has a dark mode that follows the system setting.
-Task: Running pace calculator: distance and time give pace per km and per mile and projected times for 5 km, 10 km, half, and full marathon.
-```
+[Open the day](days/2026-10-03/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## Recent days
 
 <!-- RECENT:START -->
-The archive starts with the first daily run.
+| Date | Asset | Task | Team |
+|---|---|---|---|
+| [2026-10-03](days/2026-10-03/) | No asset | Running pace calculator | Service designer · Product designer · Interaction designer · Choreographer |
+
+[All 1 day](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works

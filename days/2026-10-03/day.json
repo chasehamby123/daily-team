@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-03",
+  "task": "Running pace calculator: distance and time give pace per km and per mile and projected times for 5 km, 10 km, half, and full marathon.",
+  "brief": null,
+  "team": "Team for 2026-10-03\n\n1. Service designer\n   Method: Give each idea 20 minutes, then move on.\n   Stance: Questions the brief.\n2. Product designer\n   Method: List the assumptions in the brief and check each one.\n   Stance: Plans how it reaches people.\n3. Interaction designer\n   Method: Build the smallest version that works end to end.\n   Stance: Guards execution quality.\n4. Choreographer\n   Method: Remove one element per pass until it breaks, then restore the last one.\n   Stance: Pushes for a less expected result.\n\nConstraint: Has a dark mode that follows the system setting.\nTask: Running pace calculator: distance and time give pace per km and per mile and projected times for 5 km, 10 km, half, and full marathon.",
+  "provider": "openrouter",
+  "model": null,
+  "status": "failed",
+  "error": "all models failed: openrouter/free: 401 Missing Authentication header; qwen/qwen3.8-27b:free: 401 Missing Authentication header; google/gemma-4-31b-it:free: 401 Missing Authentication header",
+  "decision": "",
+  "plan": "",
+  "planProblems": [],
+  "artifacts": []
+}
