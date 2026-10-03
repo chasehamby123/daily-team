@@ -11,7 +11,8 @@ import { fileURLToPath } from 'node:url';
 import { addCsp, checkArtifact, decisionLine, extractHtml, findBanned, parseTeam } from './run.mjs';
 import { formatSeason, itemProblems, listSeasons, nextMonday, nextSeason, readSeason, screenSuggestions, summary, validate } from './recruit.mjs';
 import { announce, closeLoop, commentFor, fetchSuggestions, parseForm } from './github.mjs';
-import { archive, buildSite, dayReadme, loadDays, publish, recentBlock, teamSvg, todayBlock, weekBlock } from './publish.mjs';
+import { archive, buildSite, dayReadme, loadDays, publish, recentBlock, seasonNumber, todayBlock, weekBlock } from './publish.mjs';
+import { cardHtml, findChrome, renderPng, socialHtml, titleCase } from './card.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const TEAM = join(HERE, 'team.sh');
@@ -414,7 +415,7 @@ test('publish writes the day pages, team cards, archive, and README blocks', () 
   const readme = readFileSync(join(root, 'README.md'), 'utf8');
   assert.match(readme, /^top\n<!-- TODAY:START -->\n### 2026-10-03: Tip splitter/);
   assert.match(readme, /No asset today\. all models failed/);
-  assert.match(readme, /<img src="days\/2026-10-03\/team\.svg"/);
+  assert.match(readme, /<img src="days\/2026-10-03\/team\.png"/);
   assert.match(readme, /mid\n<!-- RECENT:START -->\n\| Date \| Asset \| Task \| Team \|/);
   assert.ok(readme.indexOf('[2026-10-03]') < readme.indexOf('[2026-10-01]'), 'newest first');
   assert.match(readme, /<img src="days\/2026-10-02\/artifact-1\.png" alt="Tip splitter" width="160">/);
@@ -429,25 +430,14 @@ test('publish writes the day pages, team cards, archive, and README blocks', () 
 
   const page = readFileSync(join(days, '2026-10-02', 'README.md'), 'utf8');
   assert.match(page, /^# 2026-10-02: Tip splitter/);
-  assert.match(page, /<img src="team\.svg"/);
+  assert.match(page, /<img src="team\.png"/);
   assert.match(page, /<img src="artifact-1\.png"/);
   assert.match(page, /\[Use it\]\(https:\/\/x\.github\.io\/daily-team\/2026-10-02\/\)/);
   assert.match(page, /Needs review: no title element/);
   assert.match(page, /## Team plan\n\n### Decision/);
   assert.match(readFileSync(join(days, '2026-10-03', 'README.md'), 'utf8'), /No asset\. The team could not run: all models failed/);
-  assert.ok(existsSync(join(days, '2026-10-01', 'team.svg')));
+  assert.ok(!existsSync(join(days, '2026-10-01', 'team.svg')));
   rmSync(root, { recursive: true });
-});
-
-test('the team card is valid SVG with the team, task, and an escaped title', () => {
-  const day = { date: '2026-10-03', task: 'Bill <splitter> & co: x', brief: null, team: teamFor('2026-10-03') };
-  const svg = teamSvg(day);
-  assert.match(svg, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" width="1200" height="630"/);
-  assert.match(svg, /Bill &lt;splitter&gt; &amp; co/);
-  for (const m of ['Service designer', 'Product designer', 'Interaction designer', 'Choreographer']) assert.match(svg, new RegExp(m));
-  assert.match(svg, /Constraint: Has a dark mode/);
-  assert.doesNotMatch(svg.replace(/&(amp|lt|gt|quot);/g, ''), /&/);
-  assert.match(svg, /prefers-color-scheme: dark/);
 });
 
 test('publish shows today\'s team before the first run', () => {
@@ -460,26 +450,31 @@ test('publish shows today\'s team before the first run', () => {
   assert.equal(typeof dayReadme, 'function');
 });
 
-test('the site runs artifacts only inside a sandboxed frame and shows images', () => {
+test('the site runs artifacts only inside a sandboxed frame and uses the brand', () => {
   const dir = tmp();
   const days = join(dir, 'days');
   const site = join(dir, '_site');
   const html = GOOD.replace('ok', '<script>document.title="a&b"</script>"quoted"');
   fakeDay(days, '2026-10-02', [{ file: 'artifact-1.html', lead: 1, status: 'ok', html }]);
-  writeFileSync(join(days, '2026-10-02', 'team.svg'), teamSvg(loadDays(days)[0]));
+  writeFileSync(join(days, '2026-10-02', 'team.png'), Buffer.alloc(9000));
   writeFileSync(join(days, '2026-10-02', 'artifact-1.png'), Buffer.alloc(9000));
-  buildSite(site, loadDays(days), days, 'isas1/daily-team');
+  buildSite(site, loadDays(days), days, 'isas1/daily-team', 'https://x.github.io/daily-team/');
   const page = readFileSync(join(site, '2026-10-02', 'index.html'), 'utf8');
   const index = readFileSync(join(site, 'index.html'), 'utf8');
   assert.match(page, /<iframe sandbox="allow-scripts allow-modals allow-downloads allow-popups allow-forms"/);
   assert.doesNotMatch(page, /allow-same-origin/);
   assert.match(page, /srcdoc="[^"]*&lt;script&gt;document\.title=&quot;a&amp;b&quot;/);
   assert.doesNotMatch(page, /<script>/);
-  assert.match(page, /img-src 'self'/);
-  assert.match(page, /<img src="team\.svg"/);
-  assert.match(index, /<img src="\.\/2026-10-02\/team\.svg"/);
+  assert.match(page, /font-src 'self'/);
+  assert.match(page, /<link rel="stylesheet" href="\.\.\/brand\/tokens\.css">/);
+  assert.match(page, /<meta property="og:image" content="https:\/\/x\.github\.io\/daily-team\/2026-10-02\/team\.png">/);
+  assert.match(page, /<img class="card" src="team\.png"/);
+  assert.match(index, /<link rel="stylesheet" href="\.\/brand\/tokens\.css">/);
+  assert.match(index, /<img class="card" src="\.\/2026-10-02\/team\.png"/);
   assert.match(index, /<img src="\.\/2026-10-02\/artifact-1\.png" alt="" loading="lazy">/);
-  assert.ok(existsSync(join(site, '2026-10-02', 'team.svg')) && existsSync(join(site, '2026-10-02', 'artifact-1.png')));
+  for (const f of ['brand/tokens.css', 'brand/fonts/MozillaHeadline-Variable.ttf', '2026-10-02/team.png', '2026-10-02/artifact-1.png']) {
+    assert.ok(existsSync(join(site, f)), f);
+  }
   assert.ok(!existsSync(join(site, '2026-10-02', 'artifact-1.html')), 'raw artifact must not be served');
   rmSync(dir, { recursive: true });
 });
@@ -746,12 +741,39 @@ test('announce posts to Announcements, and skips when Discussions are off', asyn
 
 // publish.mjs: season, credits, and the vote
 
-test('the team card shows the season, new members, and the suggester', () => {
+test('the team card is on brand and shows the season, new members, and the suggester', () => {
   const text = teamFor('2026-10-03').replace(/^1\. (.+)$/m, '1. $1 [new]').replace(/^(Task: .+)$/m, '$1\nSuggested by: @alice');
-  const svg = teamSvg({ date: '2026-10-03', task: 'Pace: x', brief: null, team: text }, 2);
-  assert.match(svg, /SEASON 2/);
-  assert.equal((svg.match(/>NEW</g) || []).length, 1);
-  assert.match(svg, /Task suggested by @alice/);
+  const html = cardHtml({ date: '2026-10-03', task: 'Bill <splitter> & co: x', brief: null, team: text }, 2);
+  assert.match(html, /Daily team · 2026-10-03 · Season 2/);
+  assert.match(html, /<h1>Bill &lt;splitter&gt; &amp; Co<\/h1>/);
+  assert.equal((html.match(/class="new"/g) || []).length, 1);
+  assert.match(html, /Task suggested by @alice/);
+  assert.match(html, /brand\/tokens\.css/);
+  assert.match(html, /brand\/arrow-red\.png/);
+  assert.equal((html.match(/arrow-red\.png/g) || []).length, 1, 'one arrow per image');
+  for (const m of ['Service designer', 'Product designer', 'Interaction designer', 'Choreographer']) assert.match(html, new RegExp(m));
+  assert.equal(titleCase('running pace calculator for the road'), 'Running Pace Calculator for the Road');
+  assert.match(socialHtml(['Chef']), /A New Creative Team Every Day[\s\S]*<span>Chef<\/span>/);
+  const seasons = ['2026-10-01', '2026-10-05'];
+  assert.equal(seasonNumber(seasons, { date: '2026-10-03', team: 'Team' }), 1, 'recorded before seasons: by date');
+  assert.equal(seasonNumber(seasons, { date: '2026-10-09', team: 'Season: 2026-10-05' }), 2);
+  assert.equal(seasonNumber(seasons, { date: '2026-01-01', team: 'Team' }), 1, 'before every season: the first');
+  assert.equal(seasonNumber([], { date: '2026-01-01', team: 'Team' }), 0);
+});
+
+const pngSize = (file) => {
+  const b = readFileSync(file);
+  return [b.readUInt32BE(16), b.readUInt32BE(20)];
+};
+
+test('cards render to PNG at their exact size with the brand fonts', { skip: !findChrome() && 'Chrome not installed' }, () => {
+  const dir = tmp();
+  const card = join(dir, 'card.png');
+  assert.ok(renderPng(cardHtml({ date: '2026-10-03', task: 'Pace: x', brief: null, team: teamFor('2026-10-03') }, 1), card, 1200, 630));
+  assert.deepEqual(pngSize(card), [1200, 630]);
+  assert.ok(statSync(card).size > 30_000, 'card looks empty');
+  assert.deepEqual(pngSize(join(HERE, 'brand', 'social-preview.png')), [1280, 640]);
+  rmSync(dir, { recursive: true });
 });
 
 test('the week block shows the season and a safe vote table', () => {

@@ -2,7 +2,7 @@
 
 [Today](../../README.md) · [Archive](../../ARCHIVE.md)
 
-<img src="team.svg" alt="Team for 2026-10-03: Service designer · Product designer · Interaction designer · Choreographer" width="100%">
+<img src="team.png" alt="Team for 2026-10-03: Service designer · Product designer · Interaction designer · Choreographer" width="100%">
 
 **Task:** Running pace calculator: distance and time give pace per km and per mile and projected times for 5 km, 10 km, half, and full marathon.
 

@@ -9,7 +9,7 @@ Everything in `days/` is written by a language model and checked by scripts, not
 <!-- TODAY:START -->
 ### 2026-10-03: Running pace calculator
 
-<a href="days/2026-10-03/"><img src="days/2026-10-03/team.svg" alt="Team for 2026-10-03: Service designer · Product designer · Interaction designer · Choreographer" width="100%"></a>
+<a href="days/2026-10-03/"><img src="days/2026-10-03/team.png" alt="Team for 2026-10-03: Service designer · Product designer · Interaction designer · Choreographer" width="100%"></a>
 
 **Task:** Running pace calculator: distance and time give pace per km and per mile and projected times for 5 km, 10 km, half, and full marathon.
 
@@ -75,4 +75,6 @@ The folder also works as a Claude Code skill: clone it into `~/.claude/skills/da
 
 ## License
 
-MIT
+Code and content: MIT.
+
+Design: the Sam Creates design system, in [brand/](brand/). The fonts are Mozilla Headline and Mozilla Text under the SIL Open Font License 1.1; see [brand/fonts](brand/fonts).
