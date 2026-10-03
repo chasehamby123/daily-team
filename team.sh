@@ -2,8 +2,15 @@
 # Prints the creative team for a date. Same date, same team, on any machine.
 # Usage: sh team.sh [YYYY-MM-DD]   (default: today, local time)
 #
-# Each pool is split in two halves. A half is used for a block of days, then the other
-# half, and is reshuffled each time it comes back. So no item repeats within
+# Pools live in pools/<start-date>.txt, one file per season. A date uses the latest season that
+# started on or before it (the first season for earlier dates), so a new season never changes
+# a past team.
+#
+# Pool lines: "+ " marks an item new this season; " | @name" credits the person who suggested
+# a task.
+#
+# Each pool is split in two halves. A half is used for a block of days, then the other half,
+# and is reshuffled each time it comes back. So within a season no item repeats within
 # (pool size / 2 / items per day) + 1 days: 7 for roles and methods, 22 for constraints,
 # 61 for tasks.
 set -eu
@@ -14,7 +21,17 @@ case $day_arg in
   *) echo "team.sh: date must be YYYY-MM-DD, got: $day_arg" >&2; exit 2 ;;
 esac
 
-exec "${AWK:-awk}" -v date="$day_arg" '
+dir=$(cd "$(dirname "$0")" && pwd)
+target=$(echo "$day_arg" | tr -d -)
+season=
+for f in "$dir"/pools/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].txt; do
+  [ -e "$f" ] || continue
+  start=$(basename "$f" .txt | tr -d -)
+  if [ -z "$season" ] || [ "$start" -le "$target" ]; then season=$f; fi
+done
+[ -n "$season" ] || { echo "team.sh: no pools in $dir/pools" >&2; exit 2; }
+
+exec "${AWK:-awk}" -v date="$day_arg" -v season="$(basename "$season" .txt)" '
 function fail(msg) { print "team.sh: " msg | "cat 1>&2"; bad = 1; exit 2 }
 function leap(y) { return (y % 4 == 0 && y % 100 != 0) || y % 400 == 0 }
 function dim(y, m) { return m == 2 ? 28 + leap(y) : (m == 4 || m == 6 || m == 9 || m == 11) ? 30 : 31 }
@@ -26,316 +43,46 @@ function days(y, m, d,   era, yoe, doy) {
 }
 # Park-Miller generator. Integer math below 2^53, so every awk gives the same sequence.
 function rnd() { seed = (seed * 16807) % 2147483647; return seed }
-# Fills out[1..k] with the items of pool for day.
+# Fills out[1..k] with indexes into the pool for day.
 function pick(pool, k, pid, out,   N, h, s, b, base, i, j, t, a) {
   N = n[pool]; h = N / 2; s = h / k
   if (N == 0 || s != int(s)) fail("pool " pool " size " N " must be a multiple of " 2 * k)
   b = int(day / s); base = (b % 2) * h
-  for (i = 1; i <= h; i++) a[i] = item[pool, base + i]
+  for (i = 1; i <= h; i++) a[i] = base + i
   seed = (b * 7919 + pid * 104729 + 12345) % 2147483647
   if (seed == 0) seed = 1
   for (i = 0; i < 5; i++) rnd()
   for (i = h; i > 1; i--) { j = rnd() % i + 1; t = a[i]; a[i] = a[j]; a[j] = t }
   for (i = 1; i <= k; i++) out[i] = a[(day % s) * k + i]
 }
+function show(pool, i) { return item[pool, i] (isnew[pool, i] ? " [new]" : "") }
 BEGIN {
   split(date, p, "-"); y = p[1] + 0; m = p[2] + 0; d = p[3] + 0
   if (y < 1970 || m < 1 || m > 12 || d < 1 || d > dim(y, m)) fail("invalid date " date)
   day = days(y, m, d)
 }
 /^#@ / { pool = $2; next }
-pool != "" && NF { n[pool]++; item[pool, n[pool]] = $0 }
+pool != "" && NF {
+  line = $0; fresh = 0; who = ""
+  if (substr(line, 1, 2) == "+ ") { fresh = 1; line = substr(line, 3) }
+  if ((c = index(line, " | @")) > 0) { who = substr(line, c + 3); line = substr(line, 1, c - 1) }
+  n[pool]++; item[pool, n[pool]] = line; isnew[pool, n[pool]] = fresh; credit[pool, n[pool]] = who
+}
 END {
   if (bad) exit 2
   pick("roles", 4, 1, role); pick("methods", 4, 2, method)
   pick("stances", 4, 3, stance); pick("constraints", 1, 4, rule); pick("tasks", 1, 5, task)
   print "Team for " date
+  print "Season: " season
   print ""
   for (i = 1; i <= 4; i++) {
-    print i ". " role[i]
-    print "   Method: " method[i]
-    print "   Stance: " stance[i]
+    print i ". " show("roles", role[i])
+    print "   Method: " show("methods", method[i])
+    print "   Stance: " item["stances", stance[i]]
   }
   print ""
-  print "Constraint: " rule[1]
-  print "Task: " task[1]
+  print "Constraint: " item["constraints", rule[1]]
+  print "Task: " item["tasks", task[1]]
+  if (credit["tasks", task[1]] != "") print "Suggested by: " credit["tasks", task[1]]
 }
-' "$0"
-
-# Pools. One item per line. Each pool size must be a multiple of twice the items drawn per day.
-
-#@ roles
-Typographer
-Illustrator
-Photographer
-Film editor
-Sound designer
-Composer
-Copywriter
-Book editor
-Interaction designer
-Motion designer
-Product designer
-Service designer
-Information designer
-Cartographer
-Architect
-Landscape architect
-Industrial designer
-Furniture maker
-Set designer
-Lighting designer
-Costume designer
-Game designer
-Puppeteer
-Choreographer
-Playwright
-Stand-up comedian
-Radio producer
-Documentary director
-Animator
-Comic artist
-Printmaker
-Ceramicist
-Textile designer
-Bookbinder
-Sign painter
-Exhibition designer
-Museum curator
-Front-end engineer
-Creative coder
-Data journalist
-Brand strategist
-Packaging designer
-Chef
-Perfumer
-Window dresser
-Urban planner
-Teacher
-Librarian
-
-#@ methods
-Make ten rough versions before choosing one.
-Start from the final result and work backwards.
-Cut the first draft by half.
-Test on paper before building anything.
-Copy a structure from an unrelated field.
-Work at actual size only.
-Use one grid for every part.
-Write the announcement before the work exists.
-Watch three people use the current version first.
-Build the smallest version that works end to end.
-Remove one element per pass until it breaks, then restore the last one.
-Sketch with a thick marker so small detail is impossible.
-Give each idea 20 minutes, then move on.
-Explain it aloud to someone outside the field.
-Map every step the user takes, then remove steps.
-Pick the one number that matters and design around it.
-Design the error and empty states first.
-List the assumptions in the brief and check each one.
-Make it work in black and white before adding color.
-Prototype in the final material.
-Take the conventions of a genre and break exactly one.
-Storyboard every change of state.
-Write the copy before the layout.
-Scope the work to what fits in one day.
-Use found material only.
-Show it to someone at 10 percent done.
-Repeat one motif with variation.
-Design for the slowest device and connection first.
-Count words, clicks, and seconds, then reduce each.
-Find what the audience already does and build on it.
-Interview someone who dislikes the category.
-Collect references, then put them away and work from memory.
-Make the ending first.
-Try it ten times larger and ten times smaller.
-Invert the default and see what still works.
-Write down what it must never do.
-Structure it in three acts.
-Reduce it to one sentence before making anything.
-Build a kit of parts, then assemble.
-Design for one sense alone.
-Use real content only, no placeholders.
-Test it in the place where it will be used.
-Set one rule, follow it strictly, and note where it fails.
-Rework only the weakest part.
-Time-box to one hour and keep the result.
-Replace every adjective in the brief with a measurable target.
-Name the audience as one specific person.
-Remove the feature everyone assumes is required.
-
-#@ stances
-Cuts scope.
-Adds one bold element.
-Speaks for the user.
-Checks cost and time.
-Questions the brief.
-Pushes for a less expected result.
-Guards execution quality.
-Plans how it reaches people.
-
-#@ constraints
-One typeface, two weights.
-Black and white only.
-Works on a 320 px wide screen.
-No images or icons.
-Under 100 words of fixed text on the page.
-Three colors at most.
-Usable with one thumb on a phone.
-No animation.
-Readable from 2 metres on a laptop screen.
-Explainable in one sentence at the top of the page.
-Built for people over 70.
-Built for a 10-year-old.
-Meaning never depends on color alone.
-Everything fits on one screen without scrolling.
-Under 30 KB in total.
-Prints on one A4 page.
-Lowercase only.
-Three-column grid only.
-Prints clearly on a black-and-white printer.
-Results update as the user types, with no submit button.
-Usable with the keyboard alone.
-Learnable in 30 seconds.
-System fonts only.
-The user does exactly one thing on the page.
-Has a dark mode that follows the system setting.
-Still makes sense in 10 years: no trends.
-No buttons.
-Fits in a postcard-sized area.
-Every number shows its unit.
-Saves the input in the browser and restores it on reload.
-Shows a filled-in example before the user types.
-Every input has a visible label.
-Uses a single accent color.
-All text at 18 px or larger.
-One column only.
-Every result can be copied as plain text with one action.
-Monospace typeface only.
-No more than five inputs.
-Shows the formula or rule behind every result.
-Every change can be undone.
-Touch targets at least 48 px.
-Every empty state says what to do next.
-
-#@ tasks
-Bill splitter: total, tip percent, and number of people give the amount per person, rounded to 0.05, with the formula shown.
-Savings goal planner: target amount, target date, and current savings give the amount to save per week and per month.
-Subscription tracker: subscriptions with price and billing cycle give monthly and yearly totals, sorted by cost.
-Loan repayment calculator: amount, annual rate, and term give the monthly payment, total interest, and a year-by-year table, with the formula shown.
-Unit price comparer: two to five products with price and size give the cost per 100 g or per item and mark the cheapest.
-Monthly budget sheet: income and up to 15 expense lines give totals and the amount left, in a layout that prints on one page.
-Freelance rate calculator: target yearly income, working weeks, hours per week, and yearly costs give the minimum hourly rate.
-Debt payoff comparison: up to five debts compared by smallest balance first and highest rate first, in months and total interest.
-Shared house expenses: who paid what gives who owes whom, settled with the fewest transfers.
-Travel money table: a rate the user types in gives a printable table of common amounts in both currencies.
-Compound growth illustration: starting amount, monthly addition, rate, and years give a year-by-year table and chart, labelled as an illustration, not a forecast.
-Receipt checker: item prices, quantities, discount, and tax rate give the total to compare with a receipt.
-Cleaning rota: people and chores give a fair weekly rotation table that prints on one page.
-Paint calculator: wall sizes, doors, windows, and number of coats give the litres of paint needed.
-Moving checklist: tasks grouped by eight weeks, four weeks, one week, and moving day, with tick boxes saved in the browser.
-Home inventory sheet: room, item, value, and purchase date, with totals per room and a CSV export.
-Plant watering schedule: plants with watering intervals give a calendar for the next four weeks.
-Emergency contact sheet for the fridge: blank fields for doctors, utilities, neighbours, and a meeting point, printable.
-Appliance energy cost: wattage, hours per day, and price per kWh give daily, monthly, and yearly cost.
-Flooring calculator: room dimensions and tile or plank size give the number of pieces, with a waste allowance the user sets.
-Chore chart for children with points per chore and a weekly total, printable on A4.
-Guest information card: Wi-Fi name, house rules, checkout time, and local numbers, printable on A5.
-Bin collection calendar: collection days and bin types give a printable calendar for the month.
-Maintenance log for a home or car: date, task, cost, and next due date, sorted by next due.
-Recipe scaler: paste an ingredient list and change the number of servings.
-Cooking unit converter: cups, tablespoons, grams, and millilitres, with the density used for each ingredient shown.
-Meal-prep planner: five recipes give one combined shopping list grouped by aisle.
-Roast timing planner: dishes with cooking times and a serving time give a start-time schedule.
-Weekly meal plan grid with a shopping list column, printable.
-Pantry tracker: items with best-before dates, sorted by soonest, with past dates marked.
-Baking tin converter: scale a recipe between round, square, and rectangular tins by area.
-Oven temperature converter between Celsius, Fahrenheit, fan, and gas mark, with a printable chart.
-Coffee ratio calculator: brew method, ratio, and number of cups give grams of coffee and water.
-Dinner party planner: guests, dietary needs, and dishes, with a check that every guest has at least one main dish.
-Batch cooking calculator: portions needed per week and portions per batch give the number of batches and a cooking schedule.
-Spice substitution table, searchable, with the ratio for each substitute.
-Meeting cost calculator: attendees, average hourly cost, and duration, with a running timer.
-Meeting time finder: up to four cities, using the browser time zone data, showing overlapping working hours.
-Working days counter: days between two dates excluding weekends and a list of holidays the user enters.
-One-page project brief: goal, audience, scope, deadline, budget, and risks, printable.
-Standup notes form: yesterday, today, and blockers per person, copied as plain text.
-Focus timer with adjustable work and break lengths and a log of completed sessions.
-Decision matrix: options and weighted criteria give scores and a ranked list.
-Invoice template: line items, tax rate, and due date, printable on A4.
-Subject line checker: character and word count, with previews cut at 40 and 60 characters.
-Job application tracker: company, role, date, stage, and next step, with a CSV export.
-Shift rota builder: staff and shifts, with a warning when anyone goes over a set number of hours.
-Interview preparation sheet: the role, five likely questions, and space for answers in situation, task, action, result form, printable.
-Flashcard maker: paste term and definition pairs, then study them shuffled with a score.
-Exam revision planner: exams with dates and topics give a revision schedule up to each exam.
-Reading time estimator: paste text to see word count, reading time, and speaking time.
-Grade calculator: weighted assignments give the current grade and the score needed on the final to reach a target.
-Citation builder: fields for a book or web page give APA and MLA citations.
-Times tables practice for children, with a timer and a list of missed facts to retry.
-Essay outline builder: thesis, three points with evidence, and a conclusion, exported as plain text.
-Spaced review planner: topics and a start date give review dates after 1, 3, 7, 14, and 30 days.
-Study log: minutes per subject per day, with weekly totals.
-Vocabulary list for a new language with a self-test mode.
-Cornell note template for lectures, printable.
-Fraction calculator that shows each step of adding, subtracting, multiplying, and dividing.
-Packing list: trip length, weather, and activities give a checklist saved in the browser.
-Trip budget planner: transport, stays, food, and activities per day, with totals in two currencies at a rate the user enters.
-Itinerary builder: days with timed activities, printable as one page per day.
-Road trip fuel cost: distance, fuel economy, and fuel price give the cost in total and per passenger.
-Connection time checker: arrival and departure times in two time zones give the real time between flights.
-Travel document checklist: passport expiry checked against the return date, with a note to confirm each destination's entry rules.
-Phrase card: phrases and translations the user enters, printed as a wallet-size card.
-Group trip cost splitter with a different share per person.
-World clock for up to five cities using the browser time zone data.
-Luggage weight check: items and weights against an airline limit the user enters.
-Holiday countdown with days, working days, and weekends left.
-Camping checklist grouped by shelter, cooking, clothing, and safety, printable.
-Water tracker: a daily goal the user sets and a tap-to-add log that resets each day.
-Habit tracker: up to six habits on a 30-day grid saved in the browser, printable.
-Walking log: date, distance, and time, with weekly totals and average pace.
-Desk break timer: a reminder every set number of minutes and a log of breaks taken.
-Sleep log: bed time and wake time per night, with weekly averages of the user's own entries.
-Running pace calculator: distance and time give pace per km and per mile and projected times for 5 km, 10 km, half, and full marathon.
-Weekly workout planner: days, exercises, sets, and reps, printable.
-Screen time log: minutes per app category per day, with a weekly chart.
-Gratitude page: three lines per day for one week, printable.
-Stretch sequence timer: the user lists stretches and hold times, and the timer runs through them.
-Step goal tracker: daily steps entered by hand, with a four-week chart and streaks.
-Breathing timer with adjustable in, hold, and out counts and a visual guide.
-Password strength checker that runs locally, shows estimated guesses to crack, and never sends input anywhere.
-Passphrase generator using a built-in word list and the browser crypto random number generator.
-Phishing email checklist: 12 signs to check, with a score for a suspicious message.
-Account recovery sheet: accounts, recovery email, and two-step method, printable, with a note to store it offline and never write passwords on it.
-Two-step login tracker: accounts and whether two-step login is on, sorted by importance.
-Device update checklist for phone, laptop, router, and apps, printable.
-Backup planner: devices, what to back up, where, and how often, with the 3-2-1 rule explained.
-New phone privacy checklist grouped by location, contacts, ads, and tracking.
-Link inspector: shows the real domain of a pasted URL and highlights lookalike characters.
-Family device rules sheet: screen times, allowed apps, and contacts, printable.
-Online shop checklist: signs that a web shop is genuine, with a score.
-Digital estate checklist: accounts and what should happen to each, printable, with no passwords stored.
-Text counter with limits for common formats: SMS 160, social post 280, meta description 155.
-Readability checker: paste text to see average sentence length, long words, and a Flesch reading ease score with the formula shown.
-Cover letter template: fields fill a one-page letter, printable.
-Thank-you note templates: occasion, recipient, and one detail fill three short drafts.
-Case converter: sentence case, title case, upper case, and lower case.
-Repeated word finder: highlights words used more than a set number of times in pasted text.
-Complaint letter template: issue, dates, order number, and requested outcome, printable.
-Speech timer: paste a speech to see speaking time at three paces, then run a countdown.
-Text compare: paste two versions and see added and removed words highlighted.
-CV checklist: 15 checks with a score, printable.
-Plain words list: long words with shorter replacements, searchable.
-Repair request letter to a landlord: issue, dates, and list of photos, printable.
-Date calculator: days, weeks, and months between two dates, and the weekday of any date.
-Time-blocking planner for one day in 30-minute slots, printable.
-Event countdown with days, hours, and minutes, saved in the browser.
-Time sheet: start, end, and break times per day, with weekly totals and overtime.
-Weekly planner page with priorities, appointments, and notes, printable on A4.
-Priority matrix: tasks sorted into urgent and important boxes, saved in the browser.
-Birthday list: next birthday and age, sorted by soonest.
-Deadline calculator: a start date plus a number of working days, excluding weekends and holidays.
-Daily routine builder: morning and evening steps with times, printable.
-Goal tracker: one goal with milestones, dates, and percent done.
-Event planning timeline: an event date gives tasks due 8, 4, 2, and 1 weeks before.
-Focus log: what the user worked on in each hour of the day, with a weekly summary.
+' "$season"

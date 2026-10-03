@@ -26,7 +26,7 @@ const MAX_BYTES = 100 * 1024;
 const CSP = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
   + "img-src data: blob:; media-src data: blob:; font-src data:";
 
-function die(msg, code = 2) {
+export function die(msg, code = 2) {
   console.error(`run.mjs: ${msg}`);
   process.exit(code);
 }
@@ -65,12 +65,18 @@ export function teamFor(date) {
 }
 
 export function parseTeam(text) {
+  const clean = (s) => s.replace(/ \[new\]$/, '');
   const members = [...text.matchAll(/^\d\. (.+)\n {3}Method: (.+)\n {3}Stance: (.+)$/gm)]
-    .map(([, role, method, stance]) => ({ role, method, stance }));
+    .map(([, role, method, stance]) => ({
+      role: clean(role), method: clean(method), stance,
+      newRole: role.endsWith(' [new]'), newMethod: method.endsWith(' [new]'),
+    }));
   return {
     members,
+    season: text.match(/^Season: (.+)$/m)?.[1] ?? '',
     constraint: text.match(/^Constraint: (.+)$/m)?.[1] ?? '',
     task: text.match(/^Task: (.+)$/m)?.[1] ?? '',
+    suggestedBy: text.match(/^Suggested by: (@[\w-]+)$/m)?.[1] ?? '',
   };
 }
 
@@ -133,7 +139,7 @@ export function decisionLine(plan) {
   return sentence.length > 240 ? `${sentence.slice(0, 237)}...` : sentence;
 }
 
-async function completeOpenRouter(messages, maxTokens) {
+export async function completeOpenRouter(messages, maxTokens) {
   const errors = [];
   for (const model of MODELS) {
     for (let attempt = 0; attempt < 2; attempt++) {
@@ -172,7 +178,7 @@ export function claudeArgs(system) {
   return args;
 }
 
-function completeClaude(messages) {
+export function completeClaude(messages) {
   const prompt = messages.slice(1).map((m) => (m.role === 'assistant'
     ? `<your_previous_answer>\n${m.content}\n</your_previous_answer>` : m.content)).join('\n\n');
   const cwd = mkdtempSync(join(tmpdir(), 'daily-team-claude-'));
@@ -203,8 +209,29 @@ function completeClaude(messages) {
   });
 }
 
+// Checks the credential for a provider without ever printing it, and returns its complete().
+export function prepareProvider(provider) {
+  if (provider === 'openrouter') {
+    const key = (process.env.OPENROUTER_API_KEY || '').trim();
+    if (!key) die('OPENROUTER_API_KEY is not set');
+    if (!process.env.API_URL && !key.startsWith('sk-or-')) {
+      die(`OPENROUTER_API_KEY does not look like an OpenRouter key: expected it to start with "sk-or-" (length ${key.length})`);
+    }
+    process.env.OPENROUTER_API_KEY = key;
+    return completeOpenRouter;
+  }
+  if (process.env.CLAUDE_CODE_OAUTH_TOKEN !== undefined) {
+    const token = process.env.CLAUDE_CODE_OAUTH_TOKEN.trim();
+    if (!token) delete process.env.CLAUDE_CODE_OAUTH_TOKEN; // use the local login
+    else if (!token.startsWith('sk-ant-oat')) {
+      die(`CLAUDE_CODE_OAUTH_TOKEN does not look like a token from claude setup-token: expected it to start with "sk-ant-oat" (length ${token.length})`);
+    } else process.env.CLAUDE_CODE_OAUTH_TOKEN = token;
+  }
+  return completeClaude;
+}
+
 // One call, then one more with the problems listed if the result fails its check.
-async function completeChecked(complete, messages, maxTokens, check) {
+export async function completeChecked(complete, messages, maxTokens, check) {
   let out = await complete(messages, maxTokens);
   let problems = check(out.text);
   if (problems.length) {
@@ -255,22 +282,7 @@ async function main() {
     if (opts.provider === 'claude') console.log(JSON.stringify(['claude', ...claudeArgs(system.content)]));
     return;
   }
-  if (opts.provider === 'openrouter') {
-    const key = (process.env.OPENROUTER_API_KEY || '').trim();
-    if (!key) die('OPENROUTER_API_KEY is not set');
-    if (!process.env.API_URL && !key.startsWith('sk-or-')) {
-      die(`OPENROUTER_API_KEY does not look like an OpenRouter key: expected it to start with "sk-or-" (length ${key.length})`);
-    }
-    process.env.OPENROUTER_API_KEY = key;
-  }
-  if (opts.provider === 'claude' && process.env.CLAUDE_CODE_OAUTH_TOKEN !== undefined) {
-    const token = process.env.CLAUDE_CODE_OAUTH_TOKEN.trim();
-    if (!token) delete process.env.CLAUDE_CODE_OAUTH_TOKEN; // use the local login
-    else if (!token.startsWith('sk-ant-oat')) {
-      die(`CLAUDE_CODE_OAUTH_TOKEN does not look like a token from claude setup-token: expected it to start with "sk-ant-oat" (length ${token.length})`);
-    } else process.env.CLAUDE_CODE_OAUTH_TOKEN = token;
-  }
-  const complete = opts.provider === 'claude' ? completeClaude : completeOpenRouter;
+  const complete = prepareProvider(opts.provider);
 
   const day = {
     date, task, brief: custom || null, team, provider: opts.provider, model: null,
