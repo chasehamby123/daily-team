@@ -273,3 +273,41 @@ Focus log: what the user worked on in each hour of the day, with a weekly summar
 + Random team generator: a list of names and a group size give randomly assigned teams.
 + Average calculator: a list of numbers gives the mean, median, mode, and range.
 + Dice and coin flip simulator: number of dice or coins and number of rolls give a results table and totals.
+
+#@ guests
++ historical | Marcus Aurelius | Act only on what you control, and let the rest go. | died 180
++ historical | Socrates | Ask questions until the hidden assumption shows. | died 399 BC
++ historical | Euclid | State a few assumptions, then build everything from them. | died c. 270 BC
++ historical | Ibn al-Haytham | Trust nothing until an experiment shows it. | died c. 1040
++ historical | Leonardo da Vinci | Sketch the subject many times before deciding anything. | died 1519
++ historical | Benjamin Franklin | List the pros and cons, weigh them, and cross out equals. | died 1790
++ historical | Katsushika Hokusai | Show the same subject from many viewpoints. | died 1849
++ historical | Ada Lovelace | Imagine what the machine could do beyond its first job. | died 1852
++ historical | Charles Darwin | Write down the facts that disagree with you first. | died 1882
++ historical | Florence Nightingale | Turn the numbers into a picture that forces a decision. | died 1910
++ myth | Cassandra | Name the failure nobody wants to hear. | Greek myth
++ myth | Daedalus | Design the way out of whatever you build. | Greek myth
++ myth | Odysseus | Go around what you cannot beat head-on. | Greek myth
++ myth | Penelope | Undo what is not ready and buy time to get it right. | Greek myth
++ myth | Sisyphus | Make the task that will repeat lighter. | Greek myth
++ myth | Janus | Look back and forward at every threshold. | Roman myth
++ myth | Arachne | Make the craft so precise it challenges the masters. | Greek myth
++ myth | Scheherazade | End each part with a reason to come back. | folk tale collection
++ literary | Don Quixote | Attempt the impossible version first and keep what survives. | Cervantes, died 1616
++ literary | Alice | Follow the strange path and ask why the rules are what they are. | Lewis Carroll, died 1898
++ literary | Robinson Crusoe | Build only from what washed up. | Daniel Defoe, died 1731
++ literary | Gulliver | Change the scale until something looks absurd. | Jonathan Swift, died 1745
++ literary | Ebenezer Scrooge | Weigh what a choice costs in the past, present, and future. | Charles Dickens, died 1870
++ literary | Captain Ahab | Chase one goal and count what it costs. | Herman Melville, died 1891
++ archetype | The Fool | Ask the question everyone stopped asking. | archetype
++ archetype | The Trickster | Break one rule to see if it was ever needed. | archetype
++ archetype | The Outsider | Use it like someone who has never seen one. | archetype
++ archetype | The Null | Assume the number means nothing until shown otherwise. | archetype
++ archetype | Entropy | Find what breaks first as it wears down. | personified force
++ archetype | Time | Show what this looks like in ten years. | personified force
++ future | Repair technician from 2140 | Make every part fixable with one common tool. | invented
++ future | Archivist from 2300 | Keep it readable after the software that made it is gone. | invented
++ future | Settler on Mars in 2090 | Build for scarce supplies and long delays. | invented
++ creature | Phoenix | Burn the old version and rebuild from what is left. | myth and folklore
++ creature | Hydra | For every problem you cut, check what grows back. | Greek myth
++ creature | Glass fox | Show everything it does and hide nothing. | invented

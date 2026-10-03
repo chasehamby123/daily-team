@@ -67,10 +67,15 @@ export function teamFor(date) {
 export function parseTeam(text) {
   const clean = (s) => s.replace(/ \[new\]$/, '');
   const members = [...text.matchAll(/^\d\. (.+)\n {3}Method: (.+)\n {3}Stance: (.+)$/gm)]
-    .map(([, role, method, stance]) => ({
-      role: clean(role), method: clean(method), stance,
-      newRole: role.endsWith(' [new]'), newMethod: method.endsWith(' [new]'),
-    }));
+    .map(([, role, method, stance]) => {
+      let name = clean(role);
+      const g = name.endsWith(' [guest]') && name.slice(0, -8).match(/^(.*) \(([a-z]+); (.+)\)$/);
+      if (g) name = g[1];
+      return {
+        role: name, method: clean(method), stance, newRole: role.endsWith(' [new]'), newMethod: method.endsWith(' [new]'),
+        guest: g ? { kind: g[2], source: g[3] } : null,
+      };
+    });
   return {
     members,
     season: text.match(/^Season: (.+)$/m)?.[1] ?? '',
