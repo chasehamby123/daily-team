@@ -3,168 +3,456 @@
 <head>
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:">
 <meta charset="UTF-8">
-<title>Running Pace Calculator</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Running Pace Calculator</title>
 <style>
-:root{--primary:#0066cc;--bg:#ffffff;--text:#333333;--panel:#f9f9f9}
-@media (prefers-color-scheme: dark){:root{--bg:#121212;--text:#e0e0e0;--panel:#1e1e1e}}
-html{font-family:system-ui, sans-serif;line-height:1.5;height:100%}
-body{margin:0;padding:1rem;background:var(--bg);color:var(--text);display:flex;flex-direction:column;min-height:100%}
-@media (prefers-reduced-motion: reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
-h1{margin:0 0 1rem}
-form{display:grid;gap:.5rem;max-width:400px}
-label{display:flex;flex-direction:column;font-size:.9rem}
-input{padding:.4rem;font-size:1rem}
-button{padding:.5rem 1rem;background:var(--primary);color:#fff;border:none;cursor:pointer}
-button:hover{opacity:.9}
-.hidden{display:none}
-.error{color:#c00;margin-top:.5rem}
-#result{margin-top:1rem}
-#formula{margin-top:1rem;font-size:.85rem;background:var(--panel);padding:.5rem;border-radius:4px}
-@media print{body{background:#fff;color:#000!important}button{display:none}}
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --muted: #555555;
+    --border: #cccccc;
+    --accent: #0b5fff;
+    --accent-fg: #ffffff;
+    --input-bg: #ffffff;
+    --table-stripe: #f2f2f2;
+    --error: #b00020;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121212;
+      --fg: #eaeaea;
+      --muted: #a8a8a8;
+      --border: #3a3a3a;
+      --accent: #5b9dff;
+      --accent-fg: #0a0a0a;
+      --input-bg: #1e1e1e;
+      --table-stripe: #1a1a1a;
+      --error: #ff6b6b;
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    line-height: 1.5;
+  }
+
+  main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 1.25rem 1rem 3rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  p.lede {
+    color: var(--muted);
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  fieldset {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 0 0 1.5rem 0;
+  }
+
+  legend {
+    font-weight: 600;
+    padding: 0 0.4rem;
+  }
+
+  label {
+    display: block;
+    font-size: 0.9rem;
+    margin-top: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+
+  label:first-of-type {
+    margin-top: 0;
+  }
+
+  input[type="number"],
+  input[type="text"],
+  select {
+    width: 100%;
+    padding: 0.55rem 0.6rem;
+    font-size: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--input-bg);
+    color: var(--fg);
+  }
+
+  .row {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .row > div {
+    flex: 1;
+  }
+
+  button {
+    display: inline-block;
+    margin-top: 1.25rem;
+    padding: 0.65rem 1.4rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+  }
+
+  button:hover {
+    opacity: 0.9;
+  }
+
+  button:active {
+    opacity: 0.8;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+
+  #error {
+    color: var(--error);
+    font-size: 0.9rem;
+    margin-top: 0.75rem;
+    min-height: 1.2em;
+  }
+
+  #results {
+    margin-top: 1.5rem;
+  }
+
+  .pace-summary {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+
+  .pace-box {
+    flex: 1;
+    min-width: 140px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.85rem;
+    text-align: center;
+  }
+
+  .pace-box .value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0.2rem 0;
+  }
+
+  .pace-box .label {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0.5rem;
+  }
+
+  caption {
+    text-align: left;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.5rem 0.6rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.95rem;
+  }
+
+  tbody tr:nth-child(even) {
+    background: var(--table-stripe);
+  }
+
+  details {
+    margin-top: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+  }
+
+  summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  details p, details ul {
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  code {
+    background: var(--table-stripe);
+    padding: 0.1rem 0.3rem;
+    border-radius: 4px;
+    font-size: 0.85em;
+  }
+
+  footer {
+    margin-top: 2rem;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  @media print {
+    button, details summary ~ * { }
+    body {
+      background: #fff;
+      color: #000;
+    }
+  }
 </style>
 </head>
 <body>
-<h1>Running Pace Calculator</h1>
-<p>Enter the total distance (km) and elapsed time (hh:mm:ss) to compute pace per km and mile, and projected race times.</p>
-<form id="calcForm" novalidate>
-<label>Distance (km)
-  <input type="text" id="distance" placeholder="e.g. 10" required>
-</label>
-<label>Time (hh:mm:ss)
-  <input type="text" id="time" placeholder="e.g. 01:00:00" required>
-</label>
-<button type="submit">Calculate</button>
-</form>
-<div id="error" class="hidden"></div>
-<div id="result" class="hidden">
-  <h2>Pace</h2>
-  <p id="paceKm"></p>
-  <p id="paceMile"></p>
-  <h2>Projected Times</h2>
-  <ul>
-    <li>5 km: <span id="proj5km"></span></li>
-    <li>10 km: <span id="proj10km"></span></li>
-    <li>Half Marathon (21.0975 km): <span id="projHalf"></span></li>
-    <li>Full Marathon (42.195 km): <span id="projFull"></span></li>
-  </ul>
-</div>
-<div id="formula" class="hidden">
-  <h3>Formula Used</h3>
-  <p>Pace (min/km) = TotalMinutes ÷ DistanceKm</p>
-  <p>Pace (min/mi) = PaceKm × 1.60934</p>
-  <p>Projected Time = PaceMinPerKm × TargetDistance (converted to hh:mm:ss)</p>
-</div>
+<main>
+  <h1>Running Pace Calculator</h1>
+  <p class="lede">Enter a distance and a finish time. Get your pace and projected times for common race distances.</p>
+
+  <form id="paceForm">
+    <fieldset>
+      <legend>Your run</legend>
+
+      <div class="row">
+        <div>
+          <label for="distance">Distance</label>
+          <input type="number" id="distance" inputmode="decimal" step="0.01" min="0" placeholder="e.g. 10" required>
+        </div>
+        <div>
+          <label for="unit">Unit</label>
+          <select id="unit">
+            <option value="km">kilometers</option>
+            <option value="mi">miles</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="time">Time (MM:SS, or HH:MM:SS if over an hour)</label>
+      <input type="text" id="time" inputmode="numeric" placeholder="e.g. 52:30 or 1:45:00" required>
+
+      <button type="submit">Calculate</button>
+      <div id="error" role="alert"></div>
+    </fieldset>
+  </form>
+
+  <section id="results" class="hidden" aria-live="polite">
+    <div class="pace-summary">
+      <div class="pace-box">
+        <div class="label">Pace per km</div>
+        <div class="value" id="paceKm">—</div>
+      </div>
+      <div class="pace-box">
+        <div class="label">Pace per mile</div>
+        <div class="value" id="paceMi">—</div>
+      </div>
+    </div>
+
+    <table>
+      <caption>Projected finish times</caption>
+      <thead>
+        <tr><th>Race</th><th>Distance</th><th>Projected time</th></tr>
+      </thead>
+      <tbody id="raceTable"></tbody>
+    </table>
+  </section>
+
+  <details>
+    <summary>How this is calculated</summary>
+    <p>Pace per kilometer:</p>
+    <p><code>pace_per_km = total_seconds / distance_km</code></p>
+    <p>Pace per mile converts using 1 mile = 1.609344 km:</p>
+    <p><code>pace_per_mile = pace_per_km &times; 1.609344</code></p>
+    <p>Each race projection assumes you hold your entered pace steady for the whole distance:</p>
+    <p><code>projected_time = pace_per_km &times; race_distance_km</code></p>
+    <p>Race distances used: 5K = 5 km, 10K = 10 km, half marathon = 21.0975 km, marathon = 42.195 km.</p>
+    <p>This is a flat-pace projection, not a prediction. Real race times are affected by fatigue, terrain, pacing strategy, weather, and fitness changes between distances. Longer races are usually run at a slower pace than shorter ones in practice.</p>
+  </details>
+
+  <footer>
+    <p>No data leaves this page. Your last entry may be saved in your browser's local storage so it's there next time; if storage is unavailable or blocked, the calculator still works, it just won't remember your last entry.</p>
+  </footer>
+</main>
 
 <script>
-(() => {
-  const form = document.getElementById('calcForm');
-  const distanceInput = document.getElementById('distance');
-  const timeInput = document.getElementById('time');
-  const errorDiv = document.getElementById('error');
-  const resultDiv = document.getElementById('result');
-  const formulaDiv = document.getElementById('formula');
-  const paceKmEl = document.getElementById('paceKm');
-  const paceMileEl = document.getElementById('paceMile');
-  const proj5kmEl = document.getElementById('proj5km');
-  const proj10kmEl = document.getElementById('proj10km');
-  const projHalfEl = document.getElementById('projHalf');
-  const projFullEl = document.getElementById('projFull');
+(function () {
+  "use strict";
 
-  const targets = [
-    { name: '5 km', dist: 5 },
-    { name: '10 km', dist: 10 },
-    { name: 'Half Marathon', dist: 21.0975 },
-    { name: 'Full Marathon', dist: 42.195 }
+  var MILE_KM = 1.609344;
+  var RACES = [
+    { name: "5K", km: 5 },
+    { name: "10K", km: 10 },
+    { name: "Half Marathon", km: 21.0975 },
+    { name: "Marathon", km: 42.195 }
   ];
+  var STORAGE_KEY = "pace-calc-last-input";
 
-  // Load last inputs if storage allowed
-  try {
-    const saved = localStorage.getItem('runCalcLast');
-    if (saved) {
-      const { d, t } = JSON.parse(saved);
-      distanceInput.value = d;
-      timeInput.value = t;
-    }
-  } catch (_) {}
+  var form = document.getElementById("paceForm");
+  var distanceInput = document.getElementById("distance");
+  var unitSelect = document.getElementById("unit");
+  var timeInput = document.getElementById("time");
+  var errorBox = document.getElementById("error");
+  var results = document.getElementById("results");
+  var paceKmEl = document.getElementById("paceKm");
+  var paceMiEl = document.getElementById("paceMi");
+  var raceTableBody = document.getElementById("raceTable");
 
-  function parseTimeToMinutes(val) {
-    const parts = val.split(':').map(Number);
-    let total = 0;
-    if (parts.length === 3) {
-      total = parts[0] * 60 + parts[1] + parts[2] / 60;
-    } else if (parts.length === 2) {
-      total = parts[0] + parts[1] / 60;
-    } else if (parts.length === 1) {
-      total = parts[0] / 60; // seconds only
+  function pad(n) {
+    return n < 10 ? "0" + n : "" + n;
+  }
+
+  function formatDuration(totalSeconds) {
+    totalSeconds = Math.round(totalSeconds);
+    if (!isFinite(totalSeconds) || totalSeconds < 0) return "—";
+    var h = Math.floor(totalSeconds / 3600);
+    var m = Math.floor((totalSeconds % 3600) / 60);
+    var s = totalSeconds % 60;
+    if (h > 0) {
+      return h + ":" + pad(m) + ":" + pad(s);
     }
+    return m + ":" + pad(s);
+  }
+
+  function parseTimeToSeconds(str) {
+    if (!str) return null;
+    str = str.trim();
+    if (!/^[0-9:]+$/.test(str)) return null;
+    var parts = str.split(":");
+    if (parts.length < 1 || parts.length > 3) return null;
+    for (var i = 0; i < parts.length; i++) {
+      if (parts[i] === "") return null;
+    }
+    var nums = parts.map(Number);
+    var h = 0, m = 0, s = 0;
+    if (nums.length === 3) {
+      h = nums[0]; m = nums[1]; s = nums[2];
+    } else if (nums.length === 2) {
+      m = nums[0]; s = nums[1];
+    } else {
+      s = nums[0];
+    }
+    if (h < 0 || m < 0 || s < 0) return null;
+    if (m >= 60 || s >= 60) return null;
+    var total = h * 3600 + m * 60 + s;
+    if (total <= 0) return null;
     return total;
   }
 
-  function formatMinutes(min) {
-    const totalSec = Math.round(min * 60);
-    const m = Math.floor(totalSec / 60);
-    const s = totalSec % 60;
-    return `${m}:${s.toString().padStart(2, '0')}`;
+  function setError(msg) {
+    errorBox.textContent = msg || "";
   }
 
-  function showError(msg) {
-    errorDiv.textContent = msg;
-    errorDiv.classList.remove('hidden');
-    resultDiv.classList.add('hidden');
-    formulaDiv.classList.add('hidden');
-  }
-
-  function clearError() {
-    errorDiv.classList.add('hidden');
-    errorDiv.textContent = '';
-  }
-
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    clearError();
-    const distanceStr = distanceInput.value.trim();
-    const timeStr = timeInput.value.trim();
-    const distance = parseFloat(distanceStr);
-    const totalMinutes = parseTimeToMinutes(timeStr);
-
-    if (!distance || distance <= 0) {
-      showError('Enter a valid positive distance in km.');
-      return;
-    }
-    if (!Number.isFinite(totalMinutes) || totalMinutes <= 0) {
-      showError('Enter a valid positive time (hh:mm:ss).');
-      return;
-    }
-
-    // Store inputs for next visit (optional)
+  function saveLast(distance, unit, time) {
     try {
-      localStorage.setItem('runCalcLast', JSON.stringify({ d: distanceStr, t: timeStr }));
-    } catch (_) {}
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ distance: distance, unit: unit, time: time }));
+    } catch (e) {
+      /* storage blocked or unavailable; ignore */
+    }
+  }
 
-    const paceKm = totalMinutes / distance;
-    const paceMile = paceKm * 1.60934;
+  function loadLast() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch (e) {
+      return null;
+    }
+  }
 
-    paceKmEl.textContent = `Pace: ${formatMinutes(paceKm)} /km`;
-    paceMileEl.textContent = `Pace: ${formatMinutes(paceMile)} /mi`;
+  function restore() {
+    var last = loadLast();
+    if (last && typeof last === "object") {
+      if (last.distance) distanceInput.value = last.distance;
+      if (last.unit) unitSelect.value = last.unit;
+      if (last.time) timeInput.value = last.time;
+    }
+  }
 
-    // Projected times
-    for (const tgt of targets) {
-      const projMin = paceKm * tgt.dist;
-      const el = (tgt.name.includes('5 km') ? proj5kmEl :
-                  tgt.name.includes('10 km') ? proj10kmEl :
-                  tgt.name.includes('Half') ? projHalfEl : projFullEl);
-      el.textContent = formatMinutes(projMin);
+  function calculate(e) {
+    e.preventDefault();
+    setError("");
+
+    var distanceRaw = parseFloat(distanceInput.value);
+    var unit = unitSelect.value;
+    var timeRaw = timeInput.value;
+
+    if (!distanceRaw || distanceRaw <= 0 || isNaN(distanceRaw)) {
+      setError("Enter a distance greater than zero.");
+      results.classList.add("hidden");
+      return;
     }
 
-    resultDiv.classList.remove('hidden');
-    formulaDiv.classList.remove('hidden');
-  });
+    var totalSeconds = parseTimeToSeconds(timeRaw);
+    if (totalSeconds === null) {
+      setError("Enter a valid time as MM:SS or HH:MM:SS, e.g. 52:30 or 1:45:00.");
+      results.classList.add("hidden");
+      return;
+    }
 
-  // Optional: clear saved data on new calculation
-  // (uncomment if desired)
-  // distanceInput.addEventListener('input', () => clearError());
-  // timeInput.addEventListener('input', () => clearError());
+    var distanceKm = unit === "km" ? distanceRaw : distanceRaw * MILE_KM;
+    var paceKmSeconds = totalSeconds / distanceKm;
+    var paceMiSeconds = paceKmSeconds * MILE_KM;
+
+    paceKmEl.textContent = formatDuration(paceKmSeconds) + " /km";
+    paceMiEl.textContent = formatDuration(paceMiSeconds) + " /mi";
+
+    raceTableBody.innerHTML = "";
+    RACES.forEach(function (race) {
+      var projected = paceKmSeconds * race.km;
+      var tr = document.createElement("tr");
+      var tdName = document.createElement("td");
+      var tdDist = document.createElement("td");
+      var tdTime = document.createElement("td");
+      tdName.textContent = race.name;
+      tdDist.textContent = race.km.toLocaleString(undefined, { maximumFractionDigits: 4 }) + " km";
+      tdTime.textContent = formatDuration(projected);
+      tr.appendChild(tdName);
+      tr.appendChild(tdDist);
+      tr.appendChild(tdTime);
+      raceTableBody.appendChild(tr);
+    });
+
+    results.classList.remove("hidden");
+    saveLast(distanceInput.value, unit, timeRaw);
+  }
+
+  form.addEventListener("submit", calculate);
+  restore();
 })();
 </script>
 </body>

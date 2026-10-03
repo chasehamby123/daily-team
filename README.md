@@ -11,7 +11,7 @@ A new four-person creative team every day, and the small web tool it built. This
 
 **Task:** Running pace calculator: distance and time give pace per km and per mile and projected times for 5 km, 10 km, half, and full marathon.
 
-**Decision:** The page calculates running pace from distance and time, providing per‑km and per‑mile pace plus projected times for 5 km, 10 km, half and full marathon.
+**Decision:** The page takes one distance, one unit (km/mile), and one finish time, and returns pace per km, pace per mile, and projected times for 5K, 10K, half marathon, and full marathon, in a single calculation with no accounts or history, styled ...
 
 <a href="days/2026-10-03/"><img src="days/2026-10-03/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
