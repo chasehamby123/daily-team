@@ -50,7 +50,7 @@ jobs:
           node-version: 22
       - name: Install Claude Code
         if: steps.key.outputs.ok == 'true' && env.PROVIDER == 'claude'
-        run: npm install --global @anthropic-ai/claude-code@2.1.283
+        run: npm install --global @anthropic-ai/claude-code@2.1.288
       - name: Read suggestions
         if: steps.key.outputs.ok == 'true'
         env:

@@ -8,7 +8,7 @@ import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rm
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { addCsp, checkArtifact, decisionLine, extractHtml, findBanned, parseTeam } from './run.mjs';
+import { addCsp, checkArtifact, claudeArgs, DEFAULT_CLAUDE_MODEL, decisionLine, extractHtml, findBanned, parseTeam } from './run.mjs';
 import { formatSeason, guestProblems, itemProblems, listSeasons, nextMonday, nextSeason, parseGuest, readSeason, screenSuggestions, summary, validate } from './recruit.mjs';
 import { announce, closeLoop, commentFor, fetchSuggestions, parseForm } from './github.mjs';
 import { archive, buildSite, dayReadme, loadDays, publish, recentBlock, seasonNumber, todayBlock, weekBlock } from './publish.mjs';
@@ -341,6 +341,20 @@ process.stdin.on('end', () => {
   chmodSync(bin, 0o755);
   return bin;
 }
+
+test('the claude provider defaults to Opus 5.5 and CLAUDE_MODEL overrides it', () => {
+  const model = (env) => {
+    const saved = process.env.CLAUDE_MODEL;
+    if (env === undefined) delete process.env.CLAUDE_MODEL; else process.env.CLAUDE_MODEL = env;
+    try { const a = claudeArgs('s'); return a[a.indexOf('--model') + 1]; } finally {
+      if (saved === undefined) delete process.env.CLAUDE_MODEL; else process.env.CLAUDE_MODEL = saved;
+    }
+  };
+  assert.equal(DEFAULT_CLAUDE_MODEL, 'claude-opus-5-5');
+  assert.equal(model(undefined), 'claude-opus-5-5');
+  assert.equal(model(''), 'claude-opus-5-5');
+  assert.equal(model('claude-sonnet-5'), 'claude-sonnet-5');
+});
 
 test('run.mjs --provider claude calls the CLI with no tools, settings, or CLAUDE.md', async () => {
   const dir = tmp();

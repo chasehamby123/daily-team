@@ -8,7 +8,7 @@
 //        OPENROUTER_API_KEY  required for openrouter
 //        MODEL               openrouter models, comma-separated, tried in order
 //        API_URL             chat completions endpoint (default: OpenRouter)
-//        CLAUDE_MODEL        model for the claude provider (default: the CLI default)
+//        CLAUDE_MODEL        model for the claude provider (default: claude-opus-5-5)
 //        CLAUDE_BIN          path to the claude CLI (default: claude)
 //        ARTIFACTS           default for --artifacts (default: 1)
 // A brief from --brief or a brief.md file replaces today's task.
@@ -23,6 +23,7 @@ const API_URL = process.env.API_URL || 'https://openrouter.ai/api/v1/chat/comple
 const MODELS = (process.env.MODEL || 'openrouter/free,qwen/qwen3.8-27b:free,google/gemma-4-31b-it:free')
   .split(',').map((m) => m.trim()).filter(Boolean);
 const MAX_BYTES = 100 * 1024;
+export const DEFAULT_CLAUDE_MODEL = 'claude-opus-5-5';
 const CSP = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
   + "img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'";
 
@@ -180,7 +181,7 @@ export async function completeOpenRouter(messages, maxTokens) {
 export function claudeArgs(system) {
   const args = ['-p', '--output-format', 'json', '--tools', '', '--strict-mcp-config',
     '--setting-sources', 'project', '--no-session-persistence', '--system-prompt', system];
-  if (process.env.CLAUDE_MODEL) args.push('--model', process.env.CLAUDE_MODEL);
+  args.push('--model', process.env.CLAUDE_MODEL || DEFAULT_CLAUDE_MODEL);
   return args;
 }
 
@@ -208,7 +209,7 @@ export function completeClaude(messages) {
       if (code !== 0 || body.is_error || !body.result?.trim()) {
         return reject(new Error(`claude: ${String(body.result || stderr || `exit ${code}`).slice(0, 300)}`));
       }
-      const model = Object.keys(body.modelUsage || {})[0] || process.env.CLAUDE_MODEL || 'claude';
+      const model = Object.keys(body.modelUsage || {})[0] || process.env.CLAUDE_MODEL || DEFAULT_CLAUDE_MODEL;
       resolve({ text: body.result, model });
     });
     child.stdin.end(prompt);
