@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Weekly Planner — A4 Printable</title>
+<style>
+  :root {
+    --rule: #000;
+    --muted: #555;
+    --bg-strip: #f4f4f2;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: Georgia, "Times New Roman", serif;
+    margin: 0;
+    padding: 1rem;
+    color: #111;
+    background: #e9e9e6;
+  }
+  .page {
+    max-width: 210mm;
+    margin: 0 auto;
+    background: #fff;
+    padding: 10mm;
+    box-shadow: 0 0 6px rgba(0,0,0,0.2);
+  }
+  header.toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  h1 {
+    font-size: 1.3rem;
+    margin: 0;
+    letter-spacing: 0.02em;
+  }
+  .week-range {
+    font-size: 0.85rem;
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+  }
+  .week-range input[type="date"] {
+    font-family: inherit;
+    border: 1px solid #999;
+    padding: 2px 4px;
+    font-size: 0.85rem;
+  }
+  .btns {
+    display: flex;
+    gap: 0.5rem;
+  }
+  button {
+    font-family: inherit;
+    font-size: 0.8rem;
+    padding: 0.35rem 0.7rem;
+    border: 1px solid #333;
+    background: #fff;
+    cursor: pointer;
+  }
+  button:hover { background: #eee; }
+  @media (prefers-reduced-motion: no-preference) {
+    button { transition: background 0.1s ease; }
+  }
+
+  .note-line {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
+  }
+
+  .planner {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .day-row {
+    padding: 0.4rem 0 0.5rem 0;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .day-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 3px solid var(--rule);
+    padding-bottom: 2px;
+    margin-bottom: 0.3rem;
+  }
+  .day-name {
+    font-weight: bold;
+    font-size: 1rem;
+  }
+  .day-date {
+    font-family: inherit;
+    font-size: 0.8rem;
+    border: none;
+    background: transparent;
+    text-align: right;
+    color: var(--muted);
+  }
+  .field {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin: 0.15rem 0;
+  }
+  .field label {
+    flex: 0 0 5.2rem;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+  .field input[type="text"] {
+    flex: 1 1 auto;
+    font-family: inherit;
+    font-size: 0.85rem;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    padding: 2px 2px;
+    background: transparent;
+    min-width: 0;
+  }
+  .field input[type="text"]:focus { outline: 1px solid #333; }
+  .appt input[type="time"] {
+    font-family: inherit;
+    font-size: 0.8rem;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    background: transparent;
+    width: 5rem;
+    flex: 0 0 auto;
+    padding: 2px;
+  }
+  .appt input[type="time"]:focus { outline: 1px solid #333; }
+
+  .bottom-notes {
+    margin-top: 0.6rem;
+    border-top: 3px solid var(--rule);
+    padding-top: 0.4rem;
+  }
+  .bottom-notes label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  .bottom-notes textarea {
+    width: 100%;
+    font-family: inherit;
+    font-size: 0.85rem;
+    border: 1px solid #ccc;
+    background: var(--bg-strip);
+    resize: vertical;
+    min-height: 3.5rem;
+    padding: 0.4rem;
+  }
+
+  footer.hint {
+    margin-top: 0.6rem;
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .page { box-shadow: none; padding: 0; max-width: none; }
+    header.toolbar .btns { display: none; }
+    .week-range input[type="date"] { border: none; }
+    footer.hint { display: none; }
+    @page { size: A4; margin: 10mm; }
+    .day-row { padding: 0.3rem 0 0.35rem 0; }
+    .field input[type="text"], .appt input[type="time"] { border-bottom: 1px solid #999; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="toolbar">
+    <h1>Weekly Planner</h1>
+    <div class="week-range">
+      Week:
+      <input type="date" id="week-start" value="2026-09-28">
+      to
+      <input type="date" id="week-end" value="2026-10-04">
+    </div>
+    <div class="btns">
+      <button type="button" id="btn-print">Print</button>
+      <button type="button" id="btn-restore">Restore example</button>
+      <button type="button" id="btn-clear">Clear all</button>
+    </div>
+  </header>
+
+  <p class="note-line">One line each for priority, appointment, and notes per day. No hourly grid — if your day needs hour-by-hour tracking, this page is not that tool.</p>
+
+  <div class="planner" id="planner">
+
+    <div class="day-row" data-day="mon">
+      <div class="day-head">
+        <span class="day-name">Monday</span>
+        <input type="date" class="day-date" id="date-mon" value="2026-09-28">
+      </div>
+      <div class="field"><label>Priority</label><input type="text" id="p-mon" value="Finish Q3 report draft"></div>
+      <div class="field appt"><label>Appointment</label><input type="time" id="at-mon" value="10:00"><input type="text" id="ad-mon" value="Team standup"></div>
+      <div class="field"><label>Notes</label><input type="text" id="n-mon" value="Email Sam the budget numbers"></div>
+    </div>
+
+    <div class="day-row" data-day="tue">
+      <div class="day-head">
+        <span class="day-name">Tuesday</span>
+        <input type="date" class="day-date" id="date-tue" value="2026-09-29">
+      </div>
+      <div class="field"><label>Priority</label><input type="text" id="p-tue" value="Review contractor invoices"></div>
+      <div class="field appt"><label>Appointment</label><input type="time" id="at-tue" value="14:00"><input type="text" id="ad-tue" value="Dentist appointment"></div>
+      <div class="field"><label>Notes</label><input type="text" id="n-tue" value="Pick up dry cleaning"></div>
+    </div>
+
+    <div class="day-row" data-day="wed">
+      <div class="day-head">
+        <span class="day-name">Wednesday</span>
+        <input type="date" class="day-date" id="date-wed" value="2026-09-30">
+      </div>
+      <div class="field"><label>Priority</label><input type="text" id="p-wed" value="Prep slides for board meeting"></div>
+      <div class="field appt"><label>Appointment</label><input type="time" id="at-wed" value="09:30"><input type="text" id="ad-wed" value="1:1 with manager"></div>
+      <div class="field"><label>Notes</label><input type="text" id="n-wed" value="Order printer ink"></div>
+    </div>
+
+    <div class="day-row" data-day="thu">
+      <div class="day-head">
+        <span class="day-name">Thursday</span>
+        <input type="date" class="day-date" id="date-thu" value="2026-10-01">
+      </div>
+      <div class="field"><label>Priority</label><input type="text" id="p-thu" value="Submit Q3 report"></div>
+      <div class="field appt"><label>Appointment</label><input type="time" id="at-thu" value="13:00"><input type="text" id="ad-thu" value="Client call — Riverside Co"></div>
+      <div class="field"><label>Notes</label><input type="text" id="n-thu" value="Call plumber about leak"></div>
+    </div>
+
+    <div class="day-row" data-day="fri">
+      <div class="day-head">
+        <span class="day-name">Friday</span>
+        <input type="date" class="day-date" id="date-fri" value="2026-10-02">
+      </div>
+      <div class="field"><label>Priority</label><input type="text" id="p-fri" value="Clear inbox to zero"></div>
+      <div class="field appt"><label>Appointment</label><input type="time" id="at-fri" value=""><input type="text" id="ad-fri" value=""></div>
+      <div class="field"><label>Notes</label><input type="text" id="n-fri" value="Grocery run for weekend"></div>
+    </div>
+
+    <div class="day-row" data-day="sat">
+      <div class="day-head">
+        <span class="day-name">Saturday</span>
+        <input type="date" class="day-date" id="date-sat" value="2026-10-03">
+      </div>
+      <div class="field"><label>Priority</label><input type="text" id="p-sat" value="Rest — no work"></div>
+      <div class="field appt"><label>Appointment</label><input type="time" id="at-sat" value="11:00"><input type="text" id="ad-sat" value="Kids' soccer game"></div>
+      <div class="field"><label>Notes</label><input type="text" id="n-sat" value="Meal prep for next week"></div>
+    </div>
+
+    <div class="day-row" data-day="sun">
+      <div class="day-head">
+        <span class="day-name">Sunday</span>
+        <input type="date" class="day-date" id="date-sun" value="2026-10-04">
+      </div>
+      <div class="field"><label>Priority</label><input type="text" id="p-sun" value="Plan next week's priorities"></div>
+      <div class="field appt"><label>Appointment</label><input type="time" id="at-sun" value=""><input type="text" id="ad-sun" value=""></div>
+      <div class="field"><label>Notes</label><input type="text" id="n-sun" value="Laundry, review calendar"></div>
+    </div>
+
+  </div>
+
+  <div class="bottom-notes">
+    <label>Notes / overflow</label>
+    <textarea id="bottom-notes" rows="3">Remember: dentist follow-up in 6 months. Check in with Sam about Q4 budget before Friday.</textarea>
+  </div>
+
+  <footer class="hint">Fields save automatically in this browser. Use "Restore example" to bring back the sample entries, or "Clear all" to start blank.</footer>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+  var STORAGE_KEY = "weeklyPlannerV1";
+
+  var defaults = {
+    weekStart: "2026-09-28",
+    weekEnd: "2026-10-04",
+    days: {
+      mon: { date: "2026-09-28", p: "Finish Q3 report draft", at: "10:00", ad: "Team standup", n: "Email Sam the budget numbers" },
+      tue: { date: "2026-09-29", p: "Review contractor invoices", at: "14:00", ad: "Dentist appointment", n: "Pick up dry cleaning" },
+      wed: { date: "2026-09-30", p: "Prep slides for board meeting", at: "09:30", ad: "1:1 with manager", n: "Order printer ink" },
+      thu: { date: "2026-10-01", p: "Submit Q3 report", at: "13:00", ad: "Client call — Riverside Co", n: "Call plumber about leak" },
+      fri: { date: "2026-10-02", p: "Clear inbox to zero", at: "", ad: "", n: "Grocery run for weekend" },
+      sat: { date: "2026-10-03", p: "Rest — no work", at: "11:00", ad: "Kids' soccer game", n: "Meal prep for next week" },
+      sun: { date: "2026-10-04", p: "Plan next week's priorities", at: "", ad: "", n: "Laundry, review calendar" }
+    },
+    bottomNotes: "Remember: dentist follow-up in 6 months. Check in with Sam about Q4 budget before Friday."
+  };
+
+  function byId(id) { return document.getElementById(id); }
+
+  function readState() {
+    var state = { weekStart: byId("week-start").value, weekEnd: byId("week-end").value, days: {}, bottomNotes: byId("bottom-notes").value };
+    DAYS.forEach(function (d) {
+      state.days[d] = {
+        date: byId("date-" + d).value,
+        p: byId("p-" + d).value,
+        at: byId("at-" + d).value,
+        ad: byId("ad-" + d).value,
+        n: byId("n-" + d).value
+      };
+    });
+    return state;
+  }
+
+  function applyState(state) {
+    if (!state) return;
+    if (state.weekStart !== undefined) byId("week-start").value = state.weekStart;
+    if (state.weekEnd !== undefined) byId("week-end").value = state.weekEnd;
+    if (state.bottomNotes !== undefined) byId("bottom-notes").value = state.bottomNotes;
+    DAYS.forEach(function (d) {
+      var rec = state.days && state.days[d];
+      if (!rec) return;
+      byId("date-" + d).value = rec.date || "";
+      byId("p-" + d).value = rec.p || "";
+      byId("at-" + d).value = rec.at || "";
+      byId("ad-" + d).value = rec.ad || "";
+      byId("n-" + d).value = rec.n || "";
+    });
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(readState()));
+    } catch (e) {
+      /* storage blocked — page still works without saving */
+    }
+  }
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        applyState(JSON.parse(raw));
+      }
+    } catch (e) {
+      /* storage blocked — keep the hardcoded example already in the page */
+    }
+  }
+
+  function clearAll() {
+    var blank = { weekStart: byId("week-start").value, weekEnd: byId("week-end").value, days: {}, bottomNotes: "" };
+    DAYS.forEach(function (d) {
+      blank.days[d] = { date: byId("date-" + d).value, p: "", at: "", ad: "", n: "" };
+    });
+    applyState(blank);
+    save();
+  }
+
+  function restoreExample() {
+    applyState(defaults);
+    save();
+  }
+
+  document.addEventListener("input", function (e) {
+    if (e.target && e.target.closest("#planner, .week-range, .bottom-notes")) {
+      save();
+    }
+  });
+
+  byId("btn-print").addEventListener("click", function () { window.print(); });
+  byId("btn-clear").addEventListener("click", clearAll);
+  byId("btn-restore").addEventListener("click", restoreExample);
+
+  load();
+})();
+</script>
+</body>
+</html>

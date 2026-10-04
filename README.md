@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-10-03: Running pace calculator
+### 2026-10-04: Weekly planner page with priorities, appointments, and notes, printable on A4.
 
-<a href="days/2026-10-03/"><img src="days/2026-10-03/team.png" alt="Team for 2026-10-03: Service designer · Product designer · Interaction designer · Choreographer" width="100%"></a>
+<a href="days/2026-10-04/"><img src="days/2026-10-04/team.png" alt="Team for 2026-10-04: Comic artist · Packaging designer · Exhibition designer · Printmaker" width="100%"></a>
 
-**Task:** Running pace calculator: distance and time give pace per km and per mile and projected times for 5 km, 10 km, half, and full marathon.
+**Task:** Weekly planner page with priorities, appointments, and notes, printable on A4.
 
-**Decision:** The page takes a distance (value + km/mi unit) and a finish time, and returns pace per km, pace per mile, and projected times for 5K, 10K, half marathon, and full marathon, live-updating as you type, with dark mode following system setting.
+**Decision:** The page is a single-column, printable A4 weekly planner with one row per day, each row holding one priority line, one appointment line (with optional time), and one notes line, plus a full-width notes strip at the bottom.
 
-<a href="days/2026-10-03/"><img src="days/2026-10-03/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-10-04/"><img src="days/2026-10-04/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-10-03/) · [Use it](https://isas1.github.io/daily-team/2026-10-03/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-10-04/) · [Use it](https://isas1.github.io/daily-team/2026-10-04/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -31,9 +31,9 @@ Everything in `days/` is written by a language model and checked by scripts, not
 
 | Votes | Suggestion |
 |---|---|
+| 1 | [Price in hours: enter your take-home pay per hour and any price, and see what it costs in hours a...](https://github.com/isas1/daily-team/issues/16) |
 | 0 | [Gut check coin: type two options and flip, then say how the result made you feel, and the page te...](https://github.com/isas1/daily-team/issues/14) |
 | 0 | [Estimate anything: break a question nobody can look up into small guesses with a low and high val...](https://github.com/isas1/daily-team/issues/15) |
-| 0 | [Price in hours: enter your take-home pay per hour and any price, and see what it costs in hours a...](https://github.com/isas1/daily-team/issues/16) |
 <!-- WEEK:END -->
 
 ## Recent days
@@ -41,9 +41,10 @@ Everything in `days/` is written by a language model and checked by scripts, not
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-10-04](days/2026-10-04/) | <a href="days/2026-10-04/"><img src="days/2026-10-04/artifact-1.png" alt="Weekly planner page with priorities, appointments, and notes, printable on A4." width="160"></a> | Weekly planner page with priorities, appointments, and notes, printable on A4. | Comic artist · Packaging designer · Exhibition designer · Printmaker |
 | [2026-10-03](days/2026-10-03/) | <a href="days/2026-10-03/"><img src="days/2026-10-03/artifact-1.png" alt="Running pace calculator" width="160"></a> | Running pace calculator | Service designer · Product designer · Interaction designer · Choreographer |
 
-[All 1 day](ARCHIVE.md)
+[All 2 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works
