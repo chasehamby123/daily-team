@@ -7,23 +7,23 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-10-04: Weekly planner page with priorities, appointments, and notes, printable on A4.
+### 2026-10-05: CV checklist
 
-<a href="days/2026-10-04/"><img src="days/2026-10-04/team.png" alt="Team for 2026-10-04: Comic artist · Packaging designer · Exhibition designer · Printmaker" width="100%"></a>
+<a href="days/2026-10-05/"><img src="days/2026-10-05/team.png" alt="Team for 2026-10-05: Bookbinder · Glassblower · Chef · Captain Ahab" width="100%"></a>
 
-**Task:** Weekly planner page with priorities, appointments, and notes, printable on A4.
+**Task:** CV checklist: 15 checks with a score, printable.
 
-**Decision:** The page is a single-column, printable A4 weekly planner with one row per day, each row holding one priority line, one appointment line (with optional time), and one notes line, plus a full-width notes strip at the bottom.
+**Decision:** The page lists 15 measurable CV checks, scores the ticked ones out of 30 by weight, shows each failed check's effect on a reader, follows the system light or dark setting, and prints on one page.
 
-<a href="days/2026-10-04/"><img src="days/2026-10-04/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-10-05/"><img src="days/2026-10-05/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-10-04/) · [Use it](https://isas1.github.io/daily-team/2026-10-04/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-10-05/) · [Use it](https://isas1.github.io/daily-team/2026-10-05/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
 
 <!-- WEEK:START -->
-**Season 1**, since 2026-10-01. The first season, so everyone is new. A new season with 8 new roles and 8 new methods is drafted every Monday.
+**Season 2**, since 2026-10-05. New this season: Taxidermist, Locksmith, Upholsterer, Glassblower, Calligrapher, Blacksmith, Tailor, Beekeeper, Marcus Aurelius, Socrates, Euclid, Ibn al-Haytham, Leonardo da Vinci, Benjamin Franklin, Katsushika Hokusai, Ada Lovelace, Charles Darwin, Florence Nightingale, Cassandra, Daedalus, Odysseus, Penelope, Sisyphus, Janus, Arachne, Scheherazade, Don Quixote, Alice, Robinson Crusoe, Gulliver, Ebenezer Scrooge, Captain Ahab, The Fool, The Trickster, The Outsider, The Null, Entropy, Time, Repair technician from 2140, Archivist from 2300, Settler on Mars in 2090, Phoenix, Hydra, Glass fox. A new season with 8 new roles and 8 new methods is drafted every Monday.
 
 ### Vote on what gets built next
 
@@ -41,10 +41,11 @@ Everything in `days/` is written by a language model and checked by scripts, not
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-10-05](days/2026-10-05/) | <a href="days/2026-10-05/"><img src="days/2026-10-05/artifact-1.png" alt="CV checklist" width="160"></a> | CV checklist | Bookbinder · Glassblower · Chef · Captain Ahab |
 | [2026-10-04](days/2026-10-04/) | <a href="days/2026-10-04/"><img src="days/2026-10-04/artifact-1.png" alt="Weekly planner page with priorities, appointments, and notes, printable on A4." width="160"></a> | Weekly planner page with priorities, appointments, and notes, printable on A4. | Comic artist · Packaging designer · Exhibition designer · Printmaker |
 | [2026-10-03](days/2026-10-03/) | <a href="days/2026-10-03/"><img src="days/2026-10-03/artifact-1.png" alt="Running pace calculator" width="160"></a> | Running pace calculator | Service designer · Product designer · Interaction designer · Choreographer |
 
-[All 2 days](ARCHIVE.md)
+[All 3 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works
