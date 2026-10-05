@@ -24,6 +24,10 @@ const MODELS = (process.env.MODEL || 'openrouter/free,qwen/qwen3.8-27b:free,goog
   .split(',').map((m) => m.trim()).filter(Boolean);
 const MAX_BYTES = 100 * 1024;
 export const DEFAULT_CLAUDE_MODEL = 'claude-opus-5-5';
+// Limits on the team's session. Breaking one flags the day for review; it never triggers a retry.
+export const CLASH_LINES = [6, 10];
+export const CLASH_TURNS = 3;
+export const PLAN_WORDS = 1200;
 const CSP = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; "
   + "img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'";
 
@@ -138,12 +142,62 @@ export function addCsp(html) {
 
 // The first sentence after the Decision heading, as plain text.
 export function decisionLine(plan) {
-  const m = plan.match(/^[#*\s\d.]*Decision\b[*:]*\s*\n+([\s\S]*?)(?:\n\s*\n|\n[#*\s\d.]*(?:Next steps|Proposals|Objections)\b|$)/im);
+  const m = plan.match(/^[#*\s\d.]*Decision\b[*:]*\s*\n+([\s\S]*?)(?:\n\s*\n|\n[#*\s\d.]*(?:Build notes|Next steps|Proposals|Objections|Pitch|Clash|Referee|Deadlock)\b|$)/im);
   if (!m) return '';
   const text = m[1].replace(/!\[[^\]]*\]\([^)]*\)/g, '').replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
     .replace(/<[^>]*>/g, '').replace(/[*_`#>]/g, '').replace(/\s+/g, ' ').trim();
   const sentence = text.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? text;
   return sentence.length > 240 ? `${sentence.slice(0, 237)}...` : sentence;
+}
+
+// The plan's sections, keyed by heading without numbers or markup.
+export function planSections(text) {
+  const out = {};
+  for (const part of `\n${text}`.split(/\n#{1,3} +/).slice(1)) {
+    const nl = part.indexOf('\n');
+    const head = (nl < 0 ? part : part.slice(0, nl)).replace(/[*:]/g, '').replace(/^\d+\.\s*/, '').trim();
+    out[head] = nl < 0 ? '' : part.slice(nl + 1).trim();
+  }
+  return out;
+}
+
+// Problems with the session's shape and length, recorded but not retried.
+export function sessionProblems(text) {
+  const parts = planSections(text);
+  const problems = [];
+  for (const h of ['Pitch', 'Clash']) if (parts[h] === undefined) problems.push(`no ${h} section`);
+  if (parts.Decision === undefined && parts.Deadlock === undefined) problems.push('no Decision or Deadlock section');
+  const speakers = [...(parts.Clash ?? '').matchAll(/^\s*(?:[-*]\s+)?\*\*([^*\n]+?):?\*\*/gm)].map((m) => m[1].trim());
+  const [min, max] = CLASH_LINES;
+  if (parts.Clash !== undefined && (speakers.length < min || speakers.length > max)) {
+    problems.push(`Clash has ${speakers.length} lines, outside ${min} to ${max}`);
+  }
+  const turns = {};
+  for (const s of speakers) turns[s] = (turns[s] ?? 0) + 1;
+  for (const [s, n] of Object.entries(turns)) if (n > CLASH_TURNS) problems.push(`${s} speaks ${n} times in the Clash, more than ${CLASH_TURNS}`);
+  const words = text.split(/\s+/).filter(Boolean).length;
+  if (words > PLAN_WORDS) problems.push(`session is ${words} words, more than ${PLAN_WORDS}`);
+  return problems;
+}
+
+// A deadlocked session gets one referee call. If that call fails or returns no Decision,
+// the lead's option stands. Never more than one call.
+export async function settle(complete, system, context, rules, plan) {
+  const deadlock = planSections(plan).Deadlock ?? '';
+  let ruling = '';
+  let model = null;
+  try {
+    const out = await complete([system, { role: 'user', content: `${context}\n\n<deadlock>\n${deadlock}\n</deadlock>\n\n${rules}` }], 2000);
+    ruling = out.text.trim();
+    model = out.model;
+  } catch { /* the lead's option stands */ }
+  const parts = planSections(ruling);
+  if (parts.Referee !== undefined && parts.Decision) return { text: `${plan}\n\n${ruling}`, ruled: true, model };
+  const lead = deadlock.match(/\*\*Option A:?\*\*:?\s*(.+)/)?.[1]?.trim() || 'Option A, the lead\'s option.';
+  return {
+    text: `${plan}\n\n## Referee\n\nThe referee's ruling could not be read, so the lead's option stands.\n\n## Decision\n\n${lead}`,
+    ruled: false, model,
+  };
 }
 
 export async function completeOpenRouter(messages, maxTokens) {
@@ -293,7 +347,7 @@ async function main() {
 
   const day = {
     date, task, brief: custom || null, team, provider: opts.provider, model: null,
-    status: 'ok', error: null, decision: '', plan: '', planProblems: [], artifacts: [],
+    status: 'ok', error: null, decision: '', plan: '', planProblems: [], referee: false, artifacts: [],
   };
   // A forced run replaces the day, so old assets and screenshots must not linger.
   if (existsSync(dir)) {
@@ -313,14 +367,26 @@ async function main() {
     save();
     die(`plan failed, recorded ${record}: ${e.message}`, 1);
   }
-  Object.assign(day, { model: plan.model, plan: plan.text.trim(), decision: decisionLine(plan.text), planProblems: plan.problems });
-  console.log(`plan: ${plan.model}`);
+  let planText = plan.text.trim();
+  const planProblems = [...plan.problems];
+  const parts = planSections(planText);
+  if (parts.Deadlock !== undefined && parts.Decision === undefined) {
+    const ruling = await settle(complete, system, context, s.Referee, planText);
+    planText = ruling.text;
+    day.referee = true;
+    if (!ruling.ruled) planProblems.push("referee ruling unreadable; the lead's option stands");
+    for (const w of findBanned(planText)) if (!planProblems.includes(`uses the word "${w}"`)) planProblems.push(`uses the word "${w}"`);
+    console.log(`referee: ${ruling.ruled ? ruling.model : "no ruling, the lead's option stands"}`);
+  }
+  planProblems.push(...sessionProblems(planText));
+  Object.assign(day, { model: plan.model, plan: planText, decision: decisionLine(planText), planProblems });
+  console.log(`plan: ${plan.model}${planProblems.length ? `, flagged: ${planProblems.join('; ')}` : ''}`);
   mkdirSync(dir, { recursive: true });
 
   for (let n = 1; n <= opts.artifacts; n++) {
     const file = `artifact-${n}.html`;
     try {
-      const out = await completeChecked(complete, buildMessages(plan.text, n), 16000, (t) => {
+      const out = await completeChecked(complete, buildMessages(planText, n), 16000, (t) => {
         const html = extractHtml(t);
         return html ? checkArtifact(html) : ['no HTML code block'];
       });

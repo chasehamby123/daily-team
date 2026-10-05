@@ -8,7 +8,8 @@ import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rm
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { addCsp, checkArtifact, claudeArgs, DEFAULT_CLAUDE_MODEL, decisionLine, extractHtml, findBanned, parseTeam } from './run.mjs';
+import { addCsp, checkArtifact, claudeArgs, DEFAULT_CLAUDE_MODEL, decisionLine, extractHtml, findBanned, parseTeam, planSections,
+  sections, sessionProblems, settle } from './run.mjs';
 import { formatSeason, guestProblems, itemProblems, listSeasons, nextMonday, nextSeason, parseGuest, readSeason, screenSuggestions, summary, validate } from './recruit.mjs';
 import { announce, closeLoop, commentFor, fetchSuggestions, parseForm } from './github.mjs';
 import { archive, buildSite, dayReadme, loadDays, publish, recentBlock, seasonNumber, todayBlock, weekBlock } from './publish.mjs';
@@ -341,6 +342,89 @@ process.stdin.on('end', () => {
   chmodSync(bin, 0o755);
   return bin;
 }
+
+// Team session: pitch, clash, decision or deadlock, referee
+
+const clash = (n, who = ['Bookbinder', 'Chef', 'Glassblower', 'Captain Ahab']) =>
+  Array.from({ length: n }, (_, i) => `**${who[i % who.length]}:** line ${i + 1}.`).join('\n');
+const SESSION = `## Pitch\n**Spine** x\n\n## Clash\n${clash(8)}\n\n## Decision\nThe page scores a CV.\n\nConcept: Spine\n\n## Build notes\n1. a`;
+const DEADLOCK = `## Pitch\n**Spine** x\n\n## Clash\n${clash(6)}\n\n## Deadlock\n**Option A:** A weighted score out of 30.\n**Option B:** A plain count out of 15.\nA: weights.\nB: clarity.`;
+const RULING = '## Referee\nOption B, by rule 1. It takes the weight column from A.\n\n## Decision\nThe page counts 15 CV checks.\n\nConcept: Plain Count\n\n## Build notes\n1. a';
+
+test('prompt.md has the team, referee, build, and writing sections', () => {
+  const s = sections();
+  for (const h of ['Work the brief', 'Referee', 'Build an artifact', 'Recruit', 'Writing rules']) assert.ok(s[h], h);
+  assert.match(s['Work the brief'], /Pitch[\s\S]*Clash[\s\S]*Decision[\s\S]*Deadlock/);
+  assert.match(s['Work the brief'], /Between 6 and 10 lines[\s\S]*at most 3 times/);
+  assert.match(s.Referee, /Do not invent a third option/);
+  assert.ok(findBanned('seamless').length, 'banned words still load from Writing rules');
+});
+
+test('planSections and sessionProblems check the shape and limits of a session', () => {
+  assert.deepEqual(Object.keys(planSections(SESSION)), ['Pitch', 'Clash', 'Decision', 'Build notes']);
+  assert.deepEqual(Object.keys(planSections('## 1. Pitch\nx\n## **Clash**\ny')), ['Pitch', 'Clash']);
+  assert.deepEqual(sessionProblems(SESSION), []);
+  assert.deepEqual(sessionProblems(DEADLOCK), []);
+  const p = (t) => sessionProblems(t).join('; ');
+  assert.match(p('## Decision\nx'), /no Pitch section; no Clash section/);
+  assert.match(p('## Pitch\nx\n## Clash\nx'), /no Decision or Deadlock section/);
+  assert.match(p(SESSION.replace(clash(8), clash(12))), /Clash has 12 lines, outside 6 to 10/);
+  assert.match(p(SESSION.replace(clash(8), clash(4))), /Clash has 4 lines/);
+  assert.match(p(SESSION.replace(clash(8), clash(8, ['Chef', 'Bookbinder']))), /Chef speaks 4 times in the Clash, more than 3/);
+  assert.match(p(`${SESSION}\n${'word '.repeat(1300)}`), /more than 1200/);
+  assert.equal(decisionLine(SESSION), 'The page scores a CV.');
+});
+
+test('settle makes one referee call and falls back to the lead on a bad or failed ruling', async () => {
+  const calls = [];
+  const fake = (reply) => async (messages) => {
+    calls.push(messages);
+    if (reply instanceof Error) throw reply;
+    return { text: reply, model: 'm' };
+  };
+  const ruled = await settle(fake(RULING), { role: 'system', content: 's' }, '<team/>', 'RULES', DEADLOCK);
+  assert.equal(ruled.ruled, true);
+  assert.match(ruled.text, /## Deadlock[\s\S]*## Referee\nOption B[\s\S]*## Decision\nThe page counts/);
+  assert.match(calls[0][1].content, /<deadlock>\n\*\*Option A:\*\* A weighted[\s\S]*<\/deadlock>\n\nRULES$/);
+  assert.doesNotMatch(calls[0][1].content, /## Clash/, 'the referee sees the deadlock, not the argument');
+  for (const bad of ['no headings here', new Error('down')]) {
+    const r = await settle(fake(bad), { role: 'system', content: 's' }, '', 'R', DEADLOCK);
+    assert.equal(r.ruled, false);
+    assert.match(r.text, /lead's option stands\.\n\n## Decision\n\nA weighted score out of 30\.$/);
+    assert.equal(decisionLine(r.text), 'A weighted score out of 30.');
+  }
+  assert.equal(calls.length, 3, 'one call per deadlock, no retries');
+});
+
+test('run.mjs sends a deadlock to the referee once and builds from the ruling', async () => {
+  const dir = tmp();
+  const out = join(dir, 'days');
+  const bin = fakeClaude(dir, [DEADLOCK, RULING, GOOD_REPLY]);
+  const r = await run(['--provider', 'claude', '--date', '2026-10-03', '--out', out], { CLAUDE_BIN: bin, OPENROUTER_API_KEY: '' });
+  assert.equal(r.status, 0, r.stderr);
+  const calls = readFileSync(join(dir, 'log.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l));
+  assert.equal(calls.length, 3);
+  assert.match(calls[1].input, /You are the referee/);
+  assert.match(calls[2].input, /## Referee[\s\S]*Concept: Plain Count[\s\S]*Build one artifact/);
+  const day = readDay(out, '2026-10-03');
+  assert.equal(day.referee, true);
+  assert.equal(day.decision, 'The page counts 15 CV checks.');
+  assert.deepEqual(day.planProblems, []);
+  rmSync(dir, { recursive: true });
+});
+
+test('run.mjs records a session that breaks its limits without retrying it', async () => {
+  const dir = tmp();
+  const out = join(dir, 'days');
+  const bin = fakeClaude(dir, [SESSION.replace(clash(8), clash(12)), GOOD_REPLY]);
+  const r = await run(['--provider', 'claude', '--date', '2026-10-03', '--out', out], { CLAUDE_BIN: bin, OPENROUTER_API_KEY: '' });
+  assert.equal(r.status, 0, r.stderr);
+  assert.equal(readFileSync(join(dir, 'log.jsonl'), 'utf8').trim().split('\n').length, 2);
+  const day = readDay(out, '2026-10-03');
+  assert.equal(day.referee, false);
+  assert.deepEqual(day.planProblems, ['Clash has 12 lines, outside 6 to 10']);
+  rmSync(dir, { recursive: true });
+});
 
 test('the claude provider defaults to Opus 5.5 and CLAUDE_MODEL overrides it', () => {
   const model = (env) => {
