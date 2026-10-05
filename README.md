@@ -23,17 +23,13 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## This week
 
 <!-- WEEK:START -->
-**Season 2**, since 2026-10-05. New this season: Taxidermist, Locksmith, Upholsterer, Glassblower, Calligrapher, Blacksmith, Tailor, Beekeeper, Marcus Aurelius, Socrates, Euclid, Ibn al-Haytham, Leonardo da Vinci, Benjamin Franklin, Katsushika Hokusai, Ada Lovelace, Charles Darwin, Florence Nightingale, Cassandra, Daedalus, Odysseus, Penelope, Sisyphus, Janus, Arachne, Scheherazade, Don Quixote, Alice, Robinson Crusoe, Gulliver, Ebenezer Scrooge, Captain Ahab, The Fool, The Trickster, The Outsider, The Null, Entropy, Time, Repair technician from 2140, Archivist from 2300, Settler on Mars in 2090, Phoenix, Hydra, Glass fox. A new season with 8 new roles and 8 new methods is drafted every Monday.
+**Season 2**, since 2026-10-05. New this season: Taxidermist, Locksmith, Upholsterer, Glassblower, Calligrapher, Blacksmith, Tailor, Beekeeper, and the first 36 guests. A new season with 8 new roles and 8 new methods is drafted every Monday.
 
 ### Vote on what gets built next
 
 [Suggest a task](https://github.com/isas1/daily-team/issues/new?template=task-suggestion.yml) or vote with a thumbs-up on [open suggestions](https://github.com/isas1/daily-team/issues?q=is%3Aissue+is%3Aopen+label%3Atask-suggestion+sort%3Areactions-%2B1-desc). The most voted are screened every Monday.
 
-| Votes | Suggestion |
-|---|---|
-| 1 | [Price in hours: enter your take-home pay per hour and any price, and see what it costs in hours a...](https://github.com/isas1/daily-team/issues/16) |
-| 0 | [Gut check coin: type two options and flip, then say how the result made you feel, and the page te...](https://github.com/isas1/daily-team/issues/14) |
-| 0 | [Estimate anything: break a question nobody can look up into small guesses with a low and high val...](https://github.com/isas1/daily-team/issues/15) |
+No open suggestions yet.
 <!-- WEEK:END -->
 
 ## Recent days

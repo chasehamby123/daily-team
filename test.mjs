@@ -12,7 +12,7 @@ import { addCsp, checkArtifact, claudeArgs, conceptName, dayTitle, DEFAULT_CLAUD
   planSections, sections, sessionProblems, settle, teamFor as recordedTeam } from './run.mjs';
 import { formatSeason, guestProblems, itemProblems, listSeasons, nextMonday, nextSeason, parseGuest, readSeason, screenSuggestions, summary, validate } from './recruit.mjs';
 import { announce, closeLoop, commentFor, fetchSuggestions, parseForm } from './github.mjs';
-import { archive, buildSite, dayReadme, loadDays, publish, recentBlock, seasonNumber, session, todayBlock, weekBlock } from './publish.mjs';
+import { archive, buildSite, dayReadme, loadDays, newcomers, publish, recentBlock, seasonNumber, session, todayBlock, weekBlock } from './publish.mjs';
 import { cardHtml, findChrome, renderPng, socialHtml, titleCase } from './card.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -1116,4 +1116,15 @@ test('cards show each temperament when the season has them', () => {
   assert.equal((html.match(/class="temper"/g) || []).length, 4);
   assert.equal((html.match(/class="method short"/g) || []).length, 4);
   assert.doesNotMatch(cardHtml({ date: '2026-10-05', task: 'Dice: x', team: recordedTeam('2026-10-05') }, 2), /class="temper"/);
+});
+
+test('the week block names new roles and counts an all-new guest or temperament pool', () => {
+  const two = newcomers(readSeason(HERE, '2026-10-05'));
+  assert.deepEqual(two.slice(-1), ['the first 36 guests']);
+  assert.ok(!two.some((t) => t.includes('Marcus')), 'no guest names when every guest is new');
+  const three = newcomers(readSeason(HERE, '2026-10-12'));
+  assert.deepEqual(three.slice(-2), ['Mary Anning, Clockwork beetle', '24 temperaments']);
+  const block = weekBlock(HERE, [{ team: recordedTeam('2026-10-05') }], []);
+  assert.match(block, /New this season: [^.]*Beekeeper, and the first 36 guests\./);
+  assert.ok(block.split('\n')[0].length < 400, 'the line stays short');
 });

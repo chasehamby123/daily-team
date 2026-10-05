@@ -215,6 +215,18 @@ const userText = (s, max = 100) => {
   return t.length > max ? `${t.slice(0, max - 3)}...` : t;
 };
 
+// Who joined this season, short enough for the README: new roles by name, and a pool that is
+// entirely new (the first guests or temperaments) as a count instead of every name.
+export function newcomers(pools) {
+  const names = (items) => items.filter((i) => i.fresh).map((i) => i.text);
+  const guests = names(pools.guests ?? []).map((t) => t.split(' | ')[1]);
+  const moods = names(pools.temperaments ?? []);
+  const out = names(pools.roles);
+  if (guests.length) out.push(guests.length === pools.guests.length ? `the first ${guests.length} guests` : guests.join(', '));
+  if (moods.length) out.push(moods.length === pools.temperaments.length ? `${moods.length} temperaments` : `${moods.length} new temperaments`);
+  return out;
+}
+
 // This week's season and the suggestion vote.
 export function weekBlock(root, days, suggestions) {
   const seasons = listSeasons(root);
@@ -222,9 +234,9 @@ export function weekBlock(root, days, suggestions) {
   const lines = [];
   if (season && seasons.includes(season)) {
     const pools = readSeason(root, season);
-    const fresh = [...pools.roles, ...pools.guests.map((i) => ({ ...i, text: i.text.split(' | ')[1] }))].filter((i) => i.fresh).map((i) => i.text);
+    const fresh = newcomers(pools);
     lines.push(`**Season ${seasons.indexOf(season) + 1}**, since ${season}. ${fresh.length
-      ? `New this season: ${fresh.join(', ')}.` : 'The first season, so everyone is new.'} A new season with 8 new roles and 8 new methods is drafted every Monday.`, '');
+      ? `New this season: ${new Intl.ListFormat('en', { type: 'conjunction' }).format(fresh)}.` : 'The first season, so everyone is new.'} A new season with 8 new roles and 8 new methods is drafted every Monday.`, '');
   }
   const repo = REPO();
   lines.push('### Vote on what gets built next', '',
