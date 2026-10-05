@@ -8,11 +8,11 @@ import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rm
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { addCsp, checkArtifact, claudeArgs, DEFAULT_CLAUDE_MODEL, decisionLine, extractHtml, findBanned, parseTeam, planSections,
-  sections, sessionProblems, settle } from './run.mjs';
+import { addCsp, checkArtifact, claudeArgs, conceptName, dayTitle, DEFAULT_CLAUDE_MODEL, decisionLine, extractHtml, findBanned, parseTeam,
+  planSections, sections, sessionProblems, settle, teamFor as recordedTeam } from './run.mjs';
 import { formatSeason, guestProblems, itemProblems, listSeasons, nextMonday, nextSeason, parseGuest, readSeason, screenSuggestions, summary, validate } from './recruit.mjs';
 import { announce, closeLoop, commentFor, fetchSuggestions, parseForm } from './github.mjs';
-import { archive, buildSite, dayReadme, loadDays, publish, recentBlock, seasonNumber, todayBlock, weekBlock } from './publish.mjs';
+import { archive, buildSite, dayReadme, loadDays, publish, recentBlock, seasonNumber, session, todayBlock, weekBlock } from './publish.mjs';
 import { cardHtml, findChrome, renderPng, socialHtml, titleCase } from './card.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -424,6 +424,69 @@ test('run.mjs records a session that breaks its limits without retrying it', asy
   assert.equal(day.referee, false);
   assert.deepEqual(day.planProblems, ['Clash has 12 lines, outside 6 to 10']);
   rmSync(dir, { recursive: true });
+});
+
+test('conceptName reads the Decision and dayTitle prefers it over the task name', () => {
+  assert.equal(conceptName(SESSION), 'Spine');
+  assert.equal(conceptName(`${DEADLOCK}\n\n${RULING}`), 'Plain Count');
+  assert.equal(conceptName('## Decision\nA page.\n\n**Concept:** <b>Ticket</b> Rail'), 'bTicket/b Rail');
+  assert.equal(conceptName('## Decision\nA page.'), '');
+  assert.equal(dayTitle({ task: 'CV checklist: 15 checks', concept: 'Weakest Signature' }), 'Weakest Signature');
+  assert.equal(dayTitle({ task: 'CV checklist: 15 checks', concept: '' }), 'CV checklist');
+  assert.equal(dayTitle({ task: 'CV checklist: 15 checks' }), 'CV checklist');
+});
+
+const TALK = {
+  date: '2026-10-03', task: 'Running pace calculator: x', brief: null, concept: 'Spine', team: recordedTeam('2026-10-03'),
+  provider: 'claude', model: 'm', status: 'ok', decision: 'The page scores a CV.', artifacts: [],
+};
+
+test('session reads the transcript, matches speakers to members, and skips old days', () => {
+  const roles = parseTeam(TALK.team).members.map((m) => m.role);
+  const plan = `## Pitch\n**${roles[0]}: Spine**\nLine one.\nLine two.\n\n**${roles[1]} — Fold**\nx\n\n`
+    + `## Clash\n**${roles[1]}:** No.\n**Stranger:** Who?\nloose line\n\n${RULING}`;
+  const s = session({ ...TALK, plan });
+  assert.deepEqual(s.pitches.map((p) => [p.num, p.who, p.concept, p.lines.length]), [[1, roles[0], 'Spine', 2], [2, roles[1], 'Fold', 1]]);
+  assert.deepEqual(s.clash.map((c) => [c.num, c.who, c.text]), [[2, roles[1], 'No.'], [null, 'Stranger', 'Who?'], [null, '', 'loose line']]);
+  assert.match(s.referee, /Option B/);
+  assert.equal(session({ ...TALK, plan: '## Proposals\nx\n\n## Decision\ny' }), null);
+  assert.equal(session({ ...TALK, plan: '' }), null);
+});
+
+test('day pages show the session as a transcript, escaped, and old days keep their plan', () => {
+  const roles = parseTeam(TALK.team).members.map((m) => m.role);
+  const plan = `## Pitch\n**${roles[0]}: Spine**\n<script>alert(1)</script>\n\n## Clash\n${clash(6, roles)}\n\n${RULING.replace('## Decision', '## Deadlock\n**Option A:** a\n\n## Decision')}`;
+  const day = { ...TALK, plan };
+  const md = dayReadme(day, tmp(), '');
+  assert.match(md, /^# 2026-10-03: Spine$/m);
+  assert.match(md, /## The session[\s\S]*\*\*1 · [^*]+: Spine\*\*\\\n/);
+  assert.match(md, /\*\*2 · [^*]+:\*\* line 2\.\n\n\*\*3 · /, 'one paragraph per clash line');
+  assert.match(md, /### Referee\n\n> Option B/);
+  assert.doesNotMatch(md, /## Team plan/);
+  const old = dayReadme({ ...TALK, concept: undefined, plan: '## Proposals\nx\n\n## Decision\ny' }, tmp(), '');
+  assert.match(old, /^# 2026-10-03: Running pace calculator$/m);
+  assert.match(old, /## Team plan\n\n### Proposals/);
+
+  const dir = tmp();
+  const days = join(dir, 'days');
+  mkdirSync(join(days, day.date), { recursive: true });
+  writeFileSync(join(days, day.date, 'day.json'), JSON.stringify(day));
+  writeFileSync(join(days, day.date, 'team.png'), '');
+  buildSite(join(dir, 'site'), [day], days, 'isas1/daily-team');
+  const html = readFileSync(join(dir, 'site', day.date, 'index.html'), 'utf8');
+  assert.match(html, /<h1>Spine<\/h1>/);
+  assert.match(html, /<h2>The session<\/h2>[\s\S]*class="pitch"><span class="who"><span class="num">1<\/span>/);
+  assert.match(html, /<ol class="clash">\n<li><span class="who"><span class="num">1<\/span>/);
+  assert.match(html, /<aside class="referee"><h3>Referee<\/h3>/);
+  assert.match(html, /&lt;script&gt;alert\(1\)&lt;\/script&gt;/);
+  assert.doesNotMatch(html, /<script>alert/);
+  rmSync(dir, { recursive: true });
+});
+
+test('cards use the concept as the headline and the task name below it', () => {
+  const withConcept = cardHtml({ ...TALK, concept: 'Honest Splits' }, 1);
+  assert.match(withConcept, /<h1>Honest Splits<\/h1>\n  <p class="sub">\(Running pace calculator\)<\/p>/);
+  assert.match(cardHtml({ ...TALK, concept: '' }, 1), /<h1>Running Pace Calculator<\/h1>\n  <p class="sub">\(a new team every day\)<\/p>/);
 });
 
 test('the claude provider defaults to Opus 5.5 and CLAUDE_MODEL overrides it', () => {

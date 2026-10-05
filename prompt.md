@@ -13,7 +13,7 @@ The page will be one HTML file, so every idea is about what the page does, what 
 
 Sections, in order, with these headings:
 
-1. Pitch. Each member, in order: a concept name in bold, then at most six lines in their own voice. The concept is their version of the task, made with their method, within the day's constraint.
+1. Pitch. Each member, in order: a header line `**Role: Concept name**`, then at most six lines in their own voice. The concept is their version of the task, made with their method, within the day's constraint.
 2. Clash. Between 6 and 10 lines in total. Each line is one member speaking to another by role, in the form `**Role:** text`. Each member speaks at most 3 times. Members reply to each other, push back, and give ground only for a reason. At least one disagreement is still open when the Clash ends. Stop after the 10th line.
 3. Then exactly one of:
    - Decision. The lead settles it. The first paragraph is one sentence that says what the page does. Then, on its own line, `Concept: <name>`. Then one line per member saying what of theirs is in the page, and one line naming who lost which argument and why.

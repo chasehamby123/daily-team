@@ -161,6 +161,17 @@ export function planSections(text) {
   return out;
 }
 
+// The concept name from the Decision's "Concept: <name>" line, or '' for older days.
+export function conceptName(plan) {
+  const name = (planSections(plan).Decision ?? '').match(/^\s*\**Concept:?\**:?\s*(.+)$/m)?.[1] ?? '';
+  return name.replace(/[*_`#<>[\]]/g, '').replace(/\s+/g, ' ').trim().slice(0, 60);
+}
+
+// A day's headline: the team's concept when there is one, else the task name.
+export const dayTitle = (day) => day.concept || (day.brief || day.task).split(':')[0].trim();
+// The task name alone, for subtitles under a concept headline.
+export const taskName = (day) => (day.brief || day.task).split(':')[0].trim();
+
 // Problems with the session's shape and length, recorded but not retried.
 export function sessionProblems(text) {
   const parts = planSections(text);
@@ -347,7 +358,7 @@ async function main() {
 
   const day = {
     date, task, brief: custom || null, team, provider: opts.provider, model: null,
-    status: 'ok', error: null, decision: '', plan: '', planProblems: [], referee: false, artifacts: [],
+    status: 'ok', error: null, decision: '', concept: '', plan: '', planProblems: [], referee: false, artifacts: [],
   };
   // A forced run replaces the day, so old assets and screenshots must not linger.
   if (existsSync(dir)) {
@@ -379,7 +390,7 @@ async function main() {
     console.log(`referee: ${ruling.ruled ? ruling.model : "no ruling, the lead's option stands"}`);
   }
   planProblems.push(...sessionProblems(planText));
-  Object.assign(day, { model: plan.model, plan: planText, decision: decisionLine(planText), planProblems });
+  Object.assign(day, { model: plan.model, plan: planText, decision: decisionLine(planText), concept: conceptName(planText), planProblems });
   console.log(`plan: ${plan.model}${planProblems.length ? `, flagged: ${planProblems.join('; ')}` : ''}`);
   mkdirSync(dir, { recursive: true });
 

@@ -9,7 +9,7 @@ import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { parseTeam } from './run.mjs';
+import { dayTitle, parseTeam, taskName } from './run.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const BRAND = pathToFileURL(join(HERE, 'brand')).href;
@@ -35,7 +35,7 @@ h1 { font-family: var(--font-headline); font-weight: 700; font-stretch: var(--st
 
 export function cardHtml(day, seasonNumber = 0) {
   const { members, constraint, suggestedBy } = parseTeam(day.team);
-  const title = titleCase((day.brief || day.task).split(':')[0].trim());
+  const title = titleCase(dayTitle(day));
   const kicker = [`Daily team`, day.date, seasonNumber ? `Season ${seasonNumber}` : ''].filter(Boolean).join(' · ');
   const cards = members.map((m, i) => {
     const pill = [m.guest ? m.guest.kind : '', m.newRole || m.newMethod ? 'new' : ''].filter(Boolean).join(' · ');
@@ -76,7 +76,7 @@ h1 { font-size: 80px; max-width: 840px; margin-top: 10px; }
 <body><div class="canvas">
   <div class="kicker">${esc(kicker)}</div>
   <h1>${esc(title)}</h1>
-  <p class="sub">(a new team every day)</p>
+  <p class="sub">(${esc(day.concept ? taskName(day) : 'a new team every day')})</p>
   <img class="arrow" src="${BRAND}/arrow-red.png" alt="">
   <div class="team">${cards}
   </div>

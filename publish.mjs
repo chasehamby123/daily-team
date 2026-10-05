@@ -12,7 +12,7 @@
 import { copyFileSync, cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { findBanned, parseTeam, teamFor, today } from './run.mjs';
+import { dayTitle, findBanned, parseTeam, planSections, teamFor, today } from './run.mjs';
 import { listSeasons, readSeason } from './recruit.mjs';
 import { cardHtml, renderPng, titleCase } from './card.mjs';
 
@@ -27,7 +27,7 @@ const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const cell = (s) => String(s).replace(/\|/g, '\\|').replace(/\n/g, ' ');
 
-export const title = (day) => (day.brief || day.task).split(':')[0].trim();
+export const title = dayTitle;
 const roles = (day) => parseTeam(day.team).members.map((m) => m.role).join(' · ');
 const firstAsset = (day) => day.artifacts.find((a) => a.status !== 'failed');
 const png = (a) => a.file.replace(/\.html$/, '.png');
@@ -54,6 +54,75 @@ function assetLines(day, base, pagesUrl) {
   return lines.length ? lines : ['No asset was requested for this day.'];
 }
 
+// The team session in parts, with speakers matched to member numbers. Null for days recorded
+// before the Pitch and Clash format; those keep their plan as plain markdown.
+export function session(day) {
+  const parts = day.plan ? planSections(day.plan) : {};
+  if (parts.Pitch === undefined || parts.Clash === undefined) return null;
+  const members = parseTeam(day.team).members;
+  const num = (who) => (members.findIndex((m) => m.role.toLowerCase() === who.toLowerCase()) + 1) || null;
+  const pitches = [];
+  for (const l of lines(parts.Pitch)) {
+    const head = l.match(/^\*\*(.+?)\*\*$/);
+    if (head) {
+      const [who, ...rest] = head[1].split(/\s*:\s+|\s+[—–-]\s+/);
+      pitches.push({ who: who.trim(), num: num(who.trim()), concept: rest.join(' ').trim(), lines: [] });
+    } else if (pitches.length) pitches.at(-1).lines.push(l);
+  }
+  const clash = lines(parts.Clash).map((l) => {
+    const m = l.match(/^(?:[-*]\s+)?\*\*([^*\n]+?):?\*\*:?\s*(.*)$/);
+    return m ? { who: m[1].trim(), num: num(m[1].trim()), text: m[2] } : { who: '', num: null, text: l };
+  });
+  return { pitches, clash, deadlock: parts.Deadlock, referee: parts.Referee, decision: parts.Decision, notes: parts['Build notes'] };
+}
+
+const lines = (text) => String(text ?? '').split('\n').map((l) => l.trim()).filter(Boolean);
+const label = (x) => `${x.num ? `${x.num} · ` : ''}${x.who}`;
+
+function sessionMarkdown(s) {
+  const out = ['## The session', '', '### Pitch', ''];
+  for (const p of s.pitches) out.push(`**${label(p)}${p.concept ? `: ${p.concept}` : ''}**\\`, p.lines.join('\\\n'), '');
+  out.push('### Clash', '');
+  for (const c of s.clash) out.push(c.who ? `**${label(c)}:** ${c.text}` : c.text, '');
+  if (s.deadlock !== undefined) out.push('### Deadlock', '', s.deadlock, '');
+  if (s.referee !== undefined) out.push('### Referee', '', ...lines(s.referee).map((l) => `> ${l}\n>`), '');
+  if (s.decision !== undefined) out.push('### Decision', '', s.decision, '');
+  if (s.notes !== undefined) out.push('### Build notes', '', s.notes, '');
+  return out;
+}
+
+const inline = (s) => esc(s).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/`([^`]+)`/g, '<code>$1</code>');
+function blockHtml(text) {
+  const out = [];
+  let list = null;
+  for (const l of lines(text)) {
+    const item = l.match(/^(?:[-*]|\d+\.)\s+(.*)$/);
+    if (item) {
+      if (!list) out.push(list = []);
+      list.push(item[1]);
+    } else {
+      list = null;
+      out.push(l);
+    }
+  }
+  return out.map((x) => (Array.isArray(x) ? `<ul>${x.map((i) => `<li>${inline(i)}</li>`).join('')}</ul>` : `<p>${inline(x)}</p>`)).join('\n');
+}
+
+function sessionHtml(s) {
+  const who = (x) => `<span class="who">${x.num ? `<span class="num">${x.num}</span>` : ''}${esc(x.who)}</span>`;
+  return [
+    '<h2>The session</h2>', '<h3>Pitch</h3>', '<div class="pitches">',
+    ...s.pitches.map((p) => `<div class="pitch">${who(p)}${p.concept ? `<div class="concept">${esc(p.concept)}</div>` : ''}${p.lines.map((l) => `<p>${inline(l)}</p>`).join('')}</div>`),
+    '</div>', '<h3>Clash</h3>', '<ol class="clash">',
+    ...s.clash.map((c) => `<li>${c.who ? who(c) : ''}<span>${inline(c.text)}</span></li>`),
+    '</ol>',
+    s.deadlock !== undefined ? `<h3>Deadlock</h3>\n${blockHtml(s.deadlock)}` : '',
+    s.referee !== undefined ? `<aside class="referee"><h3>Referee</h3>\n${blockHtml(s.referee)}</aside>` : '',
+    s.decision !== undefined ? `<h3>Decision</h3>\n${blockHtml(s.decision)}` : '',
+    s.notes !== undefined ? `<h3>Build notes</h3>\n${blockHtml(s.notes)}` : '',
+  ].filter(Boolean).join('\n');
+}
+
 // Guests bring a method drawn from a figure, myth, book, or idea. They never speak as it.
 function guestNote(day) {
   const g = parseTeam(day.team).members.find((m) => m.guest);
@@ -74,7 +143,8 @@ export function dayReadme(day, daysDir, pagesUrl) {
     ...(season ? [`**Season:** ${season}`, ''] : []),
     ...(day.decision ? [`**Decision:** ${day.decision}`, ''] : []),
     '## Asset', '', ...assetLines(day, { dir, href: '' }, pagesUrl),
-    ...(day.plan ? ['## Team plan', '', day.plan.replace(/^(#{1,5}) /gm, '#$1 '), ''] : []),
+    ...(session(day) ? sessionMarkdown(session(day))
+      : day.plan ? ['## Team plan', '', day.plan.replace(/^(#{1,5}) /gm, '#$1 '), ''] : []),
     ...guestNote(day),
     '## Team', '', '```text', day.team, '```', '',
     `Provider: ${day.provider}. Model: ${day.model ?? 'none'}.`, '',
@@ -201,6 +271,18 @@ iframe { width: 100%; height: 80vh; border: 1px solid var(--border-line); border
 .grid a { color: inherit; text-decoration: none; }
 .grid img { display: block; border: 1px solid var(--border-line); border-radius: var(--radius-md); margin-bottom: var(--space-2); }
 a { color: var(--sc-red); }
+h3 { font-family: var(--font-headline); font-weight: 700; font-size: 18px; margin: var(--space-6) 0 var(--space-3); }
+.who { display: inline-flex; align-items: center; gap: var(--space-2); font-family: var(--font-headline); font-weight: 700; color: var(--sc-navy); }
+.num { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: var(--radius-pill); background: var(--sc-navy);
+  color: var(--sc-white); font-size: 13px; }
+.pitches { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-4); }
+.pitch { padding: var(--space-4); border: 1px solid var(--border-line); border-radius: var(--radius-md); }
+.pitch p { margin: var(--space-1) 0; font-size: 15px; }
+.concept { font-family: var(--font-headline); font-weight: 700; font-size: 20px; color: var(--sc-red); margin: var(--space-2) 0; }
+.clash { list-style: none; padding: 0; }
+.clash li { display: grid; grid-template-columns: minmax(120px, 200px) 1fr; gap: var(--space-3); padding: var(--space-2) 0; border-bottom: 1px solid var(--border-line); }
+.referee { padding: var(--space-3) var(--space-4); border-left: 4px solid var(--sc-navy); background: var(--sc-canvas); }
+@media (max-width: 600px) { .clash li { grid-template-columns: 1fr; gap: var(--space-1); } }
 </style>
 </head>
 <body>
@@ -224,7 +306,8 @@ function dayPage(day, daysDir, repo, archiveHtml, { root, pagesUrl, imagePrefix 
     const note = a.status === 'ok' ? '' : ` <span class="muted">(${esc(a.status)}: ${esc(a.problems.join('; '))})</span>`;
     return `<h2>The tool${note}</h2>\n<iframe sandbox="${SANDBOX}" title="${esc(a.file)}" srcdoc="${esc(html)}"></iframe>`;
   });
-  const plan = repo ? `<p><a href="https://github.com/${esc(repo)}/tree/main/days/${day.date}">Team plan and source</a></p>` : '';
+  const s = session(day);
+  const plan = repo ? `<p><a href="https://github.com/${esc(repo)}/tree/main/days/${day.date}">${s ? 'Source' : 'Team plan and source'}</a></p>` : '';
   return page(`${day.date}: ${title(day)}`, [
     `<div class="kicker">Daily team · ${day.date}</div>`,
     `<h1>${esc(titleCase(title(day)))}</h1>`,
@@ -232,7 +315,7 @@ function dayPage(day, daysDir, repo, archiveHtml, { root, pagesUrl, imagePrefix 
     `<img class="card" src="${imagePrefix}team.png" alt="Team for ${day.date}: ${esc(roles(day))}">`,
     day.decision ? `<p><strong>Decision:</strong> ${esc(day.decision)}</p>` : '',
     ...(frames.length ? frames : [`<p>No asset. ${esc(day.error || '')}</p>`]),
-    plan, archiveHtml,
+    s ? sessionHtml(s) : '', plan, archiveHtml,
   ].join('\n'), { root, image: pagesUrl ? `${pagesUrl}${day.date}/team.png` : '' });
 }
 
