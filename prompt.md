@@ -3,7 +3,7 @@
 You write the working session of a four-person creative team. The task is the floor: the page must do what the task says. The team's job is the version only these four would make.
 
 Who they are:
-- Each member is a character defined by their craft. They think and speak through its materials, tools, habits, and failures: a glassblower in heat, breath, and what shatters; a chef in timing, tasting, and what gets sent back. Their stance is their temperament. Their method is how they work.
+- Each member is a character defined by their craft. They think and speak through its materials, tools, habits, and failures: a glassblower in heat, breath, and what shatters; a chef in timing, tasting, and what gets sent back. Their stance is what they push for. Their method is how they work. When the team lists a temperament, it is how they argue: let it show in how they speak, interrupt, and give way.
 - Members have no personal names. Label each by role, or by the guest's name.
 - Never write "As a ___". No puns on the job title. Show the craft in what they notice, not in what they call themselves.
 - Member 4 may be a guest. A guest from myth, an old book, an archetype, the future, or invented creatures speaks in character, in original words: never quote or paraphrase lines from a source text. A historical guest speaks in plain modern words about their method only: never write in their voice, imitate how they wrote, or put words in their mouth as if they said them.
@@ -76,6 +76,8 @@ Each kind of item:
 - Methods: one working practice as an instruction in one sentence, at most 120 characters. Example: "Cut the first draft by half."
 - Constraints: one rule a single HTML tool can follow, at most 80 characters. Example: "No more than five inputs."
 - Tasks: one specific single-file web tool that helps a broad audience, written as "Name: what the user enters and what they get.", at most 220 characters, starting with a capital letter and continuing in lowercase. No medical, legal, or investment advice.
+
+Temperaments, when the current season has them: how a person behaves in an argument, in one line of plain words, at most 60 characters, with no names and no judgement of character. Example: "Concedes small points to win the big one."
 
 Guests, when the current season has them: a historical figure who died at least 100 years before the season starts, a figure from ancient myth or folklore, a character from a book whose author died at least 100 years ago, an archetype or personified force, an invented person from the future, or a creature from myth or invention. Each has a kind, a name of at most 40 characters, one method as an instruction in plain words, and a source: "died <year>" for historical figures, "<author>, died <year>" for characters, the tradition for myths, and "invented" for future people and new creatures. Use myths in their traditional form, not film, comic, or game versions. No gods or prophets of living religions, no figures sacred to living cultures, and no names that mainly mean a brand today.
 

@@ -311,3 +311,29 @@ creature | Hydra | For every problem you cut, check what grows back. | Greek myt
 creature | Glass fox | Show everything it does and hide nothing. | invented
 + historical | Mary Anning | Search the same ground again after every storm. | died 1847
 + creature | Clockwork beetle | Wind it once and watch how far it runs without help. | invented
+
+#@ temperaments
++ Impatient; cuts people off mid-sentence.
++ Hoards evidence before saying anything.
++ Agrees fast, then quietly does it their own way.
++ Argues the opposite side to test an idea.
++ Speaks rarely, and only in short verdicts.
++ Gets louder the more sure they are.
++ Concedes small points to win the big one.
++ Asks for a demonstration before any opinion.
++ Turns every disagreement into a wager.
++ Defends the first idea in the room.
++ Distrusts anything that came too easily.
++ Answers questions with sketches and numbers.
++ Keeps score of every point won and lost.
++ Praises an idea, then takes it apart.
++ Changes their mind out loud, mid-argument.
++ Will not go on until a word is defined.
++ Tells a story from the workshop instead of arguing.
++ Sides with whoever is losing.
++ Wants everything decided before lunch.
++ Treats every rule as a challenge.
++ Measures twice and says so.
++ Laughs at the problem first, then takes it apart.
++ Insists on hearing from the quietest person.
++ Will not accept a plan they cannot draw.

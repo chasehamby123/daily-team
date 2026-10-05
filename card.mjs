@@ -43,7 +43,7 @@ export function cardHtml(day, seasonNumber = 0) {
     <div class="member${m.guest ? ' guest' : ''}">
       <div class="num">${i + 1}</div>${pill ? `\n      <div class="new">${esc(pill.toUpperCase())}</div>` : ''}
       <div class="role">${esc(m.role)}</div>${m.guest ? `\n      <div class="source">${esc(m.guest.source)}</div>` : ''}
-      <div class="method">${esc(m.method)}</div>
+      <div class="method${m.temperament ? ' short' : ''}">${esc(m.method)}</div>${m.temperament ? `\n      <div class="temper">${esc(m.temperament.replace(/\.$/, ''))}</div>` : ''}
       <div class="stance">${esc(m.stance.replace(/\.$/, ''))}</div>
     </div>`;
   }).join('');
@@ -66,6 +66,9 @@ h1 { font-size: 80px; max-width: 840px; margin-top: 10px; }
 .source { margin: -4px 0 6px; font-size: 13px; color: var(--text-support); }
 .method { flex: 1; font-size: 15px; line-height: 1.4; color: var(--text-muted); overflow: hidden;
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }
+.method.short { -webkit-line-clamp: 2; }
+.temper { margin-top: 6px; font-size: 13.5px; line-height: 1.3; font-style: italic; color: var(--sc-olive); overflow: hidden;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .stance { align-self: flex-start; margin-top: 8px; padding: 4px 8px; border-radius: var(--radius-xs); background: var(--sc-red-100);
   color: var(--sc-red-600); font: 600 13px var(--font-body); }
 .foot { position: absolute; left: 56px; right: 56px; bottom: 32px; display: flex; justify-content: space-between; gap: 24px;

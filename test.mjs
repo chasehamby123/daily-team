@@ -126,10 +126,11 @@ test('every season file has valid pools', () => {
   assert.equal(seasons[0], FIRST_SEASON);
   for (const start of seasons) {
     const p = readSeason(HERE, start);
-    for (const [kind, multiple] of Object.entries({ roles: 8, methods: 8, stances: 8, constraints: 2, tasks: 2, guests: 2 })) {
-      assert.ok((p[kind].length > 0 || kind === 'guests') && p[kind].length % multiple === 0, `${start} ${kind}: size ${p[kind].length}`);
+    for (const [kind, multiple] of Object.entries({ roles: 8, methods: 8, stances: 8, constraints: 2, tasks: 2, guests: 2, temperaments: 8 })) {
+      assert.ok((p[kind].length > 0 || ['guests', 'temperaments'].includes(kind)) && p[kind].length % multiple === 0, `${start} ${kind}: size ${p[kind].length}`);
       assert.equal(new Set(p[kind].map((i) => i.text.toLowerCase())).size, p[kind].length, `${start}: duplicate in ${kind}`);
     }
+    for (const i of p.temperaments) assert.deepEqual(itemProblems('temperaments', i.text), [], `${start}: ${i.text}`);
     for (const i of p.guests) assert.deepEqual(guestProblems(parseGuest(i.text), Number(start.slice(0, 4))), [], `${start}: ${i.text}`);
     if (start !== FIRST_SEASON) assert.ok(existsSync(join(HERE, 'pools', `${start}.json`)), `${start}: missing season record`);
   }
@@ -962,7 +963,7 @@ test('the week block shows the season and a safe vote table', () => {
 // Guests
 
 const GUEST_SEASON = '2026-10-05';
-const KINDS_ALL = ['roles', 'methods', 'stances', 'constraints', 'tasks', 'guests'];
+const KINDS_ALL = ['roles', 'methods', 'stances', 'constraints', 'tasks', 'guests', 'temperaments'];
 
 test('a season with guests makes member 4 a guest and leaves earlier dates alone', () => {
   const dir = fixture({ [GUEST_SEASON]: readFileSync(join(HERE, 'pools', `${GUEST_SEASON}.txt`), 'utf8') });
@@ -1043,4 +1044,76 @@ test('guest cards and day pages show the kind, the source, and the note', () => 
   assert.match(html, />LITERARY · NEW</);
   assert.match(html, /class="source">Herman Melville, died 1891</);
   assert.match(dayReadme(day, '/nonexistent', ''), /\*\*Guest:\*\* Captain Ahab \(literary; Herman Melville, died 1891\)\. [\s\S]*never speaks as the figure/);
+});
+
+// Temperaments
+
+const MOOD_SEASON = '2026-10-12';
+
+test('a season with temperaments gives each member one and changes nothing else', () => {
+  const text = readFileSync(join(HERE, 'pools', `${MOOD_SEASON}.txt`), 'utf8');
+  const withMoods = fixture({ [MOOD_SEASON]: text });
+  const without = fixture({ [MOOD_SEASON]: text.slice(0, text.indexOf('#@ temperaments')) });
+  for (const d of dates(MOOD_SEASON, 40)) {
+    const out = team(d, {}, withMoods).stdout;
+    assert.equal(out.replace(/^ {3}Temperament: .+\n/gm, ''), team(d, {}, without).stdout, d);
+    const t = parseTeam(out);
+    assert.equal(t.members.length, 4, d);
+    assert.equal(new Set(t.members.map((m) => m.temperament).filter(Boolean)).size, 4, `${d}: four different temperaments`);
+  }
+  for (const d of dates('2026-10-01', 11)) {
+    assert.doesNotMatch(team(d, {}, withMoods).stdout, /Temperament/, d);
+    assert.ok(parseTeam(team(d, {}, withMoods).stdout).members.every((m) => m.temperament === ''), d);
+  }
+});
+
+test('recruit rotates temperaments and checks them when the season has them', async () => {
+  const root = tmp();
+  mkdirSync(join(root, 'pools'));
+  cpSync(join(HERE, 'pools', `${MOOD_SEASON}.txt`), join(root, 'pools', `${MOOD_SEASON}.txt`));
+  const base = readSeason(root, MOOD_SEASON);
+  const roles = ['Lamplighter', 'Ferry pilot', 'Hat maker', 'Map engraver', 'Bell founder', 'Kite maker', 'Rope maker', 'Sail maker'];
+  const moods = ['Repeats the question back before answering.', 'Goes quiet when they disagree.',
+    'Brings a sample to every argument.', 'Asks who will clean up afterwards.'];
+  const draft = { ...DRAFT, roles, suggestions: [], tasks: [...DRAFT.tasks, 'Seed swap log: seeds given and received give a balance per person.'],
+    guests: [{ kind: 'creature', name: 'Griffin', method: 'Guard the one thing worth keeping.', source: 'myth and folklore' },
+      { kind: 'future', name: 'Librarian from 2400', method: 'Make it findable by someone with no context.', source: 'invented' }],
+    temperaments: moods };
+  const reply = (d) => `\`\`\`json\n${JSON.stringify(d)}\n\`\`\``;
+  const noMoods = { ...draft };
+  delete noMoods.temperaments;
+  await withServer([[200, reply(noMoods)], [200, reply(draft)]], async (url, calls) => {
+    const r = await node([join(HERE, 'recruit.mjs'), '--root', root, '--date', MOOD_SEASON],
+      { PROVIDER: 'openrouter', OPENROUTER_API_KEY: 'k', API_URL: url, MODEL: 'm' });
+    assert.equal(r.status, 0, r.stderr);
+    assert.match(calls[0].messages[1].content, /<current_temperaments>[\s\S]*Gets louder the more sure they are/);
+    assert.match(calls[0].messages[1].content, /"temperaments": \["\.\.\."\]/);
+    assert.match(calls[1].messages.at(-1).content, /temperaments: expected exactly 4, got none/);
+    const next = readSeason(root, '2026-10-19');
+    assert.equal(next.temperaments.length, 24);
+    assert.deepEqual(next.temperaments.slice(0, 20).map((i) => i.text), base.temperaments.slice(4).map((i) => i.text));
+    assert.deepEqual(next.temperaments.slice(-4).map((i) => [i.text, i.fresh]), moods.map((m) => [m, true]));
+    const meta = JSON.parse(readFileSync(join(root, 'pools', '2026-10-19.json'), 'utf8'));
+    assert.match(summary(meta), /### New temperaments[\s\S]*Goes quiet[\s\S]*### Retired temperaments[\s\S]*Impatient/);
+  });
+  rmSync(root, { recursive: true });
+});
+
+test('validate checks temperaments only when the season has them', () => {
+  const ctx = { known: [], suggestions: [], temperaments: true };
+  const base = { ...DRAFT, suggestions: [] };
+  const ok = { ...base, temperaments: ['Goes quiet when they disagree.', 'Asks who will clean up afterwards.',
+    'Brings a sample to every argument.', 'Repeats the question back before answering.'] };
+  assert.deepEqual(validate(ok, ctx).filter((p) => p.startsWith('temperaments')), []);
+  const bad = validate({ ...ok, temperaments: ['Argues like Socrates would.', ...ok.temperaments.slice(1, 3), ok.temperaments[1]] }, ctx).join('\n');
+  assert.match(bad, /"Socrates" looks like a name/);
+  assert.match(bad, /already used/);
+  assert.deepEqual(validate(base, { ...ctx, temperaments: false }).filter((p) => p.startsWith('temperaments')), []);
+});
+
+test('cards show each temperament when the season has them', () => {
+  const html = cardHtml({ date: MOOD_SEASON, task: 'Dice: x', concept: '', team: recordedTeam(MOOD_SEASON) }, 3);
+  assert.equal((html.match(/class="temper"/g) || []).length, 4);
+  assert.equal((html.match(/class="method short"/g) || []).length, 4);
+  assert.doesNotMatch(cardHtml({ date: '2026-10-05', task: 'Dice: x', team: recordedTeam('2026-10-05') }, 2), /class="temper"/);
 });

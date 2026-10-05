@@ -123,11 +123,16 @@ function sessionHtml(s) {
   ].filter(Boolean).join('\n');
 }
 
-// Guests bring a method drawn from a figure, myth, book, or idea. They never speak as it.
+// Guests bring a method drawn from a figure, myth, book, or idea. Historical guests never speak as
+// the person; others speak in character in original words. Days recorded before the Pitch and
+// Clash format keep the stricter note.
 function guestNote(day) {
   const g = parseTeam(day.team).members.find((m) => m.guest);
   if (!g) return [];
-  return [`**Guest:** ${g.role} (${g.guest.kind}; ${g.guest.source}). The method is drawn from public-domain history, myth, or literature, or invented. The guest never speaks as the figure, and nothing here is endorsed by anyone.`, ''];
+  const voice = g.guest.kind === 'historical' || !session(day)
+    ? 'The guest never speaks as the figure'
+    : 'The guest speaks in character in original words, never quoting the source';
+  return [`**Guest:** ${g.role} (${g.guest.kind}; ${g.guest.source}). The method is drawn from public-domain history, myth, or literature, or invented. ${voice}, and nothing here is endorsed by anyone.`, ''];
 }
 
 export function dayReadme(day, daysDir, pagesUrl) {

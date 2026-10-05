@@ -13,7 +13,8 @@
 # Each pool is split in two halves. A half is used for a block of days, then the other half,
 # and is reshuffled each time it comes back. So within a season no item repeats within
 # (pool size / 2 / items per day) + 1 days: 7 for roles and methods, 22 for constraints,
-# 61 for tasks, and (pool size / 2) + 1 for guests.
+# 61 for tasks, and (pool size / 2) + 1 for guests. A season with a temperaments pool gives each
+# member one, drawn with its own seed, so no other pick changes.
 set -eu
 
 day_arg=${1:-$(date +%Y-%m-%d)}
@@ -75,6 +76,8 @@ END {
   pick("stances", 4, 3, stance); pick("constraints", 1, 4, rule); pick("tasks", 1, 5, task)
   guests = n["guests"] > 0
   if (guests) { pick("guests", 1, 6, guest); split(item["guests", guest[1]], g, / \| /) }
+  moods = n["temperaments"] > 0
+  if (moods) pick("temperaments", 4, 7, mood)
   print "Team for " date
   print "Season: " season
   print ""
@@ -87,6 +90,7 @@ END {
       print "   Method: " show("methods", method[i])
     }
     print "   Stance: " item["stances", stance[i]]
+    if (moods) print "   Temperament: " item["temperaments", mood[i]]
   }
   print ""
   print "Constraint: " item["constraints", rule[1]]
