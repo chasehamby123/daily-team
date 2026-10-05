@@ -796,7 +796,8 @@ test('cards render to PNG at their exact size with the brand fonts', { skip: !fi
 });
 
 test('the week block shows the season and a safe vote table', () => {
-  const block = weekBlock(HERE, [], [
+  const day = { team: teamFor('2026-10-03') };
+  const block = weekBlock(HERE, [day], [
     { number: 5, votes: 3, license: true, task: 'Coin <script>alert(1)</script> counter [x](y) | yes' },
     { number: 6, votes: 2, license: true, task: 'Visit evil.example: free tools' },
     { number: 7, votes: 2, license: true, task: 'Ping @someone: now' },
@@ -808,7 +809,7 @@ test('the week block shows the season and a safe vote table', () => {
   assert.match(block, /\| 3 \| \[Coin scriptalert1\/script counter xy yes\]\(https:\/\/github\.com\/isas1\/daily-team\/issues\/5\) \|/);
   assert.match(block, /issues\/10\) \|/);
   assert.doesNotMatch(block, /<script>|issues\/(6|7|8|9)\)/, 'links, handles, banned words, and unlicensed text stay out');
-  assert.match(weekBlock(HERE, [], []), /No open suggestions yet\./);
+  assert.match(weekBlock(HERE, [day], []), /No open suggestions yet\./);
 });
 
 // Guests
