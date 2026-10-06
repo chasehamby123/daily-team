@@ -279,6 +279,18 @@
       {
         "start": "2026-10-05",
         "when": "starts next Monday",
+        "addedCounts": {
+          "roles": 8,
+          "methods": 8,
+          "constraints": 2,
+          "tasks": 6
+        },
+        "retiredCounts": {
+          "roles": 8,
+          "methods": 8,
+          "constraints": 2,
+          "tasks": 6
+        },
         "added": {
           "roles": [
             "Taxidermist",
