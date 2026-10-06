@@ -1,0 +1,482 @@
+{
+  "facts": {
+    "week": {
+      "start": "2026-09-28",
+      "end": "2026-10-04"
+    },
+    "repository": "isas1/daily-team",
+    "changes": {
+      "commits": [
+        {
+          "sha": "be9482e",
+          "date": "2026-10-02",
+          "subject": "Add date-seeded team generator",
+          "area": "Team and sessions"
+        },
+        {
+          "sha": "fbabd82",
+          "date": "2026-10-02",
+          "subject": "Add Claude Code skill and shared prompt",
+          "area": "Skill"
+        },
+        {
+          "sha": "acd6d0c",
+          "date": "2026-10-02",
+          "subject": "Add OpenRouter runner and daily workflow",
+          "area": "Team and sessions"
+        },
+        {
+          "sha": "308cb62",
+          "date": "2026-10-02",
+          "subject": "Add tests, CI, and README",
+          "area": "Automation"
+        },
+        {
+          "sha": "7d2e485",
+          "date": "2026-10-03",
+          "subject": "Add daily task pool and constraints that suit web tools",
+          "area": "Team and sessions"
+        },
+        {
+          "sha": "a358319",
+          "date": "2026-10-03",
+          "subject": "Build today's task by default, with checks, one retry, and day records",
+          "area": "Team and sessions"
+        },
+        {
+          "sha": "a1b25a5",
+          "date": "2026-10-03",
+          "subject": "Add screenshots, README Today block, and sandboxed Pages site",
+          "area": "Pages and images"
+        },
+        {
+          "sha": "c7ce4c9",
+          "date": "2026-10-03",
+          "subject": "Add security policy, Dependabot, and tests for the new pipeline",
+          "area": "Automation"
+        },
+        {
+          "sha": "784b2dd",
+          "date": "2026-10-03",
+          "subject": "Record every day, including failures, and add the Claude provider",
+          "area": "Team and sessions"
+        },
+        {
+          "sha": "4000a39",
+          "date": "2026-10-03",
+          "subject": "Publish the record: team cards, day pages, archive, recent days",
+          "area": "Pages and images"
+        },
+        {
+          "sha": "6414a7e",
+          "date": "2026-10-03",
+          "subject": "Add daily.sh and the Claude subscription option to the daily workflow",
+          "area": "Automation"
+        },
+        {
+          "sha": "3e848e0",
+          "date": "2026-10-03",
+          "subject": "Test records, the Claude provider, and the published pages",
+          "area": "Tests"
+        },
+        {
+          "sha": "39f7416",
+          "date": "2026-10-03",
+          "subject": "Fix key whitespace, retry failed days, and avoid push races",
+          "area": "Automation"
+        },
+        {
+          "sha": "958c1bf",
+          "date": "2026-10-03",
+          "subject": "Check the Claude token format before calling the CLI",
+          "area": "Team and sessions"
+        },
+        {
+          "sha": "ed2677c",
+          "date": "2026-10-03",
+          "subject": "Let a manual run choose the model provider",
+          "area": "Automation"
+        },
+        {
+          "sha": "337c534",
+          "date": "2026-10-03",
+          "subject": "Remove old assets on forced runs and take screenshots in light mode",
+          "area": "Team and sessions"
+        },
+        {
+          "sha": "c3e7e9b",
+          "date": "2026-10-03",
+          "subject": "Retake the 2026-10-03 screenshot of the Claude asset",
+          "area": "Records"
+        },
+        {
+          "sha": "9acedab",
+          "date": "2026-10-03",
+          "subject": "Require every tool to load with a worked example",
+          "area": "Team and sessions"
+        },
+        {
+          "sha": "4b38a5c",
+          "date": "2026-10-03",
+          "subject": "State in the README that the daily content is AI-generated",
+          "area": "Docs"
+        },
+        {
+          "sha": "6e10708",
+          "date": "2026-10-03",
+          "subject": "Move pools into weekly season files so past teams never change",
+          "area": "Team and sessions"
+        },
+        {
+          "sha": "eedca51",
+          "date": "2026-10-03",
+          "subject": "Draft each new season with checks, and open it as a pull request",
+          "area": "Seasons and suggestions"
+        },
+        {
+          "sha": "ff8e6c1",
+          "date": "2026-10-03",
+          "subject": "Take task suggestions, close the loop on them, and announce seasons",
+          "area": "Automation"
+        },
+        {
+          "sha": "169124d",
+          "date": "2026-10-03",
+          "subject": "Show the season, new members, credits, and the vote in the README",
+          "area": "Pages and images"
+        },
+        {
+          "sha": "4f3e35e",
+          "date": "2026-10-03",
+          "subject": "Test seasons, recruiting, suggestions, and the vote",
+          "area": "Tests"
+        },
+        {
+          "sha": "af1094e",
+          "date": "2026-10-03",
+          "subject": "Give season pull requests a merge deadline and check it on merge",
+          "area": "Automation"
+        },
+        {
+          "sha": "1fca3ff",
+          "date": "2026-10-03",
+          "subject": "Add the Sam Creates brand: tokens, fonts, arrow, and social preview",
+          "area": "Pages and images"
+        },
+        {
+          "sha": "7f007b9",
+          "date": "2026-10-03",
+          "subject": "Render team cards and the Pages site in the Sam Creates brand",
+          "area": "Pages and images"
+        },
+        {
+          "sha": "9c3f78a",
+          "date": "2026-10-03",
+          "subject": "Season 2026-10-05: new members and tasks (#10)",
+          "area": "Seasons and suggestions"
+        },
+        {
+          "sha": "df33c2d",
+          "date": "2026-10-03",
+          "subject": "Add guests: one historical, mythic, literary, archetypal, future, or creature member each day",
+          "area": "Team and sessions"
+        },
+        {
+          "sha": "d29aa69",
+          "date": "2026-10-03",
+          "subject": "Rotate two guests each season and check them for legal risk",
+          "area": "Seasons and suggestions"
+        },
+        {
+          "sha": "badc7b3",
+          "date": "2026-10-03",
+          "subject": "Show guests on cards and day pages, and publish locally with full inputs",
+          "area": "Pages and images"
+        },
+        {
+          "sha": "31e690a",
+          "date": "2026-10-03",
+          "subject": "Test guests: past dates, legal checks, rotation, and cards",
+          "area": "Tests"
+        },
+        {
+          "sha": "38e18df",
+          "date": "2026-10-03",
+          "subject": "Harden suggestions, artifact forms, and local Chrome",
+          "area": "Pages and images"
+        },
+        {
+          "sha": "5a0dee4",
+          "date": "2026-10-04",
+          "subject": "Use Opus 5.5 by default for the claude provider",
+          "area": "Automation"
+        }
+      ],
+      "testsAtStart": null,
+      "testsAtEnd": 43
+    },
+    "days": [
+      {
+        "date": "2026-10-03",
+        "status": "ok",
+        "task": "Running pace calculator",
+        "concept": "",
+        "decision": "The page takes a distance (value + km/mi unit) and a finish time, and returns pace per km, pace per mile, and projected times for 5K, 10K, half marathon, and full marathon, live-updating as you type, with dark mode following system setting.",
+        "constraint": "Has a dark mode that follows the system setting.",
+        "roles": [
+          "Service designer",
+          "Product designer",
+          "Interaction designer",
+          "Choreographer"
+        ],
+        "guest": null,
+        "format": "old",
+        "deadlock": false,
+        "referee": false,
+        "clashLines": null,
+        "planProblems": [],
+        "artifacts": [
+          {
+            "file": "artifact-1.html",
+            "lead": 1,
+            "status": "ok",
+            "problems": [],
+            "bytes": 10051
+          }
+        ]
+      },
+      {
+        "date": "2026-10-04",
+        "status": "ok",
+        "task": "Weekly planner page with priorities, appointments, and notes, printable on A4.",
+        "concept": "",
+        "decision": "The page is a single-column, printable A4 weekly planner with one row per day, each row holding one priority line, one appointment line (with optional time), and one notes line, plus a full-width notes strip at the bottom.",
+        "constraint": "One column only.",
+        "roles": [
+          "Comic artist",
+          "Packaging designer",
+          "Exhibition designer",
+          "Printmaker"
+        ],
+        "guest": null,
+        "format": "old",
+        "deadlock": false,
+        "referee": false,
+        "clashLines": null,
+        "planProblems": [],
+        "artifacts": [
+          {
+            "file": "artifact-1.html",
+            "lead": 1,
+            "status": "ok",
+            "problems": [],
+            "bytes": 13183
+          }
+        ]
+      }
+    ],
+    "seasons": [
+      {
+        "start": "2026-10-05",
+        "when": "starts next Monday",
+        "added": {
+          "roles": [
+            "Taxidermist",
+            "Locksmith",
+            "Upholsterer",
+            "Glassblower",
+            "Calligrapher",
+            "Blacksmith",
+            "Tailor",
+            "Beekeeper"
+          ],
+          "methods": [
+            "Work in silence for the first ten minutes before any music or talk.",
+            "Swap your draft with someone else's and finish theirs.",
+            "List every material you cannot use, then start.",
+            "Design for the most frustrated possible user first.",
+            "Ask a child to explain what it is for.",
+            "Set a budget of zero and see what still works.",
+            "Translate the brief into a question, then answer only the question.",
+            "Choose the constraint you like least and keep it."
+          ],
+          "constraints": [
+            "Works fully offline after the first load.",
+            "No more than two levels of heading."
+          ],
+          "tasks": [
+            "Sunrise and sunset calculator: a date and coordinates entered give sunrise time, sunset time, and day length.",
+            "Color contrast checker: two colors entered give the contrast ratio and a pass or fail against a threshold the user sets.",
+            "QR code generator: text or a link entered draws a scannable code locally in the browser.",
+            "Random team generator: a list of names and a group size give randomly assigned teams.",
+            "Average calculator: a list of numbers gives the mean, median, mode, and range.",
+            "Dice and coin flip simulator: number of dice or coins and number of rolls give a results table and totals."
+          ]
+        },
+        "retired": {
+          "roles": [
+            "Typographer",
+            "Illustrator",
+            "Photographer",
+            "Film editor",
+            "Sound designer",
+            "Composer",
+            "Copywriter",
+            "Book editor"
+          ],
+          "methods": [
+            "Make ten rough versions before choosing one.",
+            "Start from the final result and work backwards.",
+            "Cut the first draft by half.",
+            "Test on paper before building anything.",
+            "Copy a structure from an unrelated field.",
+            "Work at actual size only.",
+            "Use one grid for every part.",
+            "Write the announcement before the work exists."
+          ],
+          "constraints": [
+            "One typeface, two weights.",
+            "Black and white only."
+          ],
+          "tasks": [
+            "Bill splitter: total, tip percent, and number of people give the amount per person, rounded to 0.05, with the formula shown.",
+            "Savings goal planner: target amount, target date, and current savings give the amount to save per week and per month.",
+            "Subscription tracker: subscriptions with price and billing cycle give monthly and yearly totals, sorted by cost.",
+            "Loan repayment calculator: amount, annual rate, and term give the monthly payment, total interest, and a year-by-year table, with the formula shown.",
+            "Unit price comparer: two to five products with price and size give the cost per 100 g or per item and mark the cheapest.",
+            "Monthly budget sheet: income and up to 15 expense lines give totals and the amount left, in a layout that prints on one page."
+          ]
+        },
+        "accepted": []
+      }
+    ],
+    "github": {
+      "suggestionsOpenedThisWeekCount": 3,
+      "issuesOpenedCount": 12,
+      "issuesClosedCount": 9,
+      "issuesOpenedAndClosedCount": 9,
+      "issuesOpened": [
+        {
+          "number": 16,
+          "title": "Task: Price in hours"
+        },
+        {
+          "number": 15,
+          "title": "Task: Estimate anything"
+        },
+        {
+          "number": 14,
+          "title": "Task: Gut check coin"
+        },
+        {
+          "number": 9,
+          "title": "Public release checklist"
+        },
+        {
+          "number": 8,
+          "title": "Weekly Discussions post for each new season"
+        },
+        {
+          "number": 7,
+          "title": "Show the change: New marks, This week line, CONTRIBUTING.md"
+        },
+        {
+          "number": 6,
+          "title": "Close the loop: comment on suggestions and credit the suggester"
+        },
+        {
+          "number": 5,
+          "title": "Task suggestions: issue form and weekly screening"
+        },
+        {
+          "number": 4,
+          "title": "Recruit workflow: weekly, manual, and local runs that open a pull request"
+        },
+        {
+          "number": 3,
+          "title": "Recruit script: draft the next season with legal and ethical checks"
+        },
+        {
+          "number": 2,
+          "title": "Seasons: freeze pools per week so past dates never change"
+        },
+        {
+          "number": 1,
+          "title": "Proposal: rotating weekly cast and task suggestions"
+        }
+      ],
+      "issuesClosed": [
+        {
+          "number": 9,
+          "title": "Public release checklist"
+        },
+        {
+          "number": 8,
+          "title": "Weekly Discussions post for each new season"
+        },
+        {
+          "number": 7,
+          "title": "Show the change: New marks, This week line, CONTRIBUTING.md"
+        },
+        {
+          "number": 6,
+          "title": "Close the loop: comment on suggestions and credit the suggester"
+        },
+        {
+          "number": 5,
+          "title": "Task suggestions: issue form and weekly screening"
+        },
+        {
+          "number": 4,
+          "title": "Recruit workflow: weekly, manual, and local runs that open a pull request"
+        },
+        {
+          "number": 3,
+          "title": "Recruit script: draft the next season with legal and ethical checks"
+        },
+        {
+          "number": 2,
+          "title": "Seasons: freeze pools per week so past dates never change"
+        },
+        {
+          "number": 1,
+          "title": "Proposal: rotating weekly cast and task suggestions"
+        }
+      ],
+      "prsMerged": [
+        {
+          "number": 10,
+          "title": "Season 2026-10-05"
+        }
+      ],
+      "openSuggestionsNow": []
+    },
+    "metrics": {
+      "days": 2,
+      "failed": 0,
+      "flagged": 0,
+      "deadlocks": 0,
+      "refereed": 0,
+      "meanClashLines": null,
+      "artifacts": 2,
+      "meanArtifactKB": 11.5,
+      "guestKinds": {},
+      "commits": 34,
+      "commitsByArea": {
+        "Team and sessions": 10,
+        "Skill": 1,
+        "Automation": 8,
+        "Pages and images": 7,
+        "Tests": 3,
+        "Records": 1,
+        "Docs": 1,
+        "Seasons and suggestions": 3
+      },
+      "testsAtEnd": 43
+    },
+    "trend": null
+  },
+  "model": "claude-sonnet-5-5",
+  "status": "ok",
+  "problems": []
+}
