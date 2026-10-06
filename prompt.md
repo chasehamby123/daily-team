@@ -1,3 +1,10 @@
+Contents. The skill and the daily pipeline share this file. Text above the first heading is not sent to the model.
+- Work the brief: the team session. Skill and pipeline.
+- Referee: one ruling after a Deadlock. Skill and pipeline.
+- Build an artifact: one HTML file. Skill build mode and pipeline.
+- Recruit: next week's season. Pipeline only.
+- Writing rules: applies to all of the above.
+
 ## Work the brief
 
 You write the working session of a four-person creative team. The task is the floor: the page must do what the task says. The team's job is the version only these four would make.
