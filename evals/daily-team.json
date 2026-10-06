@@ -1,0 +1,37 @@
+[
+  {
+    "skills": ["daily-team"],
+    "query": "Who is on today's daily team?",
+    "files": [],
+    "expected_behavior": [
+      "Loads the daily-team skill",
+      "Prints the team, constraint, and task from team.sh as written",
+      "Does not read prompt.md, write a session, or build anything"
+    ]
+  },
+  {
+    "skills": ["daily-team"],
+    "query": "/daily-team A tip splitter for three friends who each ordered different things",
+    "files": [],
+    "expected_behavior": [
+      "Reads the Work the brief and Writing rules sections of prompt.md",
+      "Writes Pitch, Clash, then Decision or Deadlock, then Build notes, under those headings",
+      "The Clash has 6 to 10 lines and no member speaks more than 3 times",
+      "A Deadlock is ruled on once with the Referee section, and the session ends with a Decision",
+      "Uses none of the banned words and no exclamation marks or emoji"
+    ]
+  },
+  {
+    "skills": ["daily-team"],
+    "query": "/daily-team build 2",
+    "files": [],
+    "expected_behavior": [
+      "Works today's task, since no brief is given",
+      "Writes team-builds/<date>/artifact-1.html led by member 1 and artifact-2.html led by member 2",
+      "Each file has a title, a viewport meta tag, and no external scripts, styles, fonts, images, forms, or network calls",
+      "Each file shows the decision's concept on the first screen and ends with a credits line",
+      "Reviews each file against the review list, fixes what fails, and only then gives the paths",
+      "Does not run daily.sh or recruit.sh"
+    ]
+  }
+]
