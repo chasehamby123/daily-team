@@ -4,6 +4,7 @@
 // Usage: node github.mjs suggestions            open task suggestions as JSON, most votes first
 //        node github.mjs close-loop <season.json> comment on and close each screened suggestion
 //        node github.mjs announce <season.json>   post the season in Discussions, if enabled
+//        node github.mjs activity <monday>        the week's issues, merged pull requests, and suggestions
 // Env:   GITHUB_TOKEN, GITHUB_REPOSITORY (owner/repo), GITHUB_API_URL, GITHUB_GRAPHQL_URL
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -65,6 +66,37 @@ export async function fetchSuggestions() {
   return out.sort((a, b) => b.votes - a.votes || a.number - b.number);
 }
 
+// Issues opened and closed, pull requests merged, and open suggestions, for the weekly report.
+// since and until are YYYY-MM-DD; until is exclusive.
+export async function activity(since, until) {
+  const inWeek = (t) => Boolean(t) && t.slice(0, 10) >= since && t.slice(0, 10) < until;
+  const brief = (i) => ({ number: i.number, title: plain(i.title).slice(0, 120) });
+  const issues = [];
+  for (let page = 1; page <= 5; page++) {
+    const batch = await gh(`/repos/${REPO()}/issues?state=all&since=${since}T00:00:00Z&per_page=100&page=${page}`);
+    issues.push(...batch.filter((i) => !i.pull_request));
+    if (batch.length < 100) break;
+  }
+  const pulls = await gh(`/repos/${REPO()}/pulls?state=closed&sort=updated&direction=desc&per_page=100`);
+  const open = await fetchSuggestions();
+  const opened = issues.filter((i) => inWeek(i.created_at));
+  const closed = issues.filter((i) => inWeek(i.closed_at));
+  const suggestion = (i) => i.labels?.some((l) => (l.name ?? l) === LABEL);
+  return {
+    suggestionsOpenedThisWeekCount: opened.filter(suggestion).length,
+    issuesOpenedCount: opened.length,
+    issuesClosedCount: closed.length,
+    issuesOpenedAndClosedCount: opened.filter((i) => inWeek(i.closed_at)).length,
+    issuesOpened: opened.map(brief),
+    issuesClosed: closed.map(brief),
+    prsMerged: pulls.filter((p) => inWeek(p.merged_at)).map(brief),
+    // Suggestions still open when the report runs, not those made this week.
+    openSuggestionsNow: open.slice(0, 5).map((s) => ({ number: s.number, title: s.title.slice(0, 120), votes: s.votes })),
+  };
+}
+
+const addWeek = (s) => new Date(Date.parse(`${s}T00:00:00Z`) + 7 * 86_400_000).toISOString().slice(0, 10);
+
 export function commentFor(s, start) {
   if (s.decision === 'accept') {
     return [
@@ -124,7 +156,9 @@ async function main() {
   if (cmd === 'suggestions') process.stdout.write(`${JSON.stringify(await fetchSuggestions(), null, 2)}\n`);
   else if (cmd === 'close-loop') await closeLoop(JSON.parse(readFileSync(file, 'utf8')));
   else if (cmd === 'announce') await announce(JSON.parse(readFileSync(file, 'utf8')));
-  else throw new Error('usage: node github.mjs suggestions | close-loop <season.json> | announce <season.json>');
+  else if (cmd === 'activity' && /^\d{4}-\d{2}-\d{2}$/.test(file ?? '')) {
+    process.stdout.write(`${JSON.stringify(await activity(file, addWeek(file)), null, 2)}\n`);
+  } else throw new Error('usage: node github.mjs suggestions | close-loop <season.json> | announce <season.json> | activity <monday>');
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
