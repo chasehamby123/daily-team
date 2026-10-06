@@ -1207,19 +1207,30 @@ test('the report template holds every fact and links each page and commit', () =
 
 test('reportProblems rejects numbers, names, links, and words that are not allowed', () => {
   const f = weekFacts(reportRepo(), WEEK);
-  const ok = '## This week\nTwo days were recorded and the referee settled one.\n\n## The teams\n**Fair Shares** split a bill with 4096 bytes.\n\n## The repo\nTests rose from 2 to 3.';
+  const ok = '## This week\n2 days were recorded and the referee settled one.\n\n## The teams\n**Fair Shares** split a bill with 4096 bytes.\n\n## The repo\nTests rose from 2 to 3.';
   assert.deepEqual(reportProblems(ok, f), []);
   assert.match(reportProblems(ok.replace('4096', '5120'), f).join(), /number 5120/);
   assert.match(reportProblems(ok.replace('Fair Shares', 'Even Split'), f).join(), /"Even Split" is not in the facts/);
   assert.match(reportProblems(`${ok} See https://example.com`, f).join(), /link/);
   assert.match(reportProblems(ok.replace('rose', 'rose seamless'), f).join(), /seamless/);
   assert.match(reportProblems(`${ok}\n\n## Next week\nMore.`, f).join(), /headings must be exactly/);
-  assert.match(reportProblems(ok.replace('Two days', `${'word '.repeat(130)}Two days`), f).join(), /more than 120/);
+  assert.match(reportProblems(ok.replace('2 days', `${'word '.repeat(130)}2 days`), f).join(), /more than 120/);
+});
+
+test('reportProblems wants numbers as digits and counts that match what they count', () => {
+  const f = weekFacts(reportRepo(), WEEK);
+  f.seasons = [{ start: '2026-10-05', addedCounts: { roles: 8, tasks: 6 }, retiredCounts: { roles: 8, tasks: 6 } }];
+  const text = (line) => `## This week\n${line}\n\n## The teams\nx\n\n## The repo\nx`;
+  assert.deepEqual(reportProblems(text('The season adds 8 roles and 6 tasks over 2 days.'), f), []);
+  assert.match(reportProblems(text('The season replaces six roles.'), f).join(), /write "six" as digits/);
+  assert.match(reportProblems(text('The season replaces 6 roles.'), f).join(), /"6 roles" does not match the facts \(8\)/);
+  assert.match(reportProblems(text('3 days were recorded.'), f).join(), /"3 days" does not match/);
+  assert.match(reportProblems(text('It has 5 commits.'), f).join(), /"5 commits" does not match/);
 });
 
 test('summarize keeps a summary that passes, and falls back to the record after two failures', async () => {
   const f = weekFacts(reportRepo(), WEEK);
-  const good = '## This week\nTwo days.\n\n## The teams\n**Fair Shares**.\n\n## The repo\nTests rose to 3.';
+  const good = '## This week\n2 days.\n\n## The teams\n**Fair Shares**.\n\n## The repo\nTests rose to 3.';
   let calls = 0;
   const pass = await summarize(f, async () => { calls++; return { text: good, model: 'm' }; });
   assert.deepEqual([pass.status, pass.text, calls], ['ok', good, 1]);

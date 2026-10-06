@@ -122,8 +122,11 @@ export function weekSeasons(root, week) {
     .filter((s) => s === week || s === addDays(week, 7)).sort().map((start) => {
       const meta = JSON.parse(readFileSync(join(dir, `${start}.json`), 'utf8'));
       const list = (o) => Object.fromEntries(Object.entries(o || {}).map(([k, v]) => [k, v.map((i) => (typeof i === 'string' ? i : i.text))]));
+      const counts = (o) => Object.fromEntries(Object.entries(o || {}).map(([k, v]) => [k, v.length]));
+      // Counts are given so the summary never has to count a list itself.
       return {
-        start, when: start === week ? 'started this week' : 'starts next Monday', added: list(meta.added), retired: list(meta.retired),
+        start, when: start === week ? 'started this week' : 'starts next Monday',
+        addedCounts: counts(meta.added), retiredCounts: counts(meta.retired), added: list(meta.added), retired: list(meta.retired),
         accepted: (meta.suggestions || []).filter((s) => s.decision === 'accept').map((s) => ({ task: s.task, credit: s.credit ? s.author || '' : '' })),
       };
     });
@@ -234,6 +237,21 @@ export function renderTemplate(facts) {
 // Every string value in the facts, for checking names against.
 const factText = (facts) => JSON.stringify(facts).toLowerCase();
 
+const NUMBER_WORDS = /\b(two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|dozen)\b/gi;
+
+// The values a count of this kind can take in the facts.
+function countsFor(facts, kind) {
+  const out = new Set();
+  if (kind === 'day') out.add(facts.metrics.days);
+  else if (kind === 'commit') {
+    out.add(facts.metrics.commits);
+    for (const n of Object.values(facts.metrics.commitsByArea)) out.add(n);
+  } else {
+    for (const s of facts.seasons) for (const c of [s.addedCounts, s.retiredCounts]) if (c?.[`${kind}s`] != null) out.add(c[`${kind}s`]);
+  }
+  return out;
+}
+
 // Problems with the model's summary. Any number or highlighted name must come from the facts.
 export function reportProblems(text, facts) {
   const problems = [];
@@ -249,6 +267,15 @@ export function reportProblems(text, facts) {
   for (const n of new Set(text.replace(/,(?=\d{3}\b)/g, '').match(/\d+(?:\.\d+)?/g) || [])) {
     if (Number(n) <= 10 || n === year) continue;
     if (!known.has(Number(n))) problems.push(`the number ${n} is not in the facts`);
+  }
+  // Numbers must be digits so they can be checked. "One" is left alone: it is too often not a count.
+  for (const m of new Set((text.match(NUMBER_WORDS) || []).map((w) => w.toLowerCase()))) {
+    problems.push(`write "${m}" as digits`);
+  }
+  // A count next to what it counts must match that count in the facts.
+  for (const [, n, noun] of text.matchAll(/\b(\d+) (?:new )?(roles?|methods?|constraints?|tasks?|guests?|temperaments?|days?|commits?)\b/gi)) {
+    const allowed = countsFor(facts, noun.toLowerCase().replace(/s$/, ''));
+    if (allowed.size && !allowed.has(Number(n))) problems.push(`"${n} ${noun}" does not match the facts (${[...allowed].join(' or ')})`);
   }
   for (const m of text.matchAll(/\*\*([^*\n]+)\*\*|"([^"\n]+)"|“([^”\n]+)”/g)) {
     const name = (m[1] || m[2] || m[3]).trim().replace(/[.,:;]$/, '');
