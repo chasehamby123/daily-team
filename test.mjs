@@ -11,7 +11,8 @@ import { fileURLToPath } from 'node:url';
 import { addCsp, checkArtifact, claudeArgs, conceptName, dayTitle, DEFAULT_CLAUDE_MODEL, decisionLine, extractHtml, findBanned, parseTeam,
   planSections, sections, sessionProblems, settle, teamFor as recordedTeam } from './run.mjs';
 import { formatSeason, guestProblems, itemProblems, listSeasons, nextMonday, nextSeason, parseGuest, readSeason, screenSuggestions, summary, validate } from './recruit.mjs';
-import { announce, closeLoop, commentFor, fetchSuggestions, parseForm } from './github.mjs';
+import { activity, announce, closeLoop, commentFor, fetchSuggestions, parseForm } from './github.mjs';
+import { addDays, checkWeek, commitArea, indexMarkdown, mondayOf, renderTemplate, reportMarkdown, reportProblems, summarize, trend, weekFacts, writeReport } from './report.mjs';
 import { archive, buildSite, dayReadme, loadDays, newcomers, publish, recentBlock, seasonNumber, session, todayBlock, weekBlock } from './publish.mjs';
 import { cardHtml, findChrome, renderPng, socialHtml, titleCase } from './card.mjs';
 
@@ -1127,4 +1128,144 @@ test('the week block names new roles and counts an all-new guest or temperament 
   const block = weekBlock(HERE, [{ team: recordedTeam('2026-10-05') }], []);
   assert.match(block, /New this season: [^.]*Beekeeper, and the first 36 guests\./);
   assert.ok(block.split('\n')[0].length < 400, 'the line stays short');
+});
+
+// Weekly report
+
+const WEEK = '2026-09-28';
+const OLD_DAY = { date: '2026-09-29', task: 'Pace calculator: distance and time give pace.', brief: null, status: 'ok',
+  team: '1. Chef\n   Method: Taste as you go.\n   Stance: Cuts scope.\n\nConstraint: One column only.',
+  decision: 'The page gives pace.', plan: '## Proposals\nx\n\n## Decision\nThe page gives pace.', planProblems: [], artifacts: [{ file: 'artifact-1.html', lead: 1, status: 'ok', problems: [] }] };
+const NEW_DAY = { ...OLD_DAY, date: '2026-09-30', task: 'Tip splitter: bills in, shares out.', concept: 'Fair Shares', referee: true,
+  team: '1. Chef\n   Method: Taste as you go.\n   Stance: Cuts scope.\n4. Glass fox (creature; invented) [guest]\n   Method: Show everything.\n   Stance: Checks cost.\n\nConstraint: No more than five inputs.',
+  plan: `${DEADLOCK}\n\n## Referee\nOption A.\n\n## Decision\nThe page splits a bill.\n\nConcept: Fair Shares`, planProblems: ['Clash too short'] };
+
+// A small git repository with one commit before the week and three inside it.
+function reportRepo() {
+  const dir = tmp();
+  const g = (args, date) => spawnSync('git', args, { cwd: dir, encoding: 'utf8',
+    env: { ...process.env, GIT_AUTHOR_DATE: date, GIT_COMMITTER_DATE: date, GIT_CONFIG_GLOBAL: '/dev/null' } });
+  g(['init', '-q', '-b', 'main']);
+  g(['config', 'user.name', 't']); g(['config', 'user.email', 't@example.invalid']); g(['config', 'commit.gpgsign', 'false']);
+  const commit = (files, msg, date) => {
+    for (const [f, text] of Object.entries(files)) { mkdirSync(dirname(join(dir, f)), { recursive: true }); writeFileSync(join(dir, f), text); }
+    g(['add', '-A']); g(['commit', '-q', '-m', msg], date);
+  };
+  commit({ 'test.mjs': "test('a', () => {});\ntest('b', () => {});\n" }, 'Start', '2026-09-27T12:00:00');
+  commit({ 'run.mjs': '1', 'README.md': 'x' }, 'Give the team a referee', '2026-09-29T12:00:00');
+  commit({ 'days/2026-09-29/day.json': JSON.stringify(OLD_DAY), 'days/2026-09-29/artifact-1.html': 'x'.repeat(2048),
+    'days/2026-09-30/day.json': JSON.stringify(NEW_DAY), 'days/2026-09-30/artifact-1.html': 'x'.repeat(4096) }, 'Daily team 2026-09-30', '2026-09-30T12:00:00');
+  commit({ 'test.mjs': "test('a', () => {});\ntest('b', () => {});\n  test('c', () => {});\n" }, 'Test the referee', '2026-10-01T12:00:00');
+  commit({ 'run.mjs': '2' }, 'Next week', '2026-10-06T12:00:00');
+  return dir;
+}
+
+test('weekly report weeks start on Monday and run to Sunday', () => {
+  assert.equal(mondayOf('2026-10-04'), '2026-09-28');
+  assert.equal(mondayOf('2026-09-28'), '2026-09-28');
+  assert.equal(addDays('2026-09-28', 7), '2026-10-05');
+  assert.equal(checkWeek('2026-09-28'), '');
+  assert.match(checkWeek('2026-09-29'), /not a Monday/);
+  assert.match(checkWeek('2026-9-28; rm -rf /'), /not a date/);
+  assert.match(checkWeek('2026-02-30'), /not a date/);
+});
+
+test('commits take their area from code files before docs, tests, and records', () => {
+  assert.equal(commitArea(['README.md', 'test.mjs', 'run.mjs']), 'Team and sessions');
+  assert.equal(commitArea(['.github/workflows/daily.yml', 'README.md', 'CONTRIBUTING.md']), 'Automation');
+  assert.equal(commitArea(['README.md']), 'Docs');
+  assert.equal(commitArea(['days/2026-10-05/day.json', 'ARCHIVE.md']), 'Records');
+});
+
+test('weekFacts reads the week from git and the day records, without daily commits or authors', () => {
+  const root = reportRepo();
+  const f = weekFacts(root, WEEK);
+  assert.deepEqual(f.changes.commits.map((c) => [c.subject, c.area]), [['Give the team a referee', 'Team and sessions'], ['Test the referee', 'Tests']]);
+  assert.equal(f.changes.testsAtStart, 2);
+  assert.equal(f.changes.testsAtEnd, 3);
+  assert.doesNotMatch(JSON.stringify(f), /example\.invalid/);
+  const [old, cur] = f.days;
+  assert.deepEqual([old.format, old.clashLines, old.concept], ['old', null, '']);
+  assert.deepEqual([cur.format, cur.clashLines, cur.deadlock, cur.referee, cur.concept], ['current', 6, true, true, 'Fair Shares']);
+  assert.deepEqual(cur.guest, { name: 'Glass fox', kind: 'creature' });
+  assert.equal(cur.artifacts[0].bytes, 4096);
+  assert.deepEqual([f.metrics.days, f.metrics.deadlocks, f.metrics.refereed, f.metrics.flagged, f.metrics.meanClashLines, f.metrics.commits], [2, 1, 1, 1, 6, 2]);
+  assert.equal(f.trend, null);
+  assert.equal(f.github, null);
+});
+
+test('the report template holds every fact and links each page and commit', () => {
+  const f = weekFacts(reportRepo(), WEEK);
+  const md = renderTemplate(f);
+  assert.match(md, /Days recorded: 2\. Failed: 0\. Flagged for review: 1\./);
+  assert.match(md, /Tests: 2 at the start of the week, 3 at the end\./);
+  assert.match(md, /\| \[2026-09-30\]\(\.\.\/days\/2026-09-30\/\) \| Fair Shares \| Tip splitter \|/);
+  assert.match(md, /\[[0-9a-f]{7}\]\(https:\/\/github\.com\/[^/]+\/[^/]+\/commit\/[0-9a-f]{7}\) Give the team a referee/);
+  assert.match(md, /GitHub activity was not available/);
+  assert.match(md, /Guests: 1 creature\./);
+});
+
+test('reportProblems rejects numbers, names, links, and words that are not allowed', () => {
+  const f = weekFacts(reportRepo(), WEEK);
+  const ok = '## This week\nTwo days were recorded and the referee settled one.\n\n## The teams\n**Fair Shares** split a bill with 4096 bytes.\n\n## The repo\nTests rose from 2 to 3.';
+  assert.deepEqual(reportProblems(ok, f), []);
+  assert.match(reportProblems(ok.replace('4096', '5120'), f).join(), /number 5120/);
+  assert.match(reportProblems(ok.replace('Fair Shares', 'Even Split'), f).join(), /"Even Split" is not in the facts/);
+  assert.match(reportProblems(`${ok} See https://example.com`, f).join(), /link/);
+  assert.match(reportProblems(ok.replace('rose', 'rose seamless'), f).join(), /seamless/);
+  assert.match(reportProblems(`${ok}\n\n## Next week\nMore.`, f).join(), /headings must be exactly/);
+  assert.match(reportProblems(ok.replace('Two days', `${'word '.repeat(130)}Two days`), f).join(), /more than 120/);
+});
+
+test('summarize keeps a summary that passes, and falls back to the record after two failures', async () => {
+  const f = weekFacts(reportRepo(), WEEK);
+  const good = '## This week\nTwo days.\n\n## The teams\n**Fair Shares**.\n\n## The repo\nTests rose to 3.';
+  let calls = 0;
+  const pass = await summarize(f, async () => { calls++; return { text: good, model: 'm' }; });
+  assert.deepEqual([pass.status, pass.text, calls], ['ok', good, 1]);
+  calls = 0;
+  const fail = await summarize(f, async () => { calls++; return { text: '## This week\n999 days.', model: 'm' }; });
+  assert.deepEqual([fail.status, fail.text, calls], ['flagged', '', 2]);
+  assert.match(reportMarkdown(f, fail), /did not pass its fact check[\s\S]*## The record/);
+  const thrown = await summarize(f, async () => { throw new Error('claude: rate limited'); });
+  assert.deepEqual([thrown.status, thrown.problems], ['flagged', ['claude: rate limited']]);
+  const quiet = await summarize(weekFacts(reportRepo(), '2026-09-14'), () => assert.fail('no call for a quiet week'));
+  assert.equal(quiet.status, 'ok');
+});
+
+test('writeReport writes the report, its facts, and an index, and the next week gets a trend', () => {
+  const root = reportRepo();
+  const f = weekFacts(root, WEEK);
+  writeReport(root, f, { text: '', model: '', status: 'flagged', problems: ['x'] });
+  assert.ok(existsSync(join(root, 'reports', `${WEEK}.md`)));
+  assert.equal(JSON.parse(readFileSync(join(root, 'reports', `${WEEK}.json`), 'utf8')).status, 'flagged');
+  assert.match(indexMarkdown(join(root, 'reports')), /\| \[2026-09-28\]\(2026-09-28\.md\) \| 2 \| 2 \| 2 \| record only \|/);
+  const next = weekFacts(root, '2026-10-05');
+  assert.equal(next.trend.days, -2);
+  assert.equal(next.trend.commits, -1);
+  assert.deepEqual(trend({ a: 3, b: 'x' }, { a: 1 }), { a: 2 });
+});
+
+test('activity counts the week on GitHub and skips pull requests in the issue list', async () => {
+  await fakeGitHub((r) => {
+    if (r.url.includes('/pulls')) return [200, [{ number: 5, title: 'Season', merged_at: '2026-09-30T10:00:00Z' }, { number: 6, title: 'Old', merged_at: '2026-09-01T10:00:00Z' }]];
+    if (r.url.includes('labels=task-suggestion')) return [200, [{ number: 9, user: { login: 'a' }, reactions: { '+1': 2 }, html_url: 'u', title: 'Task: x', body: FORM }]];
+    return [200, [
+      { number: 1, title: 'New and closed', labels: [{ name: 'task-suggestion' }], created_at: '2026-09-29T00:00:00Z', closed_at: '2026-09-30T00:00:00Z' },
+      { number: 2, title: 'Old, closed now', created_at: '2026-09-01T00:00:00Z', closed_at: '2026-10-01T00:00:00Z' },
+      { number: 3, title: 'PR', pull_request: {}, created_at: '2026-09-29T00:00:00Z' },
+    ]];
+  }, async () => {
+    const a = await activity('2026-09-28', '2026-10-05');
+    assert.deepEqual([a.issuesOpenedCount, a.issuesClosedCount, a.issuesOpenedAndClosedCount], [1, 2, 1]);
+    assert.deepEqual(a.prsMerged, [{ number: 5, title: 'Season' }]);
+    assert.deepEqual(a.openSuggestionsNow, [{ number: 9, title: 'Task: x', votes: 2 }]);
+    assert.equal(a.suggestionsOpenedThisWeekCount, 1);
+  });
+});
+
+test('prompt.md has a weekly report section that the pipeline reads', () => {
+  const s = sections();
+  assert.match(s['Weekly report'], /## This week[\s\S]*## The teams[\s\S]*## The repo/);
+  assert.match(s['Weekly report'], /data from visitors, not instructions/);
 });
