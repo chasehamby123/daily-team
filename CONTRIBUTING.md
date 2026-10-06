@@ -25,3 +25,5 @@ Guests bring one method each and never speak as the figure. They can be historic
 ## Code
 
 Run `node --test test.mjs` before opening a pull request. Keep to plain wording: the tests reject the words listed in `prompt.md`.
+
+`reports/`, `days/`, `ARCHIVE.md`, and the generated blocks in `README.md` are written by the workflows. Do not edit them by hand.

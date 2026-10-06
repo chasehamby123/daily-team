@@ -53,6 +53,7 @@ No open suggestions yet.
 4. **The work.** Each morning a language model plays the team. Each member pitches their own version of the task in the voice of their craft. They argue for 6 to 10 lines, then the lead decides. If the team splits, a neutral referee picks one side. Then they build their version as one HTML file.
 5. **The checks.** The file must have a title and a mobile layout, stay under 100 KB, and make no network requests. A file that fails is retried once, then marked "needs review".
 6. **The record.** The workflow takes a screenshot, draws the team card, writes the day page, updates the archive and this README, and commits the result. Days that fail are recorded too.
+7. **The weekly report.** Each Sunday a script gathers the week's changes, days, seasons, and GitHub activity, and a language model writes a short summary from those facts only. A check rejects any number or name that is not in the facts. Reports are in [reports/](reports/).
 
 ## Take part
 

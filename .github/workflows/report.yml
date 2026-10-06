@@ -1,0 +1,104 @@
+name: Report
+
+# Writes the weekly report each Sunday evening, after that day's team has run. The facts come
+# from git, the day records, and the GitHub API; one model call writes the summary on top.
+on:
+  schedule:
+    - cron: '0 20 * * 0'
+  workflow_dispatch:
+    inputs:
+      week:
+        description: Monday the week starts, YYYY-MM-DD (empty is this week)
+        default: ''
+      provider:
+        description: Model provider for this run (empty uses the PROVIDER variable)
+        type: choice
+        options: ['', openrouter, claude]
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: report
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      issues: read
+      pull-requests: read
+    env:
+      TZ: ${{ vars.TZ || 'UTC' }}
+      PROVIDER: ${{ inputs.provider || vars.PROVIDER || 'openrouter' }}
+      WEEK: ${{ inputs.week }}
+    steps:
+      - name: Check credentials
+        id: key
+        env:
+          OPENROUTER_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          CLAUDE_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          if [ "$PROVIDER" = claude ]; then need=CLAUDE_CODE_OAUTH_TOKEN; have=$CLAUDE_TOKEN
+          else need=OPENROUTER_API_KEY; have=$OPENROUTER_KEY; fi
+          if [ -n "$have" ]; then echo "ok=true" >> "$GITHUB_OUTPUT"
+          else echo "::notice::Add the $need secret to enable weekly reports."; fi
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: steps.key.outputs.ok == 'true'
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        if: steps.key.outputs.ok == 'true'
+        with:
+          node-version: 22
+      - name: Install Claude Code
+        if: steps.key.outputs.ok == 'true' && env.PROVIDER == 'claude'
+        run: npm install --global @anthropic-ai/claude-code@2.1.288
+      - name: Pick the week
+        id: week
+        if: steps.key.outputs.ok == 'true'
+        run: |
+          week=${WEEK:-$(node --input-type=module -e "import { mondayOf } from './report.mjs'; import { today } from './run.mjs'; console.log(mondayOf(today()))")}
+          case $week in
+            [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]) ;;
+            *) echo "::error::week must be YYYY-MM-DD"; exit 1 ;;
+          esac
+          echo "week=$week" >> "$GITHUB_OUTPUT"
+      - name: Read GitHub activity
+        if: steps.key.outputs.ok == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          W: ${{ steps.week.outputs.week }}
+        run: node github.mjs activity "$W" > "$RUNNER_TEMP/activity.json" || echo null > "$RUNNER_TEMP/activity.json"
+      - name: Write the report
+        if: steps.key.outputs.ok == 'true'
+        env:
+          OPENROUTER_API_KEY: ${{ env.PROVIDER != 'claude' && secrets.OPENROUTER_API_KEY || '' }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ env.PROVIDER == 'claude' && secrets.CLAUDE_CODE_OAUTH_TOKEN || '' }}
+          CLAUDE_MODEL: ${{ vars.REPORT_MODEL || 'claude-sonnet-5-5' }}
+          MODEL: ${{ vars.REPORT_OPENROUTER_MODEL || vars.MODEL }}
+          API_URL: ${{ vars.API_URL }}
+          W: ${{ steps.week.outputs.week }}
+        run: node report.mjs --week "$W" --activity "$RUNNER_TEMP/activity.json"
+      - name: Test
+        if: steps.key.outputs.ok == 'true'
+        run: node --test test.mjs
+      - name: Commit the report
+        if: steps.key.outputs.ok == 'true'
+        env:
+          TOKEN: ${{ github.token }}
+          W: ${{ steps.week.outputs.week }}
+        run: |
+          git add reports
+          if git diff --cached --quiet; then echo "Nothing to commit."; exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "Weekly report $W"
+          remote="https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git pull --rebase --quiet "$remote" main
+          git push "$remote" HEAD:main
