@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-10-05: CV checklist
+### 2026-10-06: Three Panes
 
-<a href="days/2026-10-05/"><img src="days/2026-10-05/team.png" alt="Team for 2026-10-05: Bookbinder · Glassblower · Chef · Captain Ahab" width="100%"></a>
+<a href="days/2026-10-06/"><img src="days/2026-10-06/team.png" alt="Team for 2026-10-06: Window dresser · Calligrapher · Textile designer · Glass fox" width="100%"></a>
 
-**Task:** CV checklist: 15 checks with a score, printable.
+**Task:** Water tracker: a daily goal the user sets and a tap-to-add log that resets each day.
 
-**Decision:** The page lists 15 measurable CV checks, scores the ticked ones out of 30 by weight, shows each failed check's effect on a reader, follows the system light or dark setting, and prints on one page.
+**Decision:** The page loads with a grey example of 5 stripes under a red goal line at 8, then lets the user set a goal and tap to add one blue stripe per glass, and clears the stripes when the device date changes.
 
-<a href="days/2026-10-05/"><img src="days/2026-10-05/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-10-06/"><img src="days/2026-10-06/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-10-05/) · [Use it](https://isas1.github.io/daily-team/2026-10-05/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-10-06/) · [Use it](https://isas1.github.io/daily-team/2026-10-06/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,11 +37,12 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-10-06](days/2026-10-06/) | <a href="days/2026-10-06/"><img src="days/2026-10-06/artifact-1.png" alt="Three Panes" width="160"></a> | Three Panes | Window dresser · Calligrapher · Textile designer · Glass fox |
 | [2026-10-05](days/2026-10-05/) | <a href="days/2026-10-05/"><img src="days/2026-10-05/artifact-1.png" alt="CV checklist" width="160"></a> | CV checklist | Bookbinder · Glassblower · Chef · Captain Ahab |
 | [2026-10-04](days/2026-10-04/) | <a href="days/2026-10-04/"><img src="days/2026-10-04/artifact-1.png" alt="Weekly planner page with priorities, appointments, and notes, printable on A4." width="160"></a> | Weekly planner page with priorities, appointments, and notes, printable on A4. | Comic artist · Packaging designer · Exhibition designer · Printmaker |
 | [2026-10-03](days/2026-10-03/) | <a href="days/2026-10-03/"><img src="days/2026-10-03/artifact-1.png" alt="Running pace calculator" width="160"></a> | Running pace calculator | Service designer · Product designer · Interaction designer · Choreographer |
 
-[All 3 days](ARCHIVE.md)
+[All 4 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works

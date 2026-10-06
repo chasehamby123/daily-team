@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three Panes: a water tracker</title>
+<style>
+:root{--linen:#f4f1ea;--ink:#1d2430;--mull:#1d2430;--blue:#2f6fb3;--grey:#b9bcc2;--red:#c8312b;--faint:#e4e0d6;--soft:#5d6470}
+*{box-sizing:border-box}
+body{margin:0;background:var(--linen);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:960px;margin:0 auto;padding:24px 16px 32px}
+h1{font-size:2rem;line-height:1.1;margin:0 0 6px;letter-spacing:.01em}
+.lead{font-size:1.15rem;margin:0 0 20px}
+.window{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:6px;background:var(--mull);border:6px solid var(--mull)}
+.pane{background:var(--linen);padding:16px;min-height:380px;display:flex;flex-direction:column}
+.act{font-size:.75rem;text-transform:uppercase;letter-spacing:.12em;color:var(--soft);margin:0}
+h2{font-size:1.2rem;margin:2px 0 12px}
+.frame{position:relative;height:300px;border:2px solid var(--ink);border-top:none;background:#fff;display:flex;flex-direction:column-reverse}
+.frame::before{content:"";position:absolute;left:-2px;right:-2px;top:0;height:3px;background:var(--red);z-index:2}
+.stripe{flex:1 1 0;border-top:1px solid var(--faint);display:flex;align-items:center;justify-content:flex-end;padding:0 8px;font-size:.75rem;font-variant-numeric:tabular-nums;color:#fff;transition:background-color .25s}
+.stripe.on{background:var(--blue)}
+.stripe.ex{background:var(--grey);color:var(--ink)}
+.tag{position:absolute;left:8px;bottom:8px;font-size:.7rem;color:var(--soft);background:#fff;padding:1px 6px;border:1px solid var(--grey);z-index:3}
+.goalmark{font-size:.75rem;color:var(--red);margin:4px 0 0;text-align:right}
+.count{font-size:1.6rem;font-weight:600;margin:10px 0 0;font-variant-numeric:tabular-nums}
+.note{color:var(--soft);margin:2px 0 0;font-size:.9rem}
+label{font-size:.9rem;display:block;margin-bottom:6px}
+.stepper{display:flex;gap:6px;align-items:stretch}
+.stepper input{width:5rem;font:inherit;font-size:1.6rem;text-align:center;border:2px solid var(--ink);background:#fff;color:var(--ink);padding:4px}
+button{font:inherit;border:2px solid var(--ink);background:#fff;color:var(--ink);padding:8px 14px;cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+button:focus-visible,input:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.add{background:var(--blue);border-color:var(--blue);color:#fff;font-size:1.3rem;padding:18px 14px;width:100%;margin-bottom:8px}
+.row{display:flex;gap:8px}
+.row button{flex:1}
+.link{border:none;background:none;text-decoration:underline;padding:4px 0;color:var(--soft);font-size:.85rem;align-self:flex-start;margin-top:auto}
+.small{font-size:.85rem;color:var(--soft);margin:12px 0 0}
+footer{margin-top:20px;font-size:.85rem;color:var(--soft)}
+.fox{border-top:1px solid var(--grey);padding-top:10px;font-variant-numeric:tabular-nums}
+.fox p{margin:0 0 2px}
+.credits{margin-top:14px;font-size:.78rem}
+@media (max-width:720px){.window{grid-template-columns:1fr}.pane{min-height:0}.frame{height:260px}}
+@media (prefers-reduced-motion:reduce){.stripe{transition:none}}
+@media print{body{background:#fff}.pane{background:#fff}button,.link{display:none}.frame,.stripe,.frame::before,.window{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+</style>
+</head>
+<body>
+<main>
+<h1>Three Panes</h1>
+<p class="lead">It tells you when you drank enough water.</p>
+
+<div class="window">
+  <section class="pane" aria-labelledby="a1">
+    <p class="act">Act one</p>
+    <h2 id="a1">The window</h2>
+    <div class="frame" id="cloth" role="img" aria-label="Glasses so far"></div>
+    <p class="goalmark">Red line: your goal</p>
+    <p class="count" id="count" aria-live="polite"></p>
+    <p class="note" id="status"></p>
+  </section>
+
+  <section class="pane" aria-labelledby="a2">
+    <p class="act">Act two</p>
+    <h2 id="a2">Your number</h2>
+    <label for="goal">Glasses a day</label>
+    <div class="stepper">
+      <button type="button" id="minus" aria-label="One fewer">&minus;</button>
+      <input id="goal" type="number" inputmode="numeric" min="1" max="20" step="1">
+      <button type="button" id="plus" aria-label="One more">+</button>
+    </div>
+    <p class="small">Pick your own number, 1 to 20. One glass is one stripe.</p>
+  </section>
+
+  <section class="pane" aria-labelledby="a3">
+    <p class="act">Act three</p>
+    <h2 id="a3">Your glasses</h2>
+    <button type="button" class="add" id="add">Add a glass</button>
+    <div class="row"><button type="button" id="undo">Undo last</button></div>
+    <p class="small">One tap, one glass. Undo lifts the last one.</p>
+    <button type="button" class="link" id="clear">Clear today</button>
+  </section>
+</div>
+
+<footer>
+  <div class="fox" aria-label="How this page works">
+    <p id="f1"></p>
+    <p>Clears at midnight, by this device's clock.</p>
+    <p id="f3"></p>
+  </div>
+  <p class="credits">Window dresser: three acts, and the cuts (no history, no charts, no unit switch). Calligrapher: the top line, grey example ink, one undo. Textile designer: one stripe a glass, the red goal line. Glass fox: the three lines above, one file, no libraries.</p>
+</footer>
+</main>
+
+<script>
+(function(){
+var KEY='water-tracker', stored=true, checked=new Date();
+var EX=['07:10','09:30','11:45','13:20','15:05'];
+var $=function(id){return document.getElementById(id)};
+var s;
+
+function today(){return new Date().toDateString()}
+function hhmm(d){return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
+function clamp(n){n=Math.round(Number(n));if(!isFinite(n))return null;return Math.min(20,Math.max(1,n))}
+
+function load(){
+  try{var r=localStorage.getItem(KEY);return r?JSON.parse(r):null}
+  catch(e){stored=false;return null}
+}
+function save(){
+  if(s.example)return;
+  try{localStorage.setItem(KEY,JSON.stringify({date:s.date,goal:s.goal,taps:s.taps}))}
+  catch(e){stored=false}
+}
+function checkDate(){
+  checked=new Date();
+  var t=today();
+  if(s.date!==t){s.date=t;s.taps=[];if(s.example)s.example=false;save()}
+}
+function leaveExample(){if(s.example){s.example=false;s.taps=[]}}
+
+var d=load();
+if(d&&typeof d==='object'&&Array.isArray(d.taps)&&clamp(d.goal)){
+  s={date:d.date,goal:clamp(d.goal),taps:d.taps.filter(function(x){return typeof x==='string'}),example:false};
+}else{
+  s={date:today(),goal:8,taps:EX.slice(),example:true};
+}
+checkDate();
+
+function render(){
+  var cloth=$('cloth'),n=s.taps.length,g=s.goal,html='';
+  var showTimes=g<=16;
+  for(var i=0;i<g;i++){
+    var cls=i<n?(s.example?'stripe ex':'stripe on'):'stripe';
+    var t=(i<n&&showTimes)?s.taps[i]:'';
+    html+='<div class="'+cls+'">'+t+'</div>';
+  }
+  if(s.example)html+='<span class="tag">example</span>';
+  cloth.innerHTML=html;
+  cloth.setAttribute('aria-label',n+' of '+g+' glasses'+(s.example?', example':''));
+  $('count').textContent=n+' of '+g;
+  var st;
+  if(s.example)st='Example. Set your number or tap to start.';
+  else if(n===0)st='Nothing yet today.';
+  else if(n<g)st=(g-n)+' to go. Last at '+s.taps[n-1]+'.';
+  else st='Goal reached.'+(n>g?' '+(n-g)+' past the line.':'');
+  $('status').textContent=st;
+  if(document.activeElement!==$('goal'))$('goal').value=g;
+  $('undo').disabled=s.example||n===0;
+  $('clear').disabled=!s.example&&n===0;
+  $('f1').textContent=stored
+    ?'Kept on this device, under the name "'+KEY+'". Nothing leaves it.'
+    :'This browser blocks storage. The count lasts until the page closes.';
+  $('f3').textContent='Date last checked: '+checked.toDateString()+', at '+hhmm(checked)+'.';
+}
+
+function setGoal(v){
+  var g=clamp(v);if(g===null)return;
+  checkDate();leaveExample();s.goal=g;save();render();
+}
+$('goal').addEventListener('change',function(){setGoal(this.value);this.value=s.goal});
+$('goal').addEventListener('input',function(){if(this.value!=='')setGoal(this.value)});
+$('minus').addEventListener('click',function(){setGoal(s.goal-1)});
+$('plus').addEventListener('click',function(){setGoal(s.goal+1)});
+$('add').addEventListener('click',function(){
+  checkDate();leaveExample();s.taps.push(hhmm(new Date()));save();render();
+});
+$('undo').addEventListener('click',function(){
+  checkDate();if(!s.example&&s.taps.length){s.taps.pop();save()}render();
+});
+$('clear').addEventListener('click',function(){
+  checkDate();s.example=false;s.taps=[];save();render();
+});
+document.addEventListener('visibilitychange',function(){if(!document.hidden){checkDate();render()}});
+setInterval(function(){checkDate();render()},60000);
+render();
+})();
+</script>
+</body>
+</html>
