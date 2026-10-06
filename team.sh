@@ -15,6 +15,9 @@
 # (pool size / 2 / items per day) + 1 days: 7 for roles and methods, 22 for constraints,
 # 61 for tasks, and (pool size / 2) + 1 for guests. A season with a temperaments pool gives each
 # member one, drawn with its own seed, so no other pick changes.
+#
+# Seeds: 7919 and 104729 are the 1000th and 10000th primes. Multiplying the block number and the
+# pool id by different primes keeps each pool's shuffle apart; 12345 keeps the seed off zero.
 set -eu
 
 day_arg=${1:-$(date +%Y-%m-%d)}
