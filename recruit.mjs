@@ -121,21 +121,23 @@ export function guestProblems(g, year) {
 // Buyers are the people a page is for. They are written by the owner, never drafted by a model,
 // and carry over unchanged from season to season. Each names a venture in ventures.json.
 export const parseBuyer = (text) => {
-  const [venture, name, pain, walks] = text.split(' | ');
-  return { venture, name, pain, walks };
+  const [venture, name, pain, walks, opens] = text.split(' | ');
+  return { venture, name, pain, walks, opens };
 };
 export function buyerProblems(b, ventures) {
   const label = `buyer "${String(b.name).slice(0, 40)}"`;
   const problems = [];
-  for (const f of ['venture', 'name', 'pain', 'walks']) {
+  for (const f of ['venture', 'name', 'pain', 'walks', 'opens']) {
     if (typeof b[f] !== 'string' || !b[f].trim()) problems.push(`${label}: missing ${f}`);
   }
   if (problems.length) return problems;
   if (b.name.length > 40) problems.push(`${label}: name longer than 40 characters`);
-  if (b.pain.length > 100 || b.walks.length > 100) problems.push(`${label}: pain and walks-when must be at most 100 characters`);
-  if (/[.]$/.test(b.pain) || /[.]$/.test(b.walks)) problems.push(`${label}: no full stop at the end of pain or walks-when`);
+  for (const f of ['pain', 'walks', 'opens']) {
+    if (b[f].length > 100) problems.push(`${label}: ${f} longer than 100 characters`);
+    if (/[.]$/.test(b[f])) problems.push(`${label}: no full stop at the end of ${f}`);
+  }
   if (ventures && !Object.hasOwn(ventures, b.venture)) problems.push(`${label}: venture "${b.venture}" is not in ventures.json`);
-  for (const w of findBanned(`${b.name} ${b.pain} ${b.walks}`)) problems.push(`${label}: uses the word "${w}"`);
+  for (const w of findBanned(`${b.name} ${b.pain} ${b.walks} ${b.opens}`)) problems.push(`${label}: uses the word "${w}"`);
   return problems;
 }
 

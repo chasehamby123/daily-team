@@ -177,6 +177,8 @@ Every result appears in a full sentence as well as a number.
 + Document checklist: the buyer's stage gives a list of documents to prepare before a deal or rollout, grouped and ticked off in the browser.
 + Follow-up cadence planner: a lead source and deal size give a dated sequence of follow-up touches, printable.
 + Risk register: risks with likelihood and impact give a ranked table and a three-by-three heat grid.
++ Seat comparer: the same work done for a fee or for a share gives cash now against value later, with the bad case for each and the point where the share wins.
++ Downside check: a plan's cost, likely gain, and odds give the worst case, the expected result, and whether the loss is capped.
 
 #@ guests
 historical | Euclid | State a few assumptions, then build everything from them. | died c. 270 BC
@@ -243,23 +245,23 @@ Insists on hearing from the quietest person.
 Will not accept a plan they cannot draw.
 
 #@ buyers
-+ outerhaven | Family office CIO | Sees too many deals that miss the mandate | It reads like a pitch deck
-+ voxxy | Clinic owner | Loses bookings to missed calls and slow replies | It needs a new system to learn
-+ outerhaven | Private credit fund manager | Sees borrowers who are not ready for diligence | The credit story has no collateral detail
-+ outerhaven | Founder raising a growth round | Burns months on investors who never fit | It promises capital
-+ voxxy | Revenue cycle manager | Staff time drains into prior authorisations and denials | It ignores how payers behave
-+ outerhaven | Independent sponsor | Has the deal but not the equity to close it | It treats them like a broker
-+ outerhaven | Owner preparing to sell | Has no idea what buyers will ask or pay | It feels like a broker hook
-+ outerhaven | Search fund entrepreneur | Spends two years looking for one business to buy | It shows deals they could never finance
-+ outerhaven | Corporate development head | The board wants growth by acquisition this year | It ignores strategic fit
-+ voxxy | Insurance agency owner | Leads go cold before an agent calls back | It sounds like a robocaller
-+ outerhaven | Real estate developer | Needs project capital before the window closes | The numbers are vague
-+ voxxy | Home services owner | Misses jobs because nobody answers after hours | Setup takes more than ten minutes
-+ outerhaven | Private equity principal | Screens hundreds of teasers to find one worth a call | It hides the real earnings
-+ outerhaven | Roll-up operator | Finds add-on targets one broker call at a time | It ignores integration cost
-+ outerhaven | Fund manager raising capital | Spends the raise on investors who will never commit | It wastes partner time
-+ voxxy | Accounting firm partner | Senior staff stuck on manual reconciliations | It creates audit risk
-+ outerhaven | Merchant banker | Needs placeable deals with a clear capital stack | The structure is unclear
-+ outerhaven | Investment banker | Mandates stall when buyers lose interest mid-process | It competes with their own process
-+ outerhaven | Retiring owner with no successor | Wants out but fears for staff and legacy | It pushes a sale before they are ready
-+ outerhaven | Multi-family office adviser | Clients want private deals the adviser cannot vet fast | It adds work with no fee
++ outerhaven | Family office CIO | Sees too many deals that miss the mandate | It reads like a broker blast sent to fifty offices | You know the mandate and bring one deal that fits it
++ voxxy | Clinic owner | Loses bookings to missed calls and slow replies | It feels like a robot will annoy patients | Patients still feel looked after and staff get time back
++ outerhaven | Private credit fund manager | Sees borrowers who are not ready for diligence | Nobody has thought about how the loan gets repaid | The downside and collateral come first and the upside second
++ outerhaven | Founder raising a growth round | Burns months on investors who never fit | Someone wants a fee up front just to make intros | You show which investors fit and why before asking for anything
++ voxxy | Revenue cycle manager | Staff time drains into prior authorisations and denials | It ignores how payers behave in practice | It starts from the denial reasons and rework hours they already track
++ outerhaven | Independent sponsor | Has the deal but not the equity to close it | It treats them like a broker or tries to take the deal | You respect their deal and bring capital that keeps them in control
++ outerhaven | Owner preparing to sell | Has no idea what buyers will ask or pay | It opens with a valuation that sounds too good | You explain what buyers will dig into before anyone talks price
++ outerhaven | Search fund entrepreneur | Spends two years looking for one business to buy | It shows deals they could never finance | Deals are sized to what they and their investors can close
++ outerhaven | Corporate development head | The board wants growth by acquisition this year | It ignores how the target fits the core business | It speaks to fit and integration, not only price
++ voxxy | Insurance agency owner | Leads go cold before an agent calls back | It sounds like a robocaller or a compliance risk | Agents stay in the loop and new leads hear back in seconds
++ outerhaven | Real estate developer | Needs project capital before the window closes | The numbers are vague or the timeline slips | The capital stack and timeline are laid out in plain numbers
++ voxxy | Home services owner | Misses jobs because nobody answers after hours | Setup takes more than ten minutes or needs new software | It counts the jobs they lost last month in money
++ outerhaven | Private equity principal | Screens hundreds of teasers to find one worth a call | The teaser hides the real earnings | Earnings are shown clean with every adjustment explained
++ outerhaven | Roll-up operator | Finds add-on targets one broker call at a time | It ignores integration cost and whether owners stay | It shows which owners want to stay on and which want out
++ outerhaven | Fund manager raising capital | Spends the raise on investors who will never commit | It wastes partner time on people who will not write a cheque | Investors are filtered by cheque size and track record first
++ voxxy | Accounting firm partner | Senior staff stuck on manual reconciliations | It creates audit risk or handles client data carelessly | It frees senior hours for advisory work clients pay more for
++ outerhaven | Merchant banker | Needs placeable deals with a clear capital stack | The sponsor has no money of their own in the deal | The sponsor has skin in the game and the stack is laid out
++ outerhaven | Investment banker | Mandates stall when buyers lose interest mid-process | It competes with their process or goes around them to the client | It brings buyers into their process and keeps them as the lead
++ outerhaven | Retiring owner with no successor | Wants out but fears for staff and the name on the door | It sounds like private equity buying to strip and flip | You talk about carrying on what they built and keeping the team
++ outerhaven | Multi-family office adviser | Clients want private deals the adviser cannot vet fast | It adds unpaid work or puts their reputation at risk | Diligence is done and written up so they can defend it to clients

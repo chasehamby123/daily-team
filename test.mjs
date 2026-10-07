@@ -1290,14 +1290,14 @@ const BUYER_POOLS = `#@ roles\n${Array.from({ length: 8 }, (_, i) => `Role ${'ab
 #@ stances\n${Array.from({ length: 8 }, (_, i) => `Stance ${'abcdefgh'[i]}.`).join('\n')}
 #@ constraints\nOne column only.\nNo animation.
 #@ tasks\nPayback calculator: costs and gains give the month the buyer breaks even.\nFit quiz: eight questions give which approach suits the buyer.
-#@ buyers\nacme | Clinic owner | Loses bookings to missed calls | It needs a new system\nbeta | Family office CIO | Sees deals that miss the mandate | It reads like a pitch deck
+#@ buyers\nacme | Clinic owner | Loses bookings to missed calls | It needs a new system | Staff get time back\nbeta | Family office CIO | Sees deals that miss the mandate | It reads like a pitch deck | It fits the mandate
 `;
 
 test('a season with buyers makes member 3 a buyer, parsed with its venture', () => {
   const dir = fixture({ '2026-11-02': BUYER_POOLS });
   const out = team('2026-11-03', {}, dir).stdout;
   assert.match(out, /^3\. (Clinic owner|Family office CIO) \(buyer; (acme|beta)\) \[buyer\]$/m);
-  assert.match(out, /^ {3}Method: Pain: .+\. Walks when: .+\.$/m);
+  assert.match(out, /^ {3}Method: Pain: .+\. Walks when: .+\. Opens up when: .+\.$/m);
   const m = parseTeam(out).members;
   assert.equal(m.length, 4);
   assert.ok(m[2].buyer && ['acme', 'beta'].includes(m[2].buyer.venture));
@@ -1311,9 +1311,9 @@ test('a season with buyers makes member 3 a buyer, parsed with its venture', () 
 
 test('buyers are checked and carried over unchanged by recruit', () => {
   const v = { acme: { name: 'Acme', cta_label: 'Call', cta_url: '' } };
-  assert.deepEqual(buyerProblems(parseBuyer('acme | Clinic owner | Loses bookings | It needs a new system'), v), []);
-  assert.match(buyerProblems(parseBuyer('nope | Clinic owner | Loses bookings | It is slow'), v).join(), /not in ventures\.json/);
-  assert.match(buyerProblems(parseBuyer('acme | Clinic owner | Loses bookings.'), v).join(), /missing walks/);
+  assert.deepEqual(buyerProblems(parseBuyer('acme | Clinic owner | Loses bookings | It needs a new system | Staff get time back'), v), []);
+  assert.match(buyerProblems(parseBuyer('nope | Clinic owner | Loses bookings | It is slow | It is fast'), v).join(), /not in ventures\.json/);
+  assert.match(buyerProblems(parseBuyer('acme | Clinic owner | Loses bookings | It is slow'), v).join(), /missing opens/);
   const base = Object.fromEntries(KINDS_ALL.map((k) => [k, []]));
   for (const k of ['roles', 'methods', 'stances']) base[k] = Array.from({ length: 16 }, (_, i) => ({ text: `${k} ${i}`, fresh: false, credit: '' }));
   base.constraints = Array.from({ length: 4 }, (_, i) => ({ text: `c ${i}`, fresh: false, credit: '' }));

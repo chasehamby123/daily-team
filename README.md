@@ -57,11 +57,11 @@ No open suggestions yet.
 
 ## Buyers and ventures
 
-This fork adds a buyer to every team. Member 3 is a real customer type from `pools/<season>.txt` under `#@ buyers`, one per line: `venture | name | pain | walks when`. Members 1 and 2 keep their crafts and member 4 stays the guest, so two outsiders and a figure from history or myth question the premise while the buyer asks one thing: would I use this and forward it.
+This fork adds a buyer to every team. Member 3 is a real customer type from `pools/<season>.txt` under `#@ buyers`, one per line: `venture | name | pain | walks when | opens up when`. The last two fields keep buyers true to life: what they have heard about people like you, and the framing that gets them to listen. Members 1 and 2 keep their crafts and member 4 stays the guest, so two outsiders and a figure from history or myth question the premise while the buyer asks one thing: would I use this and forward it.
 
 Tasks are lead-magnet formats (a payback calculator, a readiness scorecard) that the team fits to the day's buyer. Buyers are written by hand and carry over to every new season; the weekly recruit only rotates roles, methods, constraints, and tasks.
 
-Two rules apply every day. The lead owns the commercial goal: each result shows a problem that runs for months or a deal worth a share, and asks at most two qualifying questions. And someone runs the bad case: every result shows bad, base, and good cases, and the team only pushes for the bold version when the bad case holds.
+Three rules apply every day. The team looks for the shortcut: the path that keeps a share instead of a fee for the same work, only when the bad case is covered. The lead owns the commercial goal: each result shows a problem that runs for months or a deal worth a share, and asks at most two qualifying questions. And someone runs the bad case: every result shows bad, base, and good cases, and the team only pushes for the bold version when the bad case holds.
 
 `ventures.json` maps each venture to the name shown in the page footer and one call-to-action link. Leave `cta_url` empty and the page has no link.
 

@@ -15,7 +15,7 @@
 # (pool size / 2 / items per day) + 1 days: 7 for roles and methods, 22 for constraints,
 # 61 for tasks, and (pool size / 2) + 1 for guests. A season with a temperaments pool gives each
 # member one, drawn with its own seed, so no other pick changes. A season with a buyers pool
-# ("venture | name | pain | walks when") makes member 3 a buyer: the person the page is for.
+# ("venture | name | pain | walks when | opens up when") makes member 3 a buyer: the person the page is for.
 #
 # Seeds: 7919 and 104729 are the 1000th and 10000th primes. Multiplying the block number and the
 # pool id by different primes keeps each pool's shuffle apart; 12345 keeps the seed off zero.
@@ -90,7 +90,7 @@ END {
   for (i = 1; i <= 4; i++) {
     if (i == 3 && buyers) {
       print i ". " bu[2] " (buyer; " bu[1] ") [buyer]" (isnew["buyers", buyer[1]] ? " [new]" : "")
-      print "   Method: Pain: " bu[3] ". Walks when: " bu[4] "."
+      print "   Method: Pain: " bu[3] ". Walks when: " bu[4] ". Opens up when: " bu[5] "."
     } else if (i == 4 && guests) {
       print i ". " g[2] " (" g[1] "; " g[4] ") [guest]" (isnew["guests", guest[1]] ? " [new]" : "")
       print "   Method: " g[3]
