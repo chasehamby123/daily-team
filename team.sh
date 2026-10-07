@@ -14,7 +14,8 @@
 # and is reshuffled each time it comes back. So within a season no item repeats within
 # (pool size / 2 / items per day) + 1 days: 7 for roles and methods, 22 for constraints,
 # 61 for tasks, and (pool size / 2) + 1 for guests. A season with a temperaments pool gives each
-# member one, drawn with its own seed, so no other pick changes.
+# member one, drawn with its own seed, so no other pick changes. A season with a buyers pool
+# ("venture | name | pain | walks when") makes member 3 a buyer: the person the page is for.
 #
 # Seeds: 7919 and 104729 are the 1000th and 10000th primes. Multiplying the block number and the
 # pool id by different primes keeps each pool's shuffle apart; 12345 keeps the seed off zero.
@@ -79,13 +80,18 @@ END {
   pick("stances", 4, 3, stance); pick("constraints", 1, 4, rule); pick("tasks", 1, 5, task)
   guests = n["guests"] > 0
   if (guests) { pick("guests", 1, 6, guest); split(item["guests", guest[1]], g, / \| /) }
+  buyers = n["buyers"] > 0
+  if (buyers) { pick("buyers", 1, 8, buyer); split(item["buyers", buyer[1]], bu, / \| /) }
   moods = n["temperaments"] > 0
   if (moods) pick("temperaments", 4, 7, mood)
   print "Team for " date
   print "Season: " season
   print ""
   for (i = 1; i <= 4; i++) {
-    if (i == 4 && guests) {
+    if (i == 3 && buyers) {
+      print i ". " bu[2] " (buyer; " bu[1] ") [buyer]" (isnew["buyers", buyer[1]] ? " [new]" : "")
+      print "   Method: Pain: " bu[3] ". Walks when: " bu[4] "."
+    } else if (i == 4 && guests) {
       print i ". " g[2] " (" g[1] "; " g[4] ") [guest]" (isnew["guests", guest[1]] ? " [new]" : "")
       print "   Method: " g[3]
     } else {

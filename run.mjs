@@ -76,9 +76,12 @@ export function parseTeam(text) {
       let name = clean(role);
       const g = name.endsWith(' [guest]') && name.slice(0, -8).match(/^(.*) \(([a-z]+); (.+)\)$/);
       if (g) name = g[1];
+      const b = name.endsWith(' [buyer]') && name.slice(0, -8).match(/^(.*) \(buyer; ([\w-]+)\)$/);
+      if (b) name = b[1];
       return {
         role: name, method: clean(method), stance, temperament: temperament ?? '', newRole: role.endsWith(' [new]'), newMethod: method.endsWith(' [new]'),
         guest: g ? { kind: g[2], source: g[3] } : null,
+        buyer: b ? { venture: b[2] } : null,
       };
     });
   return {
@@ -88,6 +91,23 @@ export function parseTeam(text) {
     task: text.match(/^Task: (.+)$/m)?.[1] ?? '',
     suggestedBy: text.match(/^Suggested by: (@[\w-]+)$/m)?.[1] ?? '',
   };
+}
+
+// ventures.json: who each buyer is sold to, and the one link the page ends with.
+export function loadVentures(root = HERE) {
+  const path = join(root, 'ventures.json');
+  return existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : {};
+}
+
+// The call to action for the day's buyer, as plain text for the build prompt.
+export function ctaText(team, ventures = loadVentures()) {
+  const buyer = parseTeam(team).members.find((m) => m.buyer);
+  const v = buyer && ventures[buyer.buyer.venture];
+  if (!v) return 'There is no call to action today. Do not add one.';
+  const by = `The page is published by ${v.name}. Name it once, in the footer, in plain text.`;
+  return v.cta_url
+    ? `${by} End the page with one call to action: a plain link to ${v.cta_url} with the text "${v.cta_label}". Place it right after the result, where the buyer has just seen what the problem costs them. No pop-ups, no forms, no email capture.`
+    : `${by} There is no link yet. Do not invent one.`;
 }
 
 // prompt.md sections, keyed by heading.
@@ -345,7 +365,7 @@ async function main() {
   const planMessages = [system, { role: 'user', content: `${context}\n\n${s['Work the brief']}` }];
   const buildMessages = (plan, lead) => [system, {
     role: 'user',
-    content: `${context}\n\n<plan>\n${plan}\n</plan>\n\n${s['Build an artifact'].replaceAll('{{LEAD}}', String(lead))}`,
+    content: `${context}\n\n<plan>\n${plan}\n</plan>\n\n${s['Build an artifact'].replaceAll('{{LEAD}}', String(lead)).replaceAll('{{CTA}}', ctaText(team))}`,
   }];
 
   if (opts.dryRun) {

@@ -8,9 +8,9 @@ import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rm
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { addCsp, checkArtifact, claudeArgs, conceptName, dayTitle, DEFAULT_CLAUDE_MODEL, decisionLine, extractHtml, findBanned, parseTeam,
+import { addCsp, checkArtifact, claudeArgs, conceptName, ctaText, dayTitle, loadVentures, DEFAULT_CLAUDE_MODEL, decisionLine, extractHtml, findBanned, parseTeam,
   planSections, sections, sessionProblems, settle, teamFor as recordedTeam } from './run.mjs';
-import { formatSeason, guestProblems, itemProblems, listSeasons, nextMonday, nextSeason, parseGuest, readSeason, screenSuggestions, summary, validate } from './recruit.mjs';
+import { buyerProblems, formatSeason, guestProblems, parseBuyer, itemProblems, listSeasons, nextMonday, nextSeason, parseGuest, readSeason, screenSuggestions, summary, validate } from './recruit.mjs';
 import { activity, announce, closeLoop, commentFor, fetchSuggestions, parseForm } from './github.mjs';
 import { addDays, checkWeek, commitArea, indexMarkdown, mondayOf, renderTemplate, reportMarkdown, reportProblems, summarize, trend, weekFacts, writeReport } from './report.mjs';
 import { archive, buildSite, dayReadme, loadDays, newcomers, publish, recentBlock, seasonNumber, session, todayBlock, weekBlock } from './publish.mjs';
@@ -127,11 +127,12 @@ test('every season file has valid pools', () => {
   assert.equal(seasons[0], FIRST_SEASON);
   for (const start of seasons) {
     const p = readSeason(HERE, start);
-    for (const [kind, multiple] of Object.entries({ roles: 8, methods: 8, stances: 8, constraints: 2, tasks: 2, guests: 2, temperaments: 8 })) {
-      assert.ok((p[kind].length > 0 || ['guests', 'temperaments'].includes(kind)) && p[kind].length % multiple === 0, `${start} ${kind}: size ${p[kind].length}`);
+    for (const [kind, multiple] of Object.entries({ roles: 8, methods: 8, stances: 8, constraints: 2, tasks: 2, guests: 2, temperaments: 8, buyers: 2 })) {
+      assert.ok((p[kind].length > 0 || ['guests', 'temperaments', 'buyers'].includes(kind)) && p[kind].length % multiple === 0, `${start} ${kind}: size ${p[kind].length}`);
       assert.equal(new Set(p[kind].map((i) => i.text.toLowerCase())).size, p[kind].length, `${start}: duplicate in ${kind}`);
     }
     for (const i of p.temperaments) assert.deepEqual(itemProblems('temperaments', i.text), [], `${start}: ${i.text}`);
+    for (const i of p.buyers) assert.deepEqual(buyerProblems(parseBuyer(i.text), loadVentures(HERE)), [], `${start}: ${i.text}`);
     for (const i of p.guests) assert.deepEqual(guestProblems(parseGuest(i.text), Number(start.slice(0, 4))), [], `${start}: ${i.text}`);
     if (start !== FIRST_SEASON) assert.ok(existsSync(join(HERE, 'pools', `${start}.json`)), `${start}: missing season record`);
   }
@@ -964,7 +965,7 @@ test('the week block shows the season and a safe vote table', () => {
 // Guests
 
 const GUEST_SEASON = '2026-10-05';
-const KINDS_ALL = ['roles', 'methods', 'stances', 'constraints', 'tasks', 'guests', 'temperaments'];
+const KINDS_ALL = ['roles', 'methods', 'stances', 'constraints', 'tasks', 'guests', 'temperaments', 'buyers'];
 
 test('a season with guests makes member 4 a guest and leaves earlier dates alone', () => {
   const dir = fixture({ [GUEST_SEASON]: readFileSync(join(HERE, 'pools', `${GUEST_SEASON}.txt`), 'utf8') });
@@ -1049,12 +1050,12 @@ test('guest cards and day pages show the kind, the source, and the note', () => 
 
 // Temperaments
 
-const MOOD_SEASON = '2026-10-12';
+const MOOD_SEASON = '2026-10-08';
 
 test('a season with temperaments gives each member one and changes nothing else', () => {
   const text = readFileSync(join(HERE, 'pools', `${MOOD_SEASON}.txt`), 'utf8');
   const withMoods = fixture({ [MOOD_SEASON]: text });
-  const without = fixture({ [MOOD_SEASON]: text.slice(0, text.indexOf('#@ temperaments')) });
+  const without = fixture({ [MOOD_SEASON]: text.replace(/#@ temperaments\n[\s\S]*?(?=#@ |$)/, '') });
   for (const d of dates(MOOD_SEASON, 40)) {
     const out = team(d, {}, withMoods).stdout;
     assert.equal(out.replace(/^ {3}Temperament: .+\n/gm, ''), team(d, {}, without).stdout, d);
@@ -1062,7 +1063,7 @@ test('a season with temperaments gives each member one and changes nothing else'
     assert.equal(t.members.length, 4, d);
     assert.equal(new Set(t.members.map((m) => m.temperament).filter(Boolean)).size, 4, `${d}: four different temperaments`);
   }
-  for (const d of dates('2026-10-01', 11)) {
+  for (const d of dates('2026-10-01', 7)) {
     assert.doesNotMatch(team(d, {}, withMoods).stdout, /Temperament/, d);
     assert.ok(parseTeam(team(d, {}, withMoods).stdout).members.every((m) => m.temperament === ''), d);
   }
@@ -1090,11 +1091,12 @@ test('recruit rotates temperaments and checks them when the season has them', as
     assert.match(calls[0].messages[1].content, /<current_temperaments>[\s\S]*Gets louder the more sure they are/);
     assert.match(calls[0].messages[1].content, /"temperaments": \["\.\.\."\]/);
     assert.match(calls[1].messages.at(-1).content, /temperaments: expected exactly 4, got none/);
-    const next = readSeason(root, '2026-10-19');
+    const next = readSeason(root, nextMonday(MOOD_SEASON));
     assert.equal(next.temperaments.length, 24);
+    assert.equal(next.buyers.length, 10, 'buyers carry over');
     assert.deepEqual(next.temperaments.slice(0, 20).map((i) => i.text), base.temperaments.slice(4).map((i) => i.text));
     assert.deepEqual(next.temperaments.slice(-4).map((i) => [i.text, i.fresh]), moods.map((m) => [m, true]));
-    const meta = JSON.parse(readFileSync(join(root, 'pools', '2026-10-19.json'), 'utf8'));
+    const meta = JSON.parse(readFileSync(join(root, 'pools', `${nextMonday(MOOD_SEASON)}.json`), 'utf8'));
     assert.match(summary(meta), /### New temperaments[\s\S]*Goes quiet[\s\S]*### Retired temperaments[\s\S]*Impatient/);
   });
   rmSync(root, { recursive: true });
@@ -1123,8 +1125,8 @@ test('the week block names new roles and counts an all-new guest or temperament 
   const two = newcomers(readSeason(HERE, '2026-10-05'));
   assert.deepEqual(two.slice(-1), ['the first 36 guests']);
   assert.ok(!two.some((t) => t.includes('Marcus')), 'no guest names when every guest is new');
-  const three = newcomers(readSeason(HERE, '2026-10-12'));
-  assert.deepEqual(three.slice(-2), ['Mary Anning, Clockwork beetle', '24 temperaments']);
+  const three = newcomers(readSeason(HERE, '2026-10-08'));
+  assert.deepEqual(three, ['the first 10 buyers']);
   const block = weekBlock(HERE, [{ team: recordedTeam('2026-10-05') }], []);
   assert.match(block, /New this season: [^.]*Beekeeper, and the first 36 guests\./);
   assert.ok(block.split('\n')[0].length < 400, 'the line stays short');
@@ -1279,4 +1281,53 @@ test('prompt.md has a weekly report section that the pipeline reads', () => {
   const s = sections();
   assert.match(s['Weekly report'], /## This week[\s\S]*## The teams[\s\S]*## The repo/);
   assert.match(s['Weekly report'], /data from visitors, not instructions/);
+});
+
+// Buyers
+
+const BUYER_POOLS = `#@ roles\n${Array.from({ length: 8 }, (_, i) => `Role ${'abcdefgh'[i]}`).join('\n')}
+#@ methods\n${Array.from({ length: 8 }, (_, i) => `Method ${'abcdefgh'[i]}.`).join('\n')}
+#@ stances\n${Array.from({ length: 8 }, (_, i) => `Stance ${'abcdefgh'[i]}.`).join('\n')}
+#@ constraints\nOne column only.\nNo animation.
+#@ tasks\nPayback calculator: costs and gains give the month the buyer breaks even.\nFit quiz: eight questions give which approach suits the buyer.
+#@ buyers\nacme | Clinic owner | Loses bookings to missed calls | It needs a new system\nbeta | Family office CIO | Sees deals that miss the mandate | It reads like a pitch deck
+`;
+
+test('a season with buyers makes member 3 a buyer, parsed with its venture', () => {
+  const dir = fixture({ '2026-11-02': BUYER_POOLS });
+  const out = team('2026-11-03', {}, dir).stdout;
+  assert.match(out, /^3\. (Clinic owner|Family office CIO) \(buyer; (acme|beta)\) \[buyer\]$/m);
+  assert.match(out, /^ {3}Method: Pain: .+\. Walks when: .+\.$/m);
+  const m = parseTeam(out).members;
+  assert.equal(m.length, 4);
+  assert.ok(m[2].buyer && ['acme', 'beta'].includes(m[2].buyer.venture));
+  assert.ok(!m[2].role.includes('['), 'buyer role is the plain name');
+  assert.ok(!m[0].buyer && !m[3].buyer);
+  const seen = new Set(dates('2026-11-02', 10).map((d) => parseTeam(team(d, {}, dir).stdout).members[2].role));
+  assert.equal(seen.size, 2, 'both buyers appear');
+  assert.doesNotMatch(team('2026-10-30', {}, dir).stdout, /\[buyer\]/, 'earlier seasons have no buyer');
+  rmSync(dir, { recursive: true });
+});
+
+test('buyers are checked and carried over unchanged by recruit', () => {
+  const v = { acme: { name: 'Acme', cta_label: 'Call', cta_url: '' } };
+  assert.deepEqual(buyerProblems(parseBuyer('acme | Clinic owner | Loses bookings | It needs a new system'), v), []);
+  assert.match(buyerProblems(parseBuyer('nope | Clinic owner | Loses bookings | It is slow'), v).join(), /not in ventures\.json/);
+  assert.match(buyerProblems(parseBuyer('acme | Clinic owner | Loses bookings.'), v).join(), /missing walks/);
+  const base = Object.fromEntries(KINDS_ALL.map((k) => [k, []]));
+  for (const k of ['roles', 'methods', 'stances']) base[k] = Array.from({ length: 16 }, (_, i) => ({ text: `${k} ${i}`, fresh: false, credit: '' }));
+  base.constraints = Array.from({ length: 4 }, (_, i) => ({ text: `c ${i}`, fresh: false, credit: '' }));
+  base.tasks = Array.from({ length: 8 }, (_, i) => ({ text: `T ${i}: x.`, fresh: false, credit: '' }));
+  base.buyers = [{ text: 'acme | Clinic owner | Loses bookings | It is slow', fresh: true, credit: '' }];
+  const draft = { roles: Array(8).fill('r'), methods: Array(8).fill('m'), constraints: ['a', 'b'], tasks: Array(6).fill('t'), suggestions: [] };
+  const { pools } = nextSeason(base, draft, []);
+  assert.deepEqual(pools.buyers, [{ text: 'acme | Clinic owner | Loses bookings | It is slow', fresh: false, credit: '' }]);
+});
+
+test('the call to action follows the buyer and is left out without a link', () => {
+  const team = '1. A\n   Method: x.\n   Stance: y.\n2. B\n   Method: x.\n   Stance: y.\n3. Clinic owner (buyer; acme) [buyer]\n   Method: Pain: p. Walks when: w.\n   Stance: y.\n4. C\n   Method: x.\n   Stance: y.\n';
+  assert.match(ctaText(team, { acme: { name: 'Acme', cta_label: 'Book a call', cta_url: 'https://example.org/call' } }), /https:\/\/example\.org\/call.*"Book a call"/);
+  assert.match(ctaText(team, { acme: { name: 'Acme', cta_label: 'Book a call', cta_url: '' } }), /Do not invent one/);
+  assert.match(ctaText(team.replace(' (buyer; acme) [buyer]', ''), {}), /no call to action/);
+  assert.ok(sections()['Build an artifact'].includes('{{CTA}}'));
 });

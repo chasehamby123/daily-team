@@ -1,0 +1,12 @@
+{
+  "outerhaven": {
+    "name": "OuterHaven Advisory",
+    "cta_label": "Talk to OuterHaven",
+    "cta_url": ""
+  },
+  "voxxy": {
+    "name": "VoxxyAI",
+    "cta_label": "Book a 15-minute call",
+    "cta_url": ""
+  }
+}

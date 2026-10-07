@@ -221,7 +221,9 @@ export function newcomers(pools) {
   const names = (items) => items.filter((i) => i.fresh).map((i) => i.text);
   const guests = names(pools.guests ?? []).map((t) => t.split(' | ')[1]);
   const moods = names(pools.temperaments ?? []);
+  const buyers = names(pools.buyers ?? []).map((t) => t.split(' | ')[1]);
   const out = names(pools.roles);
+  if (buyers.length) out.push(buyers.length === pools.buyers.length ? `the first ${buyers.length} buyers` : buyers.join(', '));
   if (guests.length) out.push(guests.length === pools.guests.length ? `the first ${guests.length} guests` : guests.join(', '));
   if (moods.length) out.push(moods.length === pools.temperaments.length ? `${moods.length} temperaments` : `${moods.length} new temperaments`);
   return out;

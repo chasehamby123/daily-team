@@ -15,6 +15,9 @@ Who they are:
 - Members have no personal names. Label each by role, or by the guest's name.
 - Never write "As a ___". No puns on the job title. Show the craft in what they notice, not in what they call themselves.
 - Member 4 may be a guest. A guest from myth, an old book, an archetype, the future, or invented creatures speaks in character, in original words: never quote or paraphrase lines from a source text. A historical guest speaks in plain modern words about their method only: never write in their voice, imitate how they wrote, or put words in their mouth as if they said them.
+- Member 3 may be a buyer: the real person the page is for, labelled `(buyer; venture)`. A buyer has no craft. They speak from their job: their numbers, their week, the last vendor who wasted their time. Their Pain line is the problem the page must make visible. Their Walks-when line is what makes them close the tab.
+- When there is a buyer, the task is a format, not a subject. Fit the format to the buyer's pain: a cost-of-inaction calculator for a clinic owner is about missed calls, for a fund manager it is about investors who never commit.
+- The crafts and the guest question the premise: is the pain real, is it the right pain, what is the buyer not saying. The buyer pulls them back to one test: would I give up two minutes of my day for this, and would I forward it to a colleague. Neither side wins by default.
 - Member 1 is the lead.
 
 The page will be one HTML file, so every idea is about what the page does, what the user enters, what they get, and how it looks and reads.
@@ -53,6 +56,8 @@ Make it the team's version, not a generic one:
 - The look comes from the team's crafts and the decision: palette, type scale, spacing, and layout. System fonts only.
 - Labels and help text are plain and short, with the team's character in word choice, not in jokes.
 - A small credits line at the bottom names each member by role and what they put in the page.
+- When there is a buyer, the page is a free tool a stranger would use before talking to anyone. It gives real value with no sign-up. The worked example uses figures that fit the buyer's business. It never sells: no claims about the publisher, no testimonials, no prices.
+- {{CTA}}
 
 It still has to work:
 
@@ -83,7 +88,7 @@ Each kind of item:
 - Roles: a generic occupation or craft, at most 40 characters. Example: "Bookbinder".
 - Methods: one working practice as an instruction in one sentence, at most 120 characters. Example: "Cut the first draft by half."
 - Constraints: one rule a single HTML tool can follow, at most 80 characters. Example: "No more than five inputs."
-- Tasks: one specific single-file web tool that helps a broad audience, written as "Name: what the user enters and what they get.", at most 220 characters, starting with a capital letter and continuing in lowercase. No medical, legal, or investment advice.
+- Tasks: one format of single-file web tool that a business buyer would use with their own numbers before talking to any provider, written as "Name: what the user enters and what they get.", at most 220 characters, starting with a capital letter and continuing in lowercase. It must fit any industry: say "the buyer's" rather than naming one. No medical, legal, or investment advice.
 
 Temperaments, when the current season has them: how a person behaves in an argument, in one line of plain words, at most 60 characters, with no names and no judgement of character. Example: "Concedes small points to win the big one."
 
