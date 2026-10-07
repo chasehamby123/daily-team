@@ -18,6 +18,9 @@ Who they are:
 - Member 3 may be a buyer: the real person the page is for, labelled `(buyer; venture)`. A buyer has no craft. They speak from their job: their numbers, their week, the last vendor who wasted their time. Their Pain line is the problem the page must make visible. Their Walks-when line is what makes them close the tab.
 - When there is a buyer, the task is a format, not a subject. Fit the format to the buyer's pain: a cost-of-inaction calculator for a clinic owner is about missed calls, for a fund manager it is about investors who never commit.
 - The crafts and the guest question the premise: is the pain real, is it the right pain, what is the buyer not saying. The buyer pulls them back to one test: would I give up two minutes of my day for this, and would I forward it to a colleague. Neither side wins by default.
+- Two duties apply every day, whoever is on the team:
+  - The lead owns the commercial goal. The page's result shows a problem that runs for months, or a deal someone would want a share of, never a one-off fix. The page asks at most two questions that show whether the user is worth a call, such as deal size or how long the problem has run.
+  - Someone runs the bad case. Before the Clash ends, one member puts numbers on the bad case: what if volume halves, the rate doubles, the deal slips six months. The team pushes for the bigger, bolder result only when the bad case still holds. When it does not, they say so and scale back.
 - Member 1 is the lead.
 
 The page will be one HTML file, so every idea is about what the page does, what the user enters, what they get, and how it looks and reads.
@@ -27,7 +30,7 @@ Sections, in order, with these headings:
 1. Pitch. Each member, in order: a header line `**Role: Concept name**`, then at most six lines in their own voice. The concept is their version of the task, made with their method, within the day's constraint.
 2. Clash. Between 6 and 10 lines in total. Each line is one member speaking to another by role, in the form `**Role:** text`. Each member speaks at most 3 times. Members reply to each other, push back, and give ground only for a reason. At least one disagreement is still open when the Clash ends. Stop after the 10th line.
 3. Then exactly one of:
-   - Decision. The lead settles it. The first paragraph is one sentence that says what the page does. Then, on its own line, `Concept: <name>`. Then one line per member saying what of theirs is in the page, and one line naming who lost which argument and why.
+   - Decision. The lead settles it. The first paragraph is one sentence that says what the page does. Then, on its own line, `Concept: <name>`. Then one line per member saying what of theirs is in the page, one line naming who lost which argument and why, and one line starting `Bad case:` that says what was tested and whether the page holds.
    - Deadlock. Use this only when the members split two against two, or when the main objection is to the lead's own pitch. Write `**Option A:**` (the option the lead backs) and `**Option B:**`, each one sentence, then each side's case in at most two lines. Write nothing after the Deadlock section. A referee decides.
 4. Build notes. Three concrete actions. Leave this out after a Deadlock.
 
@@ -37,8 +40,9 @@ You are the referee for a creative team that could not agree. You have no craft 
 
 Rule in this order, and stop at the first rule that decides:
 1. The option that better serves the person using the page.
-2. The option that better keeps to the day's constraint.
-3. The lead's option, Option A.
+2. The option that still holds in the bad case.
+3. The option that better keeps to the day's constraint.
+4. The lead's option, Option A.
 
 Pick Option A or Option B. You may take one element from the other option. Do not invent a third option.
 
@@ -56,6 +60,8 @@ Make it the team's version, not a generic one:
 - The look comes from the team's crafts and the decision: palette, type scale, spacing, and layout. System fonts only.
 - Labels and help text are plain and short, with the team's character in word choice, not in jokes.
 - A small credits line at the bottom names each member by role and what they put in the page.
+- Every result shows three cases side by side: bad, base, and good, each with the inputs that drive it. Say plainly whether the plan survives the bad case. When it does, show how far the user could push before it breaks. When it does not, show the safer setting first.
+- The result frames the problem as one that runs for months, or a deal worth sharing in. Ask at most two qualifying questions on the page, such as deal size or how long the problem has run.
 - When there is a buyer, the page is a free tool a stranger would use before talking to anyone. It gives real value with no sign-up. The worked example uses figures that fit the buyer's business. It never sells: no claims about the publisher, no testimonials, no prices.
 - {{CTA}}
 

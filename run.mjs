@@ -106,7 +106,7 @@ export function ctaText(team, ventures = loadVentures()) {
   if (!v) return 'There is no call to action today. Do not add one.';
   const by = `The page is published by ${v.name}. Name it once, in the footer, in plain text.`;
   return v.cta_url
-    ? `${by} End the page with one call to action: a plain link to ${v.cta_url} with the text "${v.cta_label}". Place it right after the result, where the buyer has just seen what the problem costs them. No pop-ups, no forms, no email capture.`
+    ? `${by} End the page with one call to action: a plain link to ${v.cta_url} with the text "${v.cta_label}". Place it right after the result, where the buyer has just seen what the problem costs them. Add the answers to the qualifying questions to the link as URL query parameters, so they arrive with the click. No pop-ups, no forms, no email capture.`
     : `${by} There is no link yet. Do not invent one.`;
 }
 
