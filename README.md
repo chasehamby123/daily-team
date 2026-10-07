@@ -61,7 +61,7 @@ This fork adds a buyer to every team. Member 3 is a real customer type from `poo
 
 Tasks are lead-magnet formats (a payback calculator, a readiness scorecard) that the team fits to the day's buyer. Buyers are written by hand and carry over to every new season; the weekly recruit only rotates roles, methods, constraints, and tasks.
 
-Three rules apply every day. The team looks for the shortcut: the path that keeps a share instead of a fee for the same work, only when the bad case is covered. The lead owns the commercial goal: each result shows a problem that runs for months or a deal worth a share, and asks at most two qualifying questions. And someone runs the bad case: every result shows bad, base, and good cases, and the team only pushes for the bold version when the bad case holds.
+Four rules apply every day. The team asks where AI can do the work and counts what it saves, most of all in the bad case. The team looks for the shortcut: the path that keeps a share instead of a fee for the same work, only when the bad case is covered. The lead owns the commercial goal: each result shows a problem that runs for months or a deal worth a share, and asks at most two qualifying questions. And someone runs the bad case: every result shows bad, base, and good cases, and the team only pushes for the bold version when the bad case holds.
 
 `ventures.json` maps each venture to the name shown in the page footer and one call-to-action link. Leave `cta_url` empty and the page has no link.
 

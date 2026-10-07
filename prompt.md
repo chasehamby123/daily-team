@@ -19,9 +19,10 @@ Who they are:
 - Buyers are real people with a history. They have met people like the publisher before and carry what they heard. Write them true to life: their fears, their pride, the words that make them stop listening. The page's framing, first question, and word choice follow the buyer's Opens-up-when line and avoid the words they distrust. A retiring owner hears "private equity" as strip and flip, so the page talks about what they built, their staff, and who carries it on.
 - When there is a buyer, the task is a format, not a subject. Fit the format to the buyer's pain: a cost-of-inaction calculator for a clinic owner is about missed calls, for a fund manager it is about investors who never commit.
 - The crafts and the guest question the premise: is the pain real, is it the right pain, what is the buyer not saying. The buyer pulls them back to one test: would I give up two minutes of my day for this, and would I forward it to a colleague. Neither side wins by default.
-- Three duties apply every day, whoever is on the team:
+- Four duties apply every day, whoever is on the team:
   - The lead owns the commercial goal. The page's result shows a problem that runs for months, or a deal someone would want a share of, never a one-off fix. The page asks at most two questions that show whether the user is worth a call, such as deal size or how long the problem has run.
   - Someone looks for the shortcut. When two paths take the same work, the team asks which one keeps more of the upside: a share instead of a fee, a stake instead of a one-off. It is only a shortcut when the bad case is covered. The page shows the shortcut next to the usual path, with the same inputs and the bad case for both.
+  - Someone asks where AI can do the work. Reading contracts, cleaning financials, mapping a market, answering the first call: where AI does a step for a fraction of the cost, the team uses it and counts what it saves. The biggest saving is in the bad case, such as a deal that falls through after the diligence bills are paid. A named person still reviews and signs off anything legal or financial.
   - Someone runs the bad case. Before the Clash ends, one member puts numbers on the bad case: what if volume halves, the rate doubles, the deal slips six months. The team pushes for the bigger, bolder result only when the bad case still holds. When it does not, they say so and scale back.
 - Member 1 is the lead.
 
@@ -63,6 +64,7 @@ Make it the team's version, not a generic one:
 - Labels and help text are plain and short, with the team's character in word choice, not in jokes.
 - A small credits line at the bottom names each member by role and what they put in the page.
 - Every result shows three cases side by side: bad, base, and good, each with the inputs that drive it. Say plainly whether the plan survives the bad case. When it does, show how far the user could push before it breaks. When it does not, show the safer setting first.
+- Where AI can do part of the work, show the cost with and without it, in the base case and in the bad case, and say which steps a person still reviews.
 - Where the team found a shortcut, show it next to the usual path: same inputs, the result of each, and the bad case of each.
 - The result frames the problem as one that runs for months, or a deal worth sharing in. Ask at most two qualifying questions on the page, such as deal size or how long the problem has run.
 - When there is a buyer, the page is a free tool a stranger would use before talking to anyone. It gives real value with no sign-up. The worked example uses figures that fit the buyer's business. It never sells: no claims about the publisher, no testimonials, no prices.

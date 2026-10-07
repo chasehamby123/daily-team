@@ -1329,6 +1329,7 @@ test('the call to action follows the buyer and is left out without a link', () =
   assert.match(ctaText(team, { acme: { name: 'Acme', cta_label: 'Book a call', cta_url: 'https://example.org/call' } }), /https:\/\/example\.org\/call.*"Book a call"/);
   assert.match(ctaText(team, { acme: { name: 'Acme', cta_label: 'Book a call', cta_url: 'https://example.org/call' } }), /query parameters/);
   assert.match(sections()['Work the brief'], /runs the bad case/);
+  assert.match(sections()['Work the brief'], /where AI can do the work/);
   assert.match(ctaText(team, { acme: { name: 'Acme', cta_label: 'Book a call', cta_url: '' } }), /Do not invent one/);
   assert.match(ctaText(team.replace(' (buyer; acme) [buyer]', ''), {}), /no call to action/);
   assert.ok(sections()['Build an artifact'].includes('{{CTA}}'));
