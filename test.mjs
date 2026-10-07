@@ -1093,7 +1093,7 @@ test('recruit rotates temperaments and checks them when the season has them', as
     assert.match(calls[1].messages.at(-1).content, /temperaments: expected exactly 4, got none/);
     const next = readSeason(root, nextMonday(MOOD_SEASON));
     assert.equal(next.temperaments.length, 24);
-    assert.equal(next.buyers.length, 10, 'buyers carry over');
+    assert.equal(next.buyers.length, 20, 'buyers carry over');
     assert.deepEqual(next.temperaments.slice(0, 20).map((i) => i.text), base.temperaments.slice(4).map((i) => i.text));
     assert.deepEqual(next.temperaments.slice(-4).map((i) => [i.text, i.fresh]), moods.map((m) => [m, true]));
     const meta = JSON.parse(readFileSync(join(root, 'pools', `${nextMonday(MOOD_SEASON)}.json`), 'utf8'));
@@ -1126,7 +1126,7 @@ test('the week block names new roles and counts an all-new guest or temperament 
   assert.deepEqual(two.slice(-1), ['the first 36 guests']);
   assert.ok(!two.some((t) => t.includes('Marcus')), 'no guest names when every guest is new');
   const three = newcomers(readSeason(HERE, '2026-10-08'));
-  assert.deepEqual(three, ['the first 10 buyers']);
+  assert.deepEqual(three, ['the first 20 buyers']);
   const block = weekBlock(HERE, [{ team: recordedTeam('2026-10-05') }], []);
   assert.match(block, /New this season: [^.]*Beekeeper, and the first 36 guests\./);
   assert.ok(block.split('\n')[0].length < 400, 'the line stays short');
