@@ -956,7 +956,8 @@ test('the week block shows the season and a safe vote table', () => {
     { number: 10, votes: 1, license: true, task: 'Tally sheet: marks in, counts out.' },
   ]);
   assert.match(block, /\*\*Season 1\*\*, since 2026-10-01/);
-  assert.match(block, /\| 3 \| \[Coin scriptalert1\/script counter xy yes\]\(https:\/\/github\.com\/isas1\/daily-team\/issues\/5\) \|/);
+  const repo = (process.env.GITHUB_REPOSITORY || 'isas1/daily-team').replace(/[.]/g, '\\.');
+  assert.match(block, new RegExp(`\\| 3 \\| \\[Coin scriptalert1/script counter xy yes\\]\\(https://github\\.com/${repo}/issues/5\\) \\|`));
   assert.match(block, /issues\/10\) \|/);
   assert.doesNotMatch(block, /<script>|issues\/(6|7|8|9)\)/, 'links, handles, banned words, and unlicensed text stay out');
   assert.match(weekBlock(HERE, [day], []), /No open suggestions yet\./);
