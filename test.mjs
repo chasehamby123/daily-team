@@ -1050,7 +1050,7 @@ test('guest cards and day pages show the kind, the source, and the note', () => 
 
 // Temperaments
 
-const MOOD_SEASON = '2026-10-08';
+const MOOD_SEASON = '2026-10-07';
 
 test('a season with temperaments gives each member one and changes nothing else', () => {
   const text = readFileSync(join(HERE, 'pools', `${MOOD_SEASON}.txt`), 'utf8');
@@ -1063,7 +1063,7 @@ test('a season with temperaments gives each member one and changes nothing else'
     assert.equal(t.members.length, 4, d);
     assert.equal(new Set(t.members.map((m) => m.temperament).filter(Boolean)).size, 4, `${d}: four different temperaments`);
   }
-  for (const d of dates('2026-10-01', 7)) {
+  for (const d of dates('2026-10-01', 6)) {
     assert.doesNotMatch(team(d, {}, withMoods).stdout, /Temperament/, d);
     assert.ok(parseTeam(team(d, {}, withMoods).stdout).members.every((m) => m.temperament === ''), d);
   }
@@ -1125,7 +1125,7 @@ test('the week block names new roles and counts an all-new guest or temperament 
   const two = newcomers(readSeason(HERE, '2026-10-05'));
   assert.deepEqual(two.slice(-1), ['the first 36 guests']);
   assert.ok(!two.some((t) => t.includes('Marcus')), 'no guest names when every guest is new');
-  const three = newcomers(readSeason(HERE, '2026-10-08'));
+  const three = newcomers(readSeason(HERE, '2026-10-07'));
   assert.deepEqual(three, ['the first 20 buyers']);
   const block = weekBlock(HERE, [{ team: recordedTeam('2026-10-05') }], []);
   assert.match(block, /New this season: [^.]*Beekeeper, and the first 36 guests\./);
