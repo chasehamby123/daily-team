@@ -38,11 +38,11 @@ export function cardHtml(day, seasonNumber = 0) {
   const title = titleCase(dayTitle(day));
   const kicker = [`Daily team`, day.date, seasonNumber ? `Season ${seasonNumber}` : ''].filter(Boolean).join(' · ');
   const cards = members.map((m, i) => {
-    const pill = [m.guest ? m.guest.kind : '', m.newRole || m.newMethod ? 'new' : ''].filter(Boolean).join(' · ');
+    const pill = [m.guest ? m.guest.kind : '', m.buyer ? 'buyer' : '', m.newRole || m.newMethod ? 'new' : ''].filter(Boolean).join(' · ');
     return `
-    <div class="member${m.guest ? ' guest' : ''}">
+    <div class="member${m.guest ? ' guest' : ''}${m.buyer ? ' buyer' : ''}">
       <div class="num">${i + 1}</div>${pill ? `\n      <div class="new">${esc(pill.toUpperCase())}</div>` : ''}
-      <div class="role">${esc(m.role)}</div>${m.guest ? `\n      <div class="source">${esc(m.guest.source)}</div>` : ''}
+      <div class="role">${esc(m.role)}</div>${m.guest ? `\n      <div class="source">${esc(m.guest.source)}</div>` : ''}${m.buyer ? `\n      <div class="source">for ${esc(m.buyer.venture)}</div>` : ''}
       <div class="method${m.temperament ? ' short' : ''}">${esc(m.method)}</div>${m.temperament ? `\n      <div class="temper">${esc(m.temperament.replace(/\.$/, ''))}</div>` : ''}
       <div class="stance">${esc(m.stance.replace(/\.$/, ''))}</div>
     </div>`;
@@ -63,6 +63,7 @@ h1 { font-size: 80px; max-width: 840px; margin-top: 10px; }
   color: var(--sc-white); font: 700 12.5px var(--font-headline); letter-spacing: var(--tracking-caps); }
 .role { font-family: var(--font-headline); font-weight: 700; font-stretch: 85%; font-size: 27px; line-height: 1.05; margin: 10px 0 6px; }
 .guest { border: 2px solid var(--sc-navy); }
+.buyer { border: 2px dashed var(--sc-navy); }
 .source { margin: -4px 0 6px; font-size: 13px; color: var(--text-support); }
 .method { flex: 1; font-size: 15px; line-height: 1.4; color: var(--text-muted); overflow: hidden;
   display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; }

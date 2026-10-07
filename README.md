@@ -55,6 +55,16 @@ No open suggestions yet.
 6. **The record.** The workflow takes a screenshot, draws the team card, writes the day page, updates the archive and this README, and commits the result. Days that fail are recorded too.
 7. **The weekly report.** Each Sunday a script gathers the week's changes, days, seasons, and GitHub activity, and a language model writes a short summary from those facts only. A check rejects any number or name that is not in the facts. Reports are in [reports/](reports/).
 
+## Buyers and ventures
+
+This fork adds a buyer to every team. Member 3 is a real customer type from `pools/<season>.txt` under `#@ buyers`, one per line: `venture | name | pain | walks when | opens up when`. The last two fields keep buyers true to life: what they have heard about people like you, and the framing that gets them to listen. Members 1 and 2 keep their crafts and member 4 stays the guest, so two outsiders and a figure from history or myth question the premise while the buyer asks one thing: would I use this and forward it.
+
+Tasks are lead-magnet formats (a payback calculator, a readiness scorecard) that the team fits to the day's buyer. Buyers are written by hand and carry over to every new season; the weekly recruit only rotates roles, methods, constraints, and tasks.
+
+Four rules apply every day. The team asks where AI can do the work and counts what it saves, most of all in the bad case. The team looks for the shortcut: the path that keeps a share instead of a fee for the same work, only when the bad case is covered. The lead owns the commercial goal: each result shows a problem that runs for months or a deal worth a share, and asks at most two qualifying questions. And someone runs the bad case: every result shows bad, base, and good cases, and the team only pushes for the bold version when the bad case holds.
+
+`ventures.json` maps each venture to the name shown in the page footer and one call-to-action link. Leave `cta_url` empty and the page has no link.
+
 ## Take part
 
 [Suggest a task](https://github.com/isas1/daily-team/issues/new?template=task-suggestion.yml), vote with a thumbs-up on open suggestions, or read [CONTRIBUTING.md](CONTRIBUTING.md).

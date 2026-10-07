@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url';
 import { completeChecked, die, findBanned, prepareProvider, sections, today } from './run.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
-export const KINDS = ['roles', 'methods', 'stances', 'constraints', 'tasks', 'guests', 'temperaments'];
+export const KINDS = ['roles', 'methods', 'stances', 'constraints', 'tasks', 'guests', 'temperaments', 'buyers'];
 export const ROTATE = { roles: 8, methods: 8, constraints: 2, tasks: 6 };
 const MAX_LEN = { roles: 40, methods: 120, constraints: 80, tasks: 220, temperaments: 60 };
 const MAX_SUGGESTIONS = 20;
@@ -115,6 +115,29 @@ export function guestProblems(g, year) {
     else if ((m[2] ? -Number(m[1]) : Number(m[1])) > year - 100) problems.push(`${label}: died ${m[1]}${m[2] || ''}, less than 100 years before ${year}`);
   }
   if (g.kind === 'future' && !/^invented$/i.test(g.source.trim())) problems.push(`${label}: future guests must be invented`);
+  return problems;
+}
+
+// Buyers are the people a page is for. They are written by the owner, never drafted by a model,
+// and carry over unchanged from season to season. Each names a venture in ventures.json.
+export const parseBuyer = (text) => {
+  const [venture, name, pain, walks, opens] = text.split(' | ');
+  return { venture, name, pain, walks, opens };
+};
+export function buyerProblems(b, ventures) {
+  const label = `buyer "${String(b.name).slice(0, 40)}"`;
+  const problems = [];
+  for (const f of ['venture', 'name', 'pain', 'walks', 'opens']) {
+    if (typeof b[f] !== 'string' || !b[f].trim()) problems.push(`${label}: missing ${f}`);
+  }
+  if (problems.length) return problems;
+  if (b.name.length > 40) problems.push(`${label}: name longer than 40 characters`);
+  for (const f of ['pain', 'walks', 'opens']) {
+    if (b[f].length > 100) problems.push(`${label}: ${f} longer than 100 characters`);
+    if (/[.]$/.test(b[f])) problems.push(`${label}: no full stop at the end of ${f}`);
+  }
+  if (ventures && !Object.hasOwn(ventures, b.venture)) problems.push(`${label}: venture "${b.venture}" is not in ventures.json`);
+  for (const w of findBanned(`${b.name} ${b.pain} ${b.walks} ${b.opens}`)) problems.push(`${label}: uses the word "${w}"`);
   return problems;
 }
 
@@ -249,7 +272,7 @@ export function nextSeason(base, draft, suggestions) {
     constraints: draft.constraints.map((text) => ({ text, fresh: true, credit: '' })),
     tasks: [...accepted, ...draft.tasks.map((text) => ({ text, fresh: true, credit: '' }))],
   };
-  const pools = { stances: base.stances.map((i) => ({ ...i, fresh: false })), guests: [], temperaments: [] };
+  const pools = { stances: base.stances.map((i) => ({ ...i, fresh: false })), buyers: (base.buyers ?? []).map((i) => ({ ...i, fresh: false })), guests: [], temperaments: [] };
   const retired = {};
   if (base.guests.length) {
     added.guests = (draft.guests || []).map((g) => ({ text: guestLine(g), fresh: true, credit: '' }));
