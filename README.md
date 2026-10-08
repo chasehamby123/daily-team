@@ -7,27 +7,27 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-10-06: Three Panes
+### 2026-10-08: Cheque First
 
-<a href="days/2026-10-06/"><img src="days/2026-10-06/team.png" alt="Team for 2026-10-06: Window dresser · Calligrapher · Textile designer · Glass fox" width="100%"></a>
+<a href="days/2026-10-08/"><img src="days/2026-10-08/team.png" alt="Team for 2026-10-08: Locksmith · Taxidermist · Fund manager raising capital · Archivist from 2300" width="100%"></a>
 
-**Task:** Water tracker: a daily goal the user sets and a tap-to-add log that resets each day.
+**Task:** Priority sorter: a list of problems rated by cost and effort gives a two-by-two grid and the first one to tackle.
 
-**Decision:** The page loads with a grey example of 5 stripes under a red goal line at 8, then lets the user set a goal and tap to add one blue stripe per glass, and clears the stripes when the device date changes.
+**Decision:** The page takes a pasted investor list, removes anyone below the minimum cheque or without a past commitment to the strategy, sorts the rest into four stacked bands by likelihood to commit and partner hours, and names the first investor t...
 
-<a href="days/2026-10-06/"><img src="days/2026-10-06/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-10-08/"><img src="days/2026-10-08/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-10-06/) · [Use it](https://isas1.github.io/daily-team/2026-10-06/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-10-08/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
 
 <!-- WEEK:START -->
-**Season 2**, since 2026-10-05. New this season: Taxidermist, Locksmith, Upholsterer, Glassblower, Calligrapher, Blacksmith, Tailor, Beekeeper, and the first 36 guests. A new season with 8 new roles and 8 new methods is drafted every Monday.
+**Season 3**, since 2026-10-07. New this season: the first 20 buyers. A new season with 8 new roles and 8 new methods is drafted every Monday.
 
 ### Vote on what gets built next
 
-[Suggest a task](https://github.com/isas1/daily-team/issues/new?template=task-suggestion.yml) or vote with a thumbs-up on [open suggestions](https://github.com/isas1/daily-team/issues?q=is%3Aissue+is%3Aopen+label%3Atask-suggestion+sort%3Areactions-%2B1-desc). The most voted are screened every Monday.
+[Suggest a task](https://github.com/chasehamby123/daily-team/issues/new?template=task-suggestion.yml) or vote with a thumbs-up on [open suggestions](https://github.com/chasehamby123/daily-team/issues?q=is%3Aissue+is%3Aopen+label%3Atask-suggestion+sort%3Areactions-%2B1-desc). The most voted are screened every Monday.
 
 No open suggestions yet.
 <!-- WEEK:END -->
@@ -37,12 +37,13 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-10-08](days/2026-10-08/) | <a href="days/2026-10-08/"><img src="days/2026-10-08/artifact-1.png" alt="Cheque First" width="160"></a> | Cheque First | Locksmith · Taxidermist · Fund manager raising capital · Archivist from 2300 |
 | [2026-10-06](days/2026-10-06/) | <a href="days/2026-10-06/"><img src="days/2026-10-06/artifact-1.png" alt="Three Panes" width="160"></a> | Three Panes | Window dresser · Calligrapher · Textile designer · Glass fox |
 | [2026-10-05](days/2026-10-05/) | <a href="days/2026-10-05/"><img src="days/2026-10-05/artifact-1.png" alt="CV checklist" width="160"></a> | CV checklist | Bookbinder · Glassblower · Chef · Captain Ahab |
 | [2026-10-04](days/2026-10-04/) | <a href="days/2026-10-04/"><img src="days/2026-10-04/artifact-1.png" alt="Weekly planner page with priorities, appointments, and notes, printable on A4." width="160"></a> | Weekly planner page with priorities, appointments, and notes, printable on A4. | Comic artist · Packaging designer · Exhibition designer · Printmaker |
 | [2026-10-03](days/2026-10-03/) | <a href="days/2026-10-03/"><img src="days/2026-10-03/artifact-1.png" alt="Running pace calculator" width="160"></a> | Running pace calculator | Service designer · Product designer · Interaction designer · Choreographer |
 
-[All 4 days](ARCHIVE.md)
+[All 5 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works

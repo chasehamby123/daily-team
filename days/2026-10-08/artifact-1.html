@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cheque First: one name to call today, the names to drop</title>
+<style>
+:root{--paper:#f5f2ea;--card:#fffdf8;--ink:#1d1c19;--muted:#5d584e;--rule:#cfc8b8;--red:#a8231b;--green:#1f5b3a;--amber:#7a5a12}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+main{max-width:40rem;margin:0 auto;padding:1.25rem 1rem 3rem}
+h1{font-size:2.1rem;line-height:1.1;margin:.5rem 0 .5rem;letter-spacing:-.01em}
+h2{font-size:1.25rem;margin:2rem 0 .5rem;border-top:2px solid var(--ink);padding-top:.75rem}
+h3{font-size:1.1rem;margin:0 0 .4rem}
+p{margin:.4rem 0}
+.lede{font-size:1.1rem}
+.steps{margin:.75rem 0;padding-left:1.25rem}
+.steps li{margin:.15rem 0}
+label{display:block;font-weight:600;margin:.75rem 0 .25rem}
+.help{color:var(--muted);font-size:.875rem}
+textarea{width:100%;min-height:15rem;padding:.5rem;border:1px solid var(--rule);background:var(--card);color:var(--ink);font:13px/1.45 ui-monospace,Menlo,Consolas,monospace}
+input[type=number]{width:100%;max-width:12rem;padding:.45rem;font:inherit;border:1px solid var(--rule);background:var(--card);color:var(--ink)}
+.q{border:1px solid var(--rule);background:var(--card);padding:.25rem .75rem .75rem;margin:1rem 0}
+details{border:1px solid var(--rule);background:var(--card);padding:.5rem .75rem;margin:1rem 0}
+summary{cursor:pointer;font-weight:600}
+.btns{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0}
+button{font:inherit;padding:.5rem .9rem;border:1px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer}
+button.alt{background:transparent;color:var(--ink)}
+button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.headline{border:2px solid var(--ink);background:var(--card);padding:1rem;margin:1rem 0}
+.headline .big{font-size:1.9rem;font-weight:700;line-height:1.15}
+.band{border:1px solid var(--rule);border-left:6px solid var(--ink);background:var(--card);padding:.75rem;margin:1rem 0}
+.band.call{border-left-color:var(--green)}
+.band.nurture{border-left-color:var(--amber)}
+.band.low{border-left-color:var(--muted)}
+.band.drop{border:3px solid var(--red)}
+.band.drop h3{font-size:32pt;line-height:1.1;color:var(--red)}
+.sum{font-weight:600}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.875rem;margin:.5rem 0}
+th,td{border-bottom:1px solid var(--rule);padding:.3rem .25rem;text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--muted)}
+.num{text-align:right;white-space:nowrap}
+.tag{font-size:.75rem;padding:0 .3rem;border:1px solid currentColor;white-space:nowrap}
+.tag.ai{color:var(--amber)}
+.tag.dead{color:var(--red)}
+.formula{font:12.5px/1.5 ui-monospace,Menlo,Consolas,monospace;background:#efeadf;padding:.5rem;margin:.5rem 0;white-space:pre-wrap}
+.verdict{font-weight:700;padding:.5rem .75rem;margin:.75rem 0;border:2px solid var(--ink)}
+.verdict.fail{border-color:var(--red);color:var(--red)}
+.verdict.ok{border-color:var(--green);color:var(--green)}
+.safer{border:2px solid var(--ink);background:var(--card);padding:.75rem;margin:.75rem 0}
+.line{border-top:1px dashed var(--rule);padding-top:.5rem;margin-top:1rem;font-size:.9rem}
+.first{border:3px solid var(--ink);background:var(--card);padding:1rem;margin:2rem 0 1rem}
+.first .name{font-size:1.9rem;font-weight:700;line-height:1.15;margin:.25rem 0}
+.credits,footer{font-size:.8rem;color:var(--muted);margin-top:1.5rem}
+footer{border-top:1px solid var(--rule);padding-top:.75rem}
+.printonly{display:none}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+@media print{
+  body{background:#fff;font-size:11pt}
+  main{max-width:none;padding:0}
+  .noprint,textarea,.btns{display:none!important}
+  .printonly{display:block;font:9pt/1.35 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap}
+  .band,.headline,.first,.safer,details,.q{background:#fff;break-inside:avoid}
+  details{display:block}
+  details>*{display:block}
+  h2{break-after:avoid}
+  .band.drop h3{font-size:24pt}
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+<p class="help">Free tool. No sign-up. Runs in this file, offline.</p>
+<h1>Cheque First</h1>
+<p class="lede">Paste this morning's investor list. Names below your minimum cheque or with no past commitment to your strategy come off first. The rest sort into four bands. The page ends with one name to call today.</p>
+<ol class="steps">
+<li>Export the list from the CRM.</li>
+<li>Paste it below. Answer two questions.</li>
+<li>Read down to the first call.</li>
+</ol>
+</header>
+
+<section aria-labelledby="in-h">
+<h2 id="in-h">The list</h2>
+<label for="list">Investor list, CSV or pasted from a spreadsheet</label>
+<p class="help">Columns: name, typical cheque in $m, past commitments to your strategy, partner hours so far, associate flag (dead or warm), signed (initials). A cell ending in <b>?</b> was filled by AI and is not checked yet. Initials in the last column sign the row. A <b>dead</b> flag from the associate overrides every score.</p>
+<textarea id="list" spellcheck="false" aria-describedby="list-help"></textarea>
+<pre class="printonly" id="printList"></pre>
+
+<div class="q">
+<label for="T">1. Target raise, $m</label>
+<input type="number" id="T" min="1" step="1" inputmode="decimal">
+<label for="m">2. Months into the raise</label>
+<input type="number" id="m" min="0" step="1" inputmode="numeric">
+</div>
+
+<details id="assump">
+<summary>Assumptions (defaults, change to your own)</summary>
+<p class="help">Fee terms and the value of an hour depend on your firm, your agent's contract and local rules. Enter your own.</p>
+<label for="min">Minimum cheque, $m</label><input type="number" id="min" min="0" step="0.5">
+<label for="R">Partner hour value, $</label><input type="number" id="R" min="0" step="10">
+<label for="H">Partner hours on the raise per month</label><input type="number" id="H" min="0" step="1">
+<label for="L">Planned raise length, months</label><input type="number" id="L" min="1" step="1">
+<label for="u">Share of target from existing LPs re-upping, %</label><input type="number" id="u" min="0" max="100" step="1">
+<label for="eff">Effort line: partner hours at or above this count as heavy</label><input type="number" id="eff" min="0" step="1">
+<label for="cc">Call band conversion, base case, %</label><input type="number" id="cc" min="0" max="100" step="1">
+<label for="nc">Nurture band conversion, %</label><input type="number" id="nc" min="0" max="100" step="1">
+<label for="lc">Low effort band conversion, %</label><input type="number" id="lc" min="0" max="100" step="1">
+<label for="f">Placement agent fee on new money, %</label><input type="number" id="f" min="0" step="0.1">
+<label for="a">Share of partner hours the agent takes on, %</label><input type="number" id="a" min="0" max="100" step="1">
+<label for="ar">Associate hour value, $</label><input type="number" id="ar" min="0" step="5">
+</details>
+
+<div class="btns noprint">
+<button type="button" id="go">Sort the list</button>
+<button type="button" class="alt" id="ex">Load worked example</button>
+<button type="button" class="alt" id="clr">Clear</button>
+<button type="button" class="alt" id="save">Save result as one HTML file</button>
+<button type="button" class="alt" id="prt">Print</button>
+</div>
+<p class="help noprint" id="store"></p>
+</section>
+
+<section id="result" aria-live="polite"></section>
+
+<p class="credits">Credits. Locksmith: the morning list, the associate's dead mark above any score, the first call at the end. Taxidermist: four stacked bands, the red Drop border, the placement agent path. Fund manager raising capital: cheque and track record filters first, the re-up carve-out on the agent fee. Archivist from 2300: plain table rows, hours times rate on every band, the saved file that reads in a text editor.</p>
+<footer>
+<p>Published by OuterHaven Advisory.</p>
+<p>This page sorts a list. It does not give investment, legal or tax advice. Conversion rates and fee terms are planning figures you set.</p>
+</footer>
+</main>
+
+<script>
+(function(){
+var EXAMPLE = [
+"name,cheque_m,past_commitments,partner_hours,flag,signed",
+"Ohio Teachers Pension,40,3,6,warm,AB",
+"Nordbank Pensjon,25,2,4,,AB",
+"Calder Endowment,15,2,9,warm,AB",
+"Harbour Point Pension,20,2,8,,AB",
+"Norrland AP Fund,35?,2?,2,,",
+"Hollins Family Office,10,2,22,,AB",
+"Ardent Sovereign Fund,75,3,31,,AB",
+"Pacific Mutual Life,30,1,3,,AB",
+"Meridian Fund of Funds,20?,1?,5,,",
+"Keel Insurance,8,1,2,,AB",
+"Corran Capital FoF,15,1,46,dead,AB",
+"Sable State Retirement,50,1,28,,AB",
+"Vesta Endowment,6,1,39,,AB",
+"Tamsin Family Office,9,2,27,dead,AB",
+"Lindqvist Family Office (Zurich),2,1,38,,AB",
+"Brightwater Foundation,12,0,14,,AB",
+"Elm Street Trust,,,1,,"
+].join("\n");
+var DEF = {T:200,m:7,min:5,R:900,H:120,L:18,u:50,eff:12,cc:60,nc:30,lc:10,f:2,a:40,ar:150};
+var FIELDS = Object.keys(DEF);
+var KEY = "chequeFirst.v1";
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function usd(n){return "$"+Math.round(n).toLocaleString("en-US");}
+function musd(n){return "$"+(Math.round(n*10)/10).toLocaleString("en-US")+"m";}
+function pct(n){return Math.round(n*100)+"%";}
+function h(n){return (Math.round(n*10)/10).toLocaleString("en-US");}
+
+function splitLine(line){
+  if(line.indexOf("\t")>-1 && line.indexOf(",")<0) return line.split("\t").map(function(s){return s.trim();});
+  var out=[],cur="",q=false;
+  for(var i=0;i<line.length;i++){
+    var c=line[i];
+    if(q){ if(c=='"'){ if(line[i+1]=='"'){cur+='"';i++;} else q=false; } else cur+=c; }
+    else { if(c=='"') q=true; else if(c==","){out.push(cur);cur="";} else cur+=c; }
+  }
+  out.push(cur);
+  return out.map(function(s){return s.trim();});
+}
+function cell(s){
+  s=(s||"").trim();
+  var ai=/\?$/.test(s);
+  s=s.replace(/\?$/,"").replace(/[$,\s]/g,"").replace(/m$/i,"");
+  if(s==="") return {v:null,ai:ai};
+  var v=parseFloat(s);
+  return {v:isNaN(v)?null:v,ai:ai};
+}
+function parse(text){
+  var lines=text.split(/\r?\n/).filter(function(l){return l.trim()!=="";});
+  var rows=[];
+  lines.forEach(function(l,i){
+    var c=splitLine(l);
+    if(i===0 && /name/i.test(c[0]||"") && /cheque|hour|commit/i.test(l)) return;
+    if(!c[0]) return;
+    var ch=cell(c[1]),cm=cell(c[2]),hr=cell(c[3]);
+    var flag=(c[4]||"").toLowerCase(), signed=(c[5]||"").trim();
+    rows.push({name:c[0],cheque:ch.v,commits:cm.v,hours:hr.v||0,
+      ai:(ch.ai||cm.ai),signed:signed,dead:/dead/.test(flag),warm:/warm/.test(flag)});
+  });
+  return rows;
+}
+function readV(){
+  var v={};
+  FIELDS.forEach(function(k){var x=parseFloat($(k).value);v[k]=isNaN(x)?DEF[k]:x;});
+  return v;
+}
+function save(){
+  try{
+    var d={list:$("list").value};
+    FIELDS.forEach(function(k){d[k]=$(k).value;});
+    localStorage.setItem(KEY,JSON.stringify(d));
+    $("store").textContent="Inputs kept in this browser only.";
+  }catch(e){$("store").textContent="Browser storage is blocked. The page still works. Inputs are not kept between visits.";}
+}
+function load(){
+  try{
+    var d=JSON.parse(localStorage.getItem(KEY)||"null");
+    if(d && typeof d.list==="string"){
+      $("list").value=d.list;
+      FIELDS.forEach(function(k){$(k).value=(d[k]!==undefined&&d[k]!=="")?d[k]:DEF[k];});
+      return true;
+    }
+  }catch(e){}
+  return false;
+}
+function fillExample(){
+  $("list").value=EXAMPLE;
+  FIELDS.forEach(function(k){$(k).value=DEF[k];});
+}
+
+function rowTable(list,v,showWhy){
+  if(!list.length) return '<p class="help">No names in this band.</p>';
+  var s='<table><thead><tr><th>Investor</th><th class="num">Cheque</th><th class="num">Past commits</th><th class="num">Hours</th><th>Note</th></tr></thead><tbody>';
+  list.forEach(function(r){
+    var note=[];
+    if(r.dead) note.push('<span class="tag dead">dead, associate</span>');
+    if(r.ai && !r.signed) note.push('<span class="tag ai">AI, unchecked</span>');
+    if(r.ai && r.signed) note.push('AI, signed '+esc(r.signed));
+    if(r.warm) note.push('warm');
+    if(showWhy && r.why) note.push(esc(r.why));
+    s+='<tr><td>'+esc(r.name)+'</td><td class="num">'+(r.cheque==null?'blank':musd(r.cheque))+'</td><td class="num">'+(r.commits==null?'blank':r.commits)+'</td><td class="num">'+h(r.hours)+'</td><td>'+note.join(' ')+'</td></tr>';
+  });
+  return s+'</tbody></table>';
+}
+function sumOf(list,k){return list.reduce(function(a,r){return a+(r[k]||0);},0);}
+
+function render(){
+  var v=readV(), rows=parse($("list").value);
+  $("printList").textContent=$("list").value;
+  var out=$("result");
+  if(!rows.length){out.innerHTML='<h2>Result</h2><p>Paste a list to see the bands and the first call.</p>';save();return;}
+
+  var B={call:[],nurture:[],low:[],drop:[]}, filtered=[], research=[];
+  rows.forEach(function(r){
+    if(r.dead){r.score=0;B.drop.push(r);return;}
+    if(r.cheque==null||r.commits==null){research.push(r);return;}
+    if(r.cheque<v.min){r.why="cheque below "+musd(v.min);filtered.push(r);return;}
+    if(r.commits<1){r.why="no past commitment to the strategy";filtered.push(r);return;}
+    r.score=Math.min(r.commits,3)+(r.cheque>=2*v.min?1:0)+(r.warm?1:0);
+    var likely=r.score>=3, heavy=r.hours>=v.eff;
+    B[likely?(heavy?"nurture":"call"):(heavy?"drop":"low")].push(r);
+  });
+  Object.keys(B).forEach(function(k){B[k].sort(function(a,b){return (b.score-a.score)||((b.cheque||0)-(a.cheque||0))||(a.hours-b.hours);});});
+
+  var u=v.u/100, gap=v.T*(1-u);
+  var capCall=sumOf(B.call,"cheque"),capNur=sumOf(B.nurture,"cheque"),capLow=sumOf(B.low,"cheque");
+  var logged=sumOf(rows,"hours"), dropH=sumOf(B.drop,"hours"), filtH=sumOf(filtered,"hours");
+  var gone=v.m*v.H;
+
+  var cases={
+    bad:{name:"Bad",cc:v.cc/200,slip:6},
+    base:{name:"Base",cc:v.cc/100,slip:0},
+    good:{name:"Good",cc:Math.min(1,v.cc/100+0.15),slip:-2}
+  };
+  var nc=v.nc/100, lc=v.lc/100, a=v.a/100, fee=v.f/100*v.T*(1-u), feeAll=v.f/100*v.T;
+  ["bad","base","good"].forEach(function(k){
+    var c=cases[k];
+    c.E=capCall*c.cc+capNur*nc+capLow*lc;
+    c.cov=gap>0?c.E/gap:0;
+    c.left=Math.max(0,v.L-v.m+c.slip);
+    c.inH=c.left*v.H; c.inCost=c.inH*v.R;
+    if(k==="bad"){
+      var red=Math.min(Math.max(0,9-v.m),c.left);
+      c.agH=red*v.H*(1-a)+(c.left-red)*v.H;
+    } else c.agH=c.left*v.H*(1-a);
+    c.agCost=fee+c.agH*v.R;
+  });
+  var bad=cases.bad, base=cases.base, good=cases.good;
+  var survive=bad.cov>=1;
+  var cStar=capCall>0?(gap-capNur*nc-capLow*lc)/capCall:Infinity;
+
+  var s='';
+  s+='<h2>Result</h2>';
+  s+='<div class="headline"><div class="big">'+h(v.m)+' months of partner time gone.</div>';
+  s+='<p>About '+h(gone)+' partner hours so far at '+h(v.H)+' a month. '+h(logged)+' are logged against names on this list.</p>';
+  s+='<p>'+h(dropH+filtH)+' logged hours went to names in Drop or removed by the filters. At '+usd(v.R)+' an hour that is '+usd((dropH+filtH)*v.R)+'.</p>';
+  s+='<p>'+h(Math.max(0,v.L-v.m))+' months remain on a '+h(v.L)+'-month plan. The raise is a monthly cost until it closes.</p></div>';
+
+  s+='<p class="formula">Filter first: cheque >= '+musd(v.min)+' AND past commitments >= 1.\nScore = past commitments (max 3) + 1 if cheque >= 2 x minimum + 1 if flagged warm.\nLikely = score >= 3. Heavy = partner hours >= '+h(v.eff)+'.\nCall = likely, light. Nurture = likely, heavy.\nLow effort = unlikely, light. Drop = unlikely, heavy, or marked dead.\nBand cost = band hours x '+usd(v.R)+'.</p>';
+
+  var labels={call:"Call",nurture:"Nurture",low:"Low effort",drop:"Drop"};
+  var helps={call:"Likely to commit, few hours spent. Phone these first.",nurture:"Likely to commit, many hours already in. Keep going, watch the hours.",low:"Less likely, cheap so far. Email updates, no flights.",drop:"Unlikely or marked dead, and the hours keep going in. Stop here."};
+  ["call","nurture","low","drop"].forEach(function(k){
+    var L=B[k], hh=sumOf(L,"hours");
+    s+='<div class="band '+k+'">';
+    if(k==="drop") s+='<h3>Drop: '+h(hh)+' hours</h3>';
+    else s+='<h3>'+labels[k]+'</h3>';
+    s+='<p class="help">'+helps[k]+'</p>';
+    s+='<p class="sum">'+L.length+' names. '+h(hh)+' hours x '+usd(v.R)+' = '+usd(hh*v.R)+'. Cheques '+musd(sumOf(L,"cheque"))+'.</p>';
+    s+=rowTable(L,v,false)+'</div>';
+  });
+
+  s+='<h2>Does the list cover the raise</h2>';
+  s+='<p>New money needed = target x (1 - re-up share) = '+musd(v.T)+' x '+pct(1-u)+' = '+musd(gap)+'.</p>';
+  if(survive){
+    s+='<div class="verdict ok">The plan survives the bad case. Expected new money covers '+pct(bad.cov)+' of the gap.</div>';
+    s+='<p>How far it goes: the list still covers the gap while Call band conversion stays at or above '+(isFinite(cStar)?pct(Math.max(0,cStar)):"n/a")+'. The bad case runs at '+pct(bad.cc)+'.</p>';
+  } else {
+    var safeT=Math.floor(bad.E/(1-u||1));
+    var extra=bad.cc>0?(gap-bad.E)/bad.cc:0;
+    s+='<div class="verdict fail">The plan does not survive the bad case. Expected new money covers '+pct(bad.cov)+' of the gap.</div>';
+    s+='<div class="safer"><h3>Safer setting</h3><p>Plan on a target of '+musd(safeT)+', or add '+musd(extra)+' of signed Call band cheques before the next partner meeting.</p>';
+    s+='<p>The list covers the gap while Call band conversion stays at or above '+(isFinite(cStar)?pct(Math.max(0,cStar)):"n/a")+'. The bad case runs at '+pct(bad.cc)+'.</p></div>';
+  }
+  s+='<table><thead><tr><th></th><th class="num">Bad</th><th class="num">Base</th><th class="num">Good</th></tr></thead><tbody>';
+  function row(lbl,f){s+='<tr><td>'+lbl+'</td><td class="num">'+f(bad)+'</td><td class="num">'+f(base)+'</td><td class="num">'+f(good)+'</td></tr>';}
+  row("Input: Call conversion",function(c){return pct(c.cc);});
+  row("Input: Nurture / Low",function(){return pct(nc)+" / "+pct(lc);});
+  row("Input: slip, months",function(c){return (c.slip>0?"+":"")+c.slip;});
+  row("Expected new money",function(c){return musd(c.E);});
+  row("Covers the gap",function(c){return pct(c.cov);});
+  row("Months left",function(c){return h(c.left);});
+  row("Partner cost from here",function(c){return usd(c.inCost);});
+  s+='</tbody></table>';
+  s+='<p class="formula">Expected = Call '+musd(capCall)+' x Call conv + Nurture '+musd(capNur)+' x '+pct(nc)+' + Low '+musd(capLow)+' x '+pct(lc)+'.\nBad case: half the Call band walks, raise slips 6 months.\nGood case: Call conversion +15 points, closes 2 months early.\nPartner cost = months left x '+h(v.H)+' h x '+usd(v.R)+'.</p>';
+
+  s+='<h2>In-house or placement agent</h2>';
+  s+='<p>Same list, same inputs, two paths. The agent fee is charged on new money only. Existing LPs re-upping are carved out. Without the carve-out the fee would be '+usd(feeAll)+'.</p>';
+  s+='<table><thead><tr><th></th><th class="num">Bad</th><th class="num">Base</th><th class="num">Good</th></tr></thead><tbody>';
+  row("In-house: partner hours",function(c){return h(c.inH);});
+  row("In-house: total",function(c){return usd(c.inCost);});
+  row("Agent: fee",function(){return usd(fee);});
+  row("Agent: partner hours",function(c){return h(c.agH);});
+  row("Agent: total",function(c){return usd(c.agCost);});
+  s+='</tbody></table>';
+  var cheaper=function(c){return c.agCost<c.inCost?"agent":"in-house";};
+  s+='<p>Base case: '+cheaper(base)+' costs less, by '+usd(Math.abs(base.agCost-base.inCost))+'. Bad case: '+cheaper(bad)+' costs less, by '+usd(Math.abs(bad.agCost-bad.inCost))+'. In the bad case in-house spends '+usd(bad.inCost-base.inCost)+' more partner time than base.</p>';
+  s+='<p class="formula">Agent fee = '+v.f+'% x '+musd(v.T)+' x '+pct(1-u)+' = '+usd(fee)+'.\nAgent partner hours = months left x '+h(v.H)+' x (1 - '+pct(a)+').\nBad case: the agent stops working the Nurture band after month 9. Partner hours go back to '+h(v.H)+' a month from then.\nAgent contracts vary. Check your own terms.</p>';
+
+  var n=rows.length, aiRows=rows.filter(function(r){return r.ai&&!r.signed;}).length;
+  var noAI={base:n*9/60,bad:n*12/60}, withAI={base:n*1.5/60,bad:n*1.5/60+0.25*n*9/60};
+  s+='<h2>Research on the list: with and without AI</h2>';
+  s+='<p>AI can fill blank cheque and commitment cells from Form D filings and pension board minutes. Each filled cell ends in ? and stays "AI, unchecked" until the associate puts her initials on the row.</p>';
+  s+='<table><thead><tr><th>'+n+' names</th><th class="num">Bad</th><th class="num">Base</th></tr></thead><tbody>';
+  s+='<tr><td>Without AI: hours</td><td class="num">'+h(noAI.bad)+'</td><td class="num">'+h(noAI.base)+'</td></tr>';
+  s+='<tr><td>Without AI: cost</td><td class="num">'+usd(noAI.bad*v.ar)+'</td><td class="num">'+usd(noAI.base*v.ar)+'</td></tr>';
+  s+='<tr><td>With AI: hours</td><td class="num">'+h(withAI.bad)+'</td><td class="num">'+h(withAI.base)+'</td></tr>';
+  s+='<tr><td>With AI: cost</td><td class="num">'+usd(withAI.bad*v.ar)+'</td><td class="num">'+usd(withAI.base*v.ar)+'</td></tr>';
+  s+='</tbody></table>';
+  s+='<p class="formula">Without AI: 9 min a name (bad: 12 min, filings scattered).\nWith AI: 1.5 min a name to check (bad: plus 25% of names redone by hand at 9 min).\nCost = hours x '+usd(v.ar)+' associate hour.</p>';
+  s+='<p>A person still reviews: every cell ending in ?, the dead mark, and the first call. '+aiRows+' row'+(aiRows===1?'':'s')+' on this list still need initials. Unsigned rows cannot be the first call.</p>';
+
+  s+='<p class="line"><b>Removed by the filters ('+filtered.length+', '+h(filtH)+' hours, '+usd(filtH*v.R)+'):</b> '+(filtered.length?filtered.map(function(r){return esc(r.name)+' ('+esc(r.why)+')';}).join('; '):'none')+'.</p>';
+  if(research.length) s+='<p class="line"><b>Blank cells, research first ('+research.length+'):</b> '+research.map(function(r){return esc(r.name);}).join('; ')+'.</p>';
+
+  var pick=B.call.filter(function(r){return !r.ai||r.signed;})[0], from="Call";
+  if(!pick){pick=B.nurture.filter(function(r){return !r.ai||r.signed;})[0];from="Nurture";}
+  s+='<div class="first"><h3>Call first today</h3>';
+  if(pick){
+    s+='<div class="name">'+esc(pick.name)+'</div>';
+    s+='<p>From the '+from+' band. Typical cheque '+musd(pick.cheque)+'. '+pick.commits+' past commitment'+(pick.commits===1?'':'s')+' to the strategy. '+h(pick.hours)+' partner hours so far.'+(pick.warm?' Flagged warm by the associate.':'')+'</p>';
+    s+='<p class="help">Picked by highest score, then largest cheque, then fewest hours, from signed rows only.</p>';
+  } else s+='<p>No signed name in Call or Nurture. Sign the AI rows, or add names that pass the filters.</p>';
+  s+='</div>';
+
+  out.innerHTML=s;
+  save();
+}
+
+function saveFile(){
+  var d=new Date().toISOString().slice(0,10);
+  var css="body{font:15px/1.5 system-ui,sans-serif;max-width:40rem;margin:1rem auto;padding:0 1rem;color:#1d1c19}table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid #ccc;padding:.25rem;text-align:left}.num{text-align:right}.band{border:1px solid #ccc;padding:.5rem;margin:1rem 0}.band.drop{border:3px solid #a8231b}.formula,pre{font:12px monospace;white-space:pre-wrap}.first{border:3px solid #1d1c19;padding:.75rem}";
+  var html='<!DOCTYPE html>\n<html lang="en"><head><meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>Cheque First '+d+'</title>\n<style>'+css+'</style></head><body>\n<h1>Cheque First, '+d+'</h1>\n'+$("result").innerHTML+'\n<h2>The list as pasted</h2>\n<pre>'+esc($("list").value)+'</pre>\n<p>Published by OuterHaven Advisory.</p>\n</body></html>';
+  try{
+    var blob=new Blob([html],{type:"text/html"});
+    var a=document.createElement("a");
+    a.href=URL.createObjectURL(blob);a.download="cheque-first-"+d+".html";
+    document.body.appendChild(a);a.click();
+    setTimeout(function(){URL.revokeObjectURL(a.href);a.remove();},1000);
+  }catch(e){$("store").textContent="This browser blocked the download. Use Print instead.";}
+}
+
+var t;
+function later(){clearTimeout(t);t=setTimeout(render,250);}
+$("list").addEventListener("input",later);
+FIELDS.forEach(function(k){$(k).addEventListener("input",later);});
+$("go").addEventListener("click",render);
+$("ex").addEventListener("click",function(){fillExample();render();});
+$("clr").addEventListener("click",function(){$("list").value="";$("T").value="";$("m").value="";render();$("list").focus();});
+$("save").addEventListener("click",saveFile);
+$("prt").addEventListener("click",function(){window.print();});
+if(!load()) fillExample();
+render();
+})();
+</script>
+</body>
+</html>

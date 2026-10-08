@@ -16,7 +16,7 @@
 
 <a href="artifact-1.html"><img src="artifact-1.png" alt="Screenshot of artifact-1.html" width="100%"></a>
 
-[Use it](https://isas1.github.io/daily-team/2026-10-06/) · [artifact-1.html](artifact-1.html), led by Window dresser. Model: claude-opus-5-5.
+[artifact-1.html](artifact-1.html), led by Window dresser. Model: claude-opus-5-5.
 
 ## The session
 
