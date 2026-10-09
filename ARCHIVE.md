@@ -1,11 +1,12 @@
 # Archive
 
-Every daily team and the asset it made, newest first. 5 days recorded.
+Every daily team and the asset it made, newest first. 6 days recorded.
 
 [Today](README.md)
 
 | Date | Task | Team | Constraint | Asset |
 |---|---|---|---|---|
+| [2026-10-09](days/2026-10-09/) | Stack and Clock | Sculptor · Chef · Real estate developer · Glass fox | Touch targets at least 48 px. | [asset](days/2026-10-09/artifact-1.html) |
 | [2026-10-08](days/2026-10-08/) | Cheque First | Locksmith · Taxidermist · Fund manager raising capital · Archivist from 2300 | One column only. | [asset](days/2026-10-08/artifact-1.html) |
 | [2026-10-06](days/2026-10-06/) | Three Panes | Window dresser · Calligrapher · Textile designer · Glass fox | Shows a filled-in example before the user types. | [asset](days/2026-10-06/artifact-1.html) |
 | [2026-10-05](days/2026-10-05/) | CV checklist | Bookbinder · Glassblower · Chef · Captain Ahab | Has a dark mode that follows the system setting. | [asset](days/2026-10-05/artifact-1.html) |

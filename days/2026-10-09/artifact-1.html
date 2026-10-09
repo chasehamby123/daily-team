@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stack and Clock: risk register for a capital stack with a deadline</title>
+<style>
+:root{
+  --stone:#ebe7e0;--stone2:#dcd6cc;--paper:#f7f5f1;--ink:#211f1c;--slate:#57534c;
+  --line:#b9b2a6;--clay:#c99f78;--clay2:#e2c7ab;--rust:#9c3f1b;--blue:#2e4859;
+  --ok:#2f5a3a;--glass:rgba(255,255,255,.6);
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--stone);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-variant-numeric:tabular-nums}
+main{max-width:1080px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:20px}
+header h1{font-size:2rem;line-height:1.1;margin:8px 0 4px;letter-spacing:-.01em}
+header h1 span{color:var(--rust)}
+header p{margin:0;color:var(--slate);max-width:62ch}
+h2{font-size:1.15rem;margin:0 0 4px}
+h3{font-size:1rem;margin:0 0 6px}
+.sub{color:var(--slate);margin:0 0 12px;font-size:.93rem;max-width:70ch}
+section{background:var(--paper);border:1px solid var(--line);padding:16px}
+.inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+label{display:block;font-size:.85rem;color:var(--slate);font-weight:600}
+input{display:block;width:100%;min-height:48px;margin-top:4px;padding:8px 10px;font:inherit;font-size:1rem;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:2px}
+input:focus,button:focus-visible,summary:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+button{min-height:48px;min-width:48px;padding:10px 16px;font:inherit;font-weight:600;border:1px solid var(--ink);background:#fff;color:var(--ink);cursor:pointer;border-radius:2px}
+button.primary{background:var(--ink);color:var(--paper)}
+.stack{margin-top:16px}
+.bar{display:flex;height:48px;border:1px solid var(--ink);overflow:hidden}
+.bar div{display:flex;align-items:center;padding:0 8px;font-size:.8rem;font-weight:600;white-space:nowrap;overflow:hidden;min-width:0}
+.seg-senior{background:var(--blue);color:#fff}
+.seg-eq{background:var(--clay2)}
+.seg-gap{background:var(--rust);color:#fff}
+.clock{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:10px;font-size:.95rem}
+.clock b{font-size:1.25rem}
+.check{margin-top:10px;font-size:.88rem;padding:8px 10px;border-left:4px solid var(--line);background:var(--stone)}
+.check.warn{border-color:var(--rust)}
+.flag{margin-top:8px;font-size:.88rem;padding:8px 10px;border-left:4px solid var(--rust);background:#f3e3d8}
+.weak{border:2px solid var(--rust);background:#fbf3ee}
+.weak .big{font-size:1.6rem;font-weight:700;color:var(--rust);margin:2px 0}
+.formula{font-family:var(--mono);font-size:.8rem;background:var(--stone);padding:6px 8px;display:block;margin:6px 0;white-space:pre-wrap;word-break:break-word}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--stone2);vertical-align:top}
+th{font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;color:var(--slate);border-bottom:2px solid var(--ink)}
+td.n,th.n{text-align:right;white-space:nowrap}
+tr.top td{background:#f3e3d8}
+tr.top td:first-child{box-shadow:inset 4px 0 0 var(--rust)}
+.why{display:block;font-size:.78rem;color:var(--slate)}
+.lik{display:inline-block;min-width:22px;text-align:center;font-weight:700;padding:1px 4px;border:1px solid var(--ink)}
+.late{color:var(--rust);font-weight:700}
+.gridwrap{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start}
+.heat{display:grid;grid-template-columns:28px repeat(3,96px);grid-template-rows:repeat(3,96px) 36px;gap:4px}
+.axis{font-size:.72rem;color:var(--slate);display:flex;align-items:center;justify-content:center;text-align:center}
+.axis.y{writing-mode:vertical-rl;transform:rotate(180deg)}
+.cell{width:96px;height:96px;min-height:96px;padding:6px;border:1px solid var(--ink);display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;text-align:left;font-size:.75rem;font-weight:600;transition:transform .15s}
+.cell:hover{transform:translateY(-2px)}
+.cell .cnt{font-size:1.4rem;line-height:1}
+.cell[aria-pressed="true"]{outline:3px solid var(--blue);outline-offset:2px}
+.h2{background:#f2efe9}.h3{background:#e8dccd}.h4{background:var(--clay2)}.h5{background:var(--clay)}.h6{background:var(--rust);color:#fff}
+.detail{background:var(--glass);border:1px solid var(--line);padding:12px;min-height:200px;backdrop-filter:blur(4px)}
+.detail article{border-bottom:1px solid var(--stone2);padding:8px 0}
+.detail article:last-child{border-bottom:0}
+.clause{font-family:var(--mono);font-size:.8rem;background:#fff;border-left:3px solid var(--blue);padding:6px 8px;margin:6px 0}
+.cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.case{border:1px solid var(--line);padding:12px;background:#fff}
+.case.bad{border-top:6px solid var(--rust)}.case.base{border-top:6px solid var(--clay)}.case.good{border-top:6px solid var(--blue)}
+.case dl{display:grid;grid-template-columns:1fr auto;gap:2px 10px;margin:8px 0;font-size:.86rem}
+.case dt{color:var(--slate)}.case dd{margin:0;text-align:right}
+.case .tot{font-size:1.3rem;font-weight:700}
+.verdict{margin-top:12px;padding:10px 12px;border-left:6px solid var(--ok);background:#e9efe9;font-weight:600}
+.verdict.no{border-color:var(--rust);background:#f3e3d8}
+.pills{display:inline-block;padding:2px 8px;font-size:.78rem;font-weight:700;border:1px solid currentColor}
+.holds{color:var(--ok)}.breaks{color:var(--rust)}
+details{background:var(--paper);border:1px solid var(--line)}
+summary{min-height:48px;display:flex;align-items:center;padding:0 16px;font-weight:700;cursor:pointer}
+details .inputs{padding:0 16px 16px}
+.lead{font-weight:600;margin:10px 0 0}
+footer{font-size:.82rem;color:var(--slate);border-top:2px solid var(--ink);padding-top:12px}
+footer p{margin:6px 0}
+.print-only{display:none}
+@media (max-width:640px){
+  header h1{font-size:1.6rem}
+  .gridwrap{grid-template-columns:1fr}
+  main{padding:10px}
+  section{padding:12px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+  .cell:hover{transform:none}
+}
+@media print{
+  @page{size:A4;margin:10mm}
+  body{background:#fff;font-size:9pt}
+  main{padding:0;gap:6px;max-width:none}
+  section{padding:6px 8px;border:1px solid #999;break-inside:avoid}
+  .no-print,.btns,details,#inputs,#grid,#ai,#weak{display:none!important}
+  .print-only{display:block}
+  #paths{order:-2}
+  #printhead{order:-3}
+  #cases{order:-1}
+  header{order:-4}
+  header h1{font-size:14pt}
+  header p{display:none}
+  table{font-size:7.5pt}
+  th,td{padding:2px 4px}
+  .why{font-size:7pt}
+  .case{padding:6px}
+  .case dl{font-size:8pt}
+  .case .tot{font-size:11pt}
+  .formula{font-size:7pt;padding:3px}
+  .sub{display:none}
+  footer{font-size:7pt}
+  tr.top td{background:#eee}
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>Stack and Clock <span>/</span> risk register</h1>
+  <p>Enter your capital stack and the date the lender's commitment expires. Every risk to closing is ranked by dollars at risk. Every likelihood names its source.</p>
+</header>
+
+<div class="print-only" id="printhead"></div>
+
+<section id="inputs" aria-labelledby="h-in">
+  <h2 id="h-in">1. The stack and the clock</h2>
+  <p class="sub">Five numbers. The worked example is a $60M ground-up multifamily deal with a $9M equity gap.</p>
+  <div class="inputs">
+    <label>Total project cost ($)<input id="cost" type="number" inputmode="numeric" min="0" step="1000"></label>
+    <label>Senior debt ($)<input id="senior" type="number" inputmode="numeric" min="0" step="1000"></label>
+    <label>Equity committed ($)<input id="committed" type="number" inputmode="numeric" min="0" step="1000"></label>
+    <label>Equity gap ($)<input id="gap" type="number" inputmode="numeric" min="0" step="1000"></label>
+    <label>Lender commitment expires<input id="expiry" type="date"></label>
+  </div>
+  <div class="stack">
+    <div class="bar" id="bar" role="img" aria-label="Capital stack"></div>
+    <div class="clock" id="clock"></div>
+    <div class="check" id="check"></div>
+    <div class="flag" id="flag" hidden></div>
+  </div>
+  <div class="btns">
+    <button class="primary" id="rerun" type="button">Re-run snapshot</button>
+    <button id="print" type="button">Print one-page export</button>
+    <button id="example" type="button">Load worked example</button>
+    <button id="clear" type="button">Clear</button>
+  </div>
+</section>
+
+<details id="assume">
+  <summary>Case drivers and rates you set</summary>
+  <p class="sub" style="padding:0 16px">Extension fees, rates, and fees depend on your documents and local market. Enter yours.</p>
+  <div class="inputs">
+    <label>Base slip (months)<input id="baseM" type="number" min="0" step="1"></label>
+    <label>Base rate move (bps)<input id="baseB" type="number" step="5"></label>
+    <label>Bad slip (months)<input id="badM" type="number" min="0" step="1"></label>
+    <label>Bad rate move (bps)<input id="badB" type="number" step="5"></label>
+    <label>Extension fee (% of loan)<input id="ext" type="number" min="0" step="0.05"></label>
+    <label>All-in senior rate (%)<input id="rate" type="number" min="0" step="0.05"></label>
+    <label>Contingency for delay ($)<input id="cont" type="number" min="0" step="1000"></label>
+    <label>Placement fee (% of gap)<input id="fee" type="number" min="0" step="0.25"></label>
+    <label>Placement retainer ($)<input id="ret" type="number" min="0" step="1000"></label>
+    <label>Co-GP share of promote (%)<input id="share" type="number" min="0" step="1"></label>
+    <label>Projected sponsor promote ($)<input id="promote" type="number" min="0" step="1000"></label>
+    <label>Your diligence spend ($)<input id="dil" type="number" min="0" step="1000"></label>
+  </div>
+</details>
+
+<section id="weak" class="weak" aria-labelledby="h-weak">
+  <h2 id="h-weak">The weakest layer</h2>
+  <div id="weakbody"></div>
+  <p class="sub" style="margin-top:10px">A three-by-three grid can be nine guesses dressed as data. The likelihood column is the weak part of any register, so it is the one part reworked here: each score shows the date or clause behind it. The rest stays plain.</p>
+</section>
+
+<section id="register" aria-labelledby="h-reg">
+  <h2 id="h-reg">2. Ranked register, all twelve rows</h2>
+  <p class="sub">The top row is marked. Nothing is cut: a lender reads one row as eleven hidden.</p>
+  <code class="formula">Rank score = likelihood (1 to 3) × dollars at risk
+Clear by = week on the countdown when the risk must be closed out</code>
+  <div class="tablewrap"><table id="tbl"></table></div>
+</section>
+
+<section id="grid" aria-labelledby="h-grid">
+  <h2 id="h-grid">3. Heat grid</h2>
+  <p class="sub" id="snap"></p>
+  <div class="gridwrap">
+    <div class="heat" id="heat"></div>
+    <div class="detail" id="detail" aria-live="polite"><p class="sub">Tap a cell to see each risk in it, the clause that put it there, and who reviewed it.</p></div>
+  </div>
+  <code class="formula" id="bands"></code>
+</section>
+
+<section id="cases" aria-labelledby="h-cases">
+  <h2 id="h-cases">4. Bad, base, and good: does the close hold</h2>
+  <code class="formula">Extra carry = senior debt × rate move × slip months ÷ 12   (assumes the full loan is outstanding)
+Extension fee = senior debt × extension fee %   (applies if close slips past expiry)
+Holds if extra carry + extension fee ≤ contingency</code>
+  <div class="cases" id="casecards"></div>
+  <div class="verdict" id="verdict"></div>
+</section>
+
+<section id="paths" aria-labelledby="h-paths">
+  <h2 id="h-paths">5. Filling the gap: placement agent or co-GP</h2>
+  <p class="sub">Same stack, same dates, same slip. Two ways to fill the equity gap.</p>
+  <code class="formula">Agent path cost = gap × placement fee % + retainer      If the deal dies: retainer + your diligence
+Co-GP path cost = projected promote × co-GP share %     If the deal dies: your diligence (co-GP carries its own)</code>
+  <div class="tablewrap"><table id="pathtbl"></table></div>
+  <p class="lead" id="pathlead"></p>
+</section>
+
+<section id="ai" aria-labelledby="h-ai">
+  <h2 id="h-ai">6. First read of the documents: AI pass or counsel</h2>
+  <p class="sub">An AI pass reads the term sheet and loan commitment and lists every clause it flags, low-confidence ones included. Counsel still signs off. Counsel rates vary by market; enter yours.</p>
+  <div class="inputs">
+    <label>AI first pass ($)<input id="aiC" type="number" min="0" step="50"></label>
+    <label>Counsel review of AI pass ($)<input id="revC" type="number" min="0" step="100"></label>
+    <label>Counsel full first read ($)<input id="cnC" type="number" min="0" step="500"></label>
+    <label>Reviewing counsel<input id="cname" type="text" placeholder="Name"></label>
+    <label>Review date<input id="cdate" type="date"></label>
+  </div>
+  <code class="formula">Base, with AI = AI pass + counsel review        Base, without = counsel full read
+Bad, with AI = AI pass + counsel review + counsel full read (AI misreads a clause, counsel reads it all anyway)
+Bad, without = counsel full read</code>
+  <div class="tablewrap"><table id="aitbl"></table></div>
+  <p class="sub" style="margin-top:8px">A person reviews: every flagged clause, every likelihood score and its reason, the dollar impacts, and the final sign-off. The AI drafts the list. It does not decide what is in or out.</p>
+</section>
+
+<footer>
+  <p>Credits. Sculptor: the reworked likelihood column, each score with its source. Chef: clear-by weeks on the countdown and the export that leads with fee versus share. Real estate developer: the five inputs, dollar ranking, all twelve rows, and the bad-case math. Glass fox: 96 px tap-to-open cells and the AI first pass with counsel sign-off.</p>
+  <p>This is a calculator, not legal, tax, or investment advice. Clause text in the example is illustrative. Check every figure against your own documents.</p>
+  <p>Published by OuterHaven Advisory.</p>
+</footer>
+</main>
+
+<script>
+(function(){
+var KEY='stackclock-v1';
+var NUMS=['cost','senior','committed','gap','baseM','baseB','badM','badB','ext','rate','cont','fee','ret','share','promote','dil','aiC','revC','cnC'];
+var TXT=['expiry','cname','cdate'];
+function addDays(n){var d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()+n);return iso(d);}
+function iso(d){var m=d.getMonth()+1,day=d.getDate();return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(day<10?'0':'')+day;}
+var EX={cost:60000000,senior:39000000,committed:12000000,gap:9000000,baseM:2,baseB:75,badM:6,badB:150,ext:0.5,rate:7.5,cont:650000,fee:3,ret:50000,share:30,promote:2400000,dil:120000,aiC:400,revC:3500,cnC:15000,expiry:addDays(100),cname:'',cdate:''};
+var $=function(id){return document.getElementById(id);};
+var snapDate=new Date();
+var selCell=null;
+
+function fm(n){if(!isFinite(n))return '—';var s=Math.round(Math.abs(n)).toLocaleString('en-US');return (n<0?'−$':'$')+s;}
+function fs(n){var a=Math.abs(n);if(a>=1e6)return '$'+(n/1e6).toFixed(a>=1e7?1:2).replace(/\.?0+$/,'')+'M';if(a>=1e3)return '$'+Math.round(n/1e3)+'k';return '$'+Math.round(n);}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function v(id){var x=parseFloat($(id).value);return isFinite(x)?x:0;}
+
+function fill(o){NUMS.concat(TXT).forEach(function(k){$(k).value=(o[k]===undefined?'':o[k]);});}
+function save(){var o={};NUMS.concat(TXT).forEach(function(k){o[k]=$(k).value;});try{localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}}
+function load(){try{var s=localStorage.getItem(KEY);if(s){return JSON.parse(s);}}catch(e){}return null;}
+
+function S(){
+  var s={};NUMS.forEach(function(k){s[k]=v(k);});
+  var t=new Date(snapDate);t.setHours(0,0,0,0);
+  var ex=$('expiry').value?new Date($('expiry').value+'T00:00:00'):null;
+  s.days=ex?Math.round((ex-t)/86400000):NaN;
+  s.expiryStr=$('expiry').value||'no date';
+  s.equityTotal=s.committed+s.gap;
+  return s;
+}
+function dateLik(d){
+  if(!isFinite(d))return [2,'No expiry date entered. Scored 2 by default.'];
+  if(d<60)return [3,d+' days to expiry (under 60).'];
+  if(d<150)return [2,d+' days to expiry (60 to 149).'];
+  return [1,d+' days to expiry (150 or more).'];
+}
+
+var RISKS=[
+ {id:'R1',name:'Equity gap not filled before expiry',layer:'Equity gap',clear:30,conf:94,
+  lik:function(s){var r=dateLik(s.days);return [r[0],r[1]+' Gap is '+(s.cost?Math.round(s.gap/s.cost*100):0)+'% of cost.'];},
+  imp:function(s){return [s.gap,'equity gap = '+fm(s.gap)];},
+  src:function(s){return 'Loan commitment §3.1: Lender\'s obligation is conditioned on evidence of full equity funding of '+fm(s.equityTotal)+' before first draw.';}},
+ {id:'R2',name:'Commitment lapses, extension and re-pricing',layer:'Senior debt',clear:45,conf:97,
+  lik:function(s){return dateLik(s.days);},
+  imp:function(s){var c=s.senior*s.badB/1e4*s.badM/12,e=s.senior*s.ext/100;return [c+e,'senior × '+s.badB+' bps × '+s.badM+'/12 + senior × '+s.ext+'% = '+fm(c)+' + '+fm(e)];},
+  src:function(s){return 'Loan commitment §4.2: Commitment terminates on '+s.expiryStr+' unless extended at Lender\'s sole discretion for a fee of '+s.ext+'% of the loan amount.';}},
+ {id:'R3',name:'Index rises before rate lock',layer:'Senior debt',clear:14,conf:90,
+  lik:function(){return [2,'Pricing floats until closing. No lock in the term sheet.'];},
+  imp:function(s){var x=s.senior*s.badB/1e4;return [x,'senior × '+s.badB+' bps × 12 months = '+fm(x)];},
+  src:function(){return 'Term sheet, Pricing: SOFR + 3.25%, floating until rate lock at closing.';}},
+ {id:'R4',name:'A committed equity partner fails to fund',layer:'Equity committed',clear:21,conf:71,
+  lik:function(){return [1,'Commitments are signed subscription agreements with a capital call notice.'];},
+  imp:function(s){var x=s.committed*0.25;return [x,'equity committed × 25% (assumed largest single ticket) = '+fm(x)];},
+  src:function(){return 'Subscription agreement §2.3: Capital called on 10 business days\' notice. Default remedy: dilution only.';}},
+ {id:'R5',name:'Hard cost overrun before GMP is signed',layer:'Total cost',clear:35,conf:82,
+  lik:function(){return [2,'GMP contract not yet executed. Bids are 90 days old.'];},
+  imp:function(s){var x=s.cost*0.04;return [x,'total cost × 4% = '+fm(x)];},
+  src:function(){return 'Loan commitment §5.4(c): Executed guaranteed maximum price contract required before closing.';}},
+ {id:'R6',name:'Appraisal short, loan resized down',layer:'Senior debt',clear:40,conf:88,
+  lik:function(){return [1,'Broker opinion of value supports sizing with an 8% cushion.'];},
+  imp:function(s){var x=s.senior*0.05;return [x,'senior × 5% resize = '+fm(x)];},
+  src:function(){return 'Loan commitment §2.2: Loan not to exceed 65% of as-complete appraised value.';}},
+ {id:'R7',name:'Building permit not issued by close',layer:'Total cost',clear:30,conf:90,
+  lik:function(){return [2,'Permit in second-round plan check. City median is 7 weeks for this round.'];},
+  imp:function(s){var x=s.senior*s.rate/100*3/12;return [x,'senior × '+s.rate+'% × 3/12 (three months of carry) = '+fm(x)];},
+  src:function(){return 'Loan commitment §5.4(a): Issued building permit is a condition precedent to closing.';}},
+ {id:'R8',name:'Pre-leasing condition not met',layer:'Senior debt',clear:20,conf:76,
+  lik:function(){return [1,'Condition applies to retail podium only. LOIs cover 24% of 30%.'];},
+  imp:function(s){var x=s.senior*0.10;return [x,'senior × 10% holdback = '+fm(x)];},
+  src:function(){return 'Loan commitment §5.6: 30% retail pre-leasing by gross area, or 10% of loan held back until met.';}},
+ {id:'R9',name:'Guarantor net worth covenant at the edge',layer:'Senior debt',clear:25,conf:85,
+  lik:function(){return [1,'Last statement shows net worth 14% above the floor.'];},
+  imp:function(s){var x=s.senior*0.01;return [x,'senior × 1% (cost of added credit support) = '+fm(x)];},
+  src:function(){return 'Guaranty §7.1: Guarantor shall maintain net worth not less than $40,000,000.';}},
+ {id:'R10',name:'Phase I report ages out or finds a condition',layer:'Total cost',clear:60,conf:79,
+  lik:function(){return [1,'Phase I dated 5 months ago. Clean. Needs a bring-down.'];},
+  imp:function(s){var x=s.cost*0.005;return [x,'total cost × 0.5% = '+fm(x)];},
+  src:function(){return 'Loan commitment §5.4(e): Phase I environmental report dated within 180 days of closing.';}},
+ {id:'R11',name:'Cost of filling the gap',layer:'Equity gap',clear:30,conf:null,
+  lik:function(){return [3,'Certain if the gap is filled by either path. Not a document clause.'];},
+  imp:function(s){var x=s.gap*s.fee/100+s.ret;return [x,'gap × '+s.fee+'% + retainer = '+fm(x)+' (agent path; see section 5)'];},
+  src:function(){return 'No clause. This is the cost of the path you choose. See the comparison in section 5.';}},
+ {id:'R12',name:'Zoning variance appeal still open',layer:'Total cost',clear:50,conf:64,
+  lik:function(){return [1,'Appeal period ends in 18 days. No appeal filed to date.'];},
+  imp:function(s){var x=s.senior*s.rate/100*6/12;return [x,'senior × '+s.rate+'% × 6/12 (six months of carry) = '+fm(x)];},
+  src:function(){return 'Title commitment Schedule B-II, item 9: Variance subject to 30-day appeal period.';}}
+];
+
+function band(x){return x>=2e6?3:x>=5e5?2:1;}
+
+function build(s){
+  return RISKS.map(function(r){
+    var L=r.lik(s),I=r.imp(s);
+    var wk=isFinite(s.days)?Math.max(1,Math.ceil(s.days/7)):null;
+    var due=isFinite(s.days)?s.days-r.clear:null;
+    var clr=due===null?'—':(due<0?'Late by '+(-due)+' days':'Week '+Math.max(1,Math.ceil(due/7))+' of '+wk);
+    return {r:r,lik:L[0],why:L[1],imp:I[0],f:I[1],score:L[0]*I[0],src:r.src(s),clr:clr,late:due!==null&&due<0};
+  }).sort(function(a,b){return b.score-a.score;});
+}
+
+function reviewed(){var n=$('cname').value.trim(),d=$('cdate').value;return n?('Reviewed by: '+esc(n)+(d?', '+esc(d):'')):'Reviewed by: not yet. Counsel signs off before anyone relies on this.';}
+
+function caseCalc(s,m,b){var c=s.senior*b/1e4*m/12,e=m>0?s.senior*s.ext/100:0;return {m:m,b:b,carry:c,ext:e,tot:c+e,holds:c+e<=s.cont};}
+
+function render(){
+  var s=S();
+  // stack bar
+  var tot=s.senior+s.committed+s.gap||1;
+  function seg(cls,val,lab){var w=val/tot*100;return '<div class="'+cls+'" style="width:'+w.toFixed(2)+'%" title="'+lab+' '+fm(val)+'">'+(w>9?lab+' '+fs(val):'')+'</div>';}
+  $('bar').innerHTML=seg('seg-senior',s.senior,'Senior')+seg('seg-eq',s.committed,'Equity')+seg('seg-gap',s.gap,'Gap');
+  $('bar').setAttribute('aria-label','Senior '+fm(s.senior)+', equity committed '+fm(s.committed)+', equity gap '+fm(s.gap));
+  var wk=isFinite(s.days)?Math.ceil(s.days/7):NaN;
+  $('clock').innerHTML='<span><b>'+(isFinite(s.days)?s.days:'—')+'</b> days to expiry</span><span><b>'+(isFinite(wk)?wk:'—')+'</b> weeks</span><span>Loan to cost <b>'+(s.cost?(s.senior/s.cost*100).toFixed(1):'—')+'%</b></span>';
+  // measure twice
+  var calc=s.cost-s.senior-s.committed,diff=s.gap-calc;
+  var ck=$('check');
+  if(Math.abs(diff)<1){ck.className='check';ck.textContent='Check: cost − senior − committed = '+fm(calc)+'. Matches the gap you entered.';}
+  else{ck.className='check warn';ck.textContent='Check: cost − senior − committed = '+fm(calc)+'. You entered '+fm(s.gap)+'. Off by '+fm(diff)+'. The page uses your entered gap.';}
+  var fl=$('flag');var g5=s.gap>5e6,d120=isFinite(s.days)&&s.days<120;
+  if(g5||d120){fl.hidden=false;fl.textContent=(g5&&d120?'Both flags on: ':'One flag on: ')+(g5?'gap above $5M':'')+(g5&&d120?', ':'')+(d120?'under 120 days to expiry':'')+'. '+(g5&&d120?'This window is measured in weeks. Worth a call with your capital advisor this week.':'Watch the other number.');}
+  else fl.hidden=true;
+
+  var rows=build(s);
+  // weakest layer
+  var top=rows[0];
+  $('weakbody').innerHTML='<div>'+esc(top.r.layer)+': '+esc(top.r.name)+'</div><div class="big">'+fm(top.imp)+' at risk, '+(isFinite(s.days)?s.days+' days left':'no date')+'</div><div class="why">Likelihood '+top.lik+'. '+esc(top.why)+' Clear by: '+esc(top.clr)+'.</div>';
+
+  // table
+  var h='<thead><tr><th>#</th><th>Risk</th><th>Layer</th><th>Likelihood and why</th><th class="n">Dollars at risk</th><th class="n">Score</th><th>Clear by</th></tr></thead><tbody>';
+  rows.forEach(function(x,i){
+    h+='<tr'+(i===0?' class="top"':'')+'><td>'+(i+1)+'</td><td><b>'+esc(x.r.name)+'</b><span class="why">'+x.r.id+(i===0?' · top risk':'')+'</span></td><td>'+esc(x.r.layer)+'</td><td><span class="lik">'+x.lik+'</span> <span class="why">'+esc(x.why)+'</span></td><td class="n">'+fm(x.imp)+'<span class="why">'+esc(x.f)+'</span></td><td class="n">'+fs(x.score)+'</td><td class="'+(x.late?'late':'')+'">'+esc(x.clr)+'</td></tr>';
+  });
+  $('tbl').innerHTML=h+'</tbody>';
+
+  // grid
+  $('snap').textContent='Snapshot dated '+iso(snapDate)+'. The grid does not move on its own. Press Re-run snapshot to rescore against today.';
+  $('bands').textContent='Impact bands: low under $500k · mid $500k to $2M · high $2M and up. Likelihood: 1 low, 2 medium, 3 high.';
+  var gh='';
+  for(var L=3;L>=1;L--){
+    gh+='<div class="axis y">'+(L===3?'Likely 3':L===2?'Possible 2':'Unlikely 1')+'</div>';
+    for(var B=1;B<=3;B++){
+      var inC=rows.filter(function(x){return x.lik===L&&band(x.imp)===B;});
+      var key=L+'-'+B;
+      gh+='<button type="button" class="cell h'+(L+B)+'" data-k="'+key+'" aria-pressed="'+(selCell===key)+'" aria-label="Likelihood '+L+', impact band '+B+': '+inC.length+' risks"><span class="cnt">'+inC.length+'</span><span>'+inC.map(function(x){return x.r.id;}).join(' ')+'</span></button>';
+    }
+  }
+  gh+='<div></div><div class="axis">Low</div><div class="axis">Mid</div><div class="axis">High</div>';
+  $('heat').innerHTML=gh;
+  Array.prototype.forEach.call(document.querySelectorAll('.cell'),function(b){b.addEventListener('click',function(){selCell=b.getAttribute('data-k');showCell(rows);markCells();});});
+  if(selCell)showCell(rows);else{var tk=top.lik+'-'+band(top.imp);selCell=tk;showCell(rows);markCells();}
+
+  // cases
+  var cs=[['good','Good',caseCalc(s,0,0)],['base','Base',caseCalc(s,s.baseM,s.baseB)],['bad','Bad',caseCalc(s,s.badM,s.badB)]];
+  var ch='';
+  cs.forEach(function(c){var k=c[2];
+    ch+='<div class="case '+c[0]+'"><h3>'+c[1]+' case</h3><dl><dt>Slip past expiry</dt><dd>'+k.m+' mo</dd><dt>Rate move</dt><dd>'+(k.b>0?'+':'')+k.b+' bps</dd><dt>Extension fee</dt><dd>'+(k.m>0?s.ext+'%':'none')+'</dd><dt>Extra carry</dt><dd>'+fm(k.carry)+'</dd><dt>Extension cost</dt><dd>'+fm(k.ext)+'</dd><dt>Contingency</dt><dd>'+fm(s.cont)+'</dd></dl><div class="tot">'+fm(k.tot)+'</div><span class="pills '+(k.holds?'holds':'breaks')+'">'+(k.holds?'Holds, '+fm(s.cont-k.tot)+' spare':'Breaks, short '+fm(k.tot-s.cont))+'</span></div>';
+  });
+  $('casecards').innerHTML=ch;
+  var bad=cs[2][2],vd=$('verdict'),room=s.cont-bad.ext,perM=s.senior*s.badB/1e4/12,perB=s.senior*s.badM/12/1e4;
+  if(bad.holds){
+    vd.className='verdict';
+    vd.textContent='The close holds in the bad case. Headroom '+fm(s.cont-bad.tot)+'. It breaks at a '+(perM>0?(room/perM).toFixed(1):'—')+'-month slip at +'+s.badB+' bps, or at +'+(perB>0?Math.floor(room/perB):'—')+' bps over '+s.badM+' months.';
+  }else{
+    vd.className='verdict no';
+    var maxExt=(s.cont-bad.carry)/s.senior*100;
+    vd.textContent='Safer setting first: hold a contingency of at least '+fm(bad.tot)+(maxExt>0?', or negotiate the extension fee down to '+maxExt.toFixed(2)+'% or less':'')+(perM>0&&room>0?', or keep the slip under '+(room/perM).toFixed(1)+' months':'')+'. As entered, the close does not hold in the bad case: short '+fm(bad.tot-s.cont)+'.';
+  }
+
+  // paths
+  var aC=s.gap*s.fee/100+s.ret,cC=s.promote*s.share/100,aD=s.ret+s.dil,cD=s.dil;
+  var ph='<thead><tr><th>Path</th><th class="n">Good: closes on time</th><th class="n">Base: '+s.baseM+' mo, +'+s.baseB+' bps</th><th class="n">Bad: '+s.badM+' mo, +'+s.badB+' bps</th><th class="n">Deal dies</th></tr></thead><tbody>';
+  ph+='<tr><td><b>Placement agent</b><span class="why">'+s.fee+'% of '+fs(s.gap)+' + '+fs(s.ret)+' retainer</span></td><td class="n">'+fm(aC)+'</td><td class="n">'+fm(aC+cs[1][2].tot)+'</td><td class="n">'+fm(aC+bad.tot)+'</td><td class="n">'+fm(aD)+'</td></tr>';
+  ph+='<tr><td><b>Co-GP</b><span class="why">'+s.share+'% of '+fs(s.promote)+' projected promote</span></td><td class="n">'+fm(cC)+'</td><td class="n">'+fm(cC+cs[1][2].tot)+'</td><td class="n">'+fm(cC+bad.tot)+'</td><td class="n">'+fm(cD)+'</td></tr></tbody>';
+  $('pathtbl').innerHTML=ph;
+  var cheap=aC<=cC?'agent':'co-GP';
+  $('pathlead').textContent='If the deal dies, the co-GP path loses '+fm(aD-cD)+' less ('+fm(cD)+' against '+fm(aD)+'). If it closes, the '+cheap+' path costs '+fm(Math.abs(aC-cC))+' less. The slip adds '+fm(bad.tot)+' on both paths. The co-GP share is paid only from promote that exists; the agent fee is cash.';
+
+  // AI
+  var bw=s.aiC+s.revC,bo=s.cnC,xw=s.aiC+s.revC+s.cnC,xo=s.cnC;
+  $('aitbl').innerHTML='<thead><tr><th>Case</th><th class="n">With AI pass</th><th class="n">Counsel only</th><th class="n">Difference</th></tr></thead><tbody><tr><td>Base: AI list holds up</td><td class="n">'+fm(bw)+'</td><td class="n">'+fm(bo)+'</td><td class="n">'+fm(bw-bo)+'</td></tr><tr><td>Bad: AI misreads, counsel reads in full</td><td class="n">'+fm(xw)+'</td><td class="n">'+fm(xo)+'</td><td class="n">'+fm(xw-xo)+'</td></tr></tbody>';
+
+  // print head
+  $('printhead').innerHTML='<section><b>Snapshot '+iso(snapDate)+'.</b> Cost '+fm(s.cost)+' · Senior '+fm(s.senior)+' · Equity committed '+fm(s.committed)+' · Gap '+fm(s.gap)+' · Expiry '+esc(s.expiryStr)+' ('+(isFinite(s.days)?s.days:'—')+' days). Top risk: '+esc(top.r.name)+', '+fm(top.imp)+'. '+reviewed()+'</section>';
+  save();
+}
+
+function markCells(){Array.prototype.forEach.call(document.querySelectorAll('.cell'),function(b){b.setAttribute('aria-pressed',b.getAttribute('data-k')===selCell?'true':'false');});}
+
+function showCell(rows){
+  var p=selCell.split('-'),L=+p[0],B=+p[1];
+  var inC=rows.filter(function(x){return x.lik===L&&band(x.imp)===B;});
+  var bn=['','low','mid','high'][B];
+  var h='<h3>Likelihood '+L+', '+bn+' impact: '+inC.length+' risk'+(inC.length===1?'':'s')+'</h3>';
+  if(!inC.length)h+='<p class="sub">Nothing here in this snapshot.</p>';
+  inC.forEach(function(x){
+    h+='<article><b>'+x.r.id+' · '+esc(x.r.name)+'</b><div class="why">'+esc(x.r.layer)+' · '+fm(x.imp)+' · clear by '+esc(x.clr)+'</div><div class="why">Why '+x.lik+': '+esc(x.why)+'</div><div class="clause">'+esc(x.src)+'</div><div class="why">AI confidence: '+(x.r.conf===null?'not applicable':x.r.conf+'%'+(x.r.conf<75?' (low, check this one first)':''))+'. '+reviewed()+'</div></article>';
+  });
+  $('detail').innerHTML=h;
+}
+
+NUMS.concat(TXT).forEach(function(k){$(k).addEventListener('input',render);});
+$('rerun').addEventListener('click',function(){snapDate=new Date();render();});
+$('print').addEventListener('click',function(){window.print();});
+$('example').addEventListener('click',function(){EX.expiry=addDays(100);fill(EX);snapDate=new Date();selCell=null;render();});
+$('clear').addEventListener('click',function(){var o={};NUMS.concat(TXT).forEach(function(k){o[k]='';});fill(o);selCell=null;render();});
+
+fill(load()||EX);
+render();
+})();
+</script>
+</body>
+</html>
