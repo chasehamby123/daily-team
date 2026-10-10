@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Dead Deal Panel: what one closed add-on costs</title>
+<style>
+:root{
+  --paper:#f2efe7;--panel:#fbfaf6;--ink:#1b1b1b;--dim:#7d7a73;--grey:#c7c3ba;--grey2:#e3dfd6;
+  --amber:#e39a2d;--amberDark:#7a4b0c;--ok:#2f5d3a;--bad:#8a2b1d;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:16px;line-height:1.45}
+.wrap{max-width:1060px;margin:0 auto;padding:18px 14px 30px}
+header h1{font-size:30px;line-height:1.1;margin:4px 0 6px;letter-spacing:-.01em}
+header p{margin:0 0 14px;color:#3d3b37;max-width:60ch}
+.panel{background:var(--panel);border:3px solid var(--ink);padding:26px 16px 16px;margin:0 0 16px;position:relative}
+.tag{position:absolute;top:-3px;left:-3px;background:var(--ink);color:var(--paper);font-size:12px;font-weight:700;padding:3px 9px;letter-spacing:.04em;text-transform:uppercase}
+h2{font-size:18px;margin:0 0 10px}
+.num{font-variant-numeric:tabular-nums}
+small,.help{color:var(--dim);font-size:13px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.big{font-size:38px;font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums}
+.path{border:2px solid var(--ink);padding:12px;background:#fff}
+.path h3{margin:0 0 4px;font-size:14px;text-transform:uppercase;letter-spacing:.05em}
+.greyline{color:var(--dim);font-size:13px;border-top:1px solid var(--grey);margin-top:8px;padding-top:6px}
+.viewhead{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.viewhead strong{font-size:15px}
+button{font:inherit;cursor:pointer}
+.btn{border:2px solid var(--ink);background:var(--ink);color:var(--paper);padding:8px 14px;font-weight:700}
+.btn.alt{background:#fff;color:var(--ink)}
+.btn.amber{background:var(--amber);color:var(--ink)}
+.note{margin:10px 0 0;font-size:14px}
+.err{border:3px dashed var(--bad);padding:16px;background:#fff}
+.err .big{font-size:26px;color:var(--bad)}
+/* inputs */
+.toprow{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-bottom:12px}
+.toprow .f{max-width:180px}
+.row{display:grid;grid-template-columns:1.7fr 1fr 1.25fr 1fr 1fr;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--grey2)}
+.row.head{border-top:0;font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em;padding-bottom:2px}
+.f span{display:none}
+.f{display:flex;flex-direction:column;gap:2px}
+input[type=number]{width:100%;font:inherit;font-variant-numeric:tabular-nums;padding:6px 8px;border:2px solid var(--ink);background:#fff;border-radius:0;min-width:0}
+input[type=number]:focus{outline:3px solid var(--amber);outline-offset:0}
+.dual{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.dual label{font-size:12px;color:var(--dim);display:flex;flex-direction:column}
+.dual label.on input{border-color:var(--amberDark);background:#fff6e6}
+.cost{text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
+.seg{display:inline-flex;margin-top:6px;border:2px solid var(--ink)}
+.seg button{border:0;background:#fff;padding:4px 8px;font-size:13px}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--paper)}
+.toprow .f span,.toprow .f>label{display:block;font-size:13px;color:var(--dim)}
+/* bars */
+.bar{display:grid;grid-template-columns:118px 1fr 82px;gap:8px;align-items:center;margin:6px 0;font-size:14px}
+.track{background:var(--grey2);height:20px;position:relative}
+.fill{background:var(--grey);height:100%;position:relative}
+.fill.lit{background:var(--amber)}
+.band{position:absolute;right:0;top:0;bottom:0;background:var(--amberDark)}
+.bv{text-align:right;font-variant-numeric:tabular-nums}
+.legend{font-size:13px;color:var(--dim);margin-top:8px}
+.sw{display:inline-block;width:12px;height:12px;vertical-align:-1px;margin-right:4px}
+/* tables */
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border:1px solid var(--grey);padding:7px 8px;text-align:right;vertical-align:top;font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}
+thead th{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+td.drv{text-align:left;font-size:13px;color:#3d3b37}
+.scroll{overflow-x:auto}
+.verdict{border-left:6px solid var(--ok);padding:10px 12px;margin-top:12px;background:#fff}
+.verdict.no{border-left-color:var(--bad)}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;background:#fff;border:1px solid var(--grey);padding:10px;white-space:pre-wrap;margin:0}
+.credits{font-size:12px;color:var(--dim);margin-top:18px}
+footer{font-size:13px;color:#3d3b37;margin-top:8px;border-top:2px solid var(--ink);padding-top:8px}
+@media (prefers-reduced-motion:no-preference){.fill,.band{transition:width .25s ease}}
+@media (max-width:700px){
+  .two{grid-template-columns:1fr}
+  .big{font-size:30px}
+  header h1{font-size:25px}
+  .row{grid-template-columns:1fr 1fr 1fr}
+  .row.head{display:none}
+  .row .step{grid-column:1/-1}
+  .row .cost{grid-column:1/-1;text-align:left}
+  .f span{display:block;font-size:12px;color:var(--dim)}
+  .bar{grid-template-columns:96px 1fr 70px;font-size:13px}
+}
+@media print{
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{background:#fff}
+  .noprint{display:none}
+  .panel{break-inside:avoid;border-width:2px}
+  .wrap{max-width:none;padding:0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>The Dead Deal Panel</h1>
+  <p>What one closed add-on costs, with the deals that died priced in. An HVAC roll-up is filled in below: six steps, one close, broker path beside direct path. Change any number.</p>
+</header>
+
+<section class="panel" id="resultPanel" aria-live="polite">
+  <span class="tag">Panel 1 · Cost per close</span>
+  <div class="viewhead">
+    <strong id="viewLabel">Base case</strong>
+    <button type="button" class="btn amber noprint" id="badBtn">Run the bad case</button>
+  </div>
+  <div id="resultBody"></div>
+</section>
+
+<section class="panel">
+  <span class="tag">Panel 2 · The six steps</span>
+  <h2>Count the threads</h2>
+  <div class="toprow">
+    <div class="f"><label for="closes">Closes from this funnel</label><input type="number" id="closes" min="0" step="1" inputmode="numeric" data-k="closes"></div>
+    <button type="button" class="btn alt noprint" id="resetBtn">Restore the example</button>
+    <button type="button" class="btn alt noprint" id="clearBtn">Clear counts</button>
+  </div>
+  <p class="help">Times paid: how many times you pay for the step to get the closes above. That is where the dead deals hide. Wages vary by region; enter your own.</p>
+  <div class="row head"><div>Step</div><div>Times paid</div><div>Hours each</div><div>$ per hour</div><div style="text-align:right">Cost</div></div>
+  <div id="rows"></div>
+  <h2 style="margin-top:16px">Direct path settings</h2>
+  <p class="help">Same six steps. Broker calls become AI-screened letters. The machine reads CIMs and flags weak deals before the accountants start.</p>
+  <div class="toprow">
+    <div class="f"><label for="dL">Letters per broker call</label><input type="number" id="dL" min="0" step="any" inputmode="decimal" data-k="L"></div>
+    <div class="f"><label for="dLh">Hours per letter</label><input type="number" id="dLh" min="0" step="any" inputmode="decimal" data-k="lh"></div>
+    <div class="f"><label for="dCim">AI-assisted CIM read, hours</label><input type="number" id="dCim" min="0" step="any" inputmode="decimal" data-k="aiCim"></div>
+    <div class="f"><label for="dCut">Diligence passes cut, %</label><input type="number" id="dCut" min="0" max="100" step="any" inputmode="decimal" data-k="cut"></div>
+  </div>
+  <p class="note"><b>Financial reads reviewed and signed off by your CFO. LOI signed off by deal counsel.</b></p>
+</section>
+
+<section class="panel">
+  <span class="tag">Panel 3 · Where the money goes</span>
+  <h2 id="barsTitle">One bar per step</h2>
+  <div class="two">
+    <div><h3 style="font-size:14px;margin:0 0 6px">BROKER PATH</h3><div id="barsBroker"></div></div>
+    <div><h3 style="font-size:14px;margin:0 0 6px">DIRECT PATH</h3><div id="barsDirect"></div></div>
+  </div>
+  <p class="legend"><span class="sw" style="background:var(--amber)"></span>Most expensive step. <span class="sw" style="background:var(--amberDark)"></span>Share spent on deals that did not close. <span class="sw" style="background:var(--grey)"></span>Everything else.</p>
+</section>
+
+<section class="panel">
+  <span class="tag">Panel 4 · Three cases</span>
+  <h2>Bad, base, good</h2>
+  <div class="scroll"><table id="casesTable"></table></div>
+  <div id="verdict"></div>
+</section>
+
+<section class="panel">
+  <span class="tag">Panel 5 · With and without AI</span>
+  <h2>What the machine changes on the direct path</h2>
+  <div class="scroll"><table id="aiTable"></table></div>
+  <p class="note">The machine screens letters, reads CIMs in <span id="aiHrsTxt"></span> instead of <span id="cimHrsTxt"></span>, and flags weak deals before diligence starts. A person still reviews every financial read (your CFO signs off), the LOI (deal counsel signs off), the owner meeting, every diligence pass that runs, and all of integration. "Without AI" keeps the letters but restores your CIM hours and the full diligence count.</p>
+</section>
+
+<section class="panel">
+  <span class="tag">Panel 6 · Two questions</span>
+  <h2>How long has this run</h2>
+  <div class="toprow">
+    <div class="f"><label for="planned">Add-ons planned in the next 12 months</label><input type="number" id="planned" min="0" step="1" inputmode="numeric" data-k="planned"></div>
+    <div class="f"><label for="months">Months since your last close</label><input type="number" id="months" min="0" step="1" inputmode="numeric" data-k="months"></div>
+  </div>
+  <div id="timeBody"></div>
+</section>
+
+<section class="panel">
+  <span class="tag">Panel 7 · Formula</span>
+  <h2>How the numbers are made</h2>
+<pre class="formula">Step cost        = times paid × hours each × $ per hour
+Integration      = closes × hours (owner stays or leaves) × integration $ per hour
+Cost per close   = sum of the six step costs ÷ closes
+Dead-deal band   = step cost × (times paid − closes) ÷ times paid
+Direct path      = letters (broker calls × letters per call) at hours per letter,
+                   CIM read at AI hours, diligence passes × (1 − cut %),
+                   other steps as entered
+Bad case         = every count before integration × 2 (close rate halves), owner leaves
+Good case        = every count before integration × 0.75, owner stays
+Yearly cost      = cost per close × add-ons planned in the next 12 months
+Rollover line    = 20% of a $4M deal, shown, not netted against the saving</pre>
+  <p class="help">Wages, broker fees, and the tax treatment of rollover equity depend on your region and deal terms. Enter your own figures. This page does arithmetic. It is not investment, legal, or tax advice.</p>
+</section>
+
+<p class="credits">Credits. Comic artist: the prefilled HVAC example, the zero-close panel, the six-row limit, the times-paid column, the two questions. Lighting designer: one bar per step, the amber step with its dead-deal band, the direct-path column, the rollover kept as one grey line. Roll-up operator: the stay-or-out toggle that drives integration hours, the rollover equity line. Arachne: the thread counts, the 1.5 h AI read against 6 h, the bad-case numbers for both paths.</p>
+<footer>Published by OuterHaven Advisory. Free to use, no sign-up. Inputs stay in this browser.</footer>
+</div>
+
+<script>
+(function(){
+var KEY='deadDealPanel.v1';
+var DEF={closes:1,owner:'stay',
+  steps:{calls:{c:40,h:1,w:150},cim:{c:10,h:6,w:150},meet:{c:4,h:6,w:150},loi:{c:2,h:12,w:450},dd:{c:2,h:120,w:350}},
+  intStay:500,intLeave:800,intW:65,L:3,lh:0.25,aiCim:1.5,cut:25,planned:3,months:9};
+var ORDER=[['calls','Broker calls'],['cim','CIM read'],['meet','Owner meeting'],['loi','LOI'],['dd','Diligence']];
+var S=clone(DEF), view='base';
+function clone(o){return JSON.parse(JSON.stringify(o))}
+try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&p.steps)S=Object.assign(clone(DEF),p);}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+function getK(k){return k.split('.').reduce(function(o,p){return o[p]},S)}
+function setK(k,v){var p=k.split('.'),o=S;for(var i=0;i<p.length-1;i++)o=o[p[i]];o[p[p.length-1]]=v}
+function $(id){return document.getElementById(id)}
+function money(n){if(n==null||isNaN(n))return '–';return (n<0?'−$':'$')+Math.round(Math.abs(n)).toLocaleString('en-US')}
+function nfmt(n){return (Math.round(n*100)/100).toLocaleString('en-US')}
+function pct(n){return Math.round(n*100)+'%'}
+
+/* build rows */
+function num(k,lab){return '<label class="f"><span>'+lab+'</span><input type="number" min="0" step="any" inputmode="decimal" aria-label="'+lab+'" data-k="'+k+'"></label>'}
+var h='';
+ORDER.forEach(function(r){
+  var id=r[0],name=r[1];
+  var ctl=id==='meet'?'<div class="seg" role="group" aria-label="Owner after close"><button type="button" data-owner="stay">Owner stays</button><button type="button" data-owner="leave">Owner wants out</button></div>':'';
+  h+='<div class="row"><div class="step"><b>'+name+'</b><br>'+ctl+'</div>'+num('steps.'+id+'.c',name+': times paid')+num('steps.'+id+'.h',name+': hours each')+num('steps.'+id+'.w',name+': $ per hour')+'<div class="cost" id="cost-'+id+'"></div></div>';
+});
+h+='<div class="row"><div class="step"><b>Integration</b><br><small>Follows the owner toggle. Paid once per close.</small></div>'+
+  '<div class="f"><span>Times paid</span><output id="intCount" class="num"></output></div>'+
+  '<div class="f"><span>Hours each</span><div class="dual"><label id="lStay">stays<input type="number" min="0" step="any" inputmode="decimal" aria-label="Integration hours if owner stays" data-k="intStay"></label><label id="lLeave">leaves<input type="number" min="0" step="any" inputmode="decimal" aria-label="Integration hours if owner leaves" data-k="intLeave"></label></div></div>'+
+  num('intW','Integration: $ per hour')+'<div class="cost" id="cost-int"></div></div>';
+$('rows').innerHTML=h;
+
+function fillInputs(){
+  var ins=document.querySelectorAll('input[data-k]');
+  for(var i=0;i<ins.length;i++){ins[i].value=getK(ins[i].getAttribute('data-k'))}
+}
+
+/* model */
+function calc(path,m,owner,ai,ov){
+  ov=ov||{};
+  var L=ov.L!=null?ov.L:S.L, cut=ov.cut!=null?ov.cut:S.cut, cl=S.closes>0?S.closes:0;
+  var rows=[],total=0;
+  ORDER.forEach(function(r){
+    var id=r[0],s=S.steps[id],c=s.c*m,hh=s.h,w=s.w,name=r[1];
+    if(path==='direct'){
+      if(id==='calls'){c=s.c*m*L;hh=S.lh;name='Direct letters'}
+      if(id==='cim'&&ai)hh=S.aiCim;
+      if(id==='dd'&&ai)c=c*(1-cut/100);
+    }
+    var cost=c*hh*w, dead=c>0?Math.max(0,(c-cl)/c):0;
+    rows.push({id:id,name:name,c:c,h:hh,w:w,cost:cost,dead:dead});total+=cost;
+  });
+  var ih=owner==='stay'?S.intStay:S.intLeave, icost=cl*ih*S.intW;
+  rows.push({id:'int',name:'Integration',c:cl,h:ih,w:S.intW,cost:icost,dead:0});total+=icost;
+  var top=rows.reduce(function(a,b){return b.cost>a.cost?b:a},rows[0]);
+  var deadCost=rows.reduce(function(a,b){return a+b.cost*b.dead},0);
+  return {rows:rows,total:total,per:cl>0?total/cl:null,top:top,deadCost:deadCost,funnel:total-icost,cl:cl};
+}
+var CASES={
+  bad:{m:2,owner:'leave',label:'Bad case: close rate halved, owner leaves at month four'},
+  base:{m:1,owner:null,label:'Base case: your numbers as entered'},
+  good:{m:0.75,owner:'stay',label:'Good case: counts × 0.75, owner stays'}
+};
+function run(cs,path,ai){var c=CASES[cs];return calc(path,c.m,c.owner||S.owner,ai==null?true:ai)}
+
+/* render */
+function bars(el,res,max){
+  var top=res.top,o='';
+  res.rows.forEach(function(r){
+    var w=max>0?r.cost/max*100:0, lit=r===top&&r.cost>0;
+    o+='<div class="bar"><div>'+r.name+'</div><div class="track"><div class="fill'+(lit?' lit':'')+'" style="width:'+w.toFixed(2)+'%">'+(lit?'<div class="band" style="width:'+(r.dead*100).toFixed(1)+'%"></div>':'')+'</div></div><div class="bv">'+money(r.cost)+'</div></div>';
+  });
+  el.innerHTML=o;
+}
+
+function render(){
+  var ok=S.closes>0;
+  /* row costs, base view */
+  var bv=run(view,'broker');
+  bv.rows.forEach(function(r){$('cost-'+r.id).textContent=money(calc('broker',1,S.owner,true).rows.filter(function(x){return x.id===r.id})[0].cost)});
+  $('intCount').textContent=nfmt(ok?S.closes:0);
+  $('lStay').className=S.owner==='stay'?'on':'';
+  $('lLeave').className=S.owner==='leave'?'on':'';
+  var segs=document.querySelectorAll('[data-owner]');
+  for(var i=0;i<segs.length;i++)segs[i].setAttribute('aria-pressed',segs[i].getAttribute('data-owner')===S.owner?'true':'false');
+
+  var b=run(view,'broker'), d=run(view,'direct');
+  $('viewLabel').textContent=CASES[view].label;
+  $('badBtn').textContent=view==='bad'?'Back to the base case':'Run the bad case';
+  $('barsTitle').textContent='One bar per step, '+(view==='bad'?'bad case':'base case');
+
+  var rb='';
+  if(!ok){
+    rb='<div class="err"><div class="big">No close yet. Every hour below is still being spent.</div>'+
+      '<p class="note">Spent so far on the broker path: <b class="num">'+money(b.total)+'</b>. On the direct path: <b class="num">'+money(d.total)+'</b>.</p>'+
+      '<p class="note">Enter at least 1 close to get a cost per close. Or restore the example.</p></div>';
+  }else{
+    var share=b.per>0?b.top.cost/b.cl/b.per:0, deadTop=b.top.cost*b.top.dead;
+    rb='<div class="two">'+
+      '<div class="path"><h3>Broker path</h3><div class="big">'+money(b.per)+'</div><small>per closed add-on</small>'+
+        '<p class="note">'+money(b.per*S.planned)+' a year at '+nfmt(S.planned)+' planned add-ons.</p></div>'+
+      '<div class="path"><h3>Direct path</h3><div class="big">'+money(d.per)+'</div><small>per closed add-on</small>'+
+        '<p class="note">'+money(d.per*S.planned)+' a year at '+nfmt(S.planned)+' planned add-ons.</p>'+
+        '<div class="greyline">Owner rolls 20% of a $4M deal: $800,000 of equity in his pocket. Not netted against the saving.</div></div>'+
+    '</div>'+
+    '<p class="note">Most expensive step on the broker path: <b>'+b.top.name+'</b>, '+money(b.top.cost/b.cl)+' per close, '+pct(share)+' of the total. '+money(deadTop/b.cl)+' of it went to deals that died.</p>'+
+    '<p class="note">Most expensive step on the direct path: <b>'+d.top.name+'</b>, '+money(d.top.cost/d.cl)+' per close. The direct path costs '+money(b.per-d.per)+' '+(d.per<=b.per?'less':'more')+' per close.</p>'+
+    (S.planned>=3?'<p class="note"><b>Planning '+nfmt(S.planned)+' add-ons in 12 months:</b> print this page and walk the bad case with your partner before the next broker call. The publisher in the footer will go through these numbers with you on request.</p>':'');
+  }
+  $('resultBody').innerHTML=rb;
+
+  var max=Math.max(b.top.cost,d.top.cost);
+  bars($('barsBroker'),b,max);bars($('barsDirect'),d,max);
+
+  /* cases */
+  var R={};['bad','base','good'].forEach(function(k){R[k]={b:run(k,'broker'),d:run(k,'direct')}});
+  var sc=S.steps, own=S.owner==='stay'?'Owner stays: '+nfmt(S.intStay)+' h':'Owner leaves: '+nfmt(S.intLeave)+' h';
+  var drv={
+    bad:'Counts × 2: '+nfmt(sc.calls.c*2)+' calls, '+nfmt(sc.cim.c*2)+' CIMs, '+nfmt(sc.dd.c*2)+' diligences. Owner leaves: '+nfmt(S.intLeave)+' h integration.',
+    base:'As entered: '+nfmt(sc.calls.c)+' calls, '+nfmt(sc.cim.c)+' CIMs, '+nfmt(sc.dd.c)+' diligences. '+own+' integration.',
+    good:'Counts × 0.75: '+nfmt(sc.calls.c*.75)+' calls, '+nfmt(sc.cim.c*.75)+' CIMs, '+nfmt(sc.dd.c*.75)+' diligences. Owner stays: '+nfmt(S.intStay)+' h.'
+  };
+  function cell(f){return ['bad','base','good'].map(function(k){return '<td>'+(ok?f(R[k]):'No close')+'</td>'}).join('')}
+  var t='<thead><tr><th></th><th>Bad</th><th>Base</th><th>Good</th></tr></thead><tbody>'+
+    '<tr><td>Inputs that drive it</td>'+['bad','base','good'].map(function(k){return '<td class="drv">'+drv[k]+'</td>'}).join('')+'</tr>'+
+    '<tr><td>Broker path per close</td>'+cell(function(r){return money(r.b.per)})+'</tr>'+
+    '<tr><td>Direct path per close</td>'+cell(function(r){return money(r.d.per)})+'</tr>'+
+    '<tr><td>Direct saves per close</td>'+cell(function(r){return money(r.b.per-r.d.per)})+'</tr>'+
+    '<tr><td>Broker path per year</td>'+cell(function(r){return money(r.b.per*S.planned)})+'</tr>'+
+    '<tr><td>Direct path per year</td>'+cell(function(r){return money(r.d.per*S.planned)})+'</tr>'+
+    '<tr><td>Most expensive step</td>'+cell(function(r){return r.b.top.name+' / '+r.d.top.name})+'</tr>'+
+    '<tr><td>Spent on dead deals, broker</td>'+cell(function(r){return money(r.b.deadCost/r.b.cl)})+'</tr>'+
+    '</tbody>';
+  $('casesTable').innerHTML=t;
+
+  var v='';
+  if(ok){
+    var bb=R.bad.b.per, db=R.bad.d.per;
+    var l0=calc('direct',2,'leave',true,{L:0}).per, l1=calc('direct',2,'leave',true,{L:1}).per, B=l1-l0;
+    var Lmax=B>0?(bb-l0)/B:Infinity;
+    var c0=calc('direct',2,'leave',true,{cut:0}).per, c100=calc('direct',2,'leave',true,{cut:100}).per, D=(c0-c100)/100;
+    var need=D>0?(c0-bb)/D:(c0<=bb?-1:Infinity);
+    if(db<=bb){
+      v='<div class="verdict"><b>The direct path survives the bad case.</b> It costs '+money(db)+' per close against '+money(bb)+' on the broker path, '+money(bb-db)+' less. '+
+        'Push limits in the bad case: letters per broker call can rise from '+nfmt(S.L)+' to '+(isFinite(Lmax)?nfmt(Lmax):'any number')+' before the direct path costs more. '+
+        (need<=0?'It still holds with no diligence cut at all ('+money(c0)+' per close).':'The diligence cut can fall from '+nfmt(S.cut)+'% to '+nfmt(Math.ceil(need*10)/10)+'% before it breaks.')+
+        ' Diligence stays the most expensive step on '+(R.bad.b.top.id==='dd'&&R.bad.d.top.id==='dd'?'both paths':'the broker path')+'.</div>';
+    }else{
+      v='<div class="verdict no"><b>Safer setting: stay on the broker path.</b> In the bad case it costs '+money(bb)+' per close against '+money(db)+' on the direct path. '+
+        'The direct path holds only if letters per broker call drop to '+(isFinite(Lmax)&&Lmax>=0?nfmt(Lmax):'below zero, which is not possible')+
+        (isFinite(need)&&need<=100?', or the diligence cut rises to '+nfmt(Math.ceil(need*10)/10)+'%':'')+'.</div>';
+    }
+  }else{
+    v='<div class="verdict no"><b>No close entered.</b> The cases need at least 1 close to compare cost per close.</div>';
+  }
+  $('verdict').innerHTML=v;
+
+  /* AI table */
+  $('aiHrsTxt').textContent=nfmt(S.aiCim)+' h';$('cimHrsTxt').textContent=nfmt(S.steps.cim.h)+' h';
+  var a='<thead><tr><th>Per close</th><th>Broker path</th><th>Direct, without AI</th><th>Direct, with AI</th><th>AI saves</th></tr></thead><tbody>';
+  ['base','bad'].forEach(function(k){
+    var br=run(k,'broker'), wo=run(k,'direct',false), wi=run(k,'direct',true);
+    a+='<tr><td>'+(k==='base'?'Base case':'Bad case')+'</td>'+(ok?'<td>'+money(br.per)+'</td><td>'+money(wo.per)+'</td><td>'+money(wi.per)+'</td><td>'+money(wo.per-wi.per)+'</td>':'<td colspan="4">No close</td>')+'</tr>';
+  });
+  $('aiTable').innerHTML=a+'</tbody>';
+
+  /* time */
+  var tb='';
+  if(ok){
+    var base=R.base, mb=base.b.funnel/base.b.cl*S.planned/12, md=base.d.funnel/base.d.cl*S.planned/12;
+    tb='<p class="note">Hunting cost (every step before integration) at '+nfmt(S.planned)+' add-ons a year: <b class="num">'+money(mb)+'</b> a month on the broker path, <b class="num">'+money(md)+'</b> on the direct path.</p>'+
+      '<p class="note">'+nfmt(S.months)+' months since your last close puts about <b class="num">'+money(mb*S.months)+'</b> of broker-path hunting cost out the door since then. The direct path would have spent about '+money(md*S.months)+'.</p>'+
+      '<p class="note">Per year, base case: '+money(base.b.per*S.planned)+' broker, '+money(base.d.per*S.planned)+' direct. Bad case: '+money(R.bad.b.per*S.planned)+' broker, '+money(R.bad.d.per*S.planned)+' direct.</p>';
+  }else{
+    tb='<p class="note">No close yet. Every month of searching adds to the spend shown in Panel 1.</p>';
+  }
+  $('timeBody').innerHTML=tb;
+}
+
+/* events */
+document.addEventListener('input',function(e){
+  var k=e.target.getAttribute&&e.target.getAttribute('data-k');if(!k)return;
+  var v=parseFloat(e.target.value);if(isNaN(v)||v<0)v=0;
+  if(k==='cut'&&v>100)v=100;
+  setK(k,v);save();render();
+});
+document.addEventListener('click',function(e){
+  var o=e.target.getAttribute&&e.target.getAttribute('data-owner');
+  if(o){S.owner=o;save();render();}
+});
+$('badBtn').addEventListener('click',function(){view=view==='bad'?'base':'bad';render()});
+$('resetBtn').addEventListener('click',function(){S=clone(DEF);view='base';save();fillInputs();render()});
+$('clearBtn').addEventListener('click',function(){ORDER.forEach(function(r){S.steps[r[0]].c=0});S.closes=0;save();fillInputs();render()});
+
+fillInputs();render();
+})();
+</script>
+</body>
+</html>

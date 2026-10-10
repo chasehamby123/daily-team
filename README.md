@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-10-09: Stack and Clock
+### 2026-10-10: The Dead Deal Panel
 
-<a href="days/2026-10-09/"><img src="days/2026-10-09/team.png" alt="Team for 2026-10-09: Sculptor · Chef · Real estate developer · Glass fox" width="100%"></a>
+<a href="days/2026-10-10/"><img src="days/2026-10-10/team.png" alt="Team for 2026-10-10: Comic artist · Lighting designer · Roll-up operator · Arachne" width="100%"></a>
 
-**Task:** Risk register: risks with likelihood and impact give a ranked table and a three-by-three heat grid.
+**Task:** Process cost breakdown: each step of a workflow with time and wage gives the cost per case and the most expensive step.
 
-**Decision:** The page takes a developer's capital stack and close date, ranks every risk to closing by dollars at risk, maps them on a three-by-three grid with each likelihood traced to a sourced clause, and compares a placement-agent path with a co-...
+**Decision:** The page shows a roll-up operator what one closed add-on costs across six steps, broker path beside direct path, with the dead deals and the owner's stay-or-leave choice priced in, and turns that into a yearly figure.
 
-<a href="days/2026-10-09/"><img src="days/2026-10-09/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-10-10/"><img src="days/2026-10-10/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-10-09/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-10-10/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,6 +37,7 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-10-10](days/2026-10-10/) | <a href="days/2026-10-10/"><img src="days/2026-10-10/artifact-1.png" alt="The Dead Deal Panel" width="160"></a> | The Dead Deal Panel | Comic artist · Lighting designer · Roll-up operator · Arachne |
 | [2026-10-09](days/2026-10-09/) | <a href="days/2026-10-09/"><img src="days/2026-10-09/artifact-1.png" alt="Stack and Clock" width="160"></a> | Stack and Clock | Sculptor · Chef · Real estate developer · Glass fox |
 | [2026-10-08](days/2026-10-08/) | <a href="days/2026-10-08/"><img src="days/2026-10-08/artifact-1.png" alt="Cheque First" width="160"></a> | Cheque First | Locksmith · Taxidermist · Fund manager raising capital · Archivist from 2300 |
 | [2026-10-06](days/2026-10-06/) | <a href="days/2026-10-06/"><img src="days/2026-10-06/artifact-1.png" alt="Three Panes" width="160"></a> | Three Panes | Window dresser · Calligrapher · Textile designer · Glass fox |
@@ -44,7 +45,7 @@ No open suggestions yet.
 | [2026-10-04](days/2026-10-04/) | <a href="days/2026-10-04/"><img src="days/2026-10-04/artifact-1.png" alt="Weekly planner page with priorities, appointments, and notes, printable on A4." width="160"></a> | Weekly planner page with priorities, appointments, and notes, printable on A4. | Comic artist · Packaging designer · Exhibition designer · Printmaker |
 | [2026-10-03](days/2026-10-03/) | <a href="days/2026-10-03/"><img src="days/2026-10-03/artifact-1.png" alt="Running pace calculator" width="160"></a> | Running pace calculator | Service designer · Product designer · Interaction designer · Choreographer |
 
-[All 6 days](ARCHIVE.md)
+[All 7 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works
