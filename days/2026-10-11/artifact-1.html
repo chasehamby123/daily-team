@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Dark Hours: fee or share, counted in jobs lost after 6 p.m.</title>
+<style>
+:root{
+  --paper:#f3f1eb;--ink:#1a1c22;--mute:#5b606d;--night:#13161d;--night2:#1d212b;
+  --mark:#8b909b;--line:#d9962b;--rule:#d4cfc3;--light:#cdc8bc;--bad:#8a3b2e;--ok:#2f5d3a;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
+.wrap{max-width:880px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:34px;line-height:1.1;margin:0 0 6px;letter-spacing:-.01em}
+h2{font-size:19px;margin:0 0 8px}
+h3{font-size:15px;margin:0 0 6px}
+p{margin:0 0 10px}
+.sub{color:var(--mute);font-size:16px;max-width:640px;margin-bottom:16px}
+.night{background:var(--night);color:#ecebe6;border-radius:6px;padding:16px;display:flex;flex-wrap:wrap;align-items:flex-end;gap:16px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.night svg{flex:1 1 420px;min-width:260px;height:auto;display:block}
+.total{flex:0 0 auto;text-align:right;min-width:170px}
+.total .big{font-size:56px;font-weight:700;line-height:1;color:#fff}
+.total .cap{font-size:13px;color:var(--mark);margin-top:6px}
+.run{margin:10px 0 22px;font-size:16px}
+.run b{font-size:18px}
+section{border-top:1px solid var(--rule);padding-top:18px;margin-top:22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px 16px}
+label{display:block;font-size:13px;color:var(--mute);margin-bottom:3px}
+input[type=number]{width:100%;font:inherit;font-size:18px;padding:8px 10px;border:1px solid #b9b4a8;border-radius:4px;background:#fff;color:var(--ink)}
+input:focus{outline:2px solid var(--line);outline-offset:1px}
+.hint{font-size:12px;color:var(--mute);margin-top:2px}
+.q{background:#e9e6dd;padding:12px;border-radius:4px}
+.btns{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;font-size:14px;padding:7px 12px;border:1px solid var(--ink);background:transparent;color:var(--ink);border-radius:4px;cursor:pointer}
+button:hover{background:var(--ink);color:var(--paper)}
+.seats svg{width:100%;height:auto;display:block}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.rows p{font-size:14px;margin:0 0 4px}
+.switch{border-left:3px solid var(--line);padding:6px 10px;margin:12px 0;font-size:15px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:right;padding:6px 8px;border-bottom:1px solid var(--rule);vertical-align:top}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:13px;color:var(--mute);font-weight:600}
+tr.in td{color:var(--mute);font-size:13px}
+tr.key td{font-weight:700}
+.tbl{overflow-x:auto}
+.verdict{padding:10px 12px;border-radius:4px;margin:10px 0;font-size:15px}
+.verdict.ok{background:#e2ebe1;border-left:4px solid var(--ok)}
+.verdict.no{background:#f1e2dc;border-left:4px solid var(--bad)}
+.legend{font-size:12px;color:var(--mute);margin:4px 0 10px}
+.sw{display:inline-block;width:12px;height:12px;vertical-align:-1px;margin-right:4px}
+ul{margin:6px 0 10px;padding-left:20px}
+li{margin-bottom:3px}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;background:#e9e6dd;padding:12px;border-radius:4px;white-space:pre-wrap;line-height:1.6}
+.fixed{font-weight:600}
+footer{border-top:1px solid var(--rule);margin-top:28px;padding-top:14px;font-size:12px;color:var(--mute)}
+footer p{margin-bottom:6px}
+@media (max-width:600px){
+  h1{font-size:28px}
+  .two{grid-template-columns:1fr}
+  .total{text-align:left}
+  .total .big{font-size:44px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none;animation:none;scroll-behavior:auto}}
+@media print{
+  body{background:#fff;font-size:12px}
+  .btns{display:none}
+  section{break-inside:avoid}
+  input[type=number]{border:none;padding:0;font-size:14px}
+  .wrap{padding:0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>The Dark Hours</h1>
+  <p class="sub">Every grey mark is a call nobody answered between 6 p.m. and 7 a.m. last month. The number at the end is what those calls would have paid. Below it, a flat fee and a share of each job sit side by side.</p>
+</header>
+
+<div class="night" aria-label="Missed calls by hour, 6 p.m. to 7 a.m., and the money they would have brought in">
+  <svg id="strip" viewBox="0 0 540 210" role="img" aria-labelledby="stripT"><title id="stripT">Missed calls by hour</title></svg>
+  <div class="total">
+    <div class="big" id="lostBig">$0</div>
+    <div class="cap">lost last month</div>
+  </div>
+</div>
+<p class="run" id="running"></p>
+
+<section aria-labelledby="h-in">
+  <h2 id="h-in">Last month, after 6 p.m.</h2>
+  <div class="grid">
+    <div><label for="calls">Calls nobody picked up</label><input id="calls" type="number" min="0" step="1" inputmode="decimal"><div class="hint">From your phone log or carrier bill.</div></div>
+    <div><label for="book">Of those, share that would have booked (%)</label><input id="book" type="number" min="0" max="100" step="1" inputmode="decimal"><div class="hint">Your guess is fine. Daytime rate is a fair start.</div></div>
+    <div><label for="ticket">Average ticket ($)</label><input id="ticket" type="number" min="0" step="10" inputmode="decimal"><div class="hint">What a typical job pays you.</div></div>
+  </div>
+  <div class="q" style="margin-top:12px">
+    <label for="months">How many months has this gone on?</label>
+    <input id="months" type="number" min="0" step="1" inputmode="decimal" style="max-width:200px">
+  </div>
+  <h3 style="margin-top:16px">The two seats, as quoted to you</h3>
+  <div class="grid">
+    <div><label for="fee">Flat fee ($ per month)</label><input id="fee" type="number" min="0" step="10" inputmode="decimal"><div class="hint">Example quote. Put in the one you have.</div></div>
+    <div><label for="rate">Share (% of each booked job)</label><input id="rate" type="number" min="0" max="100" step="1" inputmode="decimal"><div class="hint">Example quote. Put in the one you have.</div></div>
+  </div>
+  <div class="btns"><button type="button" id="reset">Back to the example</button><button type="button" id="clear">Clear all</button></div>
+</section>
+
+<section class="seats" aria-labelledby="h-seats">
+  <h2 id="h-seats">Fee seat and share seat</h2>
+  <p>Both bars run from 0 booked jobs a month on the left to more on the right. The amber line is where they cost the same.</p>
+  <svg id="bars" viewBox="0 0 600 170" role="img" aria-labelledby="barsT"><title id="barsT">Fee and share cost compared by jobs per month</title></svg>
+  <p class="legend"><span class="sw" style="background:var(--night)"></span>this seat costs less at that many jobs &nbsp; <span class="sw" style="background:var(--light)"></span>this seat costs more &nbsp; <span class="sw" style="background:var(--line)"></span>same cost</p>
+  <div class="switch" id="switchLine"></div>
+  <div class="two rows">
+    <div><h3>Fee seat</h3><div id="feeRows"></div></div>
+    <div><h3>Share seat</h3><div id="shareRows"></div></div>
+  </div>
+</section>
+
+<section aria-labelledby="h-cases">
+  <h2 id="h-cases">Bad, base, good</h2>
+  <div id="verdict"></div>
+  <div class="tbl"><table id="cases"></table></div>
+  <p class="hint" style="margin-top:6px">Bad: half the calls and the share rate doubled. Good: half again as many calls.</p>
+</section>
+
+<section aria-labelledby="h-ai">
+  <h2 id="h-ai">What the answering itself costs</h2>
+  <p>Either seat needs someone or something to pick up. A machine voice can take the call and book the slot. A person at an answering service can do the same at a higher rate.</p>
+  <div class="grid">
+    <div><label for="mins">Minutes per call</label><input id="mins" type="number" min="0" step="0.5" inputmode="decimal"></div>
+    <div><label for="mrate">Machine, $ per minute</label><input id="mrate" type="number" min="0" step="0.01" inputmode="decimal"></div>
+    <div><label for="hrate">Person, $ per minute</label><input id="hrate" type="number" min="0" step="0.05" inputmode="decimal"></div>
+    <div><label for="hmin">Person, monthly minimum ($)</label><input id="hmin" type="number" min="0" step="10" inputmode="decimal"></div>
+  </div>
+  <p class="hint">Rates differ by provider and region. Enter the quotes you have.</p>
+  <div class="tbl"><table id="ai"></table></div>
+  <p id="aiNote" style="margin-top:8px"></p>
+  <h3>A person at your business still reviews</h3>
+  <ul>
+    <li>The call script, before the line goes live.</li>
+    <li>The overnight list of booked jobs, each morning, before a truck rolls.</li>
+    <li>The monthly invoice, before it is paid.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="h-short">
+  <h2 id="h-short">Shortcut and usual path</h2>
+  <p>Shortcut: forward your line at 6 p.m. About 3 minutes. Nothing to install. Usual path: install an app, set up routing, train the office. Same calls, same ticket. The cost below is the jobs lost while the line is not yet answered.</p>
+  <div class="tbl"><table id="short"></table></div>
+  <p class="hint" style="margin-top:6px">Days until answered are assumptions. Forwarding bad case: set wrong, found the next morning. App bad case: routes wrong for the whole month.</p>
+</section>
+
+<section aria-labelledby="h-f">
+  <h2 id="h-f">How the numbers are worked</h2>
+  <div class="formula" id="formula"></div>
+  <p class="fixed" style="margin-top:12px">A named person at your business approves the call script and the monthly invoice before anything is billed.</p>
+  <p>Setup: forward your line at 6 p.m. About 3 minutes. Nothing to install.</p>
+  <p class="hint">This page compares costs. It is not legal, tax, or investment advice. Sales tax on service fees and rules on recording or announcing calls depend on where you work. Check your local rules and enter your own figures.</p>
+</section>
+
+<footer>
+  <p>Credits. Animator: the 6 p.m. to 7 a.m. strip, the dollar total at its end, and the single amber crossover line. Game designer: three plain number fields, the bad case rows always in view, and the tested example of 20 calls, 40% booking, and a $350 ticket. Home services owner: dollars lost shown before any seat cost, the 3-minute setup line, and no default seat. Penelope: the one sentence under the crossover on when moving from share to fee pays.</p>
+  <p>Your entries stay in this browser only. Nothing is sent anywhere.</p>
+  <p>Published by VoxxyAI.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+var D={calls:20,book:40,ticket:350,months:8,fee:300,rate:10,mins:4,mrate:0.10,hrate:1.50,hmin:150};
+var IDS=Object.keys(D);
+var KEY="darkhours-seat-comparer-v1";
+function el(id){return document.getElementById(id)}
+function v(id){var x=parseFloat(el(id).value);return isFinite(x)&&x>=0?x:0}
+function pct(id){return Math.min(v(id),100)}
+function money(n){
+  if(!isFinite(n))return "n/a";
+  var neg=n<0;n=Math.abs(n);
+  var s=(n<10&&Math.round(n*100)%100)?n.toFixed(2):Math.round(n).toLocaleString("en-US");
+  return (neg?"-$":"$")+s;
+}
+function num(n,d){if(!isFinite(n))return "n/a";var f=Math.pow(10,d||0);return (Math.round(n*f)/f).toLocaleString("en-US")}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+
+function load(){
+  var saved=null;
+  try{saved=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){saved=null}
+  IDS.forEach(function(k){
+    var val=(saved&&saved[k]!==undefined)?saved[k]:D[k];
+    el(k).value=val;
+  });
+}
+function save(){
+  var o={};IDS.forEach(function(k){o[k]=el(k).value});
+  try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}
+}
+
+function calc(calls,book,ticket,fee,rate){
+  var jobs=calls*book/100;
+  var lost=jobs*ticket;
+  var shareC=lost*rate/100;
+  var cross=(rate>0&&ticket>0)?fee/(rate/100*ticket):Infinity;
+  return {calls:calls,book:book,ticket:ticket,rate:rate,jobs:jobs,lost:lost,feeC:fee,shareC:shareC,cross:cross};
+}
+
+var NS="http://www.w3.org/2000/svg";
+function svgEl(tag,attrs,text){
+  var e=document.createElementNS(NS,tag);
+  for(var a in attrs)e.setAttribute(a,attrs[a]);
+  if(text!==undefined)e.textContent=text;
+  return e;
+}
+function clearSvg(s){var t=s.querySelector("title");while(s.lastChild&&s.lastChild!==t)s.removeChild(s.lastChild);if(!t)return;}
+
+function drawStrip(calls){
+  var s=el("strip");clearSvg(s);
+  var W=[4,4,3,3,2,1,1,1,1,1,1,2,3],sum=27;
+  var labels=["6p","7p","8p","9p","10p","11p","12a","1a","2a","3a","4a","5a","6a"];
+  var n=Math.min(Math.round(calls),600);
+  var raw=W.map(function(w){return n*w/sum});
+  var cnt=raw.map(Math.floor);
+  var left=n-cnt.reduce(function(a,b){return a+b},0);
+  var order=raw.map(function(r,i){return [r-Math.floor(r),i]}).sort(function(a,b){return b[0]-a[0]});
+  for(var k=0;k<left;k++)cnt[order[k][1]]++;
+  var maxC=Math.max.apply(null,cnt.concat([1]));
+  var areaH=176,gap=maxC>40?0:2;
+  var mh=Math.max(1,Math.min(9,(areaH-maxC*gap)/maxC));
+  var colW=40,barW=30,x0=10;
+  s.appendChild(svgEl("line",{x1:x0-4,y1:areaH+4,x2:x0+13*colW,y2:areaH+4,stroke:"#3a3f4b","stroke-width":1}));
+  for(var i=0;i<13;i++){
+    var cx=x0+i*colW;
+    for(var j=0;j<cnt[i];j++){
+      var y=areaH-(j+1)*(mh+gap)+gap;
+      s.appendChild(svgEl("rect",{x:cx,y:y,width:barW,height:mh,fill:"#8b909b",rx:mh>3?1:0}));
+    }
+    s.appendChild(svgEl("text",{x:cx+barW/2,y:areaH+22,fill:"#8b909b","font-size":12,"text-anchor":"middle","font-family":"system-ui,sans-serif"},labels[i]));
+  }
+}
+
+function drawBars(c,bad,good){
+  var s=el("bars");clearSvg(s);
+  var L=20,R=580,span=R-L;
+  var finite=isFinite(c.cross);
+  var maxJ=Math.max(finite?c.cross*2:0,good.jobs*1.15,1);
+  if(finite&&c.cross>maxJ)maxJ=c.cross*1.1;
+  function X(j){return L+Math.min(j,maxJ)/maxJ*span}
+  var dark="#13161d",light="#cdc8bc";
+  var cx=finite?X(c.cross):R;
+  var y1=24,y2=92,h=34;
+  s.appendChild(svgEl("text",{x:L,y:y1-6,"font-size":13,fill:"#1a1c22","font-weight":600,"font-family":"system-ui,sans-serif"},"Fee"));
+  s.appendChild(svgEl("text",{x:L,y:y2-6,"font-size":13,fill:"#1a1c22","font-weight":600,"font-family":"system-ui,sans-serif"},"Share"));
+  // fee: costs more below crossover, less above
+  s.appendChild(svgEl("rect",{x:L,y:y1,width:Math.max(0,cx-L),height:h,fill:light}));
+  s.appendChild(svgEl("rect",{x:cx,y:y1,width:Math.max(0,R-cx),height:h,fill:dark}));
+  // share: costs less below crossover
+  s.appendChild(svgEl("rect",{x:L,y:y2,width:Math.max(0,cx-L),height:h,fill:dark}));
+  s.appendChild(svgEl("rect",{x:cx,y:y2,width:Math.max(0,R-cx),height:h,fill:light}));
+  if(finite&&c.cross<=maxJ){
+    s.appendChild(svgEl("line",{x1:cx,y1:y1-10,x2:cx,y2:y2+h+10,stroke:"#d9962b","stroke-width":3}));
+    s.appendChild(svgEl("text",{x:cx,y:y2+h+26,"font-size":12,fill:"#9a6510","text-anchor":"middle","font-weight":700,"font-family":"system-ui,sans-serif"},num(c.cross,1)+" jobs"));
+  }
+  [[bad.jobs,"bad","#8b909b"],[good.jobs,"good","#8b909b"],[c.jobs,"you","#1a1c22"]].forEach(function(m){
+    var x=X(m[0]);
+    s.appendChild(svgEl("line",{x1:x,y1:y1+h,x2:x,y2:y2,stroke:m[2],"stroke-width":m[1]==="you"?2:1,"stroke-dasharray":m[1]==="you"?"":"3 3"}));
+    s.appendChild(svgEl("text",{x:x,y:(y1+h+y2)/2+4,"font-size":11,fill:m[2],"text-anchor":"middle","font-family":"system-ui,sans-serif",stroke:"#f3f1eb","stroke-width":3,"paint-order":"stroke"},m[1]+" "+num(m[0],1)));
+  });
+  s.appendChild(svgEl("text",{x:L,y:166,"font-size":11,fill:"#5b606d","font-family":"system-ui,sans-serif"},"0 jobs"));
+  s.appendChild(svgEl("text",{x:R,y:166,"font-size":11,fill:"#5b606d","text-anchor":"end","font-family":"system-ui,sans-serif"},num(maxJ,1)+" jobs a month"));
+}
+
+function render(){
+  var calls=v("calls"),book=pct("book"),ticket=v("ticket"),months=v("months"),fee=v("fee"),rate=pct("rate");
+  var mins=v("mins"),mrate=v("mrate"),hrate=v("hrate"),hmin=v("hmin");
+  var base=calc(calls,book,ticket,fee,rate);
+  var badRate=Math.min(rate*2,100);
+  var bad=calc(calls*0.5,book,ticket,fee,badRate);
+  var good=calc(calls*1.5,book,ticket,fee,rate);
+  var half=calc(calls*0.5,book,ticket,fee,rate);
+  var dbl=calc(calls,book,ticket,fee,badRate);
+
+  drawStrip(calls);
+  el("lostBig").textContent=money(base.lost);
+  el("running").innerHTML="That is <b>"+num(base.jobs,1)+" jobs</b> a month. Over "+num(months)+" month"+(months===1?"":"s")+": <b>"+money(base.lost*months)+"</b>. Twelve more months at this pace: <b>"+money(base.lost*12)+"</b>.";
+
+  drawBars(base,bad,good);
+
+  var sw;
+  if(!isFinite(base.cross)){
+    sw="With no share rate or no ticket, the two seats never cost the same.";
+  }else if(base.jobs>base.cross){
+    sw="Moving from the share to the fee pays from the first month you book more than "+num(base.cross,1)+" jobs; at "+num(base.jobs,1)+" jobs it saves "+money(base.shareC-fee)+" a month.";
+  }else{
+    sw="Moving from the share to the fee pays from the first month you book more than "+num(base.cross,1)+" jobs; at "+num(base.jobs,1)+" jobs it does not pay yet, because the share costs "+money(fee-base.shareC)+" less.";
+  }
+  el("switchLine").textContent=sw;
+
+  el("feeRows").innerHTML=
+    "<p>Base: "+money(fee)+" for "+num(base.jobs,1)+" jobs ("+money(base.lost)+" brought back).</p>"+
+    "<p>Bad case, half the calls: "+money(fee)+" for "+num(half.jobs,1)+" jobs ("+money(half.lost)+" brought back)"+(fee>half.lost?". The fee costs more than the jobs.":".")+"</p>";
+  el("shareRows").innerHTML=
+    "<p>Base: "+money(base.shareC)+" at "+num(rate,1)+"% of "+money(base.lost)+".</p>"+
+    "<p>Bad case, half the calls: "+money(half.shareC)+" of "+money(half.lost)+".</p>"+
+    "<p>Bad case, rate doubled to "+num(badRate,1)+"%: "+money(dbl.shareC)+(dbl.shareC>fee?", more than the "+money(fee)+" fee.":", still under the "+money(fee)+" fee.")+"</p>";
+
+  // cases
+  function cheaper(c){if(c.lost===0)return "n/a";return c.shareC<c.feeC?"Share":(c.shareC>c.feeC?"Fee":"Same")}
+  var C=[bad,base,good];
+  function row(cls,label,f){return "<tr class=\""+cls+"\"><td>"+label+"</td>"+C.map(function(c){return "<td>"+f(c)+"</td>"}).join("")+"</tr>"}
+  el("cases").innerHTML="<thead><tr><th></th><th>Bad</th><th>Base</th><th>Good</th></tr></thead><tbody>"+
+    row("in","Calls missed",function(c){return num(c.calls,1)})+
+    row("in","Would book",function(c){return num(c.book,1)+"%"})+
+    row("in","Ticket",function(c){return money(c.ticket)})+
+    row("in","Share rate",function(c){return num(c.rate,1)+"%"})+
+    row("","Jobs a month",function(c){return num(c.jobs,1)})+
+    row("key","Brought back",function(c){return money(c.lost)})+
+    row("","Fee seat costs",function(c){return money(c.feeC)})+
+    row("","Share seat costs",function(c){return money(c.shareC)})+
+    row("","You keep on fee",function(c){return money(c.lost-c.feeC)})+
+    row("","You keep on share",function(c){return money(c.lost-c.shareC)})+
+    row("key","Costs less",cheaper)+"</tbody>";
+
+  var vd=el("verdict");
+  if(base.lost===0){
+    vd.className="verdict no";
+    vd.textContent="Enter calls, booking share, and ticket to see the cases.";
+  }else{
+    var feeOk=bad.lost>fee,shareOk=badRate<100;
+    if(feeOk&&shareOk){
+      var callsBreak=fee/(ticket*book/100);
+      var bookBreak=calls>0?fee/(calls*ticket)*100:Infinity;
+      var rateBreak=base.lost>0?fee/base.lost*100:Infinity;
+      vd.className="verdict ok";
+      vd.innerHTML="The plan survives the bad case. At half the calls and double the share rate, both seats cost less than the jobs they bring back.<br>"+
+        "How far it can be pushed: calls could fall to "+num(callsBreak,1)+" a month, or booking to "+num(bookBreak,1)+"%, before the fee costs more than it brings back. The share stays under the fee until its rate passes "+num(rateBreak,1)+"% at your base volume.";
+    }else{
+      vd.className="verdict no";
+      var safe=shareOk?"Safer setting first: the share seat. In the bad case it costs "+money(bad.shareC)+" against "+money(bad.lost)+" brought back. The fee costs "+money(fee)+" against the same "+money(bad.lost)+".":"Safer setting first: the fee seat, or a lower share rate. A share at "+num(badRate,1)+"% takes the whole job.";
+      vd.innerHTML=esc(safe)+"<br>The plan does not survive the bad case on "+(feeOk?"the share seat":"the fee seat")+". Calls would need to reach "+num(fee/(ticket*book/100||Infinity)*2,1)+" a month for the fee to hold at half volume.";
+    }
+  }
+
+  // AI cost
+  var A=[calls*0.5,calls,calls*1.5];
+  function mc(n){return n*mins*mrate}
+  function hc(n){return Math.max(hmin,n*mins*hrate)}
+  el("ai").innerHTML="<thead><tr><th></th><th>Bad</th><th>Base</th><th>Good</th></tr></thead><tbody>"+
+    "<tr class=\"in\"><td>Calls answered</td>"+A.map(function(n){return "<td>"+num(n,1)+"</td>"}).join("")+"</tr>"+
+    "<tr class=\"in\"><td>Minutes</td>"+A.map(function(n){return "<td>"+num(n*mins,1)+"</td>"}).join("")+"</tr>"+
+    "<tr class=\"key\"><td>With machine</td>"+A.map(function(n){return "<td>"+money(mc(n))+"</td>"}).join("")+"</tr>"+
+    "<tr class=\"key\"><td>Without, by a person</td>"+A.map(function(n){return "<td>"+money(hc(n))+"</td>"}).join("")+"</tr>"+
+    "<tr><td>Difference</td>"+A.map(function(n){return "<td>"+money(hc(n)-mc(n))+"</td>"}).join("")+"</tr></tbody>";
+  var minBites=(calls*0.5*mins*hrate)<hmin;
+  el("aiNote").textContent="Base case: "+money(mc(calls))+" by machine, "+money(hc(calls))+" by a person. Bad case: "+money(mc(calls*0.5))+" by machine, "+money(hc(calls*0.5))+" by a person"+(minBites?", because the monthly minimum applies in a slow month.":".");
+
+  // shortcut
+  var jd=base.jobs/30;
+  function lossD(d){return jd*d*ticket}
+  el("short").innerHTML="<thead><tr><th>Path</th><th>Bad</th><th>Base</th><th>Good</th></tr></thead><tbody>"+
+    "<tr class=\"in\"><td>Forward the line: days until answered</td><td>1</td><td>0</td><td>0</td></tr>"+
+    "<tr class=\"key\"><td>Forward the line: jobs lost in setup</td><td>"+money(lossD(1))+"</td><td>"+money(0)+"</td><td>"+money(0)+"</td></tr>"+
+    "<tr class=\"in\"><td>Install an app: days until answered</td><td>30</td><td>7</td><td>2</td></tr>"+
+    "<tr class=\"key\"><td>Install an app: jobs lost in setup</td><td>"+money(lossD(30))+"</td><td>"+money(lossD(7))+"</td><td>"+money(lossD(2))+"</td></tr></tbody>";
+
+  el("formula").textContent=
+    "Jobs a month      = calls missed x would book %\n"+
+    "                  = "+num(calls,1)+" x "+num(book,1)+"% = "+num(base.jobs,2)+"\n"+
+    "Lost per month    = jobs x ticket = "+num(base.jobs,2)+" x "+money(ticket)+" = "+money(base.lost)+"\n"+
+    "Running total     = lost per month x months = "+money(base.lost)+" x "+num(months)+" = "+money(base.lost*months)+"\n"+
+    "Fee seat cost     = flat fee = "+money(fee)+"\n"+
+    "Share seat cost   = jobs x ticket x share % = "+money(base.lost)+" x "+num(rate,1)+"% = "+money(base.shareC)+"\n"+
+    "Crossover jobs    = fee / (share % x ticket) = "+money(fee)+" / ("+num(rate,1)+"% x "+money(ticket)+") = "+num(base.cross,2)+"\n"+
+    "Machine answering = calls x minutes x $/min\n"+
+    "Person answering  = larger of (minimum, calls x minutes x $/min)\n"+
+    "Setup loss        = jobs / 30 x days until answered x ticket\n"+
+    "Bad case          = half the calls, share % doubled\n"+
+    "Good case         = 1.5 x the calls";
+}
+
+load();render();
+IDS.forEach(function(k){el(k).addEventListener("input",function(){save();render()})});
+el("reset").addEventListener("click",function(){IDS.forEach(function(k){el(k).value=D[k]});save();render()});
+el("clear").addEventListener("click",function(){IDS.forEach(function(k){el(k).value=""});save();render()});
+})();
+</script>
+</body>
+</html>
