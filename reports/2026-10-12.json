@@ -1,0 +1,44 @@
+{
+  "facts": {
+    "week": {
+      "start": "2026-10-12",
+      "end": "2026-10-18"
+    },
+    "repository": "chasehamby123/daily-team",
+    "changes": {
+      "commits": [],
+      "testsAtStart": 70,
+      "testsAtEnd": 70
+    },
+    "days": [],
+    "seasons": [],
+    "github": {
+      "suggestionsOpenedThisWeekCount": 0,
+      "issuesOpenedCount": 0,
+      "issuesClosedCount": 0,
+      "issuesOpenedAndClosedCount": 0,
+      "issuesOpened": [],
+      "issuesClosed": [],
+      "prsMerged": [],
+      "openSuggestionsNow": []
+    },
+    "metrics": {
+      "days": 0,
+      "failed": 0,
+      "flagged": 0,
+      "deadlocks": 0,
+      "refereed": 0,
+      "meanClashLines": null,
+      "artifacts": 0,
+      "meanArtifactKB": null,
+      "guestKinds": {},
+      "commits": 0,
+      "commitsByArea": {},
+      "testsAtEnd": 70
+    },
+    "trend": null
+  },
+  "model": "",
+  "status": "ok",
+  "problems": []
+}
