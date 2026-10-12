@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Calendar by the Register: a dated handover sheet</title>
+<style>
+:root{--ink:#111;--soft:#444;--red:#c8102e;--paper:#fff;--serif:ui-serif,Georgia,"Times New Roman",serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html{font-size:18px;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:1rem;line-height:1.4}
+.wrap{max-width:960px;margin:0 auto;padding:20px 16px 40px}
+h1{font-family:var(--serif);font-size:2.3rem;line-height:1.1;margin:.2rem 0 .4rem;font-weight:700}
+h2{font-family:var(--serif);font-size:1.55rem;margin:2rem 0 .5rem;line-height:1.2}
+h3{font-size:1.15rem;margin:1rem 0 .4rem}
+p{margin:.4rem 0}
+.lede{font-size:1.15rem;max-width:42rem}
+fieldset{border:2px solid var(--ink);margin:1rem 0;padding:.8rem 1rem 1rem}
+legend{font-weight:700;font-size:1.15rem;padding:0 .4rem}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:.5rem;margin-top:.4rem}
+.choices label{display:flex;gap:.6rem;align-items:center;border:1px solid var(--ink);padding:.6rem .7rem;cursor:pointer;min-height:48px}
+.choices input{width:22px;height:22px;margin:0;accent-color:#111;flex:none}
+input[type=text],textarea{font:inherit;font-size:1rem;color:var(--ink);border:1px solid var(--ink);padding:.45rem .55rem;width:100%;background:#fff;border-radius:0}
+textarea{min-height:4.4rem;resize:vertical}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));gap:.8rem 1rem}
+.field label{display:block;font-weight:600;margin-bottom:.2rem}
+.help{color:var(--soft);font-size:1rem}
+.big input{font-size:1.4rem;font-weight:700;max-width:16rem}
+.btns{display:flex;flex-wrap:wrap;gap:.6rem;margin:1rem 0}
+button{font:inherit;font-size:1rem;font-weight:700;background:#111;color:#fff;border:2px solid #111;padding:.6rem 1rem;cursor:pointer;min-height:48px;border-radius:0}
+button.ghost{background:#fff;color:#111}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #111;outline-offset:2px}
+.sheet{border:2px solid var(--ink);padding:1rem 1.1rem 1.2rem;margin-top:1.4rem}
+.kicker{font-size:1rem;letter-spacing:.06em;text-transform:uppercase;font-weight:700}
+.shop{font-family:var(--serif);font-size:2.4rem;line-height:1.05;margin:.2rem 0;font-weight:700}
+.since{font-family:var(--serif);font-size:1.25rem}
+.meta{margin:.5rem 0 .8rem}
+.cal-head,.row{display:grid;grid-template-columns:7rem 1fr 13rem 3rem 5.4rem;gap:.7rem;align-items:start}
+.cal-head{font-weight:700;border-bottom:3px solid var(--ink);padding:.3rem 0}
+.row{border-bottom:1px solid var(--ink);padding:.55rem 0}
+.num{text-align:right;font-variant-numeric:tabular-nums}
+.date .dow,.date .yr{display:block;font-size:1rem}
+.date .md{display:block;font-size:1.45rem;font-weight:800;line-height:1.1}
+.who{font-weight:700}
+.say{font-family:var(--serif);font-size:1.1rem}
+.people input{padding:.3rem .4rem}
+.people .status{display:block;margin-top:.25rem}
+.row.key .bar{grid-column:1/-1;height:14px;background:var(--red);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.row.key .md{font-size:1.65rem}
+.keylabel{font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.foot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:.5rem 1.5rem;border-top:3px solid var(--ink);padding-top:.5rem;margin-top:.2rem;font-weight:700}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:640px}
+th,td{border:1px solid var(--ink);padding:.5rem .55rem;vertical-align:top;text-align:left;font-size:1rem}
+thead th{border-bottom:3px solid var(--ink)}
+.cash{font-size:1.3rem;font-weight:800;display:block;margin:.2rem 0;font-variant-numeric:tabular-nums}
+.in{display:block;font-style:italic}
+.verdict td{background:#f1f1f1}
+.top-verdict{font-size:1.15rem;font-weight:700;border-left:6px solid var(--ink);padding:.3rem .7rem;margin:.6rem 0}
+.sig{display:grid;grid-template-columns:auto 1fr auto 9rem;gap:.6rem;align-items:end;margin-top:1rem}
+.line{border-bottom:2px solid var(--ink);height:1.7rem}
+.formula{font-family:var(--mono);font-size:1rem;background:#f4f4f4;padding:.6rem .7rem;margin:.4rem 0;white-space:pre-wrap;overflow-wrap:anywhere}
+ul{margin:.3rem 0;padding-left:1.3rem}
+.credits,.footer{font-size:1rem;border-top:1px solid var(--ink);padding-top:.6rem;margin-top:1.4rem}
+@media (max-width:700px){
+ h1{font-size:1.9rem}.shop{font-size:1.9rem}
+ .cal-head{display:none}
+ .row{grid-template-columns:6rem 1fr}
+ .row .people,.row .h,.row .d{grid-column:2}
+ .row .num{text-align:left}
+ .row .h::before{content:"Hours: "}
+ .row .d::before{content:"Cost: "}
+ .sig{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none;animation:none;scroll-behavior:auto}}
+@media print{
+ @page{size:letter;margin:.45in}
+ html,body{font-size:18px}
+ .noprint{display:none}
+ .wrap{max-width:none;padding:0}
+ .sheet{border:none;padding:0;margin:0}
+ .cal-head,.row{grid-template-columns:6.4rem 1fr 10rem 2.6rem 4.6rem;gap:.5rem}
+ .row{break-inside:avoid;padding:.3rem 0}
+ .people input{border:none;padding:0}
+ .people input::placeholder{color:transparent}
+ .back{break-before:page}
+ table{min-width:0}
+ .verdict td{background:#fff}
+ .formula{background:#fff;border:1px solid #111}
+ .scroll{overflow:visible}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="noprint">
+<h1>The Calendar by the Register</h1>
+<p class="lede">Answer two questions. The page prints one dated sheet of handover touches. Hang it by the till and cross the dates off.</p>
+<p class="help">Free to use. No sign-up. What you type stays in this browser.</p>
+</header>
+
+<form class="noprint" autocomplete="off">
+<fieldset>
+<legend>1. Where did your successor come from?</legend>
+<div class="choices" role="radiogroup">
+<label><input type="radio" name="source" value="own"> Your own floor (9 months)</label>
+<label><input type="radio" name="source" value="family"> Family (9 months)</label>
+<label><input type="radio" name="source" value="customer"> A customer (12 months)</label>
+<label><input type="radio" name="source" value="competitor"> A competitor (12 months)</label>
+<label><input type="radio" name="source" value="listing"> A listing, a stranger (18 months)</label>
+</div>
+</fieldset>
+
+<fieldset>
+<legend>2. What is the business worth?</legend>
+<div class="field big">
+<label for="f-value">Your best figure, in dollars</label>
+<input type="text" id="f-value" data-k="value" inputmode="numeric">
+</div>
+<p class="help">8 touches under $1,000,000. 12 touches at or above.</p>
+</fieldset>
+
+<fieldset>
+<legend>For the top of the sheet</legend>
+<p class="help">Typed once. Your names, your shop.</p>
+<div class="grid2">
+<div class="field"><label for="f-shop">Shop name</label><input type="text" id="f-shop" data-k="shop"></div>
+<div class="field"><label for="f-year">Year it opened</label><input type="text" id="f-year" data-k="year" inputmode="numeric"></div>
+<div class="field"><label for="f-name">Successor's name</label><input type="text" id="f-name" data-k="name"></div>
+<div class="field"><label for="f-role">Their job now</label><input type="text" id="f-role" data-k="role"></div>
+</div>
+<div class="field" style="margin-top:.8rem">
+<label for="f-staff">Your people, by name</label>
+<textarea id="f-staff" data-k="staff"></textarea>
+<p class="help">Commas or one per line. Put the person you tell first right after your successor.</p>
+</div>
+</fieldset>
+
+<div class="btns">
+<button type="button" id="b-print">Print this sheet</button>
+<button type="button" class="ghost" id="b-example">Load the Dana example</button>
+<button type="button" class="ghost" id="b-clear">Clear the answers</button>
+</div>
+</form>
+
+<article class="sheet" id="sheet" aria-live="polite"></article>
+
+<section class="back">
+<h2 id="paths-title">Two paths from the same givens</h2>
+<div id="paths"></div>
+
+<fieldset class="noprint">
+<legend>The givens behind both paths</legend>
+<p class="help">These depend on local rules and your own quotes. Enter yours.</p>
+<div class="grid2">
+<div class="field"><label for="g-fee">Broker fee (%)</label><input type="text" id="g-fee" data-k="fee" inputmode="decimal"></div>
+<div class="field"><label for="g-down">Down payment on the note (%)</label><input type="text" id="g-down" data-k="down" inputmode="decimal"></div>
+<div class="field"><label for="g-rate">Note interest (% a year)</label><input type="text" id="g-rate" data-k="rate" inputmode="decimal"></div>
+<div class="field"><label for="g-years">Note length (years)</label><input type="text" id="g-years" data-k="years" inputmode="decimal"></div>
+<div class="field"><label for="g-stop">Bad case: months paid before payments stop</label><input type="text" id="g-stop" data-k="stop" inputmode="numeric"></div>
+<div class="field"><label for="g-walk">Bad case: month the broker's buyer walks</label><input type="text" id="g-walk" data-k="walk" inputmode="numeric"></div>
+<div class="field"><label for="g-need">Cash you need in hand if a deal fails ($)</label><input type="text" id="g-need" data-k="need" inputmode="numeric"></div>
+<div class="field"><label for="g-law">Lawyer and filing, your local quote ($)</label><input type="text" id="g-law" data-k="law" inputmode="numeric"></div>
+<div class="field"><label for="g-ai">Books summary, AI draft plus accountant check ($)</label><input type="text" id="g-ai" data-k="ai" inputmode="numeric"></div>
+<div class="field"><label for="g-hand">Books summary by hand ($)</label><input type="text" id="g-hand" data-k="hand" inputmode="numeric"></div>
+</div>
+</fieldset>
+
+<h2>The books meeting: with and without AI</h2>
+<div id="ai"></div>
+
+<h2>The formulas this page uses</h2>
+<div id="formulas"></div>
+
+<p class="help" style="color:var(--ink)">This is a planning sheet. It is not legal, tax, or investment advice. Broker fees, note rates, how a note is secured, and lawyer costs depend on local rules. Check them with your own lawyer and accountant.</p>
+
+<p class="credits">Credits. Set designer: the calendar format, the two questions, and the rule that your people hear it before any supplier. Bookbinder: the shop name and year at the top, the one red bar, and the AI books draft with a signature line. Retiring owner: one page, who and what to say on which date, and every staff step by name. Euclid: length set by source, touch count set by price, and totals at the foot of each path.</p>
+<p class="footer">Published by OuterHaven Advisory.</p>
+</section>
+
+</div>
+
+<script>
+(function(){
+var KEY='calendar-by-register-v1';
+var EXAMPLE={shop:'Kessler Sheet Metal',year:'1995',name:'Dana',role:'foreman',source:'own',value:'1,400,000',
+staff:'Dana, Marta, Luis, Priya, Ken, Rosa, Tom, Abby, Jamal, Wes, Hana',
+fee:'10',down:'20',rate:'6',years:'7',stop:'24',walk:'11',need:'350,000',law:'8,000',ai:'300',hand:'6,000',told:{}};
+var LEN={own:9,family:9,customer:12,competitor:12,listing:18};
+var SRC={own:'your own floor',family:'family',customer:'a customer',competitor:'a competitor',listing:'a listing (a stranger)'};
+var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+var now=new Date();
+var today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+
+function copy(o){return JSON.parse(JSON.stringify(o));}
+function load(){try{var s=localStorage.getItem(KEY);if(s){var o=JSON.parse(s);if(o&&typeof o==='object'){return o;}}}catch(e){}return null;}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+var state=load()||copy(EXAMPLE);
+var k;
+for(k in EXAMPLE){if(k in state){}else{state[k]=copy(EXAMPLE)[k];}}
+if(state.told&&typeof state.told==='object'){}else{state.told={};}
+if(state.source in LEN){}else{state.source='own';}
+
+function num(v){var x=parseFloat(String(v==null?'':v).replace(/[^0-9.\-]/g,''));return isFinite(x)?x:0;}
+function trim(s){return String(s==null?'':s).replace(/^\s+|\s+$/g,'');}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function fmt(n){var neg=n<0;var s='$'+Math.round(Math.abs(n)).toLocaleString('en-US');return neg?'minus '+s:s;}
+function pct(x){return (Math.round(x*1000)/10)+'%';}
+function addDays(d,n){return new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);}
+function snap(d){var w=d.getDay();if(w===6){return addDays(d,2);}if(w===0){return addDays(d,1);}return d;}
+function long(d){return DOW[d.getDay()]+' '+MON[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();}
+function pmt(P,ratePct,years){var n=Math.round(years*12);if(n<=0){return 0;}var r=ratePct/1200;if(r===0){return P/n;}return P*r/(1-Math.pow(1+r,-n));}
+
+function T12(c){return [
+{id:'coffee',d:7,h:2,cost:'',who:'You and '+c.S,say:'"I want to talk about the next ten years of '+c.shop+'. I want you in that talk."',told:'',status:'Nobody else knows yet.'},
+{id:'books',d:21,h:4,cost:'books',who:'You, '+c.S+', and your accountant',say:'Three years of books on one page. "Ask me anything."',told:'',status:'Nobody else knows yet.'},
+{id:'first',d:39,h:1,cost:'',who:'You and '+c.K,say:'"You hear this first, and from me. '+c.S+' is carrying this on."',told:c.rawK,status:c.K+' knows. The floor does not yet.'},
+{id:'floor',d:42,h:1,cost:'',who:'You and '+c.S+', with everyone',say:'"Nobody is losing their job. Same name on the door."',told:c.rawF,status:c.All+' know, from you.'},
+{id:'price',d:60,h:3,cost:'',who:'You and '+c.S,say:'"Here is what I think it is worth, and why."',told:'',status:'Pay and hours stay the same.'},
+{id:'terms',d:90,h:6,cost:'law1',who:'You, '+c.S+', and your lawyer',say:'Price, down payment, and note terms on paper.',told:'',status:'Nothing changes on the floor.'},
+{id:'suppliers',d:110,h:2,cost:'',who:'You and your main suppliers',say:'"My people already know. '+c.S+' will be ordering from you."',told:'',status:'Your people heard before any supplier.'},
+{id:'customers',d:130,h:4,cost:'',who:'You and '+c.S+', with your top customers',say:'"Same crew, same work. Here is who to call."',told:'',status:'Customers hear your people by name.'},
+{id:'week',d:170,h:2,cost:'',who:c.S+', on their own',say:c.S+' runs '+c.shop+' for a week. You stay home.',told:'',status:'The crew takes direction from '+c.S+'.'},
+{id:'bank',d:200,h:3,cost:'',who:'You, '+c.S+', and the bank',say:'Accounts, lease, and payroll signed over.',told:'',status:'Payroll runs with no gap.'},
+{id:'sign',d:245,h:3,cost:'law2',who:'You, '+c.S+', and your lawyer',say:'Sign. Read every page first.',told:'',status:'Your people hear the keys date from you first.'},
+{id:'keys',d:274,h:4,cost:'',key:true,who:'You and '+c.S+', with everyone',say:'"From today, '+c.S+' has the keys."',told:'Everyone, together',status:'Same people. Same name on the door.'}
+];}
+function T8(c){var a=T12(c);return [a[0],a[1],a[2],a[3],
+{id:'priceterms',d:75,h:8,cost:'law1',who:'You, '+c.S+', and your lawyer',say:'"Here is what I think it is worth." Then price, down payment, and note terms on paper.',told:'',status:'Pay and hours stay the same.'},
+{id:'partners',d:120,h:5,cost:'',who:'You and '+c.S+', with suppliers, then customers',say:'"My people already know. Same crew, same work."',told:'',status:'Your people heard before any supplier.'},
+{id:'sign',d:230,h:3,cost:'law2',who:a[10].who,say:a[10].say,told:'',status:a[10].status},
+a[11]];}
+
+function ctx(){
+var rawS=trim(state.name)||'your successor';
+var staff=String(state.staff||'').split(/[,\n]+/).map(trim).filter(function(x){return x.length>0;});
+var others=staff.filter(function(n){return n.toLowerCase()===rawS.toLowerCase()?false:true;});
+var rawK=others.length?others[0]:'your first person';
+var F=others.slice(1);
+var N=staff.length;
+return {S:esc(rawS),rawS:rawS,K:esc(rawK),rawK:rawK,rawF:F.length?F.join(', '):'Everyone else',
+shop:esc(trim(state.shop)||'the shop'),All:N?'All '+N:'Everyone',N:N,role:esc(trim(state.role))};
+}
+
+function plan(){
+var c=ctx();var V=num(state.value);var months=LEN[state.source];
+var list=V>=1000000?T12(c):T8(c);
+var law=num(state.law),ai=num(state.ai),hand=num(state.hand);
+var H=0,costAI=0,costHand=0;
+list.forEach(function(t){
+t.date=snap(addDays(today,Math.round(t.d*months/9)));
+t.usd=t.cost==='books'?ai:t.cost==='law1'?law*0.6:t.cost==='law2'?law*0.4:0;
+t.hand=t.cost==='books'?hand:t.usd;
+H+=t.h;costAI+=t.usd;costHand+=t.hand;
+});
+return {c:c,V:V,months:months,list:list,H:H,costAI:costAI,costHand:costHand};
+}
+
+function renderSheet(p){
+var c=p.c;var y=num(state.year);var yrs=today.getFullYear()-y;
+var since=(y>1700&&yrs>=0)?'Since '+Math.round(y)+'. '+yrs+' years.':'';
+var keys=p.list[p.list.length-1].date;
+var who='Handover calendar for '+c.S+(c.role?', '+c.role:'')+'.';
+var countLine=p.V>0?(p.list.length+' touches, because the value is '+(p.V>=1000000?'$1,000,000 or more':'under $1,000,000')+'.'):'Enter what the business is worth to set the touch count. Showing 8 touches.';
+var h='<div class="kicker">The Calendar by the Register</div>'+
+'<div class="shop">'+c.shop.replace(/^the shop$/,'Your shop')+'</div>'+
+(since?'<div class="since">'+since+'</div>':'')+
+'<div class="meta"><p><strong>'+who+'</strong> Successor from '+SRC[state.source]+': '+p.months+' months. '+countLine+'</p>'+
+'<p>Dates count from today, '+long(today)+'. Weekends move to Monday. Keys day: <strong>'+long(keys)+'</strong>.</p></div>'+
+'<div class="cal-head"><div>Date</div><div>Who, and what to say</div><div>Your people</div><div class="num">Hrs</div><div class="num">$</div></div>';
+p.list.forEach(function(t){
+var told=(t.id in state.told)?state.told[t.id]:t.told;
+var d=t.date;
+h+='<div class="row'+(t.key?' key':'')+'">'+(t.key?'<div class="bar" aria-hidden="true"></div>':'')+
+'<div class="date"><span class="dow">'+DOW[d.getDay()]+'</span><span class="md">'+MON[d.getMonth()]+' '+d.getDate()+'</span><span class="yr">'+d.getFullYear()+'</span></div>'+
+'<div class="main">'+(t.key?'<span class="keylabel">Keys day. </span>':'')+'<span class="who">'+t.who+'</span><div class="say">'+t.say+'</div></div>'+
+'<div class="people"><input type="text" data-t="'+t.id+'" value="'+esc(told)+'" placeholder="Nobody new" aria-label="Told at this step"><span class="status">'+t.status+'</span></div>'+
+'<div class="num h">'+t.h+'</div><div class="num d">'+fmt(t.usd)+'</div></div>';
+});
+h+='<div class="foot"><span>'+p.list.length+' touches over '+p.months+' months. '+p.H+' owner hours.</span><span>'+fmt(p.costAI)+' with the AI books draft. '+fmt(p.costHand)+' by hand.</span></div>';
+document.getElementById('sheet').innerHTML=h;
+var ins=document.querySelectorAll('#sheet [data-t]');
+Array.prototype.forEach.call(ins,function(el){
+var id=el.getAttribute('data-t');
+el.addEventListener('input',function(){state.told[id]=el.value;save();});
+});
+}
+
+function renderPaths(p){
+var c=p.c,V=p.V,el=document.getElementById('paths');
+document.getElementById('paths-title').textContent='Two paths from the same givens';
+if(V>0){}else{el.innerHTML='<p>Enter what the business is worth. Both paths need a price.</p>';return null;}
+var f=num(state.fee)/100,d=num(state.down)/100,rate=num(state.rate),yrs=num(state.years);
+var n=Math.round(yrs*12);
+var stop=Math.max(0,Math.round(num(state.stop)));if(stop>n){stop=n;}
+var walk=Math.max(1,Math.round(num(state.walk)));
+var need=num(state.need),law=num(state.law),ai=num(state.ai),hand=num(state.hand);
+var costA=ai+law;
+function note(price,dd){var P=price*(1-dd);var m=pmt(P,rate,yrs);return {down:price*dd,P:P,m:m,all:price*dd+m*n};}
+var nb=note(V,d),ng=note(V*1.1,d);
+var badCol=nb.down+nb.m*stop,badNet=badCol-costA;
+var brBase=V*(1-f)-costA-law*0,brGood=V*1.1*(1-f)-costA;
+var brokerSurvives=(0-ai)>=need;
+var noteSurvives=badNet>=need;
+var mMin=nb.m>0?Math.max(0,Math.ceil((need+costA-nb.down)/nb.m)):((nb.down-costA)>=need?0:Infinity);
+var kk=pmt(1,rate,yrs),den=1-stop*kk,dMin;
+if(den>0){dMin=(need+costA-stop*V*kk)/(V*den);}else{dMin=0;}
+if(dMin<0){dMin=0;}
+var S=c.S;
+var noteLine,brokerLine;
+if(noteSurvives){
+noteLine='<strong>Bad case: survives.</strong> '+fmt(badNet)+' in hand after costs, above the '+fmt(need)+' you need. '+
+'<strong>Push limit:</strong> '+S+' could stop paying as early as month '+mMin+' and you still have '+fmt(need)+'. '+
+'With a month-'+stop+' stop, the down payment could drop to '+Math.ceil(dMin*100)+'%.';
+}else{
+var safer;
+if(dMin<=1){var sn=note(V,dMin);safer='<strong>Safer setting first:</strong> a down payment of '+Math.ceil(dMin*100)+'% or more. At that, the month-'+stop+' bad case leaves '+fmt(sn.down+sn.m*stop-costA)+'. ';}
+else{safer='<strong>Safer setting first:</strong> no down payment covers it with a month-'+stop+' stop. Lower the cash you need, or take more at signing. ';}
+noteLine=safer+'<strong>As entered: does not survive.</strong> '+fmt(badNet)+' after costs, under the '+fmt(need)+' you need.';
+}
+if(brokerSurvives){
+brokerLine='<strong>Bad case: survives</strong>, because the cash you need is '+fmt(need)+'.';
+}else{
+brokerLine='<strong>Safer setting first:</strong> use the AI books draft, so a walk-away costs '+fmt(ai)+', not '+fmt(hand)+'. Price the note path in the row below with the same inputs. '+
+'<strong>As entered: does not survive.</strong> The buyer walks at month '+walk+'. Cash in hand $0, under the '+fmt(need)+' you need.';
+}
+var top='<p class="top-verdict">With these givens, the note path '+(noteSurvives?'survives':'does not survive')+' the bad case. The broker path '+(brokerSurvives?'survives':'does not')+'.</p>';
+var intro='<p>The usual path: a broker sells to a stranger from a listing over 18 months. The shortcut: '+S+' buys on a note you carry. Same price, same givens.</p>';
+var t='<div class="scroll"><table><thead><tr><th style="width:17%">Path</th><th>Bad case</th><th>Base case</th><th>Good case</th></tr></thead><tbody>'+
+'<tr><th scope="row">Broker sale to a stranger (usual path)</th>'+
+'<td><span class="in">Buyer walks at month '+walk+'. No fee paid.</span><span class="cash">Cash in hand $0</span>Out of pocket '+fmt(hand)+' by hand, '+fmt(ai)+' with AI draft. Clock restarts: earliest new sale month '+(walk+18)+'. Your people wait on a new stranger.</td>'+
+'<td><span class="in">Sells at '+fmt(V)+'. Fee '+pct(f)+'. Month 18.</span><span class="cash">'+fmt(brBase)+'</span>Fee paid '+fmt(V*f)+'. The buyer decides about your people.</td>'+
+'<td><span class="in">Sells at '+fmt(V*1.1)+'. Fee '+pct(f)+'. Month 15.</span><span class="cash">'+fmt(brGood)+'</span>Fee paid '+fmt(V*1.1*f)+'. The buyer decides about your people.</td></tr>'+
+'<tr class="verdict"><td colspan="4">'+brokerLine+' <strong>Foot:</strong> '+p.H+' owner hours over 18 months. Out of pocket '+fmt(V*f+costA)+' (fee, lawyer, AI books draft).</td></tr>'+
+'<tr><th scope="row">Note to '+S+' (the shortcut)</th>'+
+'<td><span class="in">Profit halves in year 3. '+S+' stops paying after month '+stop+'.</span><span class="cash">'+fmt(badNet)+'</span>Collected '+fmt(badCol)+': '+fmt(nb.down)+' down plus '+stop+' payments. The note is secured on the shop, so it comes back to you. Your people keep their jobs.</td>'+
+'<td><span class="in">'+fmt(nb.down)+' down. '+fmt(nb.P)+' at '+rate+'% over '+yrs+' years. '+n+' payments of '+fmt(nb.m)+'.</span><span class="cash">'+fmt(nb.all-costA)+'</span>Interest you keep '+fmt(nb.all-V)+'. Same people under '+S+'.</td>'+
+'<td><span class="in">Price '+fmt(V*1.1)+'. Same terms. Payments of '+fmt(ng.m)+'.</span><span class="cash">'+fmt(ng.all-costA)+'</span>Interest you keep '+fmt(ng.all-V*1.1)+'. Same people under '+S+'.</td></tr>'+
+'<tr class="verdict"><td colspan="4">'+noteLine+' <strong>Foot:</strong> '+p.H+' owner hours over '+p.months+' months of handover, then '+n+' months of payments. Out of pocket '+fmt(costA)+' (lawyer, AI books draft).</td></tr>'+
+'</tbody></table></div>'+
+'<p>Cash figures are after the lawyer quote and the AI books draft. Whether the shop comes back on a missed note depends on how the note is secured under your local law.</p>';
+el.innerHTML=top+intro+t;
+return {V:V,d:d,f:f,rate:rate,yrs:yrs,n:n,nb:nb,stop:stop,need:need,costA:costA,ai:ai,hand:hand,law:law};
+}
+
+function renderAI(p){
+var ai=num(state.ai),hand=num(state.hand);
+var S=p.c.S;
+var h='<p>The books meeting is where the money goes. An AI tool reads three years of statements and drafts one page. Your accountant checks it and signs it.</p>'+
+'<div class="scroll"><table><thead><tr><th>Case</th><th>With AI draft</th><th>By hand</th><th>Difference</th></tr></thead><tbody>'+
+'<tr><th scope="row">Base: one books summary</th><td>'+fmt(ai)+'</td><td>'+fmt(hand)+'</td><td>'+fmt(hand-ai)+'</td></tr>'+
+'<tr><th scope="row">Bad: the deal falls through and the summary is done again</th><td>'+fmt(ai*2)+'</td><td>'+fmt(hand*2)+'</td><td>'+fmt((hand-ai)*2)+'</td></tr>'+
+'</tbody></table></div>'+
+'<h3>A person still reviews</h3><ul>'+
+'<li>Your accountant checks the draft against bank statements and tax returns, then signs it.</li>'+
+'<li>You read the page before '+S+' sees it.</li>'+
+'<li>Your lawyer writes the note terms and the sale papers. No AI step there.</li></ul>'+
+'<div class="sig"><span>Reviewed and signed by</span><span class="line"></span><span>Date</span><span class="line"></span></div>';
+document.getElementById('ai').innerHTML=h;
+}
+
+function renderFormulas(p,q){
+var lines='Length (months): own floor 9, family 9, customer 12, competitor 12, listing 18. Here: '+p.months+'.\n'+
+'Touches: 8 under $1,000,000, 12 at or above. Here: '+p.list.length+'.\n'+
+'Touch date = today + plan day x length / 9. Saturday and Sunday move to Monday.';
+var h='<div class="formula">'+lines+'</div>';
+if(q){
+var r=q.rate/1200;
+h+='<div class="formula">Monthly note payment = P x r / (1 - (1 + r)^-n)\nP = price - down = '+fmt(q.nb.P)+'   r = '+q.rate+'% / 12 = '+(Math.round(r*100000)/100000)+'   n = '+q.n+'\nPayment = '+fmt(q.nb.m)+'</div>'+
+'<div class="formula">Broker cash = price x (1 - fee) - lawyer - books\n= '+fmt(q.V)+' x '+(1-q.f).toFixed(2)+' - '+fmt(q.law)+' - '+fmt(q.ai)+' = '+fmt(q.V*(1-q.f)-q.costA)+'</div>'+
+'<div class="formula">Note cash = down + months paid x payment - lawyer - books\nBad case = '+fmt(q.nb.down)+' + '+q.stop+' x '+fmt(q.nb.m)+' - '+fmt(q.costA)+' = '+fmt(q.nb.down+q.nb.m*q.stop-q.costA)+'</div>'+
+'<div class="formula">Survives when bad-case cash is at least the cash you need ('+fmt(q.need)+').\nEarliest stop month = (need + costs - down) / payment, rounded up.\nLowest down % = (need + costs - stop x price x k) / (price x (1 - stop x k)), k = payment per $1 borrowed.</div>';
+}
+document.getElementById('formulas').innerHTML=h;
+}
+
+function render(){
+var p=plan();
+renderSheet(p);
+var q=renderPaths(p);
+renderAI(p);
+renderFormulas(p,q);
+}
+
+function sync(){
+var els=document.querySelectorAll('[data-k]');
+Array.prototype.forEach.call(els,function(el){var key=el.getAttribute('data-k');el.value=state[key]==null?'':state[key];});
+var rs=document.querySelectorAll('input[name=source]');
+Array.prototype.forEach.call(rs,function(r){r.checked=(r.value===state.source);});
+}
+
+Array.prototype.forEach.call(document.querySelectorAll('[data-k]'),function(el){
+var key=el.getAttribute('data-k');
+el.addEventListener('input',function(){state[key]=el.value;save();render();});
+if(key==='value'||key==='need'||key==='law'||key==='ai'||key==='hand'){
+el.addEventListener('blur',function(){var x=num(el.value);if(x>0){el.value=Math.round(x).toLocaleString('en-US');state[key]=el.value;save();}});
+}
+});
+Array.prototype.forEach.call(document.querySelectorAll('input[name=source]'),function(r){
+r.addEventListener('change',function(){if(r.checked){state.source=r.value;save();render();}});
+});
+document.getElementById('b-print').addEventListener('click',function(){window.print();});
+document.getElementById('b-example').addEventListener('click',function(){state=copy(EXAMPLE);save();sync();render();});
+document.getElementById('b-clear').addEventListener('click',function(){
+['shop','year','name','role','value','staff'].forEach(function(x){state[x]='';});
+state.told={};save();sync();render();
+});
+
+sync();
+render();
+})();
+</script>
+</body>
+</html>
