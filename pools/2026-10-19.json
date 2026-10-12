@@ -1,0 +1,185 @@
+{
+  "start": "2026-10-19",
+  "base": "2026-10-07",
+  "provider": "claude",
+  "model": "claude-opus-5-5",
+  "added": {
+    "roles": [
+      {
+        "text": "Cooper",
+        "credit": ""
+      },
+      {
+        "text": "Saddler",
+        "credit": ""
+      },
+      {
+        "text": "Gilder",
+        "credit": ""
+      },
+      {
+        "text": "Paper maker",
+        "credit": ""
+      },
+      {
+        "text": "Mosaic artist",
+        "credit": ""
+      },
+      {
+        "text": "Stage manager",
+        "credit": ""
+      },
+      {
+        "text": "Surveyor",
+        "credit": ""
+      },
+      {
+        "text": "Boatbuilder",
+        "credit": ""
+      }
+    ],
+    "methods": [
+      {
+        "text": "Change one variable at a time and record each result.",
+        "credit": ""
+      },
+      {
+        "text": "Build the part you understand least first.",
+        "credit": ""
+      },
+      {
+        "text": "Keep a one-line log of every decision and the reason for it.",
+        "credit": ""
+      },
+      {
+        "text": "Name the worst version you would still ship, and hold that as the floor.",
+        "credit": ""
+      },
+      {
+        "text": "Stop each session mid-step so the next one starts easily.",
+        "credit": ""
+      },
+      {
+        "text": "Price each feature in hours before building it, and drop the dearest one.",
+        "credit": ""
+      },
+      {
+        "text": "Write down the result you expect before each test, then compare.",
+        "credit": ""
+      },
+      {
+        "text": "Read every line of text aloud and cut what you stumble on.",
+        "credit": ""
+      }
+    ],
+    "constraints": [
+      {
+        "text": "Every input rejects impossible values with a plain message.",
+        "credit": ""
+      },
+      {
+        "text": "Works at 200 percent browser zoom without horizontal scrolling.",
+        "credit": ""
+      }
+    ],
+    "tasks": [
+      {
+        "text": "Churn cost calculator: the buyer's customer count, monthly loss rate, and value per customer give revenue lost per year and what one point less churn would keep.",
+        "credit": ""
+      },
+      {
+        "text": "Error cost estimator: cases per month, error rate, and cost to fix each error give the monthly cost of mistakes and the saving at a lower rate the buyer sets.",
+        "credit": ""
+      },
+      {
+        "text": "Handover map: the buyer's tasks and the owner of each give a table of handoffs between people and a list of steps with no clear owner.",
+        "credit": ""
+      },
+      {
+        "text": "Late payment cost: invoices with amounts and days overdue give the cash tied up, the cost of waiting at a rate the buyer sets, and the oldest balances.",
+        "credit": ""
+      },
+      {
+        "text": "Rollout calendar: a start date and the buyer's teams or sites give a staggered dated schedule, with any overlapping weeks marked.",
+        "credit": ""
+      },
+      {
+        "text": "Tool overlap finder: the buyer's current tools with cost and main uses give the uses covered twice and the yearly spend on that overlap.",
+        "credit": ""
+      }
+    ],
+    "guests": [
+      {
+        "text": "historical | John Harrison | Refine one part until it holds up in rough conditions. | died 1776",
+        "credit": ""
+      },
+      {
+        "text": "myth | Ariadne | Leave a trail so anyone can retrace each step. | Greek myth",
+        "credit": ""
+      }
+    ],
+    "temperaments": [
+      {
+        "text": "Repeats the other side's point back before answering.",
+        "credit": ""
+      },
+      {
+        "text": "Asks what would change their mind, then waits.",
+        "credit": ""
+      },
+      {
+        "text": "Brings a counter-example to every general claim.",
+        "credit": ""
+      },
+      {
+        "text": "Writes each point on the board before discussing it.",
+        "credit": ""
+      }
+    ]
+  },
+  "retired": {
+    "guests": [
+      "historical | Euclid | State a few assumptions, then build everything from them. | died c. 270 BC",
+      "historical | Ibn al-Haytham | Trust nothing until an experiment shows it. | died c. 1040"
+    ],
+    "temperaments": [
+      "Impatient; cuts people off mid-sentence.",
+      "Hoards evidence before saying anything.",
+      "Agrees fast, then quietly does it their own way.",
+      "Argues the opposite side to test an idea."
+    ],
+    "roles": [
+      "Industrial designer",
+      "Furniture maker",
+      "Set designer",
+      "Lighting designer",
+      "Costume designer",
+      "Game designer",
+      "Puppeteer",
+      "Choreographer"
+    ],
+    "methods": [
+      "Design the error and empty states first.",
+      "List the assumptions in the brief and check each one.",
+      "Make it work in black and white before adding color.",
+      "Prototype in the final material.",
+      "Take the conventions of a genre and break exactly one.",
+      "Storyboard every change of state.",
+      "Write the copy before the layout.",
+      "Scope the work to what fits in one day."
+    ],
+    "constraints": [
+      "Under 100 words of fixed text on the page.",
+      "Three colors at most."
+    ],
+    "tasks": [
+      "Cost-of-inaction calculator: the buyer's current volumes and rates give what the problem costs per month and per year, with each step of the sum shown.",
+      "Readiness scorecard: twelve yes-or-no questions give a score out of 100, the three weakest areas, and one next step for each.",
+      "Benchmark checker: the buyer's own figures sit next to typical ranges they can edit, with each gap marked ahead, level, or behind.",
+      "Leak finder: a funnel of stages with counts gives the stage that loses the most and what fixing half of that loss would be worth.",
+      "Time-back calculator: weekly hours on manual tasks and an hourly cost give the hours and money an automated step would return.",
+      "Before-and-after map: today's process as a list of steps becomes a side-by-side view marking the steps that could be removed or automated."
+    ]
+  },
+  "suggestions": []
+}
