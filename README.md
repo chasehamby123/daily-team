@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-10-12: The Calendar by the Register
+### 2026-10-13: Defensible in a Day
 
-<a href="days/2026-10-12/"><img src="days/2026-10-12/team.png" alt="Team for 2026-10-12: Set designer · Bookbinder · Retiring owner with no successor · Euclid" width="100%"></a>
+<a href="days/2026-10-13/"><img src="days/2026-10-13/team.png" alt="Team for 2026-10-13: Documentary director · Playwright · Multi-family office adviser · Benjamin Franklin" width="100%"></a>
 
-**Task:** Follow-up cadence planner: a lead source and deal size give a dated sequence of follow-up touches, printable.
+**Task:** Response time simulator: enquiries per hour and reply delays give the share answered within five minutes, one hour, and one day.
 
-**Decision:** The page asks where the successor came from and what the business is worth, then prints one dated sheet of handover touches, with the broker path and the note path side by side and the bad case under each.
+**Decision:** The page takes deal enquiries per hour and hours per first read, and shows what share of client enquiries get a signed go/no-go note within five minutes, one hour, and one day, both for the usual path and for an AI first read with a name...
 
-<a href="days/2026-10-12/"><img src="days/2026-10-12/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-10-13/"><img src="days/2026-10-13/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-10-12/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-10-13/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,15 +37,15 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-10-13](days/2026-10-13/) | <a href="days/2026-10-13/"><img src="days/2026-10-13/artifact-1.png" alt="Defensible in a Day" width="160"></a> | Defensible in a Day | Documentary director · Playwright · Multi-family office adviser · Benjamin Franklin |
 | [2026-10-12](days/2026-10-12/) | <a href="days/2026-10-12/"><img src="days/2026-10-12/artifact-1.png" alt="The Calendar by the Register" width="160"></a> | The Calendar by the Register | Set designer · Bookbinder · Retiring owner with no successor · Euclid |
 | [2026-10-11](days/2026-10-11/) | <a href="days/2026-10-11/"><img src="days/2026-10-11/artifact-1.png" alt="The Dark Hours" width="160"></a> | The Dark Hours | Animator · Game designer · Home services owner · Penelope |
 | [2026-10-10](days/2026-10-10/) | <a href="days/2026-10-10/"><img src="days/2026-10-10/artifact-1.png" alt="The Dead Deal Panel" width="160"></a> | The Dead Deal Panel | Comic artist · Lighting designer · Roll-up operator · Arachne |
 | [2026-10-09](days/2026-10-09/) | <a href="days/2026-10-09/"><img src="days/2026-10-09/artifact-1.png" alt="Stack and Clock" width="160"></a> | Stack and Clock | Sculptor · Chef · Real estate developer · Glass fox |
 | [2026-10-08](days/2026-10-08/) | <a href="days/2026-10-08/"><img src="days/2026-10-08/artifact-1.png" alt="Cheque First" width="160"></a> | Cheque First | Locksmith · Taxidermist · Fund manager raising capital · Archivist from 2300 |
 | [2026-10-06](days/2026-10-06/) | <a href="days/2026-10-06/"><img src="days/2026-10-06/artifact-1.png" alt="Three Panes" width="160"></a> | Three Panes | Window dresser · Calligrapher · Textile designer · Glass fox |
-| [2026-10-05](days/2026-10-05/) | <a href="days/2026-10-05/"><img src="days/2026-10-05/artifact-1.png" alt="CV checklist" width="160"></a> | CV checklist | Bookbinder · Glassblower · Chef · Captain Ahab |
 
-[All 9 days](ARCHIVE.md)
+[All 10 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works

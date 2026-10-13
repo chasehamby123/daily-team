@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Defensible in a Day: response time for signed deal notes</title>
+<style>
+*{box-sizing:border-box;font-family:ui-monospace,Menlo,Consolas,"Liberation Mono","Courier New",monospace}
+:root{--paper:#f3efe6;--ink:#1c1a17;--mute:#6b655b;--rule:#bdb5a6;--red:#a3241b;--ai:#24464a;--hi:#e6dfd0}
+html{background:var(--paper);color:var(--ink)}
+body{margin:0;font-size:14px;line-height:1.5}
+main{max-width:1040px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:32px;line-height:1.1;margin:4px 0 12px;font-weight:700;letter-spacing:-.5px}
+h2{font-size:15px;text-transform:uppercase;letter-spacing:1px;margin:0 0 8px;font-weight:700}
+.kicker{font-size:12px;color:var(--mute);letter-spacing:1px;margin:0}
+.def{border:1px solid var(--ink);padding:12px;background:#fff8;max-width:720px}
+.def b{font-size:16px}
+section{margin-top:32px;border-top:1px dashed var(--rule);padding-top:16px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:24px}
+@media (max-width:760px){.grid{grid-template-columns:1fr}h1{font-size:26px}}
+label{display:grid;grid-template-columns:1fr 112px;gap:8px;align-items:center;margin:0 0 6px;font-size:13px}
+label small{display:block;color:var(--mute);font-size:11px}
+input{width:100%;font-size:14px;padding:5px 6px;border:1px solid var(--ink);background:#fff;color:var(--ink);border-radius:0;text-align:right}
+input:focus{outline:2px solid var(--ai);outline-offset:1px}
+fieldset{border:1px solid var(--rule);margin:0 0 12px;padding:8px 10px}
+legend{font-size:12px;color:var(--mute);padding:0 4px;text-transform:uppercase;letter-spacing:1px}
+button{font-size:13px;padding:6px 10px;border:1px solid var(--ink);background:var(--paper);color:var(--ink);cursor:pointer;margin:0 6px 6px 0}
+button:hover{background:var(--hi)}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:right;padding:4px 6px;border-bottom:1px solid var(--rule);font-size:13px;vertical-align:top}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+.top td,.top th{font-size:18px;padding:8px 6px}
+.top th{font-size:12px}
+.ai{color:var(--ai);font-weight:700}
+.bad{color:var(--red);font-weight:700}
+s{color:var(--mute)}
+.lead{font-size:17px;line-height:1.45;margin:12px 0;max-width:720px}
+.lead b{background:var(--hi);padding:0 3px}
+.note{color:var(--mute);font-size:12px}
+.cases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:900px){.cases{grid-template-columns:1fr}}
+.case{border:1px solid var(--ink);padding:10px}
+.case.base{border-width:2px}
+.case h3{margin:0;font-size:14px}
+.case .in{font-size:11px;color:var(--mute);margin:2px 0 8px}
+.verdict{border-left:4px solid var(--ai);padding:6px 10px;margin:0 0 12px;max-width:820px}
+.verdict.fail{border-color:var(--red)}
+pre{overflow-x:auto;font-size:12px;line-height:1.55;background:#fff8;border:1px solid var(--rule);padding:10px;margin:0}
+.formula{font-size:14px;background:#fff8;border:1px solid var(--ink);padding:10px;overflow-x:auto}
+details{border:1px solid var(--rule);padding:8px 10px;margin-top:12px}
+summary{cursor:pointer;font-weight:700}
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:640px){.steps{grid-template-columns:1fr}}
+.steps ol{margin:4px 0 0 18px;padding:0}
+.sig{border-top:1px solid var(--ink);margin-top:10px;padding-top:4px;font-size:13px}
+footer{margin-top:40px;border-top:1px solid var(--ink);padding-top:10px;font-size:11px;color:var(--mute)}
+footer p{margin:4px 0}
+.err{color:var(--red)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media print{
+ html{background:#fff}
+ button,.noprint{display:none!important}
+ main{padding:0;max-width:none}
+ section{break-inside:avoid}
+ input{border:none;padding:0}
+ .cases{grid-template-columns:repeat(3,1fr)}
+ pre{white-space:pre-wrap}
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+<p class="kicker">RESPONSE TIME SIMULATOR / PRIVATE DEAL ENQUIRIES FROM CLIENTS</p>
+<h1>Defensible in a Day</h1>
+<div class="def">
+<b>answered</b> (n.) A signed go/no-go note a client could act on.<br>
+An email that says "looking at it" is not an answer. Every figure on this page counts signed notes only.
+</div>
+</header>
+
+<div class="grid" style="margin-top:20px">
+<form id="f" autocomplete="off" onsubmit="return false">
+<fieldset>
+<legend>Your desk</legend>
+<label>Client deal enquiries per hour<small>arrivals, λ</small><input id="lam" type="number" step="0.05" min="0" inputmode="decimal"></label>
+<label>Hours per first read, usual path<small>one person, start to signed note</small><input id="hrs" type="number" step="0.25" min="0" inputmode="decimal"></label>
+<label>Minutes per note, AI first read<small>includes the named reviewer</small><input id="aimin" type="number" step="1" min="0" inputmode="decimal"></label>
+</fieldset>
+<fieldset>
+<legend>Two questions</legend>
+<label>Average client ticket, $<small>per private deal</small><input id="ticket" type="number" step="50000" min="0" inputmode="decimal"></label>
+<label>Months the backlog has run<input id="months" type="number" step="1" min="0" inputmode="decimal"></label>
+</fieldset>
+<fieldset>
+<legend>Assumptions</legend>
+<label>Reviewer cost per hour, $<input id="rate" type="number" step="10" min="0" inputmode="decimal"></label>
+<label>AI tool cost per read, $<input id="aicost" type="number" step="5" min="0" inputmode="decimal"></label>
+<label>Target signed within one day, %<input id="target" type="number" step="1" min="1" max="99" inputmode="decimal"></label>
+<label>Desk hours per quarter<small>13 weeks x 40 h = 520</small><input id="deskh" type="number" step="10" min="0" inputmode="decimal"></label>
+</fieldset>
+<div class="noprint">
+<button type="button" id="reset">Worked example</button>
+<button type="button" id="clear">Clear</button>
+</div>
+</form>
+
+<div>
+<h2>Signed within</h2>
+<table class="top" id="top"></table>
+<p class="lead" id="lead"></p>
+<p class="note" id="leadAi"></p>
+</div>
+</div>
+
+<section>
+<h2>Bad, base, good: usual path next to AI first read</h2>
+<div id="verdict"></div>
+<div class="cases" id="cases"></div>
+<p class="note">Rows that come out equal on both sides are struck through. What is left is the decision.</p>
+</section>
+
+<section>
+<h2>Desk cost per quarter, with and without AI</h2>
+<table id="cost"></table>
+<div class="steps" style="margin-top:12px">
+<div>
+<b>AI first read does</b>
+<ol>
+<li>Pulls terms from the deck and data room.</li>
+<li>Checks them against the client's written mandate.</li>
+<li>Lists missing documents and open questions.</li>
+<li>Drafts the go/no-go note.</li>
+</ol>
+</div>
+<div>
+<b>A named person still reviews</b>
+<ol>
+<li>Every flag and every missing document.</li>
+<li>Sponsor and reference checks.</li>
+<li>The go/no-go call itself.</li>
+<li>The note, before it reaches the client.</li>
+</ol>
+<div class="sig">Reviewed and signed: [name], [date]</div>
+</div>
+</div>
+</section>
+
+<section>
+<h2>Twenty enquiries, base case</h2>
+<p class="note">Same arrivals for both paths. Fixed seed. Each deal has the same relative difficulty on both paths. The model clock runs continuously from Mon 09:00. "&gt;1d" marks a note signed more than 24 hours after the enquiry.</p>
+<pre id="log"></pre>
+</section>
+
+<section>
+<h2>Formula</h2>
+<div class="formula">
+P(T ≤ t) = 1 − e^(−(μ − λ)·t)<br>
+μ = 1 / hours per read &nbsp;&nbsp; t = 5/60, 1, 24 hours<br>
+if λ ≥ μ: QUEUE DOES NOT CLEAR<br>
+turn-away rule: accept up to λ* = μ − ln(1 / (1 − target)) / 24, turn away λ − λ* per hour
+</div>
+<p class="note">One reader, first come first served, read times vary at random around the average (M/M/1 queue). Enquiries per quarter = λ × desk hours. Waited past a day = enquiries × (1 − P(T ≤ 24)). Cost, usual = enquiries × hours × rate. Cost, AI = enquiries × (tool cost + review hours × rate).</p>
+
+<details id="fees">
+<summary>Fee model, adviser's choice</summary>
+<p class="note">Example figures. Enter your own. Whether you may take a share of a client's deal depends on local rules and on your client agreements. Check both. A share can read as a conflict, and that objection stands. This is arithmetic, not investment or legal advice.</p>
+<label>Fee per signed note, floor, $<input id="fee" type="number" step="50" min="0" inputmode="decimal"></label>
+<label>Share of a closed deal, %<input id="share" type="number" step="0.1" min="0" inputmode="decimal"></label>
+<label>Client close rate, %<input id="close" type="number" step="1" min="0" max="100" inputmode="decimal"></label>
+<table id="feeT" style="margin-top:8px"></table>
+<p class="note" id="feeNote"></p>
+</details>
+</section>
+
+<section>
+<h2>Forward to a partner</h2>
+<p class="note">Plain text. Paste it into an email or print this page.</p>
+<pre id="fwd"></pre>
+<div class="noprint" style="margin-top:8px">
+<button type="button" id="copy">Copy text</button>
+<button type="button" id="print">Print</button>
+<span class="note" id="copied"></span>
+</div>
+</section>
+
+<footer>
+<p>Credits. Documentary director: the definition of answered, the waited-past-a-day count, the two questions, the forward block. Playwright: the twenty-row log with signature times. Multi-family office adviser: signed notes only, three percentages first, no vendor words. Benjamin Franklin: two columns with equal rows struck, the turn-away rule, the fee row.</p>
+<p>Published by OuterHaven Advisory. A model, not investment advice. Runs offline. Nothing you enter leaves this page.</p>
+</footer>
+</main>
+
+<script>
+(function(){
+var DEF={lam:0.4,hrs:2,aimin:20,ticket:1000000,months:6,rate:180,aicost:25,target:90,deskh:520,fee:500,share:0.5,close:5};
+var F=Object.keys(DEF);
+var W=[5/60,1,24];
+var KEY='defensible-in-a-day-v1';
+function $(id){return document.getElementById(id)}
+
+function load(){
+  var saved=null;
+  try{saved=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){saved=null}
+  F.forEach(function(k){
+    var v=(saved&&saved[k]!==undefined)?saved[k]:DEF[k];
+    $(k).value=v;
+  });
+}
+function save(){
+  var o={};F.forEach(function(k){o[k]=$(k).value});
+  try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}
+}
+function read(){
+  var v={};F.forEach(function(k){var x=parseFloat($(k).value);v[k]=isFinite(x)?x:NaN});return v;
+}
+function pct(p){
+  if(p===null)return 'does not clear';
+  if(p>0.9995)return '>99.9%';
+  return (p*100).toFixed(1)+'%';
+}
+function n0(x){return Math.round(x).toLocaleString('en-US')}
+function usd(x){return '$'+Math.round(x).toLocaleString('en-US')}
+function f2(x){return (Math.round(x*100)/100).toFixed(2)}
+
+function path(lam,hours,v,ai){
+  var mu=1/hours;
+  var s=W.map(function(t){return lam>=mu?null:1-Math.exp(-(mu-lam)*t)});
+  var perQ=lam*v.deskh;
+  var k=Math.log(1/(1-v.target/100));
+  var lamStar=mu-k/24;
+  var declH=Math.max(0,lam-Math.max(0,lamStar));
+  var past=s[2]===null?null:perQ*(1-s[2]);
+  var grow=s[2]===null?(lam-mu)*v.deskh:0;
+  var cost=ai?perQ*(v.aicost+hours*v.rate):perQ*hours*v.rate;
+  return {mu:mu,s:s,perQ:perQ,lamStar:lamStar,k:k,declQ:declH*v.deskh,past:past,grow:grow,cost:cost};
+}
+
+function rng(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;var t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+var DEALS=["Series B, logistics","Co-invest, dental roll-up","LP secondary, 2019 VC","NAV loan, buyout fund","Cold storage, leaseback","Search fund, HVAC","GP stake, mid-market","Continuation fund, SaaS","Club deal, brewer","Venture debt, fintech","Farmland, almonds","Co-invest, vet clinics","Series A, grid storage","Private credit, unitranche","Minority stake, staffing","Infra co-invest, fibre","Student housing","Royalty, music catalogue","Pre-IPO block, payments","Growth equity, security"];
+var DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+function clock(h){
+  var tot=9+h;var d=Math.floor(tot/24);var r=tot-d*24;var hh=Math.floor(r);var mm=Math.floor((r-hh)*60);
+  return DAYS[d%7]+' '+(hh<10?'0':'')+hh+':'+(mm<10?'0':'')+mm+(d>=7?'+'+Math.floor(d/7)+'w':'');
+}
+function pad(s,n){s=String(s);while(s.length<n)s+=' ';return s}
+
+function render(){
+  var v=read();
+  var bad=[];
+  if(!(v.lam>0))bad.push('enquiries per hour');
+  if(!(v.hrs>0))bad.push('hours per first read');
+  if(!(v.aimin>0))bad.push('minutes per AI note');
+  if(!(v.target>0&&v.target<100))bad.push('target between 1 and 99');
+  if(!(v.deskh>0))bad.push('desk hours per quarter');
+  ['ticket','months','rate','aicost','fee','share','close'].forEach(function(k){if(!(v[k]>=0))v[k]=0});
+  if(bad.length){
+    var msg='<span class="err">Enter: '+bad.join(', ')+'.</span>';
+    $('top').innerHTML='';$('lead').innerHTML=msg;$('leadAi').textContent='';
+    $('verdict').innerHTML='';$('cases').innerHTML='';$('cost').innerHTML='';
+    $('log').textContent='';$('feeT').innerHTML='';$('feeNote').textContent='';$('fwd').textContent='';
+    return;
+  }
+  var aiH=v.aimin/60;
+  var u=path(v.lam,v.hrs,v,false), a=path(v.lam,aiH,v,true);
+
+  $('top').innerHTML='<tr><th></th><th>5 min</th><th>1 hour</th><th>1 day</th></tr>'+
+   '<tr><td>usual path</td>'+u.s.map(function(p){return '<td'+(p===null?' class="bad"':'')+'>'+pct(p)+'</td>'}).join('')+'</tr>'+
+   '<tr><td class="ai">AI first read</td>'+a.s.map(function(p){return '<td class="'+(p===null?'bad':'ai')+'">'+pct(p)+'</td>'}).join('')+'</tr>';
+
+  var perMonth=v.deskh/3;
+  var lead;
+  if(u.past===null){
+    lead='At '+f2(v.lam)+' enquiries an hour and '+v.hrs+' hours per first read, the usual queue <b>does not clear</b>. It grows by '+n0(u.grow)+' enquiries a quarter. After '+n0(v.months)+' months, about '+n0(u.grow/3*v.months)+' clients are still waiting.';
+  }else{
+    var q3=u.past*3, sofar=u.past/3*v.months;
+    lead='At '+f2(v.lam)+' enquiries an hour and '+v.hrs+' hours per first read, <b>'+n0(u.past)+' of '+n0(u.perQ)+'</b> client enquiries this quarter wait more than a day for a signed note. Over three quarters: '+n0(q3)+'. Over the '+n0(v.months)+' months the backlog has run: about '+n0(sofar)+', carrying '+usd(sofar*v.ticket)+' of client capital.';
+  }
+  $('lead').innerHTML=lead;
+  $('leadAi').textContent=a.past===null?
+    'AI first read at '+v.aimin+' minutes per note: the queue does not clear either.':
+    'AI first read at '+v.aimin+' minutes per note, named reviewer included: '+n0(a.past)+' of '+n0(a.perQ)+' wait more than a day.';
+
+  // cases
+  var C=[['BAD','volume doubles',2,'bad'],['BASE','today',1,'base'],['GOOD','volume halves',0.5,'good']];
+  var R={};
+  $('cases').innerHTML=C.map(function(c){
+    var L=v.lam*c[2], pu=path(L,v.hrs,v,false), pa=path(L,aiH,v,true);
+    R[c[3]]={u:pu,a:pa,lam:L};
+    var rows=[
+      ['signed ≤ 5 min',pct(pu.s[0]),pct(pa.s[0])],
+      ['signed ≤ 1 hour',pct(pu.s[1]),pct(pa.s[1])],
+      ['signed ≤ 1 day',pct(pu.s[2]),pct(pa.s[2])],
+      ['waited > 1 day /qtr',pu.past===null?'+'+n0(pu.grow)+' backlog':n0(pu.past),pa.past===null?'+'+n0(pa.grow)+' backlog':n0(pa.past)],
+      ['turn away, first hour /qtr',n0(pu.declQ),n0(pa.declQ)],
+      ['enquiries /qtr',n0(pu.perQ),n0(pa.perQ)],
+      ['desk cost /qtr',usd(pu.cost),usd(pa.cost)]
+    ];
+    return '<div class="case '+c[3]+'"><h3>'+c[0]+': '+c[1]+'</h3><div class="in">λ '+f2(L)+'/h · usual read '+v.hrs+' h · AI note '+v.aimin+' min</div>'+
+      '<table><tr><th></th><th>usual</th><th class="ai">AI</th></tr>'+
+      rows.map(function(r){
+        var eq=r[1]===r[2];
+        function cell(x,cls){var b=x.indexOf('does not')===0||x.charAt(0)==='+';var t=eq?'<s>'+x+'</s>':x;return '<td class="'+(b?'bad':cls)+'">'+t+'</td>'}
+        return '<tr><td>'+(eq?'<s>'+r[0]+'</s>':r[0])+'</td>'+cell(r[1],'')+cell(r[2],'ai')+'</tr>';
+      }).join('')+'</table></div>';
+  }).join('');
+
+  // verdict on the AI plan
+  var B=R.bad, tgt=v.target/100, vd;
+  var usualBad=B.u.s[2]===null?'The usual path does not clear in the bad case. The backlog grows by '+n0(B.u.grow)+' a quarter.':'The usual path in the bad case signs '+pct(B.u.s[2])+' within a day.';
+  if(B.a.s[2]!==null&&B.a.s[2]>=tgt){
+    vd='<div class="verdict"><b>The AI first-read plan survives the bad case.</b> At '+f2(B.lam)+' enquiries an hour it signs '+pct(B.a.s[1])+' within an hour and '+pct(B.a.s[2])+' within a day. '+
+    'You could push to '+f2(a.lamStar)+' enquiries an hour, '+(a.lamStar/v.lam).toFixed(1)+'x today, before fewer than '+v.target+'% are signed within a day. The queue stops clearing at '+f2(a.mu)+' an hour. '+usualBad+'</div>';
+  }else{
+    var maxMin=60/(B.lam+a.k/24);
+    vd='<div class="verdict fail"><b>Safer setting first: keep the AI note at or under '+maxMin.toFixed(0)+' minutes, or turn away '+n0(B.a.declQ)+' enquiries a quarter in the first hour.</b> As entered, the AI plan does not survive the bad case: '+pct(B.a.s[2])+' signed within a day against a '+v.target+'% target. '+usualBad+'</div>';
+  }
+  $('verdict').innerHTML=vd;
+
+  // cost table
+  function crow(name,r){
+    var save=r.u.cost-r.a.cost;
+    return '<tr><td>'+name+' (λ '+f2(r.lam)+')</td><td>'+usd(r.u.cost)+'</td><td class="ai">'+usd(r.a.cost)+'</td><td>'+usd(r.a.perQ*v.aicost)+'</td><td>'+usd(r.a.perQ*aiH*v.rate)+'</td><td>'+(save>=0?usd(save):'−'+usd(-save))+'</td></tr>';
+  }
+  $('cost').innerHTML='<tr><th></th><th>without AI</th><th class="ai">with AI</th><th>AI tool</th><th>reviewer time</th><th>difference</th></tr>'+crow('base',R.base)+crow('bad',R.bad)+
+   '<tr><td colspan="6" class="note" style="text-align:left">Per note: usual '+usd(v.hrs*v.rate)+', AI '+usd(v.aicost+aiH*v.rate)+'. Cost counts reviewer hours only. It leaves out the cost of clients who wait.</td></tr>';
+
+  // log
+  var r1=rng(42), r2=rng(1790), t=0, du=0, da=0, lines=[];
+  lines.push(pad('IN',10)+'  '+pad('ENQUIRY',26)+pad('USUAL: SIGNED',16)+pad('WAIT',8)+'      '+pad('AI: SIGNED',16)+'WAIT');
+  for(var i=0;i<20;i++){
+    t+=-Math.log(1-r1())/v.lam;
+    var e=-Math.log(1-r2());
+    du=Math.max(t,du)+e*v.hrs; da=Math.max(t,da)+e*aiH;
+    var wu=du-t, wa=da-t;
+    lines.push(pad(clock(t),10)+'  '+pad(DEALS[i],26)+pad(clock(du),16)+pad(wu.toFixed(1)+'h',8)+(wu>24?' >1d  ':'      ')+pad(clock(da),16)+pad(wa.toFixed(1)+'h',7)+(wa>24?' >1d':''));
+  }
+  $('log').textContent=lines.join('\n');
+
+  // fees
+  function feeRow(cr){
+    var flat=a.perQ*v.fee, sh=a.perQ*(cr/100)*v.ticket*(v.share/100);
+    return '<tr><td>close rate '+cr+'%</td><td>'+usd(flat)+'</td><td>'+usd(flat+sh)+'</td></tr>';
+  }
+  var badClose=Math.max(0,Math.round(v.close*0.4*10)/10);
+  $('feeT').innerHTML='<tr><th>per quarter, '+n0(a.perQ)+' notes</th><th>flat fees</th><th>fee + share</th></tr>'+feeRow(v.close)+feeRow(badClose);
+  var per=v.aicost+aiH*v.rate;
+  $('feeNote').textContent='Desk cost per AI note: '+usd(per)+'. The '+usd(v.fee)+' floor '+(v.fee>=per?'covers it with '+usd(v.fee-per)+' left.':'falls short by '+usd(per-v.fee)+'.')+' Second row is the bad case: close rate at 40% of yours.';
+
+  // forward text
+  var fw=[
+    'DEFENSIBLE IN A DAY: worked figures',
+    'answered = a signed go/no-go note a client could act on',
+    'inputs: '+f2(v.lam)+' enquiries/h, '+v.hrs+' h per first read, '+v.aimin+' min per AI note with named reviewer',
+    '',
+    pad('signed within',18)+pad('5 min',14)+pad('1 hour',14)+'1 day',
+    pad('usual path',18)+u.s.map(function(p,j){return j<2?pad(pct(p),14):pct(p)}).join(''),
+    pad('AI first read',18)+a.s.map(function(p,j){return j<2?pad(pct(p),14):pct(p)}).join(''),
+    '',
+    'waited past a day this quarter: usual '+(u.past===null?'queue does not clear':n0(u.past)+' of '+n0(u.perQ))+'; AI '+(a.past===null?'queue does not clear':n0(a.past)+' of '+n0(a.perQ)),
+    'bad case, volume doubles: usual '+(B.u.s[2]===null?'does not clear':pct(B.u.s[2])+' in a day')+'; AI '+pct(B.a.s[1])+' in an hour, '+pct(B.a.s[2])+' in a day',
+    'desk cost per quarter, base: usual '+usd(u.cost)+', AI '+usd(a.cost),
+    'a named person reviews every flag, makes the go/no-go call, and signs',
+    '',
+    'formula: P(T<=t) = 1 - e^(-(mu - lambda) t), mu = 1 / hours per read'
+  ];
+  $('fwd').textContent=fw.join('\n');
+}
+
+$('f').addEventListener('input',function(){save();render()});
+['fee','share','close'].forEach(function(k){$(k).addEventListener('input',function(){save();render()})});
+$('reset').addEventListener('click',function(){F.forEach(function(k){$(k).value=DEF[k]});save();render()});
+$('clear').addEventListener('click',function(){F.forEach(function(k){$(k).value=''});save();render()});
+$('print').addEventListener('click',function(){try{window.print()}catch(e){}});
+$('copy').addEventListener('click',function(){
+  var txt=$('fwd').textContent;
+  function fallback(){
+    try{var r=document.createRange();r.selectNodeContents($('fwd'));var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+      var ok=document.execCommand('copy');$('copied').textContent=ok?'Copied.':'Selected. Copy it by hand.';}
+    catch(e){$('copied').textContent='Select the text and copy it by hand.'}
+  }
+  try{
+    if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(txt).then(function(){$('copied').textContent='Copied.'},fallback)}
+    else fallback();
+  }catch(e){fallback()}
+});
+load();render();
+})();
+</script>
+</body>
+</html>
