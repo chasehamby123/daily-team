@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dead Air Log: stalled deals and your money at risk</title>
+<style>
+:root{--paper:#f6f3ec;--ink:#1b1b1b;--mute:#5e5a52;--rule:#d9d3c5;--air:#b3261e;--ok:#2f5d3a;--card:#fffdf8}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+main{max-width:1040px;margin:0 auto;padding:16px}
+h1{font-size:1.5rem;line-height:1.2;margin:8px 0 4px;letter-spacing:.01em}
+h1 .air{display:inline-block;font-size:.7rem;vertical-align:middle;border:2px solid var(--air);color:var(--air);padding:1px 6px;margin-left:8px;letter-spacing:.12em}
+h2{font-size:1.125rem;margin:32px 0 8px;padding-top:8px;border-top:2px solid var(--ink)}
+p{margin:8px 0}
+.num,td,input,textarea{font-variant-numeric:tabular-nums}
+.total{font-size:1rem;margin:4px 0}
+.perday{font-size:1.25rem;margin:4px 0 2px}
+.perday b{color:var(--air)}
+.small{font-size:.85rem;color:var(--mute)}
+table{border-collapse:collapse;width:100%;background:var(--card)}
+th,td{text-align:left;vertical-align:top;padding:8px;border-bottom:1px solid var(--rule);font-size:.9rem}
+th{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);background:var(--paper)}
+#log tr{border-left:4px solid transparent}
+#log tr.stall{border-left:4px solid var(--air)}
+.flag{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--air);font-weight:700}
+.onsched{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ok);font-weight:700}
+.bar{position:relative;height:8px;background:var(--rule);margin:4px 0;min-width:96px}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--ink)}
+.stall .bar i{background:var(--air)}
+.bar s{position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:var(--ink)}
+.ctrl{display:block;margin-top:4px;font-weight:700}
+textarea{width:100%;min-height:150px;font:13px/1.45 ui-monospace,Menlo,Consolas,monospace;padding:8px;border:1px solid var(--ink);background:var(--card);color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px 16px;margin:8px 0}
+label{display:block;font-size:.8rem;color:var(--mute)}
+input{width:100%;font:inherit;padding:6px;border:1px solid var(--ink);background:var(--card);color:var(--ink)}
+select{font:inherit;padding:6px;border:1px solid var(--ink);background:var(--card);max-width:100%}
+button{font:inherit;padding:8px 14px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer;margin:4px 8px 4px 0}
+button.alt{background:var(--card);color:var(--ink)}
+.err{color:var(--air);font-size:.85rem}
+.verdict{padding:8px 12px;border-left:4px solid var(--ink);background:var(--card);margin:8px 0}
+.verdict.no{border-left-color:var(--air)}
+.formula{font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;background:var(--card);border:1px solid var(--rule);padding:8px;overflow-x:auto;white-space:pre-wrap}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.box{background:var(--card);border:1px solid var(--rule);padding:8px 12px}
+.box b.t{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+ul{margin:4px 0;padding-left:20px}
+footer{margin-top:32px;padding-top:8px;border-top:1px solid var(--rule);font-size:.8rem;color:var(--mute)}
+.scroll{overflow-x:auto}
+@media (max-width:640px){
+ main{padding:12px}
+ .two{grid-template-columns:1fr}
+ #log thead{display:none}
+ #log tr{display:block;border-bottom:1px solid var(--rule);padding:4px 0;background:var(--card)}
+ #log td{display:block;border:0;padding:4px 8px}
+ #log td::before{content:attr(data-label);display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+ #cases th,#cases td,#ai th,#ai td{padding:6px 4px;font-size:.8rem}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none;animation:none;scroll-behavior:auto}}
+@media print{
+ body{background:#fff}
+ button,.noprint{display:none}
+ textarea{min-height:0;border:1px solid #999}
+ #log tr.stall{border-left:4px solid #000}
+ h2{break-after:avoid}
+ table{break-inside:auto}
+}
+</style>
+</head>
+<body>
+<main>
+<h1>Dead Air Log <span class="air">ON AIR</span></h1>
+<p class="total" id="total">Computing.</p>
+<p class="perday" id="perday"></p>
+<p class="small">Each stalled deal is silence on your line. The bar shows days in stage. The tick marks normal. Rows sort by days past normal. A red left border marks a stall. One flag per row: the stage furthest past normal.</p>
+
+<div class="scroll">
+<table id="log">
+<thead><tr><th>Deal</th><th>Stage</th><th>Silent</th><th>Yours at risk</th><th>Usual raise</th><th>Capital partner</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+
+<h2>Your pipeline</h2>
+<p class="small">One deal per line. Fields: deal | stage | days in stage | EV | equity needed | equity committed | sunk costs | days left on exclusivity. Separate with | or tab. Write money as 18M or 140k. Stages: LOI, diligence, equity raise, debt, close. List a deal twice if it sits in two stages. The log keeps the worse one.</p>
+<textarea id="pipe" spellcheck="false" aria-label="Pipeline"></textarea>
+<div id="errs" class="err"></div>
+<button id="go">Update log</button><button class="alt" id="clear">Clear</button><button class="alt" id="ex">Load worked example</button><button class="alt" id="restore" hidden>Restore my last pipeline</button>
+<p class="small">Normal days per stage: LOI 30, diligence 60, equity raise 45, debt 45, close 30. Past normal counts as stalled.</p>
+
+<p class="small">Your terms. These come from your own agreements and may depend on local rules. Enter yours.</p>
+<div class="grid">
+<div><label for="fee">Closing fee, % of EV</label><input id="fee" type="number" step="0.1" value="2"></div>
+<div><label for="prom">Promote, % of profit over pref</label><input id="prom" type="number" step="1" value="20"></div>
+<div><label for="pref">Preferred return, % a year</label><input id="pref" type="number" step="0.5" value="8"></div>
+<div><label for="moic">Exit multiple on equity</label><input id="moic" type="number" step="0.1" value="3"></div>
+<div><label for="yrs">Hold, years</label><input id="yrs" type="number" step="0.5" value="5"></div>
+<div><label for="udays">Usual raise, days to fill gap</label><input id="udays" type="number" step="5" value="120"></div>
+<div><label for="pdays">Partner approval, days</label><input id="pdays" type="number" step="1" value="30"></div>
+<div><label for="share">Partner share of your promote, %</label><input id="share" type="number" step="1" value="30"></div>
+<div><label for="cap">Partner largest check</label><input id="cap" type="number" step="250000" value="5000000"></div>
+</div>
+
+<h2 id="caseh">Three cases</h2>
+<p><label for="pick" style="display:inline">Deal </label><select id="pick"></select></p>
+<div class="grid noprint">
+<div><label for="slip">Bad case: slip added to usual raise, days</label><input id="slip" type="number" step="30" value="180"></div>
+<div><label for="drop">Bad case: committed equity falls by, %</label><input id="drop" type="number" step="5" value="50"></div>
+<div><label for="pdelay">Bad case: partner approval late by, days</label><input id="pdelay" type="number" step="1" value="5"></div>
+</div>
+<div id="verdict"></div>
+<div class="scroll"><table id="cases"></table></div>
+<p class="small">Good case: usual raise 30 days faster, partner 9 days faster, committed equity up 20% (capped at equity needed), exit multiple up 0.5. The slip lengthens the usual raise only. Partner delay is entered on its own line.</p>
+
+<h2>The way around</h2>
+<p>Fifteen family offices, one at a time, is the usual raise. The way around is one capital partner who fills the gap in one approval cycle. The terms are written out so you can put them on a napkin.</p>
+<div class="two">
+<div class="box"><b class="t">Usual raise</b><ul><li>Equity gap filled piece by piece.</li><li>Days: the usual raise figure above.</li><li>If exclusivity lapses, you carry the sunk costs.</li><li>If it closes, you keep the full fee and promote.</li></ul></div>
+<div class="box"><b class="t">Capital partner</b><ul><li>One check fills the gap, up to the partner's largest check.</li><li>Partner takes the share of promote entered above. Default 30%.</li><li>Board control stays with you.</li><li>Partner pays the dead costs if the deal fails after they approve it.</li></ul></div>
+</div>
+<p class="small">Both routes use the same inputs from your pipeline line. The results sit side by side in each stalled row and in the three cases.</p>
+
+<h2>AI first read</h2>
+<p>Before you commission the QoE engagement, a model reads the CIM and the QoE draft. It pulls the figures, lists add-backs, and flags where the two documents disagree. A named CPA reviews and signs off. The QoE engagement costs the same on both paths. The first read tells you whether to commission it.</p>
+<div class="grid">
+<div><label for="ah">Analyst first read, hours</label><input id="ah" type="number" value="120"></div>
+<div><label for="ar">Analyst rate, $/hour</label><input id="ar" type="number" value="150"></div>
+<div><label for="tool">AI read, $ per deal</label><input id="tool" type="number" value="600"></div>
+<div><label for="ch">CPA review of AI read, hours</label><input id="ch" type="number" value="16"></div>
+<div><label for="cr">CPA rate, $/hour</label><input id="cr" type="number" value="350"></div>
+<div><label for="qoe">QoE engagement, $</label><input id="qoe" type="number" value="85000"></div>
+<div><label for="abad">Bad case: analyst hours ×</label><input id="abad" type="number" step="0.1" value="1.5"></div>
+<div><label for="cbad">Bad case: CPA hours ×</label><input id="cbad" type="number" step="0.1" value="3"></div>
+</div>
+<div class="scroll"><table id="ai"></table></div>
+<p id="aiNote"></p>
+<p><b>A person still reviews:</b></p>
+<ul>
+<li>The CPA signs off on revenue quality, add-backs, and the working capital peg. Their name goes on the read.</li>
+<li>You read customer concentration and the top contracts yourself.</li>
+<li>Your counsel reviews legal terms. The model output is not legal advice.</li>
+</ul>
+<p class="small">Bad case for the AI path: the documents are messy, the model misreads add-backs, and the CPA redoes more of the work.</p>
+
+<h2>Formulas</h2>
+<div class="formula">Fee            = fee % × EV
+Promote        = promote % × max(0, equity × (multiple − 1) − equity × ((1 + pref)^years − 1))
+Yours at risk  = fee + promote + sunk costs
+Per day        = sum over stalled deals of (yours at risk ÷ days left on exclusivity)
+Gap            = equity needed − equity committed
+Usual route    = closes if usual raise days ≤ exclusivity days left
+                 closes: fee + promote          lapses: − sunk costs
+Partner route  = closes if gap ≤ partner check and approval days ≤ exclusivity days left
+                 closes: fee + promote × (1 − partner share)   lapses: − sunk costs
+AI path cost   = AI read + CPA hours × CPA rate      (days = 1 + CPA hours ÷ 8)
+Analyst cost   = analyst hours × analyst rate        (days = analyst hours ÷ 8)</div>
+<p class="small">Days in stage and exclusivity are counted in calendar days. Days are rounded up.</p>
+
+<h2>Two questions</h2>
+<div class="grid">
+<div><label for="qgap">Your largest equity gap, $</label><input id="qgap" type="number" step="250000" value="3500000"></div>
+<div><label for="qmo">Months your oldest deal has been stuck</label><input id="qmo" type="number" step="1" value="4"></div>
+</div>
+<p id="qout" class="verdict"></p>
+
+<footer>
+<p>Credits. Radio producer: the dead air log and the per-day line at the top. Industrial designer: one table, five fixed stages, the 4 px stall border, a page that loads on an old phone. Independent sponsor: value at risk in your money only, and control stays with you. Odysseus: the capital-partner route beside the usual one, and the AI first read with a named CPA.</p>
+<p>Published by OuterHaven Advisory. This is a calculator, not investment, legal, or tax advice. Fee, promote, and preferred return figures depend on your agreements and local rules. Nothing you enter leaves this device.</p>
+</footer>
+</main>
+
+<script>
+(function(){
+var EX=[
+"Harbor Fabrication | equity raise | 52 | 18M | 6M | 2.5M | 140k | 41",
+"Ridgeline HVAC Services | diligence | 74 | 11.5M | 4.2M | 3M | 95k | 48",
+"Ridgeline HVAC Services | equity raise | 50 | 11.5M | 4.2M | 3M | 95k | 48",
+"Prairie Fleet Repair | debt | 51 | 9.4M | 3.3M | 3.3M | 88k | 22",
+"Coastal Dental Lab | LOI | 19 | 7M | 2.8M | 1M | 12k | 60",
+"Summit Packaging | close | 12 | 14M | 5M | 5M | 160k | 30"].join("\n");
+var T={loi:30,dil:60,eq:45,debt:45,close:30};
+var SN={loi:"LOI",dil:"Diligence",eq:"Equity raise",debt:"Debt",close:"Close"};
+var KEYS=["fee","prom","pref","moic","yrs","udays","pdays","share","cap"];
+var A={},deals=[];
+function el(i){return document.getElementById(i)}
+function v(i){var x=parseFloat(el(i).value);return isFinite(x)?x:0}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function m$(x){var s=x<0?"\u2212":"";x=Math.abs(x);
+ if(x>=1e6)return s+"$"+(x/1e6).toFixed(2).replace(/\.?0+$/,"")+"M";
+ if(x>=1e3)return s+"$"+Math.round(x/1e3)+"k";return s+"$"+Math.round(x)}
+function sk(s){s=s.toLowerCase();if(s.indexOf("loi")>-1)return"loi";if(s.indexOf("dilig")>-1)return"dil";
+ if(s.indexOf("equity")>-1)return"eq";if(s.indexOf("debt")>-1)return"debt";if(s.indexOf("clos")>-1)return"close";return null}
+function num(s){s=String(s||"").trim().toLowerCase().replace(/[$,\s]/g,"");var k=1;
+ if(/m$/.test(s)){k=1e6;s=s.slice(0,-1)}else if(/k$/.test(s)){k=1e3;s=s.slice(0,-1)}
+ var x=parseFloat(s);return isFinite(x)?x*k:NaN}
+function readA(){KEYS.forEach(function(k){A[k]=v(k)})}
+function promote(eq,m){var p=eq*(m-1),h=eq*(Math.pow(1+A.pref/100,A.yrs)-1);return A.prom/100*Math.max(0,p-h)}
+function parse(txt){var out={},order=[],errs=[];
+ txt.split(/\n/).forEach(function(line,i){if(!line.trim())return;
+  var sep=line.indexOf("|")>-1?"|":line.indexOf("\t")>-1?"\t":",";
+  var f=line.split(sep).map(function(s){return s.trim()});
+  if(f.length<8){errs.push("Line "+(i+1)+": needs 8 fields, found "+f.length+".");return}
+  var st=sk(f[1]),n=[2,3,4,5,6,7].map(function(j){return num(f[j])});
+  if(!st||n.some(isNaN)){errs.push("Line "+(i+1)+": check the stage name and the numbers.");return}
+  var d={name:f[0],st:st,days:n[0],ev:n[1],need:n[2],com:n[3],sunk:n[4],excl:n[5]};
+  d.past=d.days-T[st];var k=f[0].toLowerCase();
+  if(!out[k]){out[k]=d;order.push(k)}else if(d.past>out[k].past){out[k]=d}
+ });
+ return{deals:order.map(function(k){return out[k]}),errs:errs}}
+function calc(d,o){o=o||{};
+ var u=o.u!=null?o.u:A.udays,p=o.p!=null?o.p:A.pdays,com=o.com!=null?o.com:d.com,m=o.moic!=null?o.moic:A.moic;
+ var fee=A.fee/100*d.ev,pr=promote(d.need,m),gap=Math.max(0,d.need-com);
+ var uD=gap>0?u:0,pD=gap>0?p:0,uIn=uD<=d.excl,capOk=gap<=A.cap,pIn=capOk&&pD<=d.excl;
+ return{fee:fee,pr:pr,gap:gap,u:u,p:p,com:com,m:m,uD:uD,pD:pD,uIn:uIn,pIn:pIn,capOk:capOk,
+  risk:fee+pr+d.sunk,uNet:uIn?fee+pr:-d.sunk,pNet:pIn?fee+pr*(1-A.share/100):-d.sunk}}
+function usualTxt(d,c){
+ if(c.gap<=0)return"No equity gap. The stall is in "+SN[d.st].toLowerCase()+".";
+ return c.u+" days to fill "+m$(c.gap)+". "+d.excl+" days left. "+(c.uIn?
+  "Closes inside exclusivity. You keep "+m$(c.fee+c.pr)+".":
+  "Exclusivity lapses on day "+d.excl+". If the seller walks, you lose "+m$(d.sunk)+" sunk, and "+m$(c.fee+c.pr)+" in fee and promote goes with it.")}
+function partnerTxt(d,c){
+ var t;
+ if(c.gap<=0)t="No equity gap to fill.";
+ else if(!c.capOk)t="Gap of "+m$(c.gap)+" is above the partner check of "+m$(A.cap)+". Close part of it first.";
+ else t=c.p+" days to fill "+m$(c.gap)+". "+(c.pIn?
+  "Closes inside exclusivity. You keep "+m$(c.fee+c.pr*(1-A.share/100))+": fee plus "+(100-A.share)+"% of promote. If the deal fails after approval, the partner carries the "+m$(d.sunk)+" dead costs.":
+  "Approval lands after exclusivity ends on day "+d.excl+". You carry "+m$(d.sunk)+" sunk.");
+ return esc(t)+'<span class="ctrl">Board control stays with you.</span>'}
+function render(){
+ readA();var res=parse(el("pipe").value);deals=res.deals;
+ el("errs").textContent=res.errs.join(" ");
+ deals.forEach(function(d){d.c=calc(d)});
+ deals.sort(function(a,b){return b.past-a.past});
+ var stalled=deals.filter(function(d){return d.past>0});
+ var tot=0,pd=0;stalled.forEach(function(d){tot+=d.c.risk;pd+=d.c.risk/Math.max(1,d.excl)});
+ el("total").innerHTML=deals.length?("<b>"+m$(tot)+"</b> of your own money sits in <b>"+stalled.length+"</b> stalled deal"+(stalled.length===1?"":"s")+" out of "+deals.length+"."):"No deals entered. Paste your pipeline below.";
+ el("perday").innerHTML=stalled.length?("Dead air costs you <b>"+m$(pd)+"</b> per day of silence."):(deals.length?"No dead air. Every deal is inside its normal days.":"");
+ var rows=deals.map(function(d){var s=d.past>0,c=d.c,w=Math.min(100,d.days/(2*T[d.st])*100);
+  return'<tr class="'+(s?"stall":"")+'">'+
+  '<td data-label="Deal"><b>'+esc(d.name)+'</b><br><span class="small">EV '+m$(d.ev)+" · gap "+m$(c.gap)+"</span></td>"+
+  '<td data-label="Stage">'+SN[d.st]+"<br>"+(s?'<span class="flag">Stalled</span>':'<span class="onsched">On schedule</span>')+"</td>"+
+  '<td data-label="Silent"><div class="bar" aria-hidden="true"><i style="width:'+w.toFixed(1)+'%"></i><s></s></div><span class="small">'+d.days+" d / "+T[d.st]+" normal"+(s?" · "+d.past+" past":"")+"</span></td>"+
+  '<td data-label="Yours at risk"><b>'+m$(c.risk)+'</b><br><span class="small">fee '+m$(c.fee)+" · promote "+m$(c.pr)+" · sunk "+m$(d.sunk)+"<br>"+m$(c.risk/Math.max(1,d.excl))+" per day · "+d.excl+" days left</span></td>"+
+  '<td data-label="Usual raise">'+(s?esc(usualTxt(d,c)):'<span class="small">On schedule.</span>')+"</td>"+
+  '<td data-label="Capital partner">'+(s?partnerTxt(d,c):'<span class="small">On schedule.</span>')+"</td></tr>"});
+ document.querySelector("#log tbody").innerHTML=rows.join("");
+ var pick=el("pick"),prev=pick.value,pool=stalled.length?stalled:deals;
+ var best=pool.slice().sort(function(a,b){return b.c.risk-a.c.risk})[0];
+ pick.innerHTML=pool.map(function(d){return"<option>"+esc(d.name)+"</option>"}).join("");
+ if(pool.some(function(d){return d.name===prev}))pick.value=prev;else if(best)pick.value=best.name;
+ renderCases();renderAI();renderQ();save();
+}
+function renderCases(){
+ var d=deals.filter(function(x){return x.name===el("pick").value})[0];
+ if(!d){el("cases").innerHTML="";el("verdict").innerHTML="";el("caseh").textContent="Three cases";return}
+ el("caseh").textContent="Three cases: "+d.name;
+ var s=v("slip"),dr=v("drop"),pl=v("pdelay");
+ var C={bad:{u:A.udays+s,p:A.pdays+pl,com:d.com*(1-dr/100),moic:A.moic},
+  base:{u:A.udays,p:A.pdays,com:d.com,moic:A.moic},
+  good:{u:Math.max(0,A.udays-30),p:Math.max(0,A.pdays-9),com:Math.min(d.need,d.com*1.2),moic:A.moic+.5}};
+ var R={};["bad","base","good"].forEach(function(k){R[k]=calc(d,C[k])});
+ function row(lbl,f){return"<tr><th scope='row'>"+lbl+"</th>"+["bad","base","good"].map(function(k){return"<td>"+f(R[k])+"</td>"}).join("")+"</tr>"}
+ function res(ok,net){return ok?"Closes: "+m$(net):"Lapses: "+m$(net)}
+ el("cases").innerHTML="<thead><tr><th></th><th>Bad</th><th>Base</th><th>Good</th></tr></thead><tbody>"+
+  row("Usual raise, days",function(r){return r.u})+row("Partner approval, days",function(r){return r.p})+
+  row("Committed equity",function(r){return m$(r.com)})+row("Equity gap",function(r){return m$(r.gap)})+
+  row("Exit multiple",function(r){return r.m.toFixed(1)+"x"})+row("Exclusivity left, days",function(){return d.excl})+
+  row("Usual route, to you",function(r){return res(r.uIn,r.uNet)})+
+  row("Partner route, to you",function(r){return res(r.pIn,r.pNet)})+
+  row("Partner minus usual",function(r){return m$(r.pNet-r.uNet)})+"</tbody>";
+ var b=R.bad,vd=el("verdict"),floor=Math.max(0,d.need-A.cap);
+ if(b.pIn){
+  vd.className="verdict";
+  vd.innerHTML="<b>The plan holds in the bad case.</b> On the partner route you keep "+m$(b.pNet)+" and carry "+m$(0)+" sunk if the deal fails after approval. The usual route "+(b.uIn?"also closes.":"lapses on day "+d.excl+" and you lose "+m$(d.sunk)+" sunk plus "+m$(b.fee+b.pr)+" in fee and promote.")+
+  " It breaks if partner approval runs past "+d.excl+" days ("+(d.excl-b.p)+" days to spare) or committed equity falls below "+m$(floor)+" ("+m$(Math.max(0,b.com-floor))+" to spare).";
+ }else{
+  var fix=[];
+  if(!b.capOk)fix.push("Hold committed equity at "+m$(floor)+" or more, so the gap fits one partner check of "+m$(A.cap)+".");
+  if(b.capOk&&b.pD>d.excl)fix.push("Ask the seller now for an exclusivity extension of "+(b.pD-d.excl)+" days, or get partner approval inside "+d.excl+" days.");
+  vd.className="verdict no";
+  vd.innerHTML="<b>Safer setting first:</b> "+esc(fix.join(" "))+"<br><b>The plan does not hold in the bad case as entered.</b> Both routes lapse and you carry "+m$(d.sunk)+" sunk.";
+ }
+}
+function renderAI(){
+ var ah=v("ah"),ar=v("ar"),tool=v("tool"),ch=v("ch"),cr=v("cr"),qoe=v("qoe"),ab=v("abad"),cb=v("cbad");
+ var nb={c:ah*ar,d:Math.ceil(ah/8)},nbad={c:ah*ab*ar,d:Math.ceil(ah*ab/8)};
+ var wb={c:tool+ch*cr,d:1+Math.ceil(ch/8)},wbad={c:tool+ch*cb*cr,d:1+Math.ceil(ch*cb/8)};
+ function cell(x){return m$(x.c)+"<br><span class='small'>"+x.d+" days</span>"}
+ el("ai").innerHTML="<thead><tr><th></th><th>Base case</th><th>Bad case</th></tr></thead><tbody>"+
+  "<tr><th scope='row'>Without AI: analyst read</th><td>"+cell(nb)+"</td><td>"+cell(nbad)+"</td></tr>"+
+  "<tr><th scope='row'>With AI: model read + CPA review</th><td>"+cell(wb)+"</td><td>"+cell(wbad)+"</td></tr>"+
+  "<tr><th scope='row'>QoE engagement, both paths</th><td>"+m$(qoe)+"</td><td>"+m$(qoe)+"</td></tr></tbody>";
+ var d=deals.filter(function(x){return x.name===el("pick").value})[0];
+ el("aiNote").textContent=d?("Against "+d.name+"'s "+d.excl+" days of exclusivity, the first read uses "+nb.d+" days without AI and "+wb.d+" with it. In the bad case: "+nbad.d+" and "+wbad.d+"."):"";
+}
+function renderQ(){
+ var g=v("qgap"),mo=v("qmo"),o=el("qout");
+ if(g>2e6&&mo>3){o.className="verdict";
+  o.textContent="A "+m$(g)+" gap that has sat for "+mo+" months is a problem that runs for months more on the usual raise, and a deal worth sharing in on the other route. The publisher named below takes calls on gaps like this one: your deal, your board seat.";}
+ else{o.className="verdict";
+  o.textContent="At "+m$(g)+" and "+mo+" month"+(mo===1?"":"s")+", the log is enough for now. Re-run it weekly and watch the per-day line.";}
+}
+function save(){try{localStorage.setItem("deadAirLog",JSON.stringify({p:el("pipe").value,a:KEYS.map(function(k){return el(k).value})}))}catch(e){}}
+function load(){try{var s=localStorage.getItem("deadAirLog");return s?JSON.parse(s):null}catch(e){return null}}
+var saved=load();
+if(saved&&saved.p&&saved.p!==EX){el("restore").hidden=false}
+el("restore").onclick=function(){if(!saved)return;el("pipe").value=saved.p;(saved.a||[]).forEach(function(x,i){if(KEYS[i])el(KEYS[i]).value=x});render()};
+el("pipe").value=EX;
+el("go").onclick=render;
+el("clear").onclick=function(){el("pipe").value="";render()};
+el("ex").onclick=function(){el("pipe").value=EX;render()};
+el("pipe").addEventListener("change",render);
+KEYS.forEach(function(k){el(k).addEventListener("change",render)});
+["slip","drop","pdelay","pick"].forEach(function(k){el(k).addEventListener("change",function(){renderCases();renderAI()})});
+["ah","ar","tool","ch","cr","qoe","abad","cbad"].forEach(function(k){el(k).addEventListener("input",renderAI)});
+["qgap","qmo"].forEach(function(k){el(k).addEventListener("input",renderQ)});
+render();
+})();
+</script>
+</body>
+</html>
