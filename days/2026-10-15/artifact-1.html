@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Card for Your Accountant: a fit quiz before you sell</title>
+<style>
+:root{
+  --bisque:#ece3d5;--slip:#fbf8f2;--ink:#2a2420;--muted:#6b5f55;--line:#d6c9b6;
+  --clay:#a4471f;--glaze:#3f6b5e;--ochre:#94650f;--iron:#8a2e1c;--wash:#f4ede2;
+  --serif:ui-serif,Georgia,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{margin:0;background:var(--bisque);color:var(--ink);font:16px/1.5 var(--sans)}
+.wrap{max-width:880px;margin:0 auto;padding:16px}
+header.top{padding:20px 0 8px}
+.kicker{margin:0;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--clay);font-weight:600}
+h1{font-family:var(--serif);font-size:clamp(28px,6vw,42px);line-height:1.1;margin:6px 0 8px;font-weight:600}
+.lede{margin:0 0 14px;max-width:60ch;color:var(--muted)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+button,.btn{font:inherit;font-size:15px;padding:9px 14px;border-radius:4px;border:1px solid var(--ink);background:var(--slip);color:var(--ink);cursor:pointer;text-decoration:none;display:inline-block}
+button.primary{background:var(--clay);border-color:var(--clay);color:#fff}
+button:focus-visible,.btn:focus-visible,input:focus-visible{outline:3px solid var(--glaze);outline-offset:2px}
+.card{background:var(--slip);border:1px solid var(--line);border-top:8px solid var(--clay);border-radius:6px;padding:20px;box-shadow:0 2px 0 var(--line)}
+.cardhead{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:6px;font-size:14px;color:var(--muted)}
+.cardhead strong{font-family:var(--serif);font-size:20px;color:var(--ink);font-weight:600}
+.blank{display:inline-block;min-width:150px;border-bottom:1px solid var(--ink)}
+.sec{padding:14px 0;border-bottom:1px dashed var(--line);break-inside:avoid}
+.sec:last-child{border-bottom:0}
+h2{font-family:var(--serif);font-size:20px;margin:0 0 8px;font-weight:600}
+h3{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.num{font-family:var(--serif);font-size:13px;color:#fff;background:var(--ink);border-radius:50%;display:inline-grid;place-items:center;width:20px;height:20px;margin-right:6px;vertical-align:2px}
+ol.dig{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+ol.dig li{display:grid;grid-template-columns:24px 1fr auto;gap:8px;align-items:start;padding:6px 0;border-bottom:1px solid var(--wash)}
+ol.dig .n{font-family:var(--serif);font-weight:600;color:var(--clay)}
+ol.dig .ask{display:block;font-size:13px;color:var(--muted)}
+.chip{font-size:12px;padding:2px 8px;border-radius:10px;white-space:nowrap;border:1px solid}
+.s3{color:var(--glaze);border-color:var(--glaze)}
+.s2{color:var(--ink);border-color:var(--line)}
+.s1{color:var(--ochre);border-color:var(--ochre)}
+.s0{color:#fff;background:var(--iron);border-color:var(--iron)}
+.flip{display:block;font-size:11px;color:var(--iron);margin-top:2px;text-align:right}
+.path{font-family:var(--serif);font-size:24px;font-weight:600;margin:0 0 4px;color:var(--clay)}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+ul.tight{margin:6px 0;padding-left:20px}
+.cases{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.case{border:1px solid var(--line);border-top-width:5px;border-radius:4px;padding:10px;background:#fff}
+.case.bad{border-top-color:var(--iron)}.case.base{border-top-color:var(--ink)}.case.good{border-top-color:var(--glaze)}
+.case .lab{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.case .val{font-family:var(--serif);font-size:22px;font-weight:600;margin:2px 0 6px}
+.case .in{font-size:12.5px;color:var(--muted);margin:0}
+.verdict{margin:10px 0 0;padding:8px 10px;border-left:4px solid var(--glaze);background:var(--wash)}
+.verdict.no{border-left-color:var(--iron)}
+.safer{margin:0 0 8px;padding:8px 10px;border-left:4px solid var(--ochre);background:var(--wash)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pair .col{border:1px solid var(--line);border-radius:4px;padding:10px;background:#fff}
+.pair dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:14px}
+.pair dt{color:var(--muted)}.pair dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
+.yes{color:var(--glaze);font-weight:600}.nope{color:var(--iron);font-weight:600}
+.runs{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:14px}
+.runs div{background:var(--wash);padding:8px;border-radius:4px}
+.band{font-family:var(--serif);font-size:20px}
+.est{font-size:12px;border:1px solid var(--ochre);color:var(--ochre);padding:1px 6px;border-radius:3px;vertical-align:3px;margin-left:6px}
+.panel{background:var(--slip);border:1px solid var(--line);border-radius:6px;padding:20px;margin-top:16px}
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+td.r,th.r{text-align:right}
+.sign{margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:13px;color:var(--muted)}
+.sign span{display:block;border-bottom:1px solid var(--ink);height:26px}
+fieldset{border:1px solid var(--line);border-radius:6px;padding:12px 14px;margin:0 0 10px;background:#fff}
+legend{font-weight:600;padding:0 4px}
+.qn{font-family:var(--serif);color:var(--clay);margin-right:4px}
+.tag{font-size:12.5px;color:var(--muted);margin:0 0 8px}
+.tag b{color:var(--glaze);font-weight:600}
+.qual{font-size:11px;text-transform:uppercase;letter-spacing:.06em;background:var(--clay);color:#fff;padding:1px 6px;border-radius:3px;margin-left:6px;vertical-align:2px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.opts label{display:flex;gap:8px;align-items:flex-start;padding:7px 9px;border:1px solid var(--line);border-radius:4px;cursor:pointer;font-size:14.5px;background:var(--slip)}
+.opts input{margin-top:3px;accent-color:var(--clay)}
+.opts label:has(input:checked){border-color:var(--clay);background:#f7e9df}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px}
+.field label{display:block;font-size:14px;font-weight:600}
+.field input{width:100%;font:inherit;padding:7px 8px;border:1px solid var(--line);border-radius:4px;background:#fff}
+.field small{display:block;font-size:12px;color:var(--muted)}
+pre.f{white-space:pre-wrap;font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--wash);padding:12px;border-radius:4px;margin:8px 0}
+.paths3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 14px;font-size:14px}
+.paths3 div{background:var(--slip);border:1px solid var(--line);padding:8px;border-radius:4px}
+footer{font-size:13px;color:var(--muted);padding:20px 0 40px;border-top:1px solid var(--line);margin-top:20px}
+footer p{margin:6px 0}
+.progress{padding:12px;background:var(--wash);border-left:4px solid var(--ochre)}
+@media (max-width:640px){
+  .cases,.pair,.runs,.paths3,.grid2,.opts,.sign{grid-template-columns:1fr}
+  .card,.panel{padding:14px}
+}
+@media print{
+  @page{size:A5;margin:9mm}
+  body{background:#fff;font-size:9.5pt}
+  .wrap{max-width:none;padding:0}
+  .no-print{display:none!important}
+  .card,.panel{box-shadow:none;border:0;border-top:4px solid var(--clay);padding:0;margin:0 0 6mm}
+  .panel{break-before:page}
+  .cases{grid-template-columns:repeat(3,1fr)}
+  .pair,.runs{grid-template-columns:1fr 1fr}
+  .case .val{font-size:14pt}
+  h1{font-size:18pt}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <p class="kicker">Free tool. No sign-up. Works offline after it loads.</p>
+  <h1>The Card for Your Accountant</h1>
+  <p class="lede">Eight questions fill one printable card. The card lists what a buyer will dig into first, then which of three paths suits you and why. Selling takes months of preparation. Print the card and take it to your accountant. That meeting is where preparation starts.</p>
+  <div class="actions no-print">
+    <button class="primary" type="button" id="printBtn">Print the card</button>
+    <a class="btn" href="#quiz">Change the answers</a>
+    <button type="button" id="clearBtn">Clear answers</button>
+    <button type="button" id="exampleBtn">Load the worked example</button>
+  </div>
+  <p class="small muted no-print" id="exNote">Worked example: a regional food-service distributor, 22 staff, $600k annual profit, top customer 35% of sales, 40 customer contracts.</p>
+</header>
+
+<main>
+<article class="card" id="card" aria-live="polite"></article>
+
+<section class="panel" id="room" aria-labelledby="roomH">
+  <h2 id="roomH">Prepare the data room</h2>
+  <p class="small">A buyer asks for three years of books and every key contract before any price is fixed. An AI tool on your own computer can sort them. A person still checks every line.</p>
+  <ul class="tight small">
+    <li>Three years of accounts, bank statements and tax returns</li>
+    <li>Customer contracts, with change-of-control clauses flagged</li>
+    <li>Supplier agreements, staff contracts, lease and licences</li>
+  </ul>
+  <div id="roomTable"></div>
+  <h3 style="margin-top:12px">What a person still reviews</h3>
+  <ul class="tight small">
+    <li>Your accountant reconciles each year to the bank and signs the sorted list.</li>
+    <li>You decide which contracts go in and which wait for a signed confidentiality agreement.</li>
+    <li>A lawyer reads every consent and change-of-control clause the AI flags.</li>
+  </ul>
+  <p class="small"><strong>No file leaves this device.</strong> This page sends nothing over the network. It only stores your answers in this browser, and only if storage is allowed.</p>
+  <div class="sign">
+    <div>Accountant's name<span></span></div>
+    <div>Signed<span></span></div>
+    <div>Date<span></span></div>
+  </div>
+  <p class="small muted">Nothing enters the data room until this line is signed.</p>
+</section>
+
+<section class="panel no-print" id="quiz" aria-labelledby="quizH">
+  <h2 id="quizH">Eight questions</h2>
+  <p class="small muted">About three minutes. The card updates as you answer. Each question is one a buyer asks. Each one is tagged with the assumption it tests.</p>
+  <div class="paths3">
+    <div><strong>Path 1. Full sale.</strong><br>Sell all of it to an outside buyer.</div>
+    <div><strong>Path 2. Sell over time.</strong><br>Staff or family buy it in instalments paid from profits.</div>
+    <div><strong>Path 3. Sell a majority, keep a share.</strong><br>Sell most of it now. Sell the rest later.</div>
+  </div>
+  <form id="qform" onsubmit="return false"></form>
+</section>
+
+<section class="panel no-print" id="assume" aria-labelledby="assH">
+  <h2 id="assH">Figures you set</h2>
+  <p class="small muted">Multiples, fees and rates depend on your sector, your market and local rules. Enter what your accountant gives you. These are inputs, not advice.</p>
+  <div class="grid2" id="nums"></div>
+</section>
+
+<section class="panel no-print" id="formula" aria-labelledby="fH">
+  <h2 id="fH">How the card is worked out</h2>
+  <pre class="f">Path score   = sum of the points each answer gives that path (shown below each run)
+Second run   = the two weakest buyer-checked answers (questions 1–5) set to their weakest option, then scored again
+Path 3 rule  = offered only if it is on top in both runs
+Prep months  = 3 + one month for each step an answer sits below the strongest option (questions 1–5)
+
+Base price   = annual profit × multiple
+Bad case     = base price × (1 − price cut) × share you actually receive
+Good case    = base price × (1 + uplift), path 3 kept share × (1 + growth)
+Share received
+  Path 1 = 100%
+  Path 2 = up front + (1 − up front) × (years paid ÷ term)
+  Path 3 = share sold + (1 − share sold) × kept-share factor
+Kept-share factor by "who runs it": manager 1.0, staff cope 0.8, slows down 0.5, stops 0.2
+Holds        = bad case ≥ the lowest total you would accept
+Room to push = 1 − floor ÷ (base price × share received in bad case)
+
+AI prep      = hours × accountant rate
+Fees lost    = deal fees − (hours without AI − hours with AI) × rate</pre>
+  <h3>Five assumptions in the brief, checked</h3>
+  <ul class="tight small">
+    <li>You know three paths exist. Most owners do not, so they are named above.</li>
+    <li>"Suits the buyer" means the other side of the table. This card says which path suits you.</li>
+    <li>Eight questions are enough if each tests one thing a buyer checks.</li>
+    <li>You want a price. Not assumed. The price band sits last on the card.</li>
+    <li>You want to sell all of it. Not assumed. Question 6 tests it.</li>
+  </ul>
+</section>
+</main>
+
+<footer>
+  <p><strong>Credits.</strong> Ceramicist: the card, built first, and the profit and timing questions. Textile designer: the assumption tag on each question and the label "which path suits you". Owner preparing to sell: questions buyers actually ask, the dig list before any number, the accountant sign-off. Ada Lovelace: the second run with the two weakest answers flipped.</p>
+  <p>General information only. This is not legal, tax, accounting or investment advice. Prices, fees, tax and deal terms depend on your sector and local rules. Check every figure with your own accountant and lawyer.</p>
+  <p>Published by OuterHaven Advisory.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+var KEY='card-for-accountant-v1';
+var Q=[
+ {q:'What share of sales comes from your top customer?',checks:'Customer concentration',tests:'One customer leaving would not sink the business.',
+  opts:[['Under 10%',[3,1,2]],['10–25%',[2,1,2]],['25–40%',[1,2,1]],['Over 40%',[0,2,1]]]},
+ {q:'Who runs it when you are on holiday?',checks:'Owner dependence',tests:'The business runs without you.',
+  opts:[['A manager runs it. No calls to me.',[2,1,3]],['Staff cope. I take a few calls.',[2,2,2]],['It slows down until I am back.',[1,2,-1]],['It stops.',[0,1,-2]]]},
+ {q:'How clean are your books, three years back?',checks:'Quality of earnings',tests:'Your profit figure survives a buyer\u2019s accountant.',
+  opts:[['Accountant-prepared and reconciled, all three years',[3,1,3]],['Clean for the last two years',[2,1,2]],['Tax returns only',[1,1,0]],['Mixed with personal spending',[0,1,0]]]},
+ {q:'Are key customers and suppliers on written contracts?',checks:'Contracts that transfer',tests:'Your customers come with the business.',
+  opts:[['All key ones, and they transfer to a new owner',[3,1,2]],['Most. Some need consent to transfer.',[2,1,2]],['A few',[1,1,1]],['Handshake deals',[0,1,0]]]},
+ {q:'Would your key staff stay after a sale?',checks:'Staff retention',tests:'The team stays when you go.',
+  opts:[['Yes, and one of them could run it',[2,3,2]],['Most would stay',[2,1,1]],['Unsure',[1,0,0]],['Likely to leave',[0,0,0]]]},
+ {q:'Do you want to keep a share after the sale?',checks:'Deal structure',tests:'You want to sell all of it.',
+  opts:[['No. A clean exit.',[3,1,0]],['Maybe, if it pays',[1,1,2]],['Yes. I want the upside.',[0,1,3]],['I want staff or family to own it',[0,3,1]]]},
+ {q:'Annual profit, with your own pay set to a normal salary?',checks:'Deal size',tests:'You want a price.',qual:1,val:[180000,375000,600000,1200000],
+  opts:[['Under $250k',[1,2,0]],['$250k – $500k',[2,2,1]],['$500k – $1M',[2,1,2]],['Over $1M',[2,1,3]]]},
+ {q:'How many months until you want out?',checks:'Timing',tests:'There is time to fix what a buyer finds.',qual:1,val:[4,9,18,30],
+  opts:[['Under 6',[2,0,1]],['6–12',[2,1,2]],['12–24',[1,2,2]],['Over 24',[1,3,1]]]}
+];
+var PATHS=[
+ {name:'Full sale',plain:'Sell all of it to an outside buyer.',why:'A clean exit. Buyers pay most for a business that runs without you.'},
+ {name:'Sell over time to staff or family',plain:'Staff or family buy it in instalments paid from profits.',why:'The business stays with people you know. You are paid from future profits, so you carry risk for years.'},
+ {name:'Sell a majority, keep a share',plain:'Sell most of it now. Sell the rest later.',why:'Cash now and a share of the upside. The kept share only pays if the business runs without you.'}
+];
+var DEP=[1,.8,.5,.2];
+var DIG=[
+ {t:'Three years of accounts',ask:'Does the profit hold when rebuilt from bank statements?',q:2},
+ {t:'Customer list and top-customer share',ask:'What happens to the price if the top customer leaves?',q:0},
+ {t:'Who runs it without you',ask:'Who holds the supplier relationships and the pricing?',q:1},
+ {t:'Contracts that transfer',ask:'Which contracts need consent when ownership changes?',q:3},
+ {t:'Staff who stay',ask:'Who would leave, and what would that cost?',q:4},
+ {t:'Adjusted profit',ask:'Show your pay and one-off costs, line by line.',q:-1}
+];
+var STATUS=['Fix first','Will be pressed','Expect questions','Ready'];
+var NUMS=[
+ ['P','Annual profit used ($)',1000,'Filled from your profit band. Replace it with your own figure.'],
+ ['M','Earnings multiple (×)',0.1,'Depends on sector, size and market. Ask your accountant.'],
+ ['floor','Lowest total you would accept ($)',10000,'Your walk-away number. Used to test the bad case.'],
+ ['cut','Bad case: price cut (%)',1,'What a buyer takes off after diligence.'],
+ ['slip','Bad case: slip (months)',1,''],
+ ['up','Good case: price above base (%)',1,''],
+ ['grow','Good case: business growth for the kept share (%)',1,'Path 3 only.'],
+ ['s','Path 3: share sold now (%)',1,''],
+ ['u','Path 2: paid up front (%)',1,''],
+ ['term','Path 2: years to pay the rest',1,''],
+ ['stop','Path 2 bad case: payments stop after year',1,''],
+ ['F','Deal fees lost if it falls through ($)',1000,'Advisers, legal, accounting. Local rates vary.'],
+ ['R','Accountant rate ($ per hour)',5,'Local rates vary.'],
+ ['H0','Data-room prep hours without AI',1,''],
+ ['H1','Data-room prep hours with AI sorting',1,'']
+];
+var EX={ans:[2,2,1,1,1,1,2,1],n:{P:600000,M:4,floor:1800000,cut:20,slip:6,up:10,grow:30,s:60,u:25,term:5,stop:2,F:60000,R:150,H0:60,H1:12}};
+var st=load()||clone(EX);
+
+function clone(o){return JSON.parse(JSON.stringify(o));}
+function load(){try{var s=localStorage.getItem(KEY);if(!s)return null;var o=JSON.parse(s);if(o&&o.ans&&o.n&&o.ans.length===8)return o;}catch(e){}return null;}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function money(v){if(!isFinite(v))return'–';var a=Math.abs(v),sg=v<0?'−':'';
+ if(a>=1e6)return sg+'$'+(a/1e6).toFixed(2)+'M';if(a>=1e3)return sg+'$'+Math.round(a/1e3)+'k';return sg+'$'+Math.round(a);}
+function exact(v){return '$'+Math.round(v).toLocaleString('en-US');}
+function pct(v){return Math.round(v*100)+'%';}
+function n(k){var v=Number(st.n[k]);return isFinite(v)?v:0;}
+
+function buildForm(){
+ var h='';
+ Q.forEach(function(q,i){
+  h+='<fieldset><legend><span class="qn">'+(i+1)+'.</span>'+esc(q.q)+(q.qual?'<span class="qual">Qualifying</span>':'')+'</legend>';
+  h+='<p class="tag"><b>Buyer checks:</b> '+esc(q.checks)+'. <b>Tests the assumption:</b> '+esc(q.tests)+'</p><div class="opts">';
+  q.opts.forEach(function(o,j){h+='<label><input type="radio" name="q'+i+'" value="'+j+'"> <span>'+esc(o[0])+'</span></label>';});
+  h+='</div></fieldset>';
+ });
+ $('qform').innerHTML=h;
+ $('qform').addEventListener('change',function(e){
+  var m=/^q(\d)$/.exec(e.target.name);if(!m)return;var i=+m[1],j=+e.target.value;st.ans[i]=j;
+  if(i===6){st.n.P=Q[6].val[j];var el=$('n_P');if(el)el.value=st.n.P;}
+  save();render();
+ });
+ var g='';
+ NUMS.forEach(function(f){g+='<div class="field"><label for="n_'+f[0]+'">'+esc(f[1])+'</label><input id="n_'+f[0]+'" type="number" inputmode="decimal" min="0" step="'+f[2]+'" data-k="'+f[0]+'">'+(f[3]?'<small>'+esc(f[3])+'</small>':'')+'</div>';});
+ $('nums').innerHTML=g;
+ $('nums').addEventListener('input',function(e){var k=e.target.getAttribute('data-k');if(!k)return;st.n[k]=e.target.value===''?0:Number(e.target.value);save();render();});
+}
+function syncForm(){
+ Q.forEach(function(q,i){var rs=document.getElementsByName('q'+i);for(var j=0;j<rs.length;j++)rs[j].checked=(st.ans[i]===j);});
+ NUMS.forEach(function(f){var el=$('n_'+f[0]);if(el)el.value=st.n[f[0]];});
+}
+
+function scores(a){var t=[0,0,0];Q.forEach(function(q,i){var o=q.opts[a[i]][1];for(var k=0;k<3;k++)t[k]+=o[k];});return t;}
+function top(t){var b=0;for(var k=1;k<3;k++)if(t[k]>t[b])b=k;return b;}
+function prep(a){return 3+a[0]+a[1]+a[2]+a[3]+a[4];}
+
+function model(p,d0,dB){
+ var PM=n('P')*n('M'),c=n('cut')/100,g=n('up')/100,r=1,base=PM,good=PM*(1+g);
+ if(p===1){var term=Math.max(1,n('term')),k=Math.min(1,Math.max(0,n('stop')/term)),u=Math.min(1,n('u')/100);r=u+(1-u)*k;}
+ if(p===2){var s=Math.min(1,n('s')/100);r=s+(1-s)*dB;base=PM*(s+(1-s)*d0);good=PM*(1+g)*(s+(1-s)*d0*(1+n('grow')/100));}
+ var bad=PM*(1-c)*r;
+ return{PM:PM,c:c,r:r,bad:bad,base:base,good:good,holds:bad>=n('floor'),maxCut:(PM*r>0)?1-n('floor')/(PM*r):-1};
+}
+
+function caseInputs(p,a,a2,pm){
+ var away=function(x){return Q[1].opts[x][0].replace(/\.$/,'');};
+ var cut=n('cut')+'%',up=n('up')+'%',mo=prep(a),moB=prep(a2)+n('slip');
+ var base0='Profit '+money(n('P'))+' × '+n('M')+'. Ready in '+mo+' months.';
+ if(p===0)return['Price cut '+cut+'. Slips '+n('slip')+' months, ready in '+moB+'. If it falls through, '+money(n('F'))+' of fees lost.',base0,'Price '+up+' above base. On time.'];
+ if(p===1)return['Price cut '+cut+'. '+n('u')+'% up front. Payments stop after year '+n('stop')+' of '+n('term')+'.',base0+' '+n('u')+'% up front, the rest over '+n('term')+' years.','Price '+up+' above base, paid on schedule.'];
+ return['Price cut '+cut+'. Who runs it: "'+away(a2[1])+'". Kept '+(100-n('s'))+'% worth '+pct(DEP[a2[1]])+' of its price.',base0+' '+n('s')+'% sold now. Kept share worth '+pct(DEP[a[1]])+' ("'+away(a[1])+'").','Price '+up+' above base. Business grows '+n('grow')+'% before the kept share is sold.'];
+}
+
+function saferText(p,m,a2){
+ var fl=n('floor'),PMc=m.PM*(1-m.c);
+ if(p===0){return m.maxCut>=0?'Safer setting first: a full sale stays above your floor only if the price cut is '+pct(m.maxCut)+' or less. Fix the two flipped answers before you talk to buyers, or check the floor with your accountant.':'Safer setting first: your floor is above the base price. Lower the floor to '+money(PMc)+' or less, or raise profit before you sell.';}
+ if(p===1){var term=Math.max(1,n('term')),k=Math.min(1,n('stop')/term);var need=PMc>0&&k<1?(fl/PMc-k)/(1-k):2;
+  return need<=1?'Safer setting first: take at least '+pct(Math.max(0,need))+' up front. With that, the bad case stays at or above '+money(fl)+'.':'Safer setting first: no up-front share reaches your floor in the bad case. A full sale is the safer setting with these inputs.';}
+ var s=Math.min(1,n('s')/100),dB=DEP[a2[1]],needD=PMc>0?(fl/PMc-s)/(1-s):2,needS=PMc>0&&dB<1?(fl/PMc-dB)/(1-dB):2,t=[];
+ if(needS<=1)t.push('sell at least '+pct(Math.max(s,needS))+' now');
+ if(needD<=1){var lab='';for(var j=3;j>=0;j--){if(DEP[j]>=needD){lab=Q[1].opts[j][0];break;}}t.push('get to "'+lab.replace(/\.$/,'')+'" on who runs it');}
+ return t.length?'Safer setting first: '+t.join(', or ')+'. Until then the kept share is worth little in the bad case.':'Safer setting first: no split reaches your floor in the bad case. A full sale is the safer setting.';
+}
+
+function render(){
+ var a=st.ans,done=a.filter(function(x){return x!==null&&x!==undefined;}).length,card=$('card');
+ var head='<div class="cardhead"><strong>The Card for Your Accountant</strong><span>For: <span class="blank"></span></span></div>';
+ if(done<8){card.innerHTML=head+'<p class="progress">Answered '+done+' of 8. The card fills when all eight are answered. <a href="#quiz" class="no-print">Go to the questions</a>.</p>';$('roomTable').innerHTML=roomTable();return;}
+ var t1=scores(a),w1=top(t1);
+ var flips=[0,1,2,3,4].filter(function(i){return a[i]<3;}).sort(function(x,y){return a[y]-a[x]||x-y;}).slice(0,2);
+ var a2=a.slice();flips.forEach(function(i){a2[i]=3;});
+ var t2=scores(a2),w2=top(t2);
+ var rec=w1,note='';
+ if(w1===2&&w2!==2){rec=w2;note='Path 3 was on top in the first run. It drops in the second run, so it is not offered. Path '+(w2+1)+' is shown instead.';}
+ else if(w1===w2){note='The path holds when a buyer presses your two weakest answers.';}
+ else{note='The path changes under pressure, from path '+(w1+1)+' to path '+(w2+1)+'. Fix the two flipped answers before you talk to buyers.';}
+ var d0=DEP[a[1]],dB=DEP[a2[1]];
+ var h=head;
+ // 1 dig list
+ h+='<section class="sec"><h2><span class="num">1</span>What a buyer will open first</h2><ol class="dig">';
+ DIG.forEach(function(d,i){
+  var chip,fl='';
+  if(d.q<0){chip='<span class="chip s2">Bring the workings</span>';}
+  else{var s=3-a[d.q];chip='<span class="chip s'+s+'">'+STATUS[s]+'</span>';if(flips.indexOf(d.q)>=0)fl='<span class="flip">Flipped in second run</span>';}
+  h+='<li><span class="n">'+(i+1)+'</span><span>'+esc(d.t)+'<span class="ask">'+esc(d.ask)+'</span></span><span>'+chip+fl+'</span></li>';
+ });
+ h+='</ol></section>';
+ // 2 path
+ var diffs=Q.map(function(q,i){var o=q.opts[a[i]][1],oth=Math.max.apply(null,o.filter(function(_,k){return k!==rec;}));return{i:i,d:o[rec]-oth,v:o[rec]};}).sort(function(x,y){return y.d-x.d||y.v-x.v;}).slice(0,2);
+ var wantM=Q[7].val[a[7]],pm=prep(a),pmB=prep(a2)+n('slip');
+ var extra=rec===1?' Add about 6 months to ready a successor, then '+n('term')+' years of payments.':rec===2?' The kept share is sold later, often about three years on.':'';
+ h+='<section class="sec"><h2><span class="num">2</span>Which path suits you</h2><p class="path">Path '+(rec+1)+'. '+esc(PATHS[rec].name)+'</p><p style="margin:0">'+esc(PATHS[rec].plain)+' '+esc(PATHS[rec].why)+'</p><ul class="tight">';
+ diffs.forEach(function(x){h+='<li>You answered "'+esc(Q[x.i].opts[a[x.i]][0].replace(/\.$/,''))+'" on '+esc(Q[x.i].checks.toLowerCase())+'.</li>';});
+ h+='</ul><p class="small" style="margin:0">You want out in about '+wantM+' months. Getting ready looks like '+pm+' months, or '+pmB+' in the bad case.'+extra+'</p></section>';
+ // 3 second run
+ h+='<section class="sec"><h2><span class="num">3</span>Second run: the two answers a buyer presses hardest</h2><div class="runs"><div><strong>First run, your answers</strong><br>Path 1: '+t1[0]+' · Path 2: '+t1[1]+' · Path 3: '+t1[2]+'<br>On top: path '+(w1+1)+'</div><div><strong>Second run, two flipped</strong><br>Path 1: '+t2[0]+' · Path 2: '+t2[1]+' · Path 3: '+t2[2]+'<br>On top: path '+(w2+1)+'</div></div><ul class="tight small">';
+ if(!flips.length)h+='<li>All five buyer checks are already at their weakest option. Nothing to flip.</li>';
+ flips.forEach(function(i){h+='<li>'+esc(Q[i].checks)+': "'+esc(Q[i].opts[a[i]][0])+'" becomes "'+esc(Q[i].opts[3][0])+'"</li>';});
+ h+='</ul><p class="verdict'+(w1===w2?'':' no')+'" style="margin-top:6px">'+esc(note)+'</p></section>';
+ // 4 three cases
+ var m=model(rec,d0,dB),ci=caseInputs(rec,a,a2,m);
+ h+='<section class="sec"><h2><span class="num">4</span>Three cases for path '+(rec+1)+'</h2>';
+ if(!m.holds)h+='<p class="safer">'+esc(saferText(rec,m,a2))+'</p>';
+ h+='<div class="cases"><div class="case bad"><div class="lab">Bad</div><div class="val">'+money(m.bad)+'</div><p class="in">'+esc(ci[0])+'</p></div><div class="case base"><div class="lab">Base</div><div class="val">'+money(m.base)+'</div><p class="in">'+esc(ci[1])+'</p></div><div class="case good"><div class="lab">Good</div><div class="val">'+money(m.good)+'</div><p class="in">'+esc(ci[2])+'</p></div></div>';
+ h+=m.holds?'<p class="verdict"><strong>Holds in the bad case.</strong> '+money(m.bad)+' against your floor of '+money(n('floor'))+'. You could take a price cut up to '+pct(m.maxCut)+' before it breaks. The bad case uses '+n('cut')+'%.</p>'
+           :'<p class="verdict no"><strong>Does not hold in the bad case.</strong> '+money(m.bad)+' against your floor of '+money(n('floor'))+'. Use the safer setting above.</p>';
+ h+='</section>';
+ // 5 shortcut
+ var f=model(0,d0,dB),j=model(2,d0,dB);
+ h+='<section class="sec"><h2><span class="num">5</span>The shortcut next to the usual path</h2><p class="small" style="margin-top:0">Same inputs: profit '+money(n('P'))+', multiple '+n('M')+', price cut '+n('cut')+'%, slip '+n('slip')+' months, floor '+money(n('floor'))+'. Same diligence work for both.</p><div class="pair">';
+ [[f,'Path 1. Full sale (usual)'],[j,'Path 3. Sell '+n('s')+'%, keep '+(100-n('s'))+'% (shortcut)']].forEach(function(x){
+  var mm=x[0];h+='<div class="col"><h3>'+esc(x[1])+'</h3><dl><dt>Base</dt><dd>'+money(mm.base)+'</dd><dt>Bad</dt><dd>'+money(mm.bad)+'</dd><dt>Ready in</dt><dd>'+pm+' months ('+pmB+' bad)</dd><dt>Bad case</dt><dd class="'+(mm.holds?'yes':'nope')+'">'+(mm.holds?'Holds':'Breaks')+'</dd></dl></div>';
+ });
+ var p3ok=(w1===2&&w2===2);
+ h+='</div><p class="small" style="margin-bottom:0">The kept share only pays if the business runs without you. In the bad case it is worth '+pct(dB)+' of its price. Path 3 is offered only when it stays on top in the second run. Here it is '+(p3ok?'offered.':'not offered.')+'</p></section>';
+ // 6 band
+ h+='<section class="sec"><h2><span class="num">6</span>Price band<span class="est">Estimate</span></h2><p class="band" style="margin:0">'+money(f.bad)+' to '+money(f.good)+'</p><p class="small muted" style="margin:4px 0 0">Profit '+money(n('P'))+' × the multiple you entered ('+n('M')+'), minus '+n('cut')+'% to plus '+n('up')+'%. No market data is used. Wide on purpose. Bring it to your accountant to argue with, not to a buyer.</p></section>';
+ card.innerHTML=h;
+ $('roomTable').innerHTML=roomTable();
+}
+
+function roomTable(){
+ var R=n('R'),H0=n('H0'),H1=n('H1'),F=n('F'),save=(H0-H1)*R;
+ return '<table><thead><tr><th>Case</th><th class="r">Without AI</th><th class="r">With AI sorting</th></tr></thead><tbody>'+
+  '<tr><td>Base: deal closes. Accountant prep, '+H0+' h vs '+H1+' h at '+exact(R)+'/h</td><td class="r">'+exact(H0*R)+'</td><td class="r">'+exact(H1*R)+'</td></tr>'+
+  '<tr><td>Bad: deal falls through. Fees lost</td><td class="r">'+exact(F)+'</td><td class="r">'+exact(Math.max(0,F-save))+'</td></tr>'+
+  '</tbody></table><p class="small muted" style="margin:6px 0 0">Saving: '+exact(save)+'. It counts most in the bad case, when the deal dies and the fees are gone.</p>';
+}
+
+$('printBtn').addEventListener('click',function(){window.print();});
+$('clearBtn').addEventListener('click',function(){st.ans=[null,null,null,null,null,null,null,null];save();syncForm();render();});
+$('exampleBtn').addEventListener('click',function(){st=clone(EX);save();syncForm();render();});
+buildForm();syncForm();render();
+})();
+</script>
+</body>
+</html>
