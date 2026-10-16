@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blank Before Cut: deal meeting prep sheet</title>
+<style>
+:root{
+  --paper:#f3f0e8; --ink:#1e2226; --steel:#4b5661; --steel-l:#8a949d;
+  --brass:#8f6419; --brass-l:#e9dcc0; --red:#b3261e; --ok:#2e6a38;
+  --line:#cfc7b6; --white:#fffdf8;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.45}
+.wrap{max-width:1120px;margin:0 auto;padding:16px}
+header.top{border-bottom:3px solid var(--steel);padding-bottom:10px;margin-bottom:16px}
+h1{font-size:1.7rem;margin:0 0 4px;letter-spacing:.01em}
+h1 .k{color:var(--brass)}
+.sub{margin:0;color:var(--steel)}
+h2{font-size:1.1rem;margin:0 0 8px;text-transform:uppercase;letter-spacing:.06em;color:var(--steel)}
+h2 .n{display:inline-block;min-width:1.6em;color:var(--brass);font-family:var(--mono)}
+h3{font-size:1rem;margin:12px 0 6px}
+section.blk{background:var(--white);border:1px solid var(--line);padding:14px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px 14px}
+.f{display:flex;flex-direction:column;gap:3px}
+.f label{font-size:.85rem;font-weight:600}
+.f .h{font-size:.76rem;color:var(--steel)}
+.f input,.f textarea{font:inherit;font-family:var(--mono);font-size:.95rem;padding:6px 7px;border:1px solid var(--steel-l);background:#fff;color:var(--ink);border-radius:2px;width:100%}
+.f textarea{font-family:var(--sans);min-height:54px;resize:vertical}
+.f input:focus,.f textarea:focus,button:focus{outline:2px solid var(--brass);outline-offset:1px}
+.pinrow{display:flex;gap:6px;align-items:stretch}
+.pinrow input{flex:1}
+.f.pulled label,.f.pulled input{opacity:.45;text-decoration:line-through}
+button{font:inherit;font-size:.85rem;padding:6px 10px;border:1px solid var(--steel);background:#fff;color:var(--ink);cursor:pointer;border-radius:2px;transition:background .15s}
+button:hover{background:var(--brass-l)}
+button.pin{font-family:var(--mono);font-size:.75rem;padding:4px 6px;white-space:nowrap}
+button.pin[aria-pressed="false"]{background:var(--steel);color:#fff}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+.checks{list-style:none;padding:0;margin:10px 0 0;font-family:var(--mono);font-size:.85rem}
+.checks li{padding:4px 0;border-top:1px dotted var(--line)}
+.pass{color:var(--ok);font-weight:700}
+.fail{color:var(--red);font-weight:700}
+.skip{color:var(--steel-l);font-weight:700}
+.verdict{border-left:5px solid var(--red);padding:8px 12px;background:#fbf1ef;margin:10px 0;font-size:.95rem}
+.verdict.ok{border-color:var(--ok);background:#eff6ef}
+table{border-collapse:collapse;width:100%;font-size:.88rem}
+th,td{border:1px solid var(--line);padding:5px 7px;text-align:right;vertical-align:top}
+th:first-child,td:first-child{text-align:left}
+thead th{background:var(--brass-l);font-weight:700}
+td.neg{color:var(--red)} td.pos{color:var(--ok)}
+.tblwrap{overflow-x:auto}
+code,.formula{font-family:var(--mono);font-size:.8rem}
+.formula{background:#f0ece2;border:1px solid var(--line);padding:8px;margin-top:8px;white-space:pre-wrap;color:var(--steel)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{border:1px solid var(--line);padding:10px;background:#fff}
+.card h3{margin-top:0}
+.card dl{display:grid;grid-template-columns:1fr auto;gap:3px 10px;margin:0;font-size:.88rem}
+.card dt{color:var(--steel)} .card dd{margin:0;font-family:var(--mono);text-align:right}
+.note{font-size:.8rem;color:var(--steel);margin:8px 0 0}
+.timer{font-family:var(--mono);font-size:.8rem;color:var(--steel)}
+.timer.over{color:var(--red)}
+ol.hist{font-family:var(--mono);font-size:.78rem;max-height:160px;overflow:auto;margin:6px 0;padding-left:2.2em;background:#faf8f2;border:1px solid var(--line)}
+ol.hist li{padding:2px 4px;cursor:pointer}
+ol.hist li.cur{background:var(--brass-l);font-weight:700}
+ul.vers{list-style:none;padding:0;margin:6px 0;font-size:.85rem}
+ul.vers li{display:flex;gap:6px;align-items:center;padding:3px 0;border-top:1px dotted var(--line);flex-wrap:wrap}
+ul.vers li span{flex:1;font-family:var(--mono);font-size:.78rem}
+
+/* the panel: one sheet, dieline border */
+.sheetwrap{display:flex;justify-content:center}
+.sheet{background:#fff;border:2px dashed var(--steel);width:100%;max-width:8.5in;padding:22px 26px;position:relative}
+.sheet .corner{position:absolute;width:14px;height:14px;border-color:var(--brass);border-style:solid}
+.c1{top:-8px;left:-8px;border-width:2px 0 0 2px}.c2{top:-8px;right:-8px;border-width:2px 2px 0 0}
+.c3{bottom:-8px;left:-8px;border-width:0 0 2px 2px}.c4{bottom:-8px;right:-8px;border-width:0 2px 2px 0}
+.sh-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-bottom:2px solid var(--ink);padding-bottom:6px}
+.sh-head .t{font-weight:700;font-size:1rem}
+.sh-head .d{font-family:var(--mono);font-size:.8rem;color:var(--steel)}
+.walk{color:var(--red);font-weight:800;font-size:1.35rem;margin:8px 0 2px;font-family:var(--mono)}
+.walk small{display:block;font-family:var(--sans);font-weight:400;font-size:.78rem}
+.agenda{margin:10px 0;padding-left:1.6em}
+.agenda li{margin:0 0 6px}
+.agenda b{text-transform:uppercase;letter-spacing:.05em;font-size:.82rem}
+.seven{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin:8px 0}
+.seven div{border:1px solid var(--line);padding:5px 7px}
+.seven .l{font-size:.7rem;color:var(--steel);text-transform:uppercase;letter-spacing:.04em}
+.seven .v{font-family:var(--mono);font-size:1rem;font-weight:700}
+.sheet table{font-size:.8rem}
+.counsel{font-size:.8rem;margin:8px 0;font-family:var(--mono)}
+.sign{display:flex;gap:16px;flex-wrap:wrap;font-size:.8rem;margin-top:6px}
+.sign span{flex:1;min-width:180px;border-bottom:1px solid var(--ink);padding-bottom:2px}
+.sh-foot{border-top:2px solid var(--ink);margin-top:10px;padding-top:6px;font-size:.85rem}
+.sh-foot b{color:var(--brass)}
+.pulledlist{font-size:.72rem;color:var(--steel);margin-top:4px}
+
+footer.foot{font-size:.78rem;color:var(--steel);border-top:1px solid var(--line);padding-top:10px;margin-top:10px}
+footer.foot p{margin:4px 0}
+
+@media (max-width:720px){
+  .two{grid-template-columns:1fr}
+  h1{font-size:1.35rem}
+  .sheet{padding:14px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none !important;animation:none !important;scroll-behavior:auto !important}
+}
+@page{size:letter;margin:0.45in}
+@media print{
+  html,body{background:#fff}
+  .noprint{display:none !important}
+  .wrap{padding:0;max-width:none}
+  section.blk.sheetblk{border:none;padding:0;margin:0;background:#fff}
+  .sheet{border:none;padding:0;max-width:none;font-size:9pt}
+  .sheet .corner{display:none}
+  .sheet table{font-size:7.5pt}
+  .sheet th,.sheet td{padding:2px 4px}
+  .walk{font-size:13pt}
+  .agenda li{margin-bottom:3px}
+  .seven{grid-template-columns:repeat(4,1fr)}
+  .seven .v{font-size:9.5pt}
+  .sheetblk,.sheet{break-inside:avoid;page-break-inside:avoid}
+  .walk,td.neg{color:#b3261e;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top noprint">
+  <h1><span class="k">Blank Before Cut.</span> Deal meeting prep sheet</h1>
+  <p class="sub">Set what you will not do first. The agenda cuts from those limits. Every change can be undone.</p>
+  <div class="bar">
+    <button id="undo" type="button">Undo</button>
+    <button id="redo" type="button">Redo</button>
+    <button id="example" type="button">Load worked example</button>
+    <button id="clear" type="button">Clear all</button>
+    <button id="print" type="button">Print the sheet</button>
+    <span class="timer" id="timer">Time on sheet 0:00 of 10:00</span>
+  </div>
+</header>
+
+<section class="blk noprint" aria-labelledby="h1s">
+  <h2 id="h1s"><span class="n">1</span>Blanks you will not cut: your limits</h2>
+  <p class="note" style="margin-top:0">Each limit has a pin. Pull it to drop it from the checks. Push it back to restore it. Both steps go in the history.</p>
+  <div class="grid" id="g-limits"></div>
+  <ul class="checks" id="checks"></ul>
+</section>
+
+<section class="blk noprint" aria-labelledby="h2s">
+  <h2 id="h2s"><span class="n">2</span>Two questions</h2>
+  <div class="grid" id="g-qual"></div>
+  <p class="note" id="framing"></p>
+</section>
+
+<section class="blk noprint" aria-labelledby="h3s">
+  <h2 id="h3s"><span class="n">3</span>The target and the terms</h2>
+  <div class="grid" id="g-target"></div>
+  <h3>Cases and the stake</h3>
+  <div class="grid" id="g-cases"></div>
+</section>
+
+<section class="blk sheetblk" aria-labelledby="h4s">
+  <h2 id="h4s" class="noprint"><span class="n">4</span>The sheet. One panel, letter size</h2>
+  <div class="sheetwrap">
+    <div class="sheet" id="sheet">
+      <i class="corner c1"></i><i class="corner c2"></i><i class="corner c3"></i><i class="corner c4"></i>
+      <div id="sheetbody"></div>
+    </div>
+  </div>
+</section>
+
+<section class="blk noprint" aria-labelledby="h5s">
+  <h2 id="h5s"><span class="n">5</span>Bad, base, good</h2>
+  <div class="verdict" id="verdict"></div>
+  <div class="tblwrap"><table id="casetbl"></table></div>
+  <div class="formula" id="f-cases"></div>
+</section>
+
+<section class="blk noprint" aria-labelledby="h6s">
+  <h2 id="h6s"><span class="n">6</span>Usual path and shortcut, same inputs</h2>
+  <div class="two" id="shortcut1"></div>
+  <p class="note">Whether a stake or a full buy puts revenue on your P&amp;L depends on your accounting rules and your auditor. Check before the board meeting.</p>
+</section>
+
+<section class="blk noprint" aria-labelledby="h7s">
+  <h2 id="h7s"><span class="n">7</span>Contract review: counsel alone or AI first pass</h2>
+  <div class="grid" id="g-ai"></div>
+  <div class="two" id="shortcut2" style="margin-top:12px"></div>
+  <div class="tblwrap" style="margin-top:10px"><table id="aitbl"></table></div>
+  <div class="formula" id="f-ai"></div>
+  <h3>A person still reviews</h3>
+  <ul class="note" style="margin-top:0">
+    <li>Counsel reads every contract the AI flags for change-of-control or exclusivity.</li>
+    <li>Counsel spot-checks a sample of unflagged contracts. Raise the flag share in the bad case if the sample turns up misses.</li>
+    <li>The general counsel signs off on the review before the number goes on the sheet.</li>
+    <li>You check the seven numbers against the data room yourself.</li>
+  </ul>
+  <p class="note">Rates and what counts as a change-of-control clause depend on local law. Enter your own counsel rate and AI fee.</p>
+</section>
+
+<section class="blk noprint" aria-labelledby="h8s">
+  <h2 id="h8s"><span class="n">8</span>Footer question, history, saved versions</h2>
+  <div class="grid" id="g-foot"></div>
+  <div class="two" style="margin-top:12px">
+    <div>
+      <h3>History</h3>
+      <p class="note" style="margin-top:0">Click a line to go back to it. That step is also undoable.</p>
+      <ol class="hist" id="hist"></ol>
+    </div>
+    <div>
+      <h3>Saved versions</h3>
+      <div class="bar"><button id="save" type="button">Save this sheet</button><button id="restoreDel" type="button" disabled>Restore last deleted</button></div>
+      <p class="note" id="storenote"></p>
+      <ul class="vers" id="vers"></ul>
+    </div>
+  </div>
+</section>
+
+<footer class="foot noprint">
+  <p>Not legal, tax, accounting or investment advice. Figures are what you enter. Consolidation, dilution and change-of-control rules depend on your jurisdiction.</p>
+  <p>Credits. Locksmith: the limits screen first, pins with undo history, the stake column, the counsel cost line. Packaging designer: one printed panel, four agenda lines, seven numbers, no page two. Corporate development head: fit on line one, day 100 on line two, walk-away in red, full buy as the first column. Scheherazade: the footer question for the target and saved versions to reopen the last sheet.</p>
+  <p>Published by OuterHaven Advisory.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+var EX = {
+  maxPrice:110, lossTol:25, maxDil:8, deadline:"2026-12-31",
+  coreLines:"Fleet telematics; Field service scheduling",
+  stockPct:30, equity:600,
+  dealRev:40, pressMonths:9,
+  targetName:"Target Co. (example)", mult:2.5, integ:8, overlap:35, staff:120, coc:42, closeMonths:2,
+  sysRetire:"Target's billing system", reportsTo:"Target sales lead reports to our VP Sales",
+  badF:0.5, goodF:1.2, stakePct:20, optMonths:18, optMult:2.5,
+  contracts:300, minPer:80, rate:650, flagBase:30, flagBad:50, aiFee:0, gcName:"",
+  footerQ:"Which of your top 20 customer contracts carry change-of-control clauses, and will you share them before we meet again?",
+  pins:{maxPrice:true, lossTol:true, maxDil:true, deadline:true, coreLines:true}
+};
+var FIELDS = {
+  "g-limits":[
+    ["maxPrice","Walk-away price ($M)","n","Above this, you leave the room.",1,true],
+    ["lossTol","Largest loss the board will carry ($M)","n","The bad case is checked against this.",1,true],
+    ["maxDil","Max dilution (%)","n","Share of your equity you will give up.",0.1,true],
+    ["deadline","Board deadline","d","The deal must close by this date.",null,true],
+    ["coreLines","Core lines to keep","t","Separate with a semicolon. Fit is judged against these.",null,true],
+    ["stockPct","Price paid in your stock (%)","n","The rest is cash.",1],
+    ["equity","Your equity value ($M)","n","Used for dilution.",1]
+  ],
+  "g-qual":[
+    ["dealRev","Deal size: target revenue ($M)","n","Annual revenue of the target.",0.1],
+    ["pressMonths","Months the board has pressed for deals","n","How long this has run.",1]
+  ],
+  "g-target":[
+    ["targetName","Target name","t","",null],
+    ["mult","Price multiple (x revenue)","n","Price = revenue x multiple.",0.05],
+    ["integ","Integration cost ($M)","n","Systems, severance, retention, advisors.",0.5],
+    ["overlap","Revenue overlap with core (%)","n","Share of target revenue that feeds a core line.",1],
+    ["staff","Staff to retain","n","Headcount you need on day 100.",1],
+    ["coc","Change-of-control contracts","n","Count after review.",1],
+    ["closeMonths","Months to close","n","From today.",0.5],
+    ["sysRetire","System retired by day 100","t","",null],
+    ["reportsTo","Reporting line on day 100","t","",null]
+  ],
+  "g-cases":[
+    ["badF","Bad case: revenue factor","n","0.5 means revenue halves.",0.05],
+    ["goodF","Good case: revenue factor","n","1.2 means revenue grows 20%.",0.05],
+    ["stakePct","Stake size (%)","n","Shortcut: buy this share first.",1],
+    ["optMonths","Option window (months)","n","Time to buy the rest.",1],
+    ["optMult","Option price (x entry revenue)","n","Fixed at signing.",0.05]
+  ],
+  "g-ai":[
+    ["contracts","Contracts in the data room","n","",1],
+    ["minPer","Counsel minutes per contract","n","Full read, no AI.",5],
+    ["rate","Counsel rate ($/hour)","n","Enter your own.",10],
+    ["flagBase","AI flag share, base case (%)","n","Share counsel still reads.",1],
+    ["flagBad","AI flag share, bad case (%)","n","AI over-flags or misses get found.",1],
+    ["aiFee","AI pass fee ($)","n","Enter your tool cost.",100],
+    ["gcName","General counsel sign-off name","t","Prints on the sheet.",null]
+  ],
+  "g-foot":[
+    ["footerQ","Open question for the target","a","One question. It prints in the footer.",null]
+  ]
+};
+var LABELS = {};
+var S = clone(EX);
+var hist = [{label:"Worked example loaded", s:clone(S)}];
+var idx = 0;
+var lastDeleted = null;
+var memVersions = [];
+var storageOK = true;
+var KEY = "blank-before-cut-v1";
+
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+function $(id){ return document.getElementById(id); }
+function esc(s){ return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];}); }
+function num(x){ x = parseFloat(x); return isFinite(x) ? x : 0; }
+function fM(x){ return (x<0?"\u2212":"")+"$"+Math.abs(x).toFixed(1)+"M"; }
+function sM(x){ return (x>0?"+":x<0?"\u2212":"")+"$"+Math.abs(x).toFixed(1)+"M"; }
+function fD(x){ return "$"+Math.round(x).toLocaleString("en-US"); }
+function fH(x){ return Math.round(x).toLocaleString("en-US")+" h"; }
+function cls(x){ return x<0?"neg":x>0?"pos":""; }
+
+/* build forms */
+Object.keys(FIELDS).forEach(function(gid){
+  var g = $(gid);
+  FIELDS[gid].forEach(function(f){
+    var k=f[0], lab=f[1], t=f[2], help=f[3], step=f[4], pin=f[5];
+    LABELS[k]=lab;
+    var d=document.createElement("div"); d.className="f"; d.id="f-"+k;
+    var id="in-"+k;
+    var inp;
+    if(t==="a"){ inp=document.createElement("textarea"); }
+    else { inp=document.createElement("input"); inp.type = t==="n"?"number":t==="d"?"date":"text"; if(t==="n"){ inp.step=step; inp.inputMode="decimal"; } }
+    inp.id=id; inp.setAttribute("data-k",k);
+    var html='<label for="'+id+'">'+esc(lab)+'</label>';
+    d.innerHTML=html;
+    if(pin){
+      var row=document.createElement("div"); row.className="pinrow";
+      row.appendChild(inp);
+      var b=document.createElement("button"); b.type="button"; b.className="pin"; b.setAttribute("data-pin",k);
+      b.addEventListener("click",function(){
+        S.pins[k]=!S.pins[k];
+        commit((S.pins[k]?"Pushed back pin: ":"Pulled pin: ")+lab);
+      });
+      row.appendChild(b); d.appendChild(row);
+    } else d.appendChild(inp);
+    if(help){ var h=document.createElement("span"); h.className="h"; h.textContent=help; d.appendChild(h); }
+    inp.addEventListener("input",function(){ S[k] = t==="n"?num(inp.value):inp.value; render(); });
+    inp.addEventListener("change",function(){ S[k] = t==="n"?num(inp.value):inp.value; commit("Set "+lab+" to "+(inp.value===""?"blank":inp.value)); });
+    g.appendChild(d);
+  });
+});
+
+function writeInputs(){
+  document.querySelectorAll("[data-k]").forEach(function(inp){
+    var k=inp.getAttribute("data-k"); inp.value = S[k]===undefined?"":S[k];
+  });
+  document.querySelectorAll("[data-pin]").forEach(function(b){
+    var k=b.getAttribute("data-pin"), on=!!S.pins[k];
+    b.setAttribute("aria-pressed", on?"true":"false");
+    b.textContent = on?"Pinned":"Pulled";
+    b.title = on?"Pull this limit out of the checks":"Push this limit back in";
+    $("f-"+k).classList.toggle("pulled",!on);
+  });
+}
+
+function commit(label){
+  hist = hist.slice(0, idx+1);
+  hist.push({label:label, s:clone(S)});
+  if(hist.length>200){ hist.shift(); }
+  idx = hist.length-1;
+  writeInputs(); render(); renderHist();
+}
+function go(i){
+  if(i<0||i>=hist.length) return;
+  idx=i; S=clone(hist[i].s); writeInputs(); render(); renderHist();
+}
+function renderHist(){
+  var ol=$("hist"); ol.innerHTML="";
+  hist.forEach(function(h,i){
+    var li=document.createElement("li"); li.textContent=h.label; if(i===idx) li.className="cur";
+    li.tabIndex=0;
+    li.addEventListener("click",function(){ jump(i); });
+    li.addEventListener("keydown",function(e){ if(e.key==="Enter") jump(i); });
+    ol.appendChild(li);
+  });
+  $("undo").disabled = idx<=0; $("redo").disabled = idx>=hist.length-1;
+}
+function jump(i){
+  if(i===idx) return;
+  S=clone(hist[i].s); commit("Went back to: "+hist[i].label);
+}
+
+/* compute */
+function compute(){
+  var rev=S.dealRev, m=S.mult, I=S.integ, s=S.stakePct/100, om=S.optMult, T=S.lossTol, fb=S.badF;
+  var P=rev*m, pinT=!!S.pins.lossTol;
+  var cases=[["Bad",S.badF],["Base",1],["Good",S.goodF]].map(function(c){
+    var f=c[1], val=rev*f*m, full=val-P-I, cost=s*P, sv=s*val;
+    var strike=(1-s)*rev*om, rem=(1-s)*val, ex=rem-strike-I, exer=ex>0;
+    var stake=sv-cost+(exer?ex:0);
+    return {n:c[0],f:f,rev:rev*f,val:val,full:full,stake:stake,exer:exer,cost:cost,strike:strike,
+      fullOK:!pinT||-full<=T, stakeOK:!pinT||-stake<=T};
+  });
+  var stock=S.stockPct/100*P, dil=(S.equity+stock)>0?stock/(S.equity+stock)*100:0;
+  var close=new Date(); close.setDate(close.getDate()+Math.round(S.closeMonths*30.44));
+  var closeISO=close.toISOString().slice(0,10);
+  var fBreakFull = P>0 ? 1-(T-I)/P : null;
+  var fBreakStake = s*P>0 ? 1-T/(s*P) : null;
+  var saferMult = (fb<1 && rev>0 && T>I) ? (T-I)/(rev*(1-fb)) : null;
+  var saferStake = (fb<1 && P>0) ? T/(P*(1-fb))*100 : null;
+  var hFull=S.contracts*S.minPer/60, cFull=hFull*S.rate;
+  var ai=[["Base",S.flagBase],["Bad",S.flagBad]].map(function(a){
+    var h=hFull*a[1]/100, c=h*S.rate+S.aiFee; return {n:a[0],flag:a[1],h:h,c:c,saved:cFull-c};
+  });
+  return {rev:rev,m:m,I:I,s:s,T:T,P:P,pinT:pinT,cases:cases,dil:dil,closeISO:closeISO,
+    fBreakFull:fBreakFull,fBreakStake:fBreakStake,saferMult:saferMult,saferStake:saferStake,
+    hFull:hFull,cFull:cFull,ai:ai};
+}
+
+function render(){
+  var c=compute(), bad=c.cases[0], base=c.cases[1], good=c.cases[2];
+  var pct=Math.round(c.s*100);
+
+  /* checks */
+  var ck=[];
+  function line(pin,ok,txt){ ck.push('<li>'+(pin?(ok?'<span class="pass">PASS</span> ':'<span class="fail">FAIL</span> '):'<span class="skip">PULLED</span> ')+esc(txt)+'</li>'); }
+  line(S.pins.maxPrice, c.P<=S.maxPrice, "Price "+fM(c.P)+" against walk-away "+fM(S.maxPrice));
+  line(S.pins.maxDil, c.dil<=S.maxDil, "Dilution "+c.dil.toFixed(1)+"% against max "+S.maxDil+"%");
+  line(S.pins.deadline, !S.deadline || c.closeISO<=S.deadline, "Close about "+c.closeISO+" against board deadline "+(S.deadline||"blank"));
+  line(S.pins.coreLines, S.overlap>=25 && !!S.coreLines, "Overlap with core "+S.overlap+"% (needs 25% or more and at least one core line)");
+  line(c.pinT, bad.fullOK, "Full buy, bad case "+sM(bad.full)+" against limit "+fM(-c.T));
+  line(c.pinT, bad.stakeOK, pct+"% stake, bad case "+sM(bad.stake)+" against limit "+fM(-c.T));
+  $("checks").innerHTML=ck.join("");
+
+  $("framing").textContent = "The board has pressed for "+S.pressMonths+" months. The option window adds "+S.optMonths+" more. Plan for a decision that runs about "+(num(S.pressMonths)+num(S.optMonths))+" months, with a meeting that ends on one open question.";
+
+  /* verdict */
+  var v=$("verdict"), vt;
+  if(!c.pinT){
+    v.className="verdict";
+    vt="The loss limit is pulled. No case is checked against it. Push the pin back to test the bad case.";
+  } else if(bad.fullOK){
+    v.className="verdict ok";
+    var drop = c.fBreakFull===null?0:Math.max(0,Math.min(100,(1-c.fBreakFull)*100));
+    vt="The full buy survives the bad case: "+sM(bad.full)+" inside the "+fM(c.T)+" limit. It breaks if revenue falls more than "+drop.toFixed(0)+"% after close.";
+  } else if(bad.stakeOK){
+    v.className="verdict";
+    var sd = c.fBreakStake===null||c.fBreakStake<=0 ? "It holds even if revenue goes to zero." : "It breaks if revenue falls more than "+((1-c.fBreakStake)*100).toFixed(0)+"%.";
+    vt="Safer setting first: the "+pct+"% stake loses "+fM(-bad.stake)+" in the bad case, inside the "+fM(c.T)+" limit. "+sd+
+       " The full buy does not survive the bad case: "+sM(bad.full)+". "+
+       (c.saferMult!==null ? "A full buy survives only at "+c.saferMult.toFixed(2)+"x or less ("+fM(c.saferMult*c.rev)+")." : "No full-buy price survives, because integration cost alone is above the limit.");
+  } else {
+    v.className="verdict";
+    vt="Neither column survives the bad case. Safer setting first: a stake of "+(c.saferStake!==null?c.saferStake.toFixed(0):"0")+"% or less. "+
+       (c.saferMult!==null ? "A full buy survives only at "+c.saferMult.toFixed(2)+"x or less." : "No full-buy price survives.");
+  }
+  v.textContent=vt;
+
+  /* case table */
+  function row(lab,fn,klass){ return "<tr><td>"+lab+"</td>"+c.cases.map(function(k){ var x=fn(k); return '<td class="'+(klass?cls(klass(k)):"")+'">'+x+"</td>"; }).join("")+"</tr>"; }
+  var t="<thead><tr><th>Input or result</th><th>Bad</th><th>Base</th><th>Good</th></tr></thead><tbody>";
+  t+=row("Revenue factor (input)",function(k){return k.f.toFixed(2);});
+  t+=row("Target revenue",function(k){return fM(k.rev);});
+  t+=row("Value at "+c.m+"x",function(k){return fM(k.val);});
+  t+=row("<b>Full buy</b>: price "+fM(c.P)+" + integration "+fM(c.I),function(k){return sM(k.full);},function(k){return k.full;});
+  t+=row("<b>"+pct+"% stake</b>: cost "+fM(c.s*c.P),function(k){return sM(k.stake)+(k.exer?" (option used)":"");},function(k){return k.stake;});
+  t+=row("Inside loss limit",function(k){ return c.pinT?((k.fullOK?"Full yes":"Full no")+" / "+(k.stakeOK?"Stake yes":"Stake no")):"pulled"; });
+  t+="</tbody>";
+  $("casetbl").innerHTML=t;
+  $("f-cases").textContent=
+    "Price P = revenue x multiple = "+c.rev+" x "+c.m+" = "+fM(c.P)+"\n"+
+    "Value in a case = revenue x factor x multiple\n"+
+    "Full buy result = value - P - integration\n"+
+    "Stake result = stake% x value - stake% x P + option gain\n"+
+    "Option gain = max(0, (1 - stake%) x value - option price x entry revenue x (1 - stake%) - integration)\n"+
+    "Full buy breaks below factor 1 - (limit - integration) / P\n"+
+    "Stake breaks below factor 1 - limit / (stake% x P)";
+
+  /* shortcut 1 */
+  $("shortcut1").innerHTML =
+    '<div class="card"><h3>Usual path: full buy</h3><dl>'+
+    "<dt>Cash and stock up front</dt><dd>"+fM(c.P)+"</dd>"+
+    "<dt>Integration spent</dt><dd>"+fM(c.I)+"</dd>"+
+    "<dt>Base case</dt><dd>"+sM(base.full)+"</dd>"+
+    "<dt>Bad case</dt><dd>"+sM(bad.full)+"</dd>"+
+    "<dt>Good case</dt><dd>"+sM(good.full)+"</dd>"+
+    "<dt>Revenue on your P&amp;L this year</dt><dd>likely yes</dd>"+
+    "<dt>Undo after close</dt><dd>sale only</dd></dl></div>"+
+    '<div class="card"><h3>Shortcut: '+pct+'% stake, option in '+S.optMonths+' months</h3><dl>'+
+    "<dt>Cash and stock up front</dt><dd>"+fM(c.s*c.P)+"</dd>"+
+    "<dt>Integration spent in bad case</dt><dd>$0.0M</dd>"+
+    "<dt>Base case</dt><dd>"+sM(base.stake)+"</dd>"+
+    "<dt>Bad case</dt><dd>"+sM(bad.stake)+"</dd>"+
+    "<dt>Good case</dt><dd>"+sM(good.stake)+"</dd>"+
+    "<dt>Revenue on your P&amp;L this year</dt><dd>likely no</dd>"+
+    "<dt>Undo</dt><dd>let option lapse</dd></dl></div>";
+
+  /* AI */
+  var b0=c.ai[0], b1=c.ai[1];
+  $("shortcut2").innerHTML =
+    '<div class="card"><h3>Usual path: counsel reads all</h3><dl>'+
+    "<dt>Hours</dt><dd>"+fH(c.hFull)+"</dd><dt>Base case cost</dt><dd>"+fD(c.cFull)+"</dd><dt>Bad case cost</dt><dd>"+fD(c.cFull)+"</dd></dl></div>"+
+    '<div class="card"><h3>Shortcut: AI first pass, counsel reads flags</h3><dl>'+
+    "<dt>Hours, base / bad</dt><dd>"+fH(b0.h)+" / "+fH(b1.h)+"</dd><dt>Base case cost</dt><dd>"+fD(b0.c)+"</dd><dt>Bad case cost</dt><dd>"+fD(b1.c)+"</dd></dl></div>";
+  $("aitbl").innerHTML="<thead><tr><th>Case</th><th>Flag share</th><th>Without AI</th><th>With AI first pass</th><th>Saved</th></tr></thead><tbody>"+
+    c.ai.map(function(a){ return "<tr><td>"+a.n+"</td><td>"+a.flag+"%</td><td>"+fH(c.hFull)+" / "+fD(c.cFull)+"</td><td>"+fH(a.h)+" / "+fD(a.c)+'</td><td class="'+cls(a.saved)+'">'+fD(a.saved)+"</td></tr>"; }).join("")+
+    "</tbody>";
+  $("f-ai").textContent=
+    "Hours without AI = contracts x minutes / 60 = "+S.contracts+" x "+S.minPer+" / 60 = "+fH(c.hFull)+"\n"+
+    "Cost without AI = hours x rate = "+fD(c.cFull)+"\n"+
+    "Hours with AI = hours without x flag share\n"+
+    "Cost with AI = hours with AI x rate + AI fee\n"+
+    "If the deal dies, the saved amount is money you did not spend on a dead deal.";
+
+  /* the sheet */
+  var core=S.pins.coreLines ? (S.coreLines? esc(S.coreLines) : "no core lines entered") : "core lines pulled, fit not checked";
+  var pulled=Object.keys(S.pins).filter(function(k){return !S.pins[k];}).map(function(k){return LABELS[k];});
+  var today=new Date().toISOString().slice(0,10);
+  var h="";
+  h+='<div class="sh-head"><span class="t">Meeting prep: '+esc(S.targetName||"Target")+'</span><span class="d">'+today+' | Board deadline '+esc(S.pins.deadline?(S.deadline||"blank"):"pulled")+'</span></div>';
+  h+='<div class="walk">'+(S.pins.maxPrice?"Walk away above "+fM(S.maxPrice):"Walk-away price pulled")+
+     '<small>Loss the board will carry: '+(c.pinT?fM(c.T):"pulled")+'. Offer on the table: '+fM(c.P)+' ('+c.m+'x).</small></div>';
+  h+='<ol class="agenda">';
+  h+='<li><b>Fit.</b> Which core line this target feeds: '+core+'. Overlap '+S.overlap+'% of target revenue.</li>';
+  h+='<li><b>Integration, day 100.</b> '+esc(S.reportsTo||"Reporting line to settle")+'. '+esc(S.sysRetire||"System to retire")+' is retired. '+S.staff+' staff kept.</li>';
+  h+='<li><b>Terms.</b> Full buy at '+fM(c.P)+', or '+pct+'% stake for '+fM(c.s*c.P)+' with an option on the rest at '+S.optMult+'x within '+S.optMonths+' months.</li>';
+  h+='<li><b>Walk-away.</b> We leave above '+(S.pins.maxPrice?fM(S.maxPrice):"the price limit")+(S.pins.deadline&&S.deadline?", or if close passes "+esc(S.deadline):"")+(S.pins.maxDil?", or if dilution passes "+S.maxDil+"%":"")+'.</li>';
+  h+='</ol>';
+  var seven=[["Target revenue",fM(c.rev)],["Overlap with core",S.overlap+"%"],["Price multiple",c.m+"x"],["Integration cost",fM(c.I)],["Staff to retain",String(S.staff)],["Change-of-control contracts",String(S.coc)],["Months to close",String(S.closeMonths)]];
+  h+='<div class="seven">'+seven.map(function(x){return '<div><div class="l">'+x[0]+'</div><div class="v">'+esc(x[1])+'</div></div>';}).join("")+'</div>';
+  h+='<table><thead><tr><th>Case (revenue factor)</th><th>Full buy</th><th>'+pct+'% stake + option</th></tr></thead><tbody>'+
+     c.cases.map(function(k){ return "<tr><td>"+k.n+" ("+k.f.toFixed(2)+")</td><td class=\""+cls(k.full)+"\">"+sM(k.full)+"</td><td class=\""+cls(k.stake)+"\">"+sM(k.stake)+"</td></tr>"; }).join("")+
+     "</tbody></table>";
+  h+='<div class="counsel">Counsel review: '+fH(c.hFull)+' / '+fD(c.cFull)+' without AI first pass. '+fH(b0.h)+' / '+fD(b0.c)+' with it (bad case '+fD(b1.c)+').</div>';
+  h+='<div class="sign"><span>General counsel sign-off: '+esc(S.gcName||"")+'</span><span>Date:</span></div>';
+  h+='<div class="sh-foot"><b>Open question for the target.</b> '+esc(S.footerQ||"")+'</div>';
+  if(pulled.length) h+='<div class="pulledlist">Limits pulled for this sheet: '+esc(pulled.join(", "))+'.</div>';
+  $("sheetbody").innerHTML=h;
+}
+
+/* buttons */
+$("undo").addEventListener("click",function(){ go(idx-1); });
+$("redo").addEventListener("click",function(){ go(idx+1); });
+$("example").addEventListener("click",function(){ S=clone(EX); commit("Loaded worked example"); });
+$("clear").addEventListener("click",function(){
+  Object.keys(S).forEach(function(k){
+    if(k==="pins") return;
+    S[k] = typeof EX[k]==="number" ? 0 : "";
+  });
+  commit("Cleared all inputs");
+});
+$("print").addEventListener("click",function(){ window.print(); });
+document.addEventListener("keydown",function(e){
+  var t=e.target.tagName;
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==="z" && t!=="INPUT" && t!=="TEXTAREA"){
+    e.preventDefault(); if(e.shiftKey) go(idx+1); else go(idx-1);
+  }
+});
+
+/* versions */
+function loadV(){
+  try{ var r=localStorage.getItem(KEY); return r?JSON.parse(r):[]; }
+  catch(e){ storageOK=false; return memVersions; }
+}
+function saveV(list){
+  memVersions=list;
+  try{ localStorage.setItem(KEY, JSON.stringify(list)); }
+  catch(e){ storageOK=false; }
+}
+function renderV(){
+  var list=loadV(), ul=$("vers"); ul.innerHTML="";
+  $("storenote").textContent = storageOK ? (list.length?"The next meeting can start from the last saved sheet.":"No saved sheets yet.") : "Storage is blocked. Saved versions last until you close this tab.";
+  list.forEach(function(v,i){
+    var li=document.createElement("li");
+    var sp=document.createElement("span"); sp.textContent=v.when+" | "+(v.s.targetName||"Target");
+    var o=document.createElement("button"); o.type="button"; o.textContent="Reopen";
+    o.addEventListener("click",function(){ S=clone(v.s); commit("Reopened sheet from "+v.when); });
+    var d=document.createElement("button"); d.type="button"; d.textContent="Delete";
+    d.addEventListener("click",function(){
+      var l=loadV(); lastDeleted={i:i,v:l[i]}; l.splice(i,1); saveV(l); $("restoreDel").disabled=false; renderV();
+    });
+    li.appendChild(sp); li.appendChild(o); li.appendChild(d); ul.appendChild(li);
+  });
+}
+$("save").addEventListener("click",function(){
+  var l=loadV(); var now=new Date();
+  l.unshift({when:now.toISOString().slice(0,16).replace("T"," "), s:clone(S)});
+  if(l.length>20) l=l.slice(0,20);
+  saveV(l); renderV();
+});
+$("restoreDel").addEventListener("click",function(){
+  if(!lastDeleted) return;
+  var l=loadV(); l.splice(Math.min(lastDeleted.i,l.length),0,lastDeleted.v); saveV(l);
+  lastDeleted=null; $("restoreDel").disabled=true; renderV();
+});
+
+/* ten-minute timer */
+var start=Date.now();
+function tick(){
+  var s=Math.floor((Date.now()-start)/1000), m=Math.floor(s/60), r=s%60, el=$("timer");
+  if(s>600){ el.textContent="Time on sheet "+m+":"+(r<10?"0":"")+r+". Over ten minutes. Cut an input."; el.className="timer over"; }
+  else { el.textContent="Time on sheet "+m+":"+(r<10?"0":"")+r+" of 10:00"; }
+}
+setInterval(tick,1000);
+
+writeInputs(); render(); renderHist(); renderV(); tick();
+})();
+</script>
+</body>
+</html>

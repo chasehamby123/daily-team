@@ -1,11 +1,12 @@
 # Archive
 
-Every daily team and the asset it made, newest first. 12 days recorded.
+Every daily team and the asset it made, newest first. 13 days recorded.
 
 [Today](README.md)
 
 | Date | Task | Team | Constraint | Asset |
 |---|---|---|---|---|
+| [2026-10-16](days/2026-10-16/) | Blank Before Cut | Locksmith · Packaging designer · Corporate development head · Scheherazade | Every change can be undone. | [asset](days/2026-10-16/artifact-1.html) |
 | [2026-10-15](days/2026-10-15/) | The Card for Your Accountant | Ceramicist · Textile designer · Owner preparing to sell · Ada Lovelace | Works fully offline after the first load. | [asset](days/2026-10-15/artifact-1.html) |
 | [2026-10-14](days/2026-10-14/) | Dead Air Log | Radio producer · Industrial designer · Independent sponsor · Odysseus | No more than two levels of heading. | [asset](days/2026-10-14/artifact-1.html) |
 | [2026-10-13](days/2026-10-13/) | Defensible in a Day | Documentary director · Playwright · Multi-family office adviser · Benjamin Franklin | Monospace typeface only. | [asset](days/2026-10-13/artifact-1.html) |

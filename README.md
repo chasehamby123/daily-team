@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-10-15: The Card for Your Accountant
+### 2026-10-16: Blank Before Cut
 
-<a href="days/2026-10-15/"><img src="days/2026-10-15/team.png" alt="Team for 2026-10-15: Ceramicist · Textile designer · Owner preparing to sell · Ada Lovelace" width="100%"></a>
+<a href="days/2026-10-16/"><img src="days/2026-10-16/team.png" alt="Team for 2026-10-16: Locksmith · Packaging designer · Corporate development head · Scheherazade" width="100%"></a>
 
-**Task:** Fit quiz: eight multiple-choice questions give which of three approaches suits the buyer and why.
+**Task:** Meeting prep sheet: the buyer's goal and limits give a one-page agenda and a list of numbers to bring.
 
-**Decision:** The page asks eight multiple-choice questions, shows the six things a buyer will dig into first, then names which of three paths suits the seller and why, and reruns the answers with the two weakest flipped to test whether that path holds.
+**Decision:** The page takes the buyer's acquisition goal and limits, and prints a one-page agenda that opens on fit, a list of seven numbers to bring, and a full-buy column next to a stake-with-option column under the same bad case, with every input ...
 
-<a href="days/2026-10-15/"><img src="days/2026-10-15/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-10-16/"><img src="days/2026-10-16/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-10-15/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-10-16/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,15 +37,15 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-10-16](days/2026-10-16/) | <a href="days/2026-10-16/"><img src="days/2026-10-16/artifact-1.png" alt="Blank Before Cut" width="160"></a> | Blank Before Cut | Locksmith · Packaging designer · Corporate development head · Scheherazade |
 | [2026-10-15](days/2026-10-15/) | <a href="days/2026-10-15/"><img src="days/2026-10-15/artifact-1.png" alt="The Card for Your Accountant" width="160"></a> | The Card for Your Accountant | Ceramicist · Textile designer · Owner preparing to sell · Ada Lovelace |
 | [2026-10-14](days/2026-10-14/) | <a href="days/2026-10-14/"><img src="days/2026-10-14/artifact-1.png" alt="Dead Air Log" width="160"></a> | Dead Air Log | Radio producer · Industrial designer · Independent sponsor · Odysseus |
 | [2026-10-13](days/2026-10-13/) | <a href="days/2026-10-13/"><img src="days/2026-10-13/artifact-1.png" alt="Defensible in a Day" width="160"></a> | Defensible in a Day | Documentary director · Playwright · Multi-family office adviser · Benjamin Franklin |
 | [2026-10-12](days/2026-10-12/) | <a href="days/2026-10-12/"><img src="days/2026-10-12/artifact-1.png" alt="The Calendar by the Register" width="160"></a> | The Calendar by the Register | Set designer · Bookbinder · Retiring owner with no successor · Euclid |
 | [2026-10-11](days/2026-10-11/) | <a href="days/2026-10-11/"><img src="days/2026-10-11/artifact-1.png" alt="The Dark Hours" width="160"></a> | The Dark Hours | Animator · Game designer · Home services owner · Penelope |
 | [2026-10-10](days/2026-10-10/) | <a href="days/2026-10-10/"><img src="days/2026-10-10/artifact-1.png" alt="The Dead Deal Panel" width="160"></a> | The Dead Deal Panel | Comic artist · Lighting designer · Roll-up operator · Arachne |
-| [2026-10-09](days/2026-10-09/) | <a href="days/2026-10-09/"><img src="days/2026-10-09/artifact-1.png" alt="Stack and Clock" width="160"></a> | Stack and Clock | Sculptor · Chef · Real estate developer · Glass fox |
 
-[All 12 days](ARCHIVE.md)
+[All 13 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works
