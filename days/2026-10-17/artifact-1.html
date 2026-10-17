@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Monday Worklist: denial appeals downside check</title>
+<style>
+:root{
+  --paper:#f6f3ea;--card:#fffdf7;--ink:#1f2a22;--muted:#5b6357;--line:#d8d0bb;--soft:#ece6d4;
+  --stem:#2f5d3a;--leaf:#6d9466;--rose:#9e4337;--rose-soft:#f3e1dc;--stem-soft:#e2ece0;--warn:#7a5a12;--warn-soft:#f6ecd0;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:20px 16px 40px}
+header{border-bottom:3px solid var(--stem);padding-bottom:14px;margin-bottom:18px}
+.kicker{font:600 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--stem)}
+h1{font:700 30px/1.15 ui-serif,Georgia,"Times New Roman",serif;margin:6px 0 6px}
+h2{font:700 21px/1.2 ui-serif,Georgia,"Times New Roman",serif;margin:0 0 4px}
+h3{font-size:16px;margin:0 0 6px}
+p{margin:0 0 10px}
+.lede{color:var(--muted);max-width:680px;margin:0}
+.steps{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;padding:0;list-style:none}
+.steps li{font:13px/1.2 var(--mono);background:var(--soft);border:1px solid var(--line);padding:6px 9px;border-radius:3px}
+.steps b{color:var(--stem)}
+section{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--leaf);border-radius:4px;padding:16px;margin:0 0 16px}
+section.result{border-left-color:var(--stem)}
+.sub{color:var(--muted);font-size:14px;margin-bottom:12px}
+textarea{width:100%;min-height:190px;font:13px/1.45 var(--mono);padding:10px;border:1px solid var(--line);border-radius:3px;background:#fff;color:var(--ink);
+  background-image:repeating-linear-gradient(#fff 0,#fff 18.4px,#efe9d8 18.4px,#efe9d8 18.85px);background-attachment:local;resize:vertical}
+button{font:600 14px/1 system-ui,sans-serif;padding:9px 12px;border-radius:3px;border:1px solid var(--stem);background:var(--stem);color:#fff;cursor:pointer;margin:8px 8px 0 0}
+button.ghost{background:transparent;color:var(--stem)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #c9a227;outline-offset:1px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--soft);vertical-align:top}
+th{font-weight:600;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+td.n,th.n{text-align:right;font-family:var(--mono)}
+.scroll{overflow-x:auto}
+.empty{border:1px dashed var(--warn);background:var(--warn-soft);color:var(--warn);padding:10px 12px;border-radius:3px;font-size:14px;margin:8px 0}
+.empty.inline{display:inline-block;padding:3px 7px;margin:2px 0;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.field label{display:block;font-weight:600;font-size:14px}
+.field small{display:block;color:var(--muted);font-size:12px;line-height:1.35;margin-bottom:4px}
+.field input{width:100%;font:15px var(--mono);padding:7px 8px;border:1px solid var(--line);border-radius:3px;background:#fff;color:var(--ink)}
+.rate-in{width:84px;font:14px var(--mono);padding:5px 6px;border:1px solid var(--line);border-radius:3px}
+fieldset{border:1px solid var(--line);border-radius:3px;padding:10px 12px 12px;margin:0 0 12px}
+legend{font:600 12px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--stem);padding:0 4px}
+.q{background:var(--stem-soft);border-color:var(--leaf)}
+.stat{font:700 22px/1.2 var(--mono)}
+.verdict{padding:12px 14px;border-radius:3px;margin:0 0 12px;font-size:15px}
+.verdict.ok{background:var(--stem-soft);border:1px solid var(--leaf)}
+.verdict.bad{background:var(--rose-soft);border:1px solid var(--rose)}
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.plan{border:1px solid var(--line);border-top:5px solid var(--stem);border-radius:3px;padding:12px;background:#fff}
+.plan.vendor{border-top-color:var(--rose)}
+.plan h3{font:700 18px ui-serif,Georgia,serif}
+.sum{display:grid;grid-template-columns:130px 1fr;gap:4px 10px;font-size:14px;margin:8px 0 12px;padding-bottom:10px;border-bottom:1px solid var(--soft)}
+.sum dt{font-weight:600;color:var(--muted)}
+.sum dd{margin:0;font-family:var(--mono)}
+.cases th small{display:block;text-transform:none;letter-spacing:0;font-weight:400;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.cases td.bad,.cases th.bad{background:#faf0ed}
+.cases td.good,.cases th.good{background:#f0f5ee}
+.neg{color:var(--rose)}
+.chart svg{width:100%;height:auto;display:block;background:#fff;border:1px solid var(--line);border-radius:3px}
+input[type=range]{width:100%;accent-color:var(--stem)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.slide{border:2px solid var(--ink);background:#fff;padding:18px 20px;border-radius:2px}
+.slide h3{font:700 22px ui-serif,Georgia,serif;margin-bottom:2px}
+.slide ol{margin:10px 0 0;padding-left:22px}
+.slide li{margin-bottom:8px}
+.slide .tag{font:600 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);display:block}
+pre.f{font:13px/1.55 var(--mono);background:var(--soft);padding:10px 12px;border-radius:3px;white-space:pre-wrap;margin:0 0 8px}
+ul.tight{margin:4px 0 10px;padding-left:20px}
+ul.tight li{margin-bottom:3px}
+footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+footer p{margin-bottom:6px}
+.k{font-family:var(--mono)}
+@media (max-width:760px){.plans,.two{grid-template-columns:1fr}h1{font-size:25px}.sum{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:no-preference){.plan,.verdict{transition:background-color .2s}}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important;scroll-behavior:auto !important}}
+@media print{
+  body{background:#fff;font-size:12px}
+  .wrap{max-width:none;padding:0}
+  button,.noprint,textarea,input[type=range]{display:none !important}
+  section{break-inside:avoid;border:1px solid #999;border-left:4px solid #555}
+  .plans,.two{grid-template-columns:1fr 1fr}
+  .field input,.rate-in{border:none;padding:0;background:none}
+  body.slide-only .wrap > *:not(#slideSec){display:none !important}
+  body.slide-only #slideSec{border:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">The Monday Worklist</div>
+  <h1>Paste last month's denials. See the worst case before you hire or sign.</h1>
+  <p class="lede">Two plans from the same export: an in-house appeals coder, or a contingency vendor. Each shows its worst case, its expected month, and whether the loss stops somewhere.</p>
+  <ul class="steps"><li><b>1</b> Paste the export</li><li><b>2</b> Enter your overturn rates</li><li><b>3</b> Answer two questions</li><li><b>4</b> Read both plans</li></ul>
+</header>
+
+<section id="s1">
+  <h2>1. Paste your denial export</h2>
+  <p class="sub">Four columns: CARC code, payer, billed amount, denial date. Comma or tab separated. A header row is fine. The example below is twelve rows from a 14-surgeon orthopedic group.</p>
+  <label for="csv" class="k" style="font-size:12px;color:var(--muted)">Denial export</label>
+  <textarea id="csv" spellcheck="false" aria-describedby="parseNote"></textarea>
+  <div class="noprint">
+    <button id="btnExample" type="button">Load the worked example</button>
+    <button id="btnClear" class="ghost" type="button">Clear the export</button>
+  </div>
+  <p id="parseNote" class="sub" style="margin:10px 0 0"></p>
+  <div id="rowsEmpty"></div>
+</section>
+
+<section id="s2">
+  <h2>2. Overturn rate per payer and code</h2>
+  <p class="sub">Use your own record: appeals won divided by appeals filed, last quarter. One payer can overturn 40% of CO-197 and another 6%. The page weights each rate by billed dollars.</p>
+  <div class="scroll"><table id="groups"><thead><tr><th>Payer</th><th>CARC</th><th class="n">Rows</th><th class="n">Billed</th><th>Overturn %</th></tr></thead><tbody></tbody></table></div>
+  <div id="groupsEmpty"></div>
+  <p style="margin-top:10px">Weighted overturn rate: <span id="blended" class="stat">0%</span></p>
+</section>
+
+<section id="s3">
+  <h2>3. Two questions, then your sheet</h2>
+  <fieldset class="q"><legend>Two questions</legend>
+    <div class="grid">
+      <div class="field"><label for="f_D">Denied dollars per month</label><small>The full month, not the twelve sample rows.</small><input id="f_D" data-k="D" type="number" min="0" step="1000"></div>
+      <div class="field"><label for="f_backlog">Months the backlog has run</label><small>How long denials have piled up without a dedicated appeals person.</small><input id="f_backlog" data-k="backlog" type="number" min="0" step="1"></div>
+    </div>
+  </fieldset>
+  <fieldset><legend>From your records</legend>
+    <div class="grid">
+      <div class="field"><label for="f_rework">Rework hours last month</label><small>From your rework sheet. The page does not estimate this.</small><input id="f_rework" data-k="rework" type="number" min="0" step="1"></div>
+      <div class="field"><label for="f_rate">Coder cost per hour, loaded</label><small>Wage plus benefits.</small><input id="f_rate" data-k="rate" type="number" min="0" step="1"></div>
+      <div class="field"><label for="f_cur">Recovered today, % of denied dollars</label><small>Without a dedicated appeals person.</small><input id="f_cur" data-k="cur" type="number" min="0" max="100" step="1"></div>
+      <div class="field"><label for="f_window">Payer appeal window, days</label><small>Set by each payer contract and local rules. Enter yours.</small><input id="f_window" data-k="window" type="number" min="0" step="1"></div>
+    </div>
+  </fieldset>
+  <fieldset><legend>Plan terms and exits</legend>
+    <div class="grid">
+      <div class="field"><label for="f_hire">Hire: coder cost per month, loaded</label><small>One appeals coder.</small><input id="f_hire" data-k="hire" type="number" min="0" step="100"></div>
+      <div class="field"><label for="f_tool">Hire: drafting tool per month</label><small>Model that drafts each letter.</small><input id="f_tool" data-k="tool" type="number" min="0" step="50"></div>
+      <div class="field"><label for="f_notice">Hire: notice period, days</label><small>Depends on employment law and the offer letter. Enter yours.</small><input id="f_notice" data-k="notice" type="number" min="0" step="1"></div>
+      <div class="field"><label for="f_share">Vendor: share of recoveries, %</label><small>Paid only on dollars recovered.</small><input id="f_share" data-k="share" type="number" min="0" max="100" step="1"></div>
+      <div class="field"><label for="f_lock">Vendor: lock-in, months</label><small>From the contract draft.</small><input id="f_lock" data-k="lock" type="number" min="0" step="1"></div>
+      <div class="field"><label for="f_fee">Vendor: early exit fee</label><small>Dollars owed to leave inside the lock-in.</small><input id="f_fee" data-k="fee" type="number" min="0" step="100"></div>
+    </div>
+  </fieldset>
+  <fieldset><legend>Case settings</legend>
+    <div class="grid">
+      <div class="field"><label for="f_badM">Bad case: overturn rate times</label><small>0.5 halves your rate.</small><input id="f_badM" data-k="badM" type="number" min="0" step="0.05"></div>
+      <div class="field"><label for="f_goodM">Good case: overturn rate times</label><small>Capped at 99%.</small><input id="f_goodM" data-k="goodM" type="number" min="0" step="0.05"></div>
+      <div class="field"><label for="f_lagBad">Payer lag, bad case, months</label><small>Months before the first overturn pays.</small><input id="f_lagBad" data-k="lagBad" type="number" min="0" max="12" step="1"></div>
+      <div class="field"><label for="f_lagBase">Payer lag, base case, months</label><small></small><input id="f_lagBase" data-k="lagBase" type="number" min="0" max="12" step="1"></div>
+      <div class="field"><label for="f_lagGood">Payer lag, good case, months</label><small></small><input id="f_lagGood" data-k="lagGood" type="number" min="0" max="12" step="1"></div>
+    </div>
+  </fieldset>
+</section>
+
+<section class="result" id="s4">
+  <h2>4. Both plans, three cases</h2>
+  <p class="sub">Same inputs for both columns. Worst case first.</p>
+  <div id="resultsEmpty"></div>
+  <div id="results">
+    <div id="verdictHire" class="verdict"></div>
+    <div id="verdictVendor" class="verdict ok"></div>
+    <div class="plans">
+      <div class="plan"><h3>In-house appeals hire</h3><dl class="sum" id="sumHire"></dl><div class="scroll"><table class="cases" id="tHire"></table></div></div>
+      <div class="plan vendor"><h3>Contingency vendor</h3><dl class="sum" id="sumVendor"></dl><div class="scroll"><table class="cases" id="tVendor"></table></div></div>
+    </div>
+    <div class="chart" style="margin-top:16px">
+      <h3>Where the two plans cross</h3>
+      <p class="sub" id="crossText"></p>
+      <svg id="chart" viewBox="0 0 600 250" role="img" aria-label="Monthly net by overturn rate for both plans"></svg>
+      <label for="slider" class="k" style="font-size:13px;display:block;margin-top:8px">Test an overturn rate: <b id="sliderVal"></b></label>
+      <input id="slider" type="range" min="0" max="80" step="1">
+      <p id="sliderOut" style="margin-top:4px"></p>
+    </div>
+  </div>
+</section>
+
+<section id="s5">
+  <h2>5. Drafting with and without the model</h2>
+  <p class="sub">Usual path: the coder writes each letter. Shortcut: a model drafts from the CARC code and the payer policy, and a named coder edits and signs every letter.</p>
+  <div id="aiEmpty"></div>
+  <div id="aiBox">
+    <div class="grid" style="margin-bottom:12px">
+      <div class="field"><label for="f_manBase">Usual path, minutes per letter, base</label><small>Your coders' timing.</small><input id="f_manBase" data-k="manBase" type="number" min="0" step="1"></div>
+      <div class="field"><label for="f_manBad">Usual path, minutes per letter, bad</label><small>Harder CO-50 letters.</small><input id="f_manBad" data-k="manBad" type="number" min="0" step="1"></div>
+      <div class="field"><label for="f_aiBase">Shortcut, minutes per letter, base</label><small>Coder review and signature.</small><input id="f_aiBase" data-k="aiBase" type="number" min="0" step="1"></div>
+      <div class="field"><label for="f_aiBad">Shortcut, minutes per letter, bad</label><small>Drafts that need rewriting.</small><input id="f_aiBad" data-k="aiBad" type="number" min="0" step="1"></div>
+    </div>
+    <div class="scroll"><table id="tAI"></table></div>
+    <p id="aiNote" style="margin-top:10px"></p>
+    <h3 style="margin-top:12px">A person still does these steps</h3>
+    <ul class="tight">
+      <li>Picks which denials are worth appealing.</li>
+      <li>Checks the reason code against the chart notes and the payer policy.</li>
+      <li>Edits, signs, and owns every letter. No letter leaves unsigned.</li>
+      <li>Submits through the payer portal and logs won or lost.</li>
+    </ul>
+    <p class="sub" style="margin:0">The page assumes a signed letter wins at the same rate on either path. Check that on your first 20 letters.</p>
+  </div>
+</section>
+
+<section id="slideSec">
+  <h2>6. The Thursday slide</h2>
+  <p class="sub noprint">One slide for the CFO. Worst case first. Print it alone with the button.</p>
+  <div id="slide" class="slide"></div>
+  <div class="noprint"><button id="btnPrint" type="button">Print the slide</button><button id="btnPrintAll" class="ghost" type="button">Print the full page</button></div>
+</section>
+
+<section id="s7">
+  <h2>7. The formulas</h2>
+  <pre class="f">r      = sum(billed x overturn %) / sum(billed), payer and code groups with a rate
+C      = hire cost + tool cost, per month
+Recovered per month   = D x r
+Hire monthly net      = D x r - C
+Vendor monthly net    = D x r x (1 - share)
+Cash out before first return: hire = lag x C, vendor = 0
+12-month total: hire = (12 - lag) x D x r - 12 x C
+                vendor = (12 - lag) x D x r x (1 - share)
+Walk away in month 3: hire = max(0, 3 + notice - lag) x D x r - (3 + notice) x C
+                      vendor = max(0, 3 - lag) x D x r x (1 - share) - exit fee if lock-in &gt; 3
+Crossover rate        = C / (share x D)
+Hire 12-month break rate = 12 x C / ((12 - lag) x D)
+Letters per month     = D / average billed per row
+Drafting cost         = letters x minutes / 60 x coder rate (+ tool cost on the shortcut)
+Backlog               = D x months run; still appealable = D x min(months, window / 30)
+12-month write-off    = 12 x D x (1 - recovered today %)</pre>
+  <p class="sub" style="margin:0">This is arithmetic on your figures. It is not legal, coding, financial, or investment advice. Notice periods, appeal windows, and contract terms depend on local rules and your contracts.</p>
+</section>
+
+<footer>
+  <p><b>Credits.</b> Florist (lead): built on the four columns of a real export and checked against twelve rows. Teacher: the one-slide view for a CFO, worst case first. Revenue cycle manager: overturn odds per payer and per code, and rework hours from your own sheet. Daedalus: exit terms for each plan and the crossover line.</p>
+  <p>Inputs stay in this browser when storage allows. Nothing is sent anywhere.</p>
+  <p>Published by VoxxyAI.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+var EXAMPLE = "CARC,Payer,Billed,Denial date\n"+
+"CO-197,Northfield Health,2450,2026-09-02\n"+
+"CO-197,Northfield Health,1860,2026-09-03\n"+
+"CO-197,Lakeshore Medicaid,1550,2026-09-04\n"+
+"CO-50,Northfield Health,3100,2026-09-08\n"+
+"CO-50,Medicare,2225,2026-09-09\n"+
+"CO-16,Medicare,540,2026-09-11\n"+
+"CO-16,Northfield Health,460,2026-09-15\n"+
+"CO-197,Lakeshore Medicaid,1325,2026-09-16\n"+
+"CO-50,Medicare,2650,2026-09-18\n"+
+"CO-16,Lakeshore Medicaid,315,2026-09-22\n"+
+"CO-197,Northfield Health,2175,2026-09-24\n"+
+"CO-16,Medicare,600,2026-09-29";
+var EX_RATES = {"Northfield Health|CO-197":40,"Lakeshore Medicaid|CO-197":6,"Northfield Health|CO-50":29,"Medicare|CO-50":33,"Medicare|CO-16":72,"Northfield Health|CO-16":65,"Lakeshore Medicaid|CO-16":50};
+var DEF = {D:120000,backlog:7,rework:186,rate:38,cur:8,window:90,hire:6900,tool:600,notice:30,share:25,lock:12,fee:0,badM:0.5,goodM:1.25,lagBad:6,lagBase:2,lagGood:1,manBase:45,manBad:55,aiBase:12,aiBad:25};
+var KEY="mondayWorklist.v1";
+var rows=[], groups=[], rates={}, sliderTouched=false;
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function money(v){var n=Math.round(v);var s="$"+Math.abs(n).toLocaleString("en-US");return n<0?"-"+s:s;}
+function mcls(v){return v<0?' class="n neg"':' class="n"';}
+function pct(v){return (Math.round(v*1000)/10).toFixed(1)+"%";}
+function hrs(v){return (Math.round(v*10)/10).toFixed(1)+" h";}
+
+var inputs=[].slice.call(document.querySelectorAll("input[data-k]"));
+function val(k){var el=document.querySelector('input[data-k="'+k+'"]');var v=parseFloat(el.value);return isFinite(v)?v:0;}
+
+function save(){
+  try{var f={};inputs.forEach(function(el){f[el.dataset.k]=el.value;});
+    localStorage.setItem(KEY,JSON.stringify({csv:$("csv").value,rates:rates,f:f}));}catch(e){}
+}
+function load(){
+  try{var s=localStorage.getItem(KEY);if(!s)return false;var d=JSON.parse(s);
+    $("csv").value=d.csv||"";rates=d.rates||{};
+    inputs.forEach(function(el){var k=el.dataset.k;el.value=(d.f&&d.f[k]!==undefined)?d.f[k]:DEF[k];});
+    return true;}catch(e){return false;}
+}
+function loadExample(){
+  $("csv").value=EXAMPLE;rates=JSON.parse(JSON.stringify(EX_RATES));
+  inputs.forEach(function(el){el.value=DEF[el.dataset.k];});sliderTouched=false;
+}
+
+function splitLine(line,sep){
+  var out=[],cur="",q=false;
+  for(var i=0;i<line.length;i++){var c=line[i];
+    if(c=='"'){q=!q;continue;}
+    if(c==sep&&!q){out.push(cur.trim());cur="";continue;}
+    cur+=c;}
+  out.push(cur.trim());return out;
+}
+function parse(){
+  var text=$("csv").value;var lines=text.split(/\r?\n/).map(function(l){return l.trim();}).filter(Boolean);
+  rows=[];var skipped=0;if(!lines.length)return {skipped:0};
+  var sep=lines[0].indexOf("\t")>=0?"\t":(lines[0].indexOf(";")>=0&&lines[0].indexOf(",")<0?";":",");
+  var idx={carc:0,payer:1,amt:2,date:3};
+  var first=splitLine(lines[0],sep).map(function(s){return s.toLowerCase();});
+  var isHeader=first.some(function(h){return /payer|carc|code|reason|billed|amount|date/.test(h);});
+  if(isHeader){
+    first.forEach(function(h,i){
+      if(/carc|reason|code/.test(h))idx.carc=i;
+      else if(/payer|plan|insur/.test(h))idx.payer=i;
+      else if(/billed|amount|charge|\$/.test(h))idx.amt=i;
+      else if(/date/.test(h))idx.date=i;});
+    lines=lines.slice(1);
+  }
+  lines.forEach(function(l){
+    var c=splitLine(l,sep);var a=parseFloat(String(c[idx.amt]||"").replace(/[$,\s]/g,""));
+    var carc=(c[idx.carc]||"").toUpperCase(),payer=c[idx.payer]||"";
+    if(!isFinite(a)||!carc||!payer){skipped++;return;}
+    rows.push({carc:carc,payer:payer,amt:a,date:c[idx.date]||""});
+  });
+  return {skipped:skipped};
+}
+function buildGroups(){
+  var m={};groups=[];
+  rows.forEach(function(r){var k=r.payer+"|"+r.carc;if(!m[k]){m[k]={key:k,payer:r.payer,carc:r.carc,n:0,amt:0};groups.push(m[k]);}m[k].n++;m[k].amt+=r.amt;});
+  groups.sort(function(a,b){return b.amt-a.amt;});
+}
+function renderGroups(){
+  var tb=$("groups").querySelector("tbody");
+  if(!groups.length){tb.innerHTML="";$("groupsEmpty").innerHTML='<div class="empty">No payer groups yet. Paste your denial export in step 1, and each payer and code pair will appear here for a rate.</div>';return;}
+  $("groupsEmpty").innerHTML="";
+  tb.innerHTML=groups.map(function(g){
+    var v=rates[g.key];var has=v!==undefined&&v!==""&&isFinite(parseFloat(v));
+    return '<tr><td>'+esc(g.payer)+'</td><td class="k">'+esc(g.carc)+'</td><td class="n">'+g.n+'</td><td class="n">'+money(g.amt)+'</td><td><input class="rate-in" type="number" min="0" max="100" step="1" aria-label="Overturn percent for '+esc(g.payer)+' '+esc(g.carc)+'" data-g="'+esc(g.key)+'" value="'+(has?esc(v):"")+'"><div class="rmsg">'+(has?"":'<span class="empty inline">No overturn rate for this payer. Divide last quarter\'s appeals won by appeals filed.</span>')+'</div></td></tr>';
+  }).join("");
+}
+function blended(){
+  var num=0,den=0;
+  groups.forEach(function(g){var v=parseFloat(rates[g.key]);if(isFinite(v)){num+=g.amt*Math.min(100,Math.max(0,v))/100;den+=g.amt;}});
+  if(!den)return null;return Math.round(num/den*1000)/1000;
+}
+
+function calc(D,r,lag,C,s,noticeM,lock,fee){
+  var rec=D*r,live=Math.max(0,12-lag);
+  return {r:r,lag:lag,rec:rec,
+    hM:rec-C,vM:rec*(1-s),
+    hBefore:lag*C,vBefore:0,
+    h12:live*rec-12*C,v12:live*rec*(1-s),
+    hExit:Math.max(0,3+noticeM-lag)*rec-(3+noticeM)*C,
+    vExit:Math.max(0,3-lag)*rec*(1-s)-(lock>3?fee:0)};
+}
+
+function render(){
+  var parsed=parse();buildGroups();
+  $("parseNote").textContent=rows.length?(rows.length+" rows read, "+money(rows.reduce(function(a,r){return a+r.amt;},0))+" billed, "+groups.length+" payer and code groups."+(parsed.skipped?" "+parsed.skipped+" rows skipped: they lacked a code, payer, or amount.":"")):"";
+  $("rowsEmpty").innerHTML=rows.length?"":'<div class="empty">No denials loaded. Export last month\'s denial report from your billing system and paste it here.</div>';
+  renderGroups();
+  compute();
+}
+
+function compute(){
+  var r0=blended();
+  $("blended").textContent=r0===null?"none yet":pct(r0);
+  var D=val("D"),C=val("hire")+val("tool"),s=val("share")/100,noticeM=val("notice")/30,lock=val("lock"),fee=val("fee");
+  var rate=val("rate");
+  var avg=rows.length?rows.reduce(function(a,r){return a+r.amt;},0)/rows.length:0;
+  if(r0===null||D<=0){
+    $("results").style.display="none";
+    $("resultsEmpty").innerHTML='<div class="empty">'+(r0===null?"Enter at least one payer's overturn rate to see both plans.":"Enter your denied dollars per month in step 3 to see both plans.")+'</div>';
+    $("slide").innerHTML='<div class="empty">The slide fills in once step 2 has a rate and step 3 has your denied dollars per month.</div>';
+    renderAI(null,D,avg,rate);save();return;
+  }
+  $("resultsEmpty").innerHTML="";$("results").style.display="";
+  var cs=[
+    {key:"bad",name:"Bad",c:calc(D,Math.min(.99,r0*val("badM")),val("lagBad"),C,s,noticeM,lock,fee)},
+    {key:"base",name:"Base",c:calc(D,Math.min(.99,r0),val("lagBase"),C,s,noticeM,lock,fee)},
+    {key:"good",name:"Good",c:calc(D,Math.min(.99,r0*val("goodM")),val("lagGood"),C,s,noticeM,lock,fee)}];
+  var bad=cs[0].c,base=cs[1].c;
+  function head(){return '<tr><th></th>'+cs.map(function(x){return '<th class="n '+x.key+'">'+x.name+'<small>'+pct(x.c.r)+' overturn<br>'+x.c.lag+' mo lag</small></th>';}).join("")+'</tr>';}
+  function row(label,f){return '<tr><td>'+label+'</td>'+cs.map(function(x){var v=f(x.c);return '<td'+mcls(v).replace('class="n','class="n '+x.key)+'>'+money(v)+'</td>';}).join("")+'</tr>';}
+  $("tHire").innerHTML=head()+row("Cash out before first return",function(c){return -c.hBefore;})+row("Monthly net once paid",function(c){return c.hM;})+row("12-month total",function(c){return c.h12;})+row("Walk away in month 3",function(c){return c.hExit;});
+  $("tVendor").innerHTML=head()+row("Cash out before first return",function(c){return -c.vBefore;})+row("Monthly net once paid",function(c){return c.vM;})+row("12-month total",function(c){return c.v12;})+row("Walk away in month 3",function(c){return c.vExit;});
+  var noticeCost=C*noticeM;
+  $("sumHire").innerHTML='<dt>Worst case</dt><dd>Spends '+money(bad.hBefore)+' before the first return, then nets '+money(bad.hM)+' a month.</dd><dt>Expected month</dt><dd>'+money(base.hM)+'</dd><dt>Loss capped</dt><dd>No, until notice is given. After notice: '+money(noticeCost)+' ('+val("notice")+' days of cost).</dd>';
+  $("sumVendor").innerHTML='<dt>Worst case</dt><dd>Spends '+money(0)+' before the first return, then nets '+money(bad.vM)+' a month.</dd><dt>Expected month</dt><dd>'+money(base.vM)+'</dd><dt>Loss capped</dt><dd>Yes. Fee only on recoveries. Most you pay with no recovery: '+money(lock>0?fee:0)+' exit fee, '+lock+'-month lock-in.</dd>';
+
+  // verdicts
+  var lagB=val("lagBad"),live=12-lagB;
+  var hireOK=bad.h12>=0&&bad.hM>=0;
+  var breakR=live>0?12*C/(live*D):Infinity;
+  var breakLag=bad.rec>0?12-12*C/bad.rec:-Infinity;
+  var vh=$("verdictHire");
+  if(hireOK){
+    vh.className="verdict ok";
+    vh.innerHTML='<b>The hire survives the bad case.</b> At '+pct(bad.r)+' overturn and a '+lagB+'-month payer lag it ends the year at '+money(bad.h12)+'. It breaks even over 12 months until the overturn rate falls to '+pct(breakR)+' at that lag, or the lag stretches to '+(Math.floor(breakLag*10)/10).toFixed(1)+' months at that rate.';
+  }else{
+    vh.className="verdict bad";
+    vh.innerHTML='<b>Safer setting first: the vendor.</b> At '+val("share")+'% of recoveries it keeps the loss at '+money(lock>0?fee:0)+'. <b>The hire does not survive the bad case.</b> At '+pct(bad.r)+' overturn and a '+lagB+'-month lag it ends the year at '+money(bad.h12)+'. It needs an overturn rate of '+(isFinite(breakR)?pct(breakR):"more than 100%")+' or higher at that lag to break even.';
+  }
+  var fee36=36*base.rec*s,hire36=36*C;
+  $("verdictVendor").innerHTML='<b>The vendor survives the bad case.</b> No overturn rate takes it below '+money(-(lock>0?fee:0))+'. The fee grows with every dollar it wins: at the base rate it is '+money(base.rec*s)+' a month, '+money(fee36)+' over 36 months, against '+money(hire36)+' for the hire.';
+
+  // crossover
+  var rStar=(s>0&&D>0)?C/(s*D):null;
+  $("crossText").textContent=rStar===null?"With a 0% vendor share the vendor always nets more. There is no crossover.":(rStar>=1?"The hire never catches the vendor at these costs. The crossover sits above 100%.":"Below "+pct(rStar)+" overturn the vendor nets more each month. Above it, the hire nets more. Your weighted rate is "+pct(r0)+".");
+  var sl=$("slider");if(!sliderTouched)sl.value=Math.round(r0*100);
+  drawChart(D,C,s,rStar,parseFloat(sl.value)/100);
+
+  // backlog and slide
+  var backlog=D*val("backlog"),appealable=D*Math.min(val("backlog"),val("window")/30);
+  var writeoff=12*D*(1-val("cur")/100),reworkCost=val("rework")*rate;
+  $("slide").innerHTML='<span class="tag">Revenue cycle, appeals plan</span><h3>Appeals coder or contingency vendor, on '+money(D)+' a month in denials</h3>'+
+   '<ol><li><span class="tag">Worst case: '+pct(bad.r)+' overturn, '+lagB+'-month payer lag</span>Hire spends '+money(bad.hBefore)+' before the first return, then nets '+money(bad.hM)+' a month. Vendor spends '+money(0)+' and nets '+money(bad.vM)+' a month.</li>'+
+   '<li><span class="tag">Expected: '+pct(base.r)+' overturn, '+val("lagBase")+'-month lag</span>Hire nets '+money(base.hM)+' a month. Vendor nets '+money(base.vM)+' a month.</li>'+
+   '<li><span class="tag">Loss capped</span>Hire: no, until notice. Notice costs '+money(noticeCost)+'. Vendor: yes, at '+money(lock>0?fee:0)+' exit fee, '+lock+'-month lock-in.</li>'+
+   '<li><span class="tag">Crossover</span>'+(rStar===null||rStar>=1?"No crossover at these terms.":"The hire nets more above "+pct(rStar)+" overturn. The vendor nets more below it.")+'</li>'+
+   '<li><span class="tag">Doing nothing</span>12-month write-off '+money(writeoff)+'. Backlog '+money(backlog)+', of which '+money(appealable)+' is still inside a '+val("window")+'-day appeal window. Rework today: '+val("rework")+' h x '+money(rate)+' = '+money(reworkCost)+' a month.</li></ol>';
+  renderAI(cs,D,avg,rate);
+  save();
+}
+
+function drawChart(D,C,s,rStar,rt){
+  var W=600,H=250,L=70,R=14,T=14,B=36;
+  var xmax=0.8;if(rStar&&rStar<1&&rStar>0.7)xmax=Math.min(1,rStar*1.2);
+  var ymin=-C,ymax=Math.max(D*xmax,1);
+  function X(r){return L+(r/xmax)*(W-L-R);}
+  function Y(v){return T+(ymax-v)/(ymax-ymin)*(H-T-B);}
+  var g='';
+  for(var i=0;i<=4;i++){var r=xmax*i/4;g+='<line x1="'+X(r)+'" y1="'+T+'" x2="'+X(r)+'" y2="'+(H-B)+'" stroke="#ece6d4"/><text x="'+X(r)+'" y="'+(H-B+16)+'" font-size="11" text-anchor="middle" fill="#5b6357" font-family="monospace">'+Math.round(r*100)+'%</text>';}
+  [ymin,0,ymax/2,ymax].forEach(function(v){g+='<text x="'+(L-6)+'" y="'+(Y(v)+4)+'" font-size="11" text-anchor="end" fill="#5b6357" font-family="monospace">'+money(v)+'</text>';});
+  g+='<line x1="'+L+'" y1="'+Y(0)+'" x2="'+(W-R)+'" y2="'+Y(0)+'" stroke="#1f2a22" stroke-width="1"/>';
+  g+='<line x1="'+X(0)+'" y1="'+Y(-C)+'" x2="'+X(xmax)+'" y2="'+Y(D*xmax-C)+'" stroke="#2f5d3a" stroke-width="3"/>';
+  g+='<line x1="'+X(0)+'" y1="'+Y(0)+'" x2="'+X(xmax)+'" y2="'+Y(D*xmax*(1-s))+'" stroke="#9e4337" stroke-width="3" stroke-dasharray="7 4"/>';
+  if(rStar!==null&&rStar<=xmax){g+='<line x1="'+X(rStar)+'" y1="'+T+'" x2="'+X(rStar)+'" y2="'+(H-B)+'" stroke="#7a5a12" stroke-width="1.5" stroke-dasharray="3 3"/><text x="'+(X(rStar)+5)+'" y="'+(T+12)+'" font-size="12" fill="#7a5a12" font-family="monospace">crossover '+pct(rStar)+'</text>';}
+  var rr=Math.min(rt,xmax);
+  g+='<line x1="'+X(rr)+'" y1="'+T+'" x2="'+X(rr)+'" y2="'+(H-B)+'" stroke="#1f2a22" stroke-width="1"/>';
+  g+='<circle cx="'+X(rr)+'" cy="'+Y(D*rr-C)+'" r="5" fill="#2f5d3a"/><circle cx="'+X(rr)+'" cy="'+Y(D*rr*(1-s))+'" r="5" fill="#9e4337"/>';
+  g+='<text x="'+(L+6)+'" y="'+(H-B-24)+'" font-size="12" fill="#2f5d3a" font-family="monospace">solid: hire</text><text x="'+(L+6)+'" y="'+(H-B-8)+'" font-size="12" fill="#9e4337" font-family="monospace">dashed: vendor</text>';
+  g+='<text x="'+((L+W-R)/2)+'" y="'+(H-4)+'" font-size="11" text-anchor="middle" fill="#5b6357">Overturn rate. Monthly net once payers pay.</text>';
+  $("chart").innerHTML=g;
+  var h=D*rt-C,v=D*rt*(1-s);
+  $("sliderVal").textContent=Math.round(rt*100)+"%";
+  $("sliderOut").innerHTML='At '+Math.round(rt*100)+'%: hire nets <b>'+money(h)+'</b> a month, vendor nets <b>'+money(v)+'</b>. '+(Math.abs(h-v)<1?"They are even.":(h>v?"The hire is ahead by "+money(h-v)+".":"The vendor is ahead by "+money(v-h)+"."));
+}
+
+function renderAI(cs,D,avg,rate){
+  if(!rows.length||!avg){$("aiBox").style.display="none";$("aiEmpty").innerHTML='<div class="empty">No rows to count letters from. Paste your export in step 1 to size the drafting time.</div>';return;}
+  if(D<=0){$("aiBox").style.display="none";$("aiEmpty").innerHTML='<div class="empty">No monthly denied dollars yet. Enter them in step 3 to count letters per month.</div>';return;}
+  $("aiEmpty").innerHTML="";$("aiBox").style.display="";
+  var N=D/avg,tool=val("tool");
+  var rb=cs?cs[1].c.r:0,rbad=cs?cs[0].c.r:0;
+  function cell(mins,extra){var h=N*mins/60;return {h:h,cost:h*rate+extra};}
+  var uB=cell(val("manBase"),0),uX=cell(val("manBad"),0),sB=cell(val("aiBase"),tool),sX=cell(val("aiBad"),tool);
+  var savB=uB.h-sB.h,savX=uX.h-sX.h;
+  $("tAI").innerHTML='<tr><th></th><th class="n">Usual path, base</th><th class="n">Shortcut, base</th><th class="n bad">Usual path, bad</th><th class="n bad">Shortcut, bad</th></tr>'+
+   '<tr><td>Minutes per letter</td><td class="n">'+val("manBase")+'</td><td class="n">'+val("aiBase")+'</td><td class="n bad">'+val("manBad")+'</td><td class="n bad">'+val("aiBad")+'</td></tr>'+
+   '<tr><td>Drafting hours per month</td><td class="n">'+hrs(uB.h)+'</td><td class="n">'+hrs(sB.h)+'</td><td class="n bad">'+hrs(uX.h)+'</td><td class="n bad">'+hrs(sX.h)+'</td></tr>'+
+   '<tr><td>Cost per month</td><td class="n">'+money(uB.cost)+'</td><td class="n">'+money(sB.cost)+'</td><td class="n bad">'+money(uX.cost)+'</td><td class="n bad">'+money(sX.cost)+'</td></tr>'+
+   '<tr><td>Hours saved on letters that win</td><td class="n">-</td><td class="n">'+(cs?hrs(savB*rb):"-")+'</td><td class="n bad">-</td><td class="n bad">'+(cs?hrs(savX*rbad):"-")+'</td></tr>'+
+   '<tr><td>Hours saved on letters that lose</td><td class="n">-</td><td class="n">'+(cs?hrs(savB*(1-rb)):"-")+'</td><td class="n bad">-</td><td class="n bad">'+(cs?hrs(savX*(1-rbad)):"-")+'</td></tr>';
+  var rw=val("rework");
+  $("aiNote").innerHTML='About <b>'+Math.round(N)+'</b> letters a month ('+money(D)+' / '+money(avg)+' average per row). A named coder signs every letter. Base case: the shortcut saves '+hrs(savB)+' and '+money(uB.cost-sB.cost)+' a month'+(rw>0?', '+Math.round(savB/rw*100)+'% of your tracked rework hours':'')+'. Bad case: it saves '+hrs(savX)+' and '+money(uX.cost-sX.cost)+'.'+(!cs?' Enter an overturn rate to split the saving into won and lost letters.':'');
+}
+
+// events
+$("csv").addEventListener("input",render);
+$("btnExample").addEventListener("click",function(){loadExample();render();});
+$("btnClear").addEventListener("click",function(){$("csv").value="";render();$("csv").focus();});
+$("groups").addEventListener("input",function(e){
+  var el=e.target;if(!el.dataset.g)return;rates[el.dataset.g]=el.value;
+  var msg=el.parentNode.querySelector(".rmsg");
+  msg.innerHTML=el.value===""?'<span class="empty inline">No overturn rate for this payer. Divide last quarter\'s appeals won by appeals filed.</span>':"";
+  compute();
+});
+inputs.forEach(function(el){el.addEventListener("input",compute);});
+$("slider").addEventListener("input",function(){sliderTouched=true;compute();});
+$("btnPrint").addEventListener("click",function(){document.body.classList.add("slide-only");window.print();setTimeout(function(){document.body.classList.remove("slide-only");},500);});
+$("btnPrintAll").addEventListener("click",function(){window.print();});
+window.addEventListener("afterprint",function(){document.body.classList.remove("slide-only");});
+
+if(!load())loadExample();
+render();
+})();
+</script>
+</body>
+</html>
