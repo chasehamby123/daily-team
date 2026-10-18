@@ -1,11 +1,12 @@
 # Archive
 
-Every daily team and the asset it made, newest first. 14 days recorded.
+Every daily team and the asset it made, newest first. 15 days recorded.
 
 [Today](README.md)
 
 | Date | Task | Team | Constraint | Asset |
 |---|---|---|---|---|
+| [2026-10-18](days/2026-10-18/) | Mandate Gaps, One Page | Blacksmith · Urban planner · Family office CIO · Charles Darwin | Every result appears in a full sentence as well as a number. | [asset](days/2026-10-18/artifact-1.html) |
 | [2026-10-17](days/2026-10-17/) | The Monday Worklist | Florist · Teacher · Revenue cycle manager · Daedalus | Every empty state says what to do next. | [asset](days/2026-10-17/artifact-1.html) |
 | [2026-10-16](days/2026-10-16/) | Blank Before Cut | Locksmith · Packaging designer · Corporate development head · Scheherazade | Every change can be undone. | [asset](days/2026-10-16/artifact-1.html) |
 | [2026-10-15](days/2026-10-15/) | The Card for Your Accountant | Ceramicist · Textile designer · Owner preparing to sell · Ada Lovelace | Works fully offline after the first load. | [asset](days/2026-10-15/artifact-1.html) |

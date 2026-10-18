@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mandate Gaps, One Page</title>
+<style>
+:root{
+  --paper:#f3f1ec;
+  --card:#fbfaf7;
+  --ink:#1c1e20;
+  --iron:#4b5056;
+  --ash:#7a7f85;
+  --rule:#cfcac0;
+  --red:#a8201a;
+  --redsoft:#f6e3e1;
+  --ok:#2f5d3a;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+html{font-size:16px}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;line-height:1.45}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 40px}
+header h1{font-size:1.75rem;line-height:1.15;margin:0 0 4px;letter-spacing:-.01em}
+header p{margin:0;color:var(--iron);font-size:.95rem}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* The one bold element */
+.bar{background:var(--red);color:#fff;margin:16px 0 18px;padding:16px 18px;display:grid;grid-template-columns:auto 1fr;gap:6px 18px;align-items:center}
+.bar .big{font-family:var(--mono);font-size:2.6rem;font-weight:700;line-height:1;white-space:nowrap}
+.bar .big small{font-size:1rem;font-weight:400;margin-left:4px}
+.bar .say{font-size:1.02rem}
+.bar .say b{font-weight:700}
+
+.qs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) auto;gap:12px;align-items:end;margin-bottom:18px}
+label.q{display:block;font-size:.85rem;color:var(--iron)}
+label.q input{display:block;width:100%;margin-top:4px;font:inherit;font-family:var(--mono);font-size:1.1rem;padding:8px 10px;border:1px solid var(--iron);background:var(--card);color:var(--ink);border-radius:0}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+button{font:inherit;cursor:pointer;border:1px solid var(--iron);background:var(--card);color:var(--ink);padding:8px 12px;border-radius:0}
+button:hover{background:#ebe7df}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.store{font-size:.8rem;color:var(--ash);margin:-8px 0 16px}
+
+.group{background:var(--card);border:1px solid var(--rule);margin-bottom:14px}
+.ghead{display:grid;grid-template-columns:1fr auto;gap:4px 16px;padding:10px 14px;border-bottom:2px solid var(--ink)}
+.ghead h2{margin:0;font-size:1.05rem}
+.ghead .cost{font-size:.88rem;color:var(--iron)}
+.ghead .gopen{font-family:var(--mono);font-size:.85rem;text-align:right;white-space:nowrap}
+.item{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.2fr) auto;gap:6px 14px;padding:9px 14px 9px 10px;border-top:1px solid var(--rule);border-left:4px solid transparent;align-items:center}
+.item:first-of-type{border-top:0}
+.item.blank{border-left-color:var(--red);background:var(--redsoft)}
+.item.no{border-left-color:var(--red)}
+.item.yes{border-left-color:var(--ok)}
+.item .stmt{font-weight:600;font-size:.95rem}
+.item .stmt span{display:block;font-weight:400;font-size:.78rem;color:var(--iron);font-family:var(--mono)}
+.item .ex{font-size:.88rem;color:var(--iron);font-style:italic}
+.yn{display:flex}
+.yn button{min-width:52px;padding:6px 10px;font-size:.9rem}
+.yn button+button{border-left:0}
+.yn button[aria-pressed="true"][data-v="y"]{background:var(--ok);color:#fff;border-color:var(--ok)}
+.yn button[aria-pressed="true"][data-v="n"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.note{padding:10px 14px 12px;border-top:1px dashed var(--rule)}
+.note label{display:block;font-size:.85rem;color:var(--iron);margin-bottom:4px}
+.note textarea{width:100%;min-height:52px;font:inherit;font-size:.92rem;padding:8px;border:1px solid var(--rule);background:#fff;color:var(--ink);border-radius:0;resize:vertical}
+
+h2.sec{font-size:1.15rem;margin:26px 0 6px;padding-top:10px;border-top:2px solid var(--ink)}
+p.lead{margin:0 0 10px;color:var(--iron);font-size:.92rem}
+.tbl{width:100%;border-collapse:collapse;background:var(--card);font-size:.9rem;margin-bottom:10px}
+.tbl th,.tbl td{border:1px solid var(--rule);padding:8px 10px;vertical-align:top;text-align:left}
+.tbl thead th{background:#e7e3da;font-size:.85rem}
+.tbl th[scope=row]{font-weight:600;width:22%;background:#f1eee7}
+.tbl td .n{display:block;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:1.08rem;font-weight:700}
+.tbl td .s{display:block;font-size:.82rem;color:var(--iron);margin-top:2px}
+.tbl tr.inputs td{font-family:var(--mono);font-size:.82rem;color:var(--iron)}
+.tbl td.bad{background:#f8eeec}
+.scroll{overflow-x:auto}
+.verdict{border-left:4px solid var(--ink);padding:8px 12px;background:var(--card);margin:8px 0;font-size:.95rem}
+.verdict.fail{border-left-color:var(--red)}
+ul.review{margin:6px 0 10px;padding-left:20px;font-size:.92rem}
+details{background:var(--card);border:1px solid var(--rule);padding:8px 12px;margin:10px 0}
+summary{cursor:pointer;font-weight:600}
+.assume{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin-top:10px}
+.assume label{font-size:.82rem;color:var(--iron)}
+.assume input{display:block;width:100%;font-family:var(--mono);font-size:.95rem;padding:6px 8px;border:1px solid var(--rule);background:#fff;color:var(--ink);border-radius:0;margin-top:3px}
+pre.formula{font-family:var(--mono);font-size:.8rem;white-space:pre-wrap;margin:8px 0 0;color:var(--ink)}
+.gaps{background:var(--card);border:1px solid var(--rule);padding:10px 14px}
+.gaps ol{margin:4px 0 8px;padding-left:22px;font-size:.92rem}
+.gaps .gn{font-size:.9rem;margin:4px 0}
+.gaps .gn b{display:inline-block;min-width:70px}
+.sign{display:none}
+footer{margin-top:28px;padding-top:12px;border-top:1px solid var(--rule);font-size:.8rem;color:var(--iron)}
+footer p{margin:4px 0}
+
+@media (max-width:680px){
+  header h1{font-size:1.4rem}
+  .bar{grid-template-columns:1fr}
+  .bar .big{font-size:2.1rem}
+  .qs{grid-template-columns:1fr 1fr}
+  .tools{grid-column:1/-1}
+  .item{grid-template-columns:1fr auto}
+  .item .ex{grid-column:1/2;grid-row:2}
+  .item .yn{grid-row:1/3;grid-column:2}
+  .ghead{grid-template-columns:1fr}
+  .ghead .gopen{text-align:left}
+}
+@media (prefers-reduced-motion:no-preference){
+  .item,.yn button{transition:background-color .15s ease,border-color .15s ease}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none;animation:none;scroll-behavior:auto}
+}
+@page{size:A4;margin:12mm}
+@media print{
+  html{font-size:9pt}
+  body{background:#fff}
+  .wrap{max-width:none;padding:0}
+  .noprint{display:none}
+  .bar{-webkit-print-color-adjust:exact;print-color-adjust:exact;margin:6px 0 8px;padding:8px 10px}
+  .bar .big{font-size:20pt}
+  header h1{font-size:15pt}
+  h2.sec{margin:8px 0 3px;padding-top:4px;font-size:10.5pt}
+  p.lead{margin-bottom:4px}
+  .tbl{font-size:8pt;margin-bottom:4px}
+  .tbl th,.tbl td{padding:3px 5px}
+  .tbl td .n{font-size:9pt}
+  .tbl td .s{font-size:7.5pt}
+  .verdict{padding:3px 8px;margin:4px 0;font-size:8.5pt}
+  .gaps{padding:4px 8px}
+  .gaps ol{margin:2px 0 4px}
+  .sign{display:block;margin-top:8px;font-size:9pt;border-top:1px solid #000;padding-top:6px}
+  footer{margin-top:6px;padding-top:4px;font-size:7pt}
+  .tbl,.gaps,.verdict{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Mandate Gaps, One Page</h1>
+  <p>Twelve mandate items. Three groups, ordered by what a late miss costs.</p>
+</header>
+
+<div class="bar" role="status" aria-live="polite">
+  <div class="big"><span id="barNum">0</span><small>h / month</small></div>
+  <div class="say" id="barSay"></div>
+</div>
+
+<div class="qs noprint">
+  <label class="q">Deals you see per month
+    <input id="deals" type="number" min="0" step="1" inputmode="numeric">
+  </label>
+  <label class="q">Typical ticket, $M
+    <input id="ticket" type="number" min="0" step="0.5" inputmode="decimal">
+  </label>
+  <div class="tools">
+    <button type="button" id="btnPrint">Print summary</button>
+    <button type="button" id="btnExample">Load example</button>
+    <button type="button" id="btnClear">Clear</button>
+  </div>
+</div>
+<p class="store noprint" id="store"></p>
+
+<div id="checklist" class="noprint"></div>
+
+<h2 class="sec">Open items, in cost order</h2>
+<div class="gaps">
+  <p class="lead" id="gapLead"></p>
+  <ol id="gapList"></ol>
+  <div id="gapNotes"></div>
+</div>
+
+<h2 class="sec">What the open items cost: bad, base, good</h2>
+<p class="lead">Bad case: volume halves and the year-one close slips. Good case: volume rises 25% and one more deal closes.</p>
+<div class="scroll"><table class="tbl" id="caseTbl"></table></div>
+<div class="verdict" id="gapVerdict"></div>
+
+<h2 class="sec">Screening: usual path and shortcut, same inputs</h2>
+<p class="lead">Usual path: a retained screening analyst. Shortcut: an AI pass reads each teaser against the twelve items, a named associate signs off, and the screener takes a monthly floor plus a fee on closed tickets.</p>
+<div class="scroll"><table class="tbl" id="pathTbl"></table></div>
+<div class="verdict" id="pathVerdict"></div>
+<div class="verdict" id="pushVerdict"></div>
+<p class="lead" style="margin-top:8px">A person still reviews these steps:</p>
+<ul class="review">
+  <li>A named associate reads and signs off every AI pass before it reaches the CIO.</li>
+  <li>The CIO decides which deals go to legal. The AI pass does not.</li>
+  <li>Outside counsel reviews hold period, exit, and fee terms. Fee rules and legal costs vary by jurisdiction. Enter your own figures below.</li>
+</ul>
+
+<details class="noprint" id="assumeBox">
+  <summary>Assumptions and formulas</summary>
+  <div class="assume" id="assume"></div>
+  <pre class="formula" id="formula"></pre>
+</details>
+
+<p class="sign">AI first pass reviewed and signed off by: ______________________________ &nbsp; Date: ____________</p>
+
+<footer>
+  <p>Credits. Blacksmith: the red bar and each item as a yes or no with an example beside it. Urban planner: the cost order, with geography, hold period, and ticket size first, and the shortcut next to the usual path. Family office CIO: twelve items, three groups, two questions, and no broker language. Charles Darwin: one note per group that asks for the deal that broke the rule first.</p>
+  <p>This is a screening worksheet. It is not investment, legal, or tax advice. Item shares are working estimates.</p>
+  <p>Published by OuterHaven Advisory.</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+var KEY='mandate-gaps-v1';
+var BASE_MISS=0.04, CAP=0.9;
+
+var GROUPS=[
+ {id:'g1',name:'Group 1. Found at legal',stage:'legal',items:[
+  {id:'geo',t:'Geography is stated in writing.',ex:'North America and UK only.',w:0.12},
+  {id:'hold',t:'Hold period is stated.',ex:'5 to 8 years. No exit before year 4.',w:0.12},
+  {id:'tick',t:'Ticket size range is stated.',ex:'$10M to $30M per deal.',w:0.10}
+ ]},
+ {id:'g2',name:'Group 2. Found in diligence',stage:'diligence',items:[
+  {id:'sector',t:'Sectors in and out are stated.',ex:'Industrial and healthcare services. No biotech.',w:0.06},
+  {id:'ret',t:'Return target is stated.',ex:'Net 15% IRR, 2.0x MOIC.',w:0.05},
+  {id:'instr',t:'Instrument is stated.',ex:'Common or preferred equity. No venture debt.',w:0.05},
+  {id:'lead',t:'Lead or follow is stated.',ex:'Co-invest beside a lead sponsor only.',w:0.04}
+ ]},
+ {id:'g3',name:'Group 3. Found at the teaser',stage:'teaser',items:[
+  {id:'stage',t:'Company stage is stated.',ex:'EBITDA positive, $5M or more.',w:0.04},
+  {id:'excl',t:'Exclusions are stated.',ex:'No tobacco, weapons, or thermal coal.',w:0.03},
+  {id:'ccy',t:'Currency is stated.',ex:'USD or GBP. Hedged otherwise.',w:0.02},
+  {id:'gov',t:'Governance rights are stated.',ex:'Board observer seat at minimum.',w:0.02},
+  {id:'rep',t:'Reporting needs are stated.',ex:'Quarterly financials within 45 days.',w:0.01}
+ ]}
+];
+
+var DEF={hManual:2,minAI:25,legal:60000,dil:8000,reach1:1,reach2:3,analyst:9000,aiPer:3,floor:2000,feePct:0.4,closes:1};
+var ALAB=[
+ ['hManual','Screening hours per deal, usual','h'],
+ ['minAI','Screening minutes per deal with AI pass','min'],
+ ['legal','Cost of a deal killed at legal (local rates)','$'],
+ ['dil','Cost of a deal killed in diligence','$'],
+ ['reach1','Group 1 leaks that reach legal','%'],
+ ['reach2','Group 2 leaks that reach diligence','%'],
+ ['analyst','Usual path: analyst retainer per month','$'],
+ ['aiPer','AI pass cost per teaser','$'],
+ ['floor','Shortcut: screener floor per month','$'],
+ ['feePct','Shortcut: fee on closed ticket','%'],
+ ['closes','Closes per year, base case','deals']
+];
+
+function example(){
+ return {deals:40,ticket:20,
+  ans:{geo:'y',hold:'n',tick:'y',sector:'y',ccy:'y'},
+  notes:{g1:'Broke the rule: Harbor Logistics, 2022. Passed on a 3-year hold. The sponsor exited at 3.1x.',
+         g2:'Fit every rule: Calder Dental, 2023. Lost 40% of capital.',g3:''},
+  A:clone(DEF)};
+}
+function clone(o){return JSON.parse(JSON.stringify(o));}
+
+var storageOK=true;
+function load(){
+ try{var r=localStorage.getItem(KEY);if(!r)return null;var s=JSON.parse(r);
+  if(!s||typeof s!=='object')return null;
+  s.ans=s.ans||{};s.notes=s.notes||{};s.A=Object.assign(clone(DEF),s.A||{});return s;
+ }catch(e){storageOK=false;return null;}
+}
+function save(){
+ try{localStorage.setItem(KEY,JSON.stringify(S));storageOK=true;}catch(e){storageOK=false;}
+ $('store').textContent=storageOK?'Saved in this browser after every change. Nothing leaves this device.':'Browser storage is blocked. Your answers stay until you close this tab.';
+}
+function wipe(){try{localStorage.removeItem(KEY);}catch(e){storageOK=false;}}
+
+var S=load()||example();
+
+function $(id){return document.getElementById(id);}
+function money(n){var neg=n<0;n=Math.round(Math.abs(n));return (neg?'-$':'$')+n.toLocaleString('en-US');}
+function h1(n){return (Math.round(n*10)/10).toLocaleString('en-US');}
+function d1(n){return (Math.round(n*10)/10).toLocaleString('en-US');}
+function num(v){var n=parseFloat(v);return isFinite(n)&&n>=0?n:0;}
+function pct(n){return Math.round(n*100)+'%';}
+
+/* ---------- checklist ---------- */
+function buildChecklist(){
+ var html='';
+ GROUPS.forEach(function(g){
+  html+='<section class="group" data-g="'+g.id+'"><div class="ghead"><div><h2>'+g.name+'</h2><div class="cost" id="cost-'+g.id+'"></div></div><div class="gopen" id="open-'+g.id+'"></div></div>';
+  g.items.forEach(function(it){
+   html+='<div class="item" id="row-'+it.id+'"><div class="stmt">'+it.t+'<span>Left open, lets through about '+pct(it.w)+' of deals.</span></div>'+
+    '<div class="ex">'+it.ex+'</div>'+
+    '<div class="yn" role="group" aria-label="'+it.t+'"><button type="button" data-id="'+it.id+'" data-v="y" aria-pressed="false">Yes</button><button type="button" data-id="'+it.id+'" data-v="n" aria-pressed="false">No</button></div></div>';
+  });
+  html+='<div class="note"><label for="note-'+g.id+'">Exception first. Name the deal that broke these rules, or fit them and failed.</label><textarea id="note-'+g.id+'" data-g="'+g.id+'" placeholder="Deal, year, what happened."></textarea></div></section>';
+ });
+ $('checklist').innerHTML=html;
+ $('checklist').addEventListener('click',function(e){
+  var b=e.target.closest('button[data-id]');if(!b)return;
+  var id=b.getAttribute('data-id'),v=b.getAttribute('data-v');
+  S.ans[id]=(S.ans[id]===v)?'':v;update();
+ });
+ $('checklist').addEventListener('input',function(e){
+  var t=e.target;if(t.tagName==='TEXTAREA'){S.notes[t.getAttribute('data-g')]=t.value;update(true);}
+ });
+}
+
+function buildAssume(){
+ var h='';
+ ALAB.forEach(function(a){h+='<label>'+a[1]+' ('+a[2]+')<input type="number" min="0" step="any" data-a="'+a[0]+'"></label>';});
+ $('assume').innerHTML=h;
+ $('assume').addEventListener('input',function(e){var k=e.target.getAttribute('data-a');if(k){S.A[k]=num(e.target.value);update();}});
+}
+
+function fillInputs(){
+ $('deals').value=S.deals===''||S.deals==null?'':S.deals;
+ $('ticket').value=S.ticket===''||S.ticket==null?'':S.ticket;
+ GROUPS.forEach(function(g){$('note-'+g.id).value=S.notes[g.id]||'';});
+ Array.prototype.forEach.call(document.querySelectorAll('[data-a]'),function(i){i.value=S.A[i.getAttribute('data-a')];});
+}
+
+/* ---------- model ---------- */
+function openW(g){var s=0;g.items.forEach(function(it){if(S.ans[it.id]!=='y')s+=it.w;});return s;}
+function missShare(){var s=BASE_MISS;GROUPS.forEach(function(g){s+=openW(g);});return Math.min(CAP,s);}
+function calc(deals,closes){
+ var A=S.A,share=missShare(),ticket=num(S.ticket)*1e6;
+ var off=deals*share;
+ var hrsUsual=off*A.hManual, hrsAI=off*A.minAI/60;
+ var late=deals*12*(openW(GROUPS[0])*A.reach1/100*A.legal+openW(GROUPS[1])*A.reach2/100*A.dil);
+ var usual=A.analyst*12;
+ var ai=deals*12*A.aiPer, fee=A.feePct/100*closes*ticket, floor=A.floor*12;
+ var shortc=floor+ai+fee;
+ return {deals:deals,closes:closes,share:share,off:off,hrsUsual:hrsUsual,hrsAI:hrsAI,saved:hrsUsual-hrsAI,late:late,usual:usual,ai:ai,fee:fee,floor:floor,shortc:shortc};
+}
+function cases(){
+ var d=num(S.deals),c=S.A.closes;
+ return [
+  {k:'bad',label:'Bad',r:calc(Math.round(d*0.5),0)},
+  {k:'base',label:'Base',r:calc(d,c)},
+  {k:'good',label:'Good',r:calc(Math.round(d*1.25),c+1)}
+ ];
+}
+
+/* ---------- render ---------- */
+function cell(n,s,cls){return '<td'+(cls?' class="'+cls+'"':'')+'><span class="n">'+n+'</span><span class="s">'+s+'</span></td>';}
+
+function update(skipInputs){
+ var A=S.A,cs=cases(),base=cs[1].r,bad=cs[0].r,d=num(S.deals),tk=num(S.ticket);
+
+ // rows and group headers
+ GROUPS.forEach(function(g){
+  var open=0;
+  g.items.forEach(function(it){
+   var v=S.ans[it.id]||'',row=$('row-'+it.id);
+   row.className='item '+(v==='y'?'yes':v==='n'?'no':'blank');
+   Array.prototype.forEach.call(row.querySelectorAll('button'),function(b){b.setAttribute('aria-pressed',b.getAttribute('data-v')===v?'true':'false');});
+   if(v!=='y')open++;
+  });
+  var ow=openW(g),c;
+  if(g.id==='g1')c='A miss here is found at legal. One costs '+money(A.legal)+' and about six weeks. Left open, this group costs about '+money(d*12*ow*A.reach1/100*A.legal)+' a year.';
+  else if(g.id==='g2')c='A miss here is found in diligence. One costs about '+money(A.dil)+' and ten days. Left open, this group costs about '+money(d*12*ow*A.reach2/100*A.dil)+' a year.';
+  else c='A miss here is found at the teaser. It costs screening time only. Left open, this group costs about '+h1(d*ow*A.hManual)+' hours a month.';
+  $('cost-'+g.id).textContent=c;
+  $('open-'+g.id).textContent=open+' of '+g.items.length+' open';
+ });
+
+ // red bar
+ $('barNum').textContent=h1(base.hrsUsual);
+ if(d>0){
+  $('barSay').innerHTML='<b>'+d1(base.off)+'</b> of your <b>'+d+'</b> deals a month miss the mandate. Screening them takes <b>'+h1(base.hrsUsual)+'</b> hours a month, or <b>'+h1(base.hrsUsual*12)+'</b> hours a year.';
+ }else{
+  $('barSay').textContent='Enter the deals you see per month. The hours lost to off-mandate deals appear here.';
+ }
+
+ // gap list
+ var list=[],openCount=0;
+ GROUPS.forEach(function(g,gi){
+  g.items.slice().sort(function(a,b){return b.w-a.w;}).forEach(function(it){
+   var v=S.ans[it.id]||'';
+   if(v!=='y'){openCount++;list.push('<li><b>'+it.t.replace(' is stated in writing.','').replace(' is stated.','').replace(' are stated.','')+'</b>: '+(v==='n'?'answered No':'left blank')+'. It lets through about '+pct(it.w)+' of deals, found at the '+g.stage+'.</li>');}
+  });
+ });
+ $('gapLead').textContent=openCount+' of 12 items are open. Together they let about '+pct(missShare())+' of incoming deals past screening.';
+ $('gapList').innerHTML=list.length?list.join(''):'<li>No items are open. The written mandate covers all twelve.</li>';
+ var notes='';
+ GROUPS.forEach(function(g,i){
+  var t=(S.notes[g.id]||'').trim();
+  notes+='<p class="gn"><b>Group '+(i+1)+':</b> <span></span></p>';
+ });
+ $('gapNotes').innerHTML=notes;
+ Array.prototype.forEach.call($('gapNotes').querySelectorAll('span'),function(sp,i){
+  var t=(S.notes[GROUPS[i].id]||'').trim();sp.textContent=t?t:'No exception written yet.';
+ });
+
+ // case table
+ var t='<thead><tr><th scope="col">Result</th>'+cs.map(function(c){return '<th scope="col">'+c.label+'</th>';}).join('')+'</tr></thead><tbody>';
+ t+='<tr class="inputs"><th scope="row">Inputs</th>'+cs.map(function(c){return '<td'+(c.k==='bad'?' class="bad"':'')+'>'+c.r.deals+' deals/month<br>'+c.r.closes+' close(s) in year one<br>$'+tk+'M ticket</td>';}).join('')+'</tr>';
+ t+='<tr><th scope="row">Off-mandate deals per month</th>'+cs.map(function(c){return cell(d1(c.r.off),d1(c.r.off)+' of '+c.r.deals+' deals miss the mandate each month.',c.k==='bad'?'bad':'');}).join('')+'</tr>';
+ t+='<tr><th scope="row">Hours lost per month</th>'+cs.map(function(c){return cell(h1(c.r.hrsUsual)+' h','Screening those deals takes '+h1(c.r.hrsUsual)+' hours a month.',c.k==='bad'?'bad':'');}).join('')+'</tr>';
+ t+='<tr><th scope="row">Late-miss cost per year</th>'+cs.map(function(c){return cell(money(c.r.late),'Deals that die at legal or diligence cost about '+money(c.r.late)+' a year.',c.k==='bad'?'bad':'');}).join('')+'</tr>';
+ t+='</tbody>';
+ $('caseTbl').innerHTML=t;
+ var gv=$('gapVerdict');
+ if(openCount===0){gv.className='verdict';gv.textContent='All 12 items are closed. The remaining '+pct(BASE_MISS)+' miss rate comes from deals that slip past a full written mandate.';}
+ else if(bad.hrsUsual>0){gv.className='verdict';gv.textContent='The case for closing these gaps survives the bad case. At '+bad.deals+' deals a month, the '+openCount+' open items still cost '+h1(bad.hrsUsual)+' hours a month and about '+money(bad.late)+' a year. The problem runs every month until the mandate is written down.';}
+ else{gv.className='verdict fail';gv.textContent='At '+bad.deals+' deals a month the open items cost 0 hours. Enter your monthly deal volume to test the bad case.';}
+
+ // path table
+ var p='<thead><tr><th scope="col">Same inputs</th>'+cs.map(function(c){return '<th scope="col">'+c.label+'</th>';}).join('')+'</tr></thead><tbody>';
+ p+='<tr class="inputs"><th scope="row">Inputs</th>'+cs.map(function(c){return '<td'+(c.k==='bad'?' class="bad"':'')+'>'+c.r.deals+' deals/month<br>'+c.r.closes+' close(s) at $'+tk+'M</td>';}).join('')+'</tr>';
+ p+='<tr><th scope="row">Usual path, no AI, per year</th>'+cs.map(function(c){return cell(money(c.r.usual),'The analyst costs '+money(c.r.usual)+' a year at any volume.',c.k==='bad'?'bad':'');}).join('')+'</tr>';
+ p+='<tr><th scope="row">Shortcut, with AI pass, per year</th>'+cs.map(function(c){return cell(money(c.r.shortc),'That is a '+money(c.r.floor)+' floor, '+money(c.r.ai)+' of AI passes, and '+money(c.r.fee)+' in fees.',c.k==='bad'?'bad':'');}).join('')+'</tr>';
+ p+='<tr><th scope="row">Difference</th>'+cs.map(function(c){var df=c.r.usual-c.r.shortc;return cell(money(Math.abs(df)),df>=0?'The shortcut costs '+money(df)+' less than the usual path.':'The shortcut costs '+money(-df)+' more, because '+c.r.closes+' deal(s) closed.',c.k==='bad'?'bad':'');}).join('')+'</tr>';
+ p+='<tr><th scope="row">Screening hours on off-mandate deals per month</th>'+cs.map(function(c){return cell(h1(c.r.hrsUsual)+' h &rarr; '+h1(c.r.hrsAI)+' h','The AI pass saves about '+h1(c.r.saved)+' hours a month on '+d1(c.r.off)+' off-mandate deals.',c.k==='bad'?'bad':'');}).join('')+'</tr>';
+ p+='<tr><th scope="row">Screener income, year one</th>'+cs.map(function(c){return cell(money(c.r.floor+c.r.fee),c.r.fee>0?'The screener earns the floor plus '+money(c.r.fee)+' in fees.':'The screener earns only the '+money(c.r.floor)+' floor.',c.k==='bad'?'bad':'');}).join('')+'</tr>';
+ p+='</tbody>';
+ $('pathTbl').innerHTML=p;
+
+ var pv=$('pathVerdict'),pu=$('pushVerdict');
+ var badDiff=bad.usual-bad.shortc;
+ if(badDiff>=0){
+  pv.className='verdict';
+  pv.textContent='The shortcut survives the bad case. At '+bad.deals+' deals a month and no close in year one, it costs '+money(bad.shortc)+' against '+money(bad.usual)+', and still saves '+h1(bad.saved)+' hours a month. In that case the screener earns only the '+money(bad.floor)+' floor.';
+  var room=base.usual-base.floor-base.ai, fp=A.feePct/100;
+  if(fp>0&&tk>0){
+   var be=room/fp;
+   pu.className='verdict';
+   pu.textContent='At base volume the shortcut stays cheaper until closed tickets pass '+money(be)+' in a year. That is about '+d1(be/(tk*1e6))+' deals at a $'+tk+'M ticket. Past that point you pay more, and you pay it out of deals that closed.';
+  }else{
+   pu.className='verdict';
+   pu.textContent='With a 0% fee or no ticket entered, the shortcut costs '+money(base.shortc)+' a year at base volume. It stays cheaper until volume passes '+Math.floor(Math.max(0,room)/12/Math.max(A.aiPer,0.0001)+d)+' deals a month.';
+  }
+ }else{
+  var safeFloor=Math.max(0,(bad.usual-bad.ai)/12);
+  pu.className='verdict fail';
+  pu.textContent='Safer setting: keep the screener floor at or below '+money(safeFloor)+' a month, or stay on the usual path.';
+  pv.className='verdict fail';
+  pv.textContent='The shortcut does not survive the bad case. At '+bad.deals+' deals a month it costs '+money(bad.shortc)+' against '+money(bad.usual)+', which is '+money(-badDiff)+' more.';
+ }
+
+ // formula
+ $('formula').textContent=
+  'Miss share         = 4% + sum of shares for open items (cap 90%) = '+pct(missShare())+'\n'+
+  'Off-mandate deals  = deals per month x miss share\n'+
+  'Hours lost / month = off-mandate deals x '+A.hManual+' h\n'+
+  'Late-miss cost/yr  = deals x 12 x (G1 open share x '+A.reach1+'% x '+money(A.legal)+' + G2 open share x '+A.reach2+'% x '+money(A.dil)+')\n'+
+  'Usual path / yr    = '+money(A.analyst)+' x 12\n'+
+  'Shortcut / yr      = '+money(A.floor)+' x 12 + deals x 12 x '+money(A.aiPer)+' + '+A.feePct+'% x closes x ticket\n'+
+  'Hours saved/month  = off-mandate deals x ('+A.hManual+' h - '+A.minAI+' min)\n'+
+  'Break-even closed  = (usual - floor x 12 - AI cost) / fee %\n'+
+  'Bad = 50% of deals, 0 closes. Base = your deals, '+A.closes+' close(s). Good = 125% of deals, '+(A.closes+1)+' closes.\n'+
+  'Item shares are working estimates. Legal and fee figures depend on local rules and rates.';
+
+ save();
+}
+
+/* ---------- wire up ---------- */
+buildChecklist();
+buildAssume();
+fillInputs();
+$('deals').addEventListener('input',function(){S.deals=this.value===''?'':num(this.value);update();});
+$('ticket').addEventListener('input',function(){S.ticket=this.value===''?'':num(this.value);update();});
+$('btnPrint').addEventListener('click',function(){window.print();});
+$('btnExample').addEventListener('click',function(){S=example();fillInputs();update();});
+$('btnClear').addEventListener('click',function(){
+ if(window.confirm('Clear all ticks, notes, and both answers in this browser?')){
+  wipe();S={deals:'',ticket:'',ans:{},notes:{},A:clone(DEF)};fillInputs();update();
+ }
+});
+update();
+})();
+</script>
+</body>
+</html>

@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-10-17: The Monday Worklist
+### 2026-10-18: Mandate Gaps, One Page
 
-<a href="days/2026-10-17/"><img src="days/2026-10-17/team.png" alt="Team for 2026-10-17: Florist · Teacher · Revenue cycle manager · Daedalus" width="100%"></a>
+<a href="days/2026-10-18/"><img src="days/2026-10-18/team.png" alt="Team for 2026-10-18: Blacksmith · Urban planner · Family office CIO · Charles Darwin" width="100%"></a>
 
-**Task:** Downside check: a plan's cost, likely gain, and odds give the worst case, the expected result, and whether the loss is capped.
+**Task:** Self-audit checklist: a grouped checklist with notes per item gives a printable summary of gaps, saved in the browser.
 
-**Decision:** The page reads a pasted denial export and a rework-hours figure, then shows an in-house appeals hire and a contingency vendor side by side, each with its worst case, expected monthly result, and whether the loss is capped.
+**Decision:** The page lets a family office CIO tick twelve mandate items in three cost-ordered groups, then prints a one-page gap summary that states in sentences and numbers how many off-mandate deals and hours the open items let through each month.
 
-<a href="days/2026-10-17/"><img src="days/2026-10-17/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-10-18/"><img src="days/2026-10-18/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-10-17/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-10-18/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,15 +37,15 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-10-18](days/2026-10-18/) | <a href="days/2026-10-18/"><img src="days/2026-10-18/artifact-1.png" alt="Mandate Gaps, One Page" width="160"></a> | Mandate Gaps, One Page | Blacksmith · Urban planner · Family office CIO · Charles Darwin |
 | [2026-10-17](days/2026-10-17/) | <a href="days/2026-10-17/"><img src="days/2026-10-17/artifact-1.png" alt="The Monday Worklist" width="160"></a> | The Monday Worklist | Florist · Teacher · Revenue cycle manager · Daedalus |
 | [2026-10-16](days/2026-10-16/) | <a href="days/2026-10-16/"><img src="days/2026-10-16/artifact-1.png" alt="Blank Before Cut" width="160"></a> | Blank Before Cut | Locksmith · Packaging designer · Corporate development head · Scheherazade |
 | [2026-10-15](days/2026-10-15/) | <a href="days/2026-10-15/"><img src="days/2026-10-15/artifact-1.png" alt="The Card for Your Accountant" width="160"></a> | The Card for Your Accountant | Ceramicist · Textile designer · Owner preparing to sell · Ada Lovelace |
 | [2026-10-14](days/2026-10-14/) | <a href="days/2026-10-14/"><img src="days/2026-10-14/artifact-1.png" alt="Dead Air Log" width="160"></a> | Dead Air Log | Radio producer · Industrial designer · Independent sponsor · Odysseus |
 | [2026-10-13](days/2026-10-13/) | <a href="days/2026-10-13/"><img src="days/2026-10-13/artifact-1.png" alt="Defensible in a Day" width="160"></a> | Defensible in a Day | Documentary director · Playwright · Multi-family office adviser · Benjamin Franklin |
 | [2026-10-12](days/2026-10-12/) | <a href="days/2026-10-12/"><img src="days/2026-10-12/artifact-1.png" alt="The Calendar by the Register" width="160"></a> | The Calendar by the Register | Set designer · Bookbinder · Retiring owner with no successor · Euclid |
-| [2026-10-11](days/2026-10-11/) | <a href="days/2026-10-11/"><img src="days/2026-10-11/artifact-1.png" alt="The Dark Hours" width="160"></a> | The Dark Hours | Animator · Game designer · Home services owner · Penelope |
 
-[All 14 days](ARCHIVE.md)
+[All 15 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works
