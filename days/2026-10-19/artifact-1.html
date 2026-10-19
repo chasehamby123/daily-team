@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Who Picks Up: hire or cover the phone, priced at 6, 12 and 24 months</title>
+<style>
+:root{
+  --paper:#f6f1e7;--card:#fffdf8;--ink:#1d1b18;--soft:#5a554c;--rule:#d9d0bf;
+  --hire:#8a5a24;--flat:#2e5876;--per:#3f7a63;--nothing:#b0281f;
+  --serif:ui-serif,Georgia,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--sans)}
+main{max-width:980px;margin:0 auto;padding:16px 16px 40px}
+h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.2;margin:0 0 8px}
+h1{font-size:40px}
+h2{font-size:24px}
+h3{font-size:18px}
+p{margin:0 0 10px}
+.box{background:var(--card);border:1px solid var(--rule);border-radius:6px;padding:20px;margin:0 0 20px}
+.step{display:inline-block;font:600 13px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--soft);margin-bottom:8px}
+.hero{display:grid;grid-template-columns:150px 1fr;gap:24px;align-items:center;border-top:6px solid var(--nothing)}
+.hero svg{width:150px;height:150px}
+.story{font-family:var(--serif);font-size:20px;margin-bottom:12px}
+.story b{color:var(--nothing)}
+.heroLine{font-size:18px;border-left:4px solid var(--nothing);padding-left:12px;margin-top:12px}
+.ring{fill:none;stroke:var(--nothing);stroke-width:3;opacity:0;transform-origin:75px 70px;animation:ring 2.4s ease-out infinite}
+.ring.r2{animation-delay:.8s}.ring.r3{animation-delay:1.6s}
+@keyframes ring{0%{opacity:.9;transform:scale(.6)}100%{opacity:0;transform:scale(1.3)}}
+@media (prefers-reduced-motion:reduce){.ring{animation:none;opacity:.5;transform:none}.ring.r2{opacity:.3}.ring.r3{opacity:.15}}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px 20px}
+.field label{display:block;font-size:16px;font-weight:600;margin-bottom:4px}
+.field input,.field select{width:100%;font:16px var(--sans);padding:10px;border:1px solid #a89f8d;border-radius:4px;background:#fff;color:var(--ink)}
+.field input:focus,.field select:focus{outline:3px solid #e2b04a;outline-offset:1px}
+.help{font-size:14px;color:var(--soft);margin-top:4px}
+fieldset{border:1px dashed var(--rule);border-radius:6px;margin:20px 0 0;padding:16px}
+legend{font-family:var(--serif);font-size:18px;padding:0 6px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
+button{font:600 16px var(--sans);padding:10px 16px;border-radius:4px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer}
+button.ghost{background:transparent;color:var(--ink)}
+.since{font-size:18px;margin-top:16px;padding:12px;background:#f3e3df;border-radius:4px}
+.cases{display:flex;flex-wrap:wrap;gap:4px 16px;margin:8px 0 12px}
+.cases label{font-size:16px;font-weight:600;display:flex;align-items:center;gap:6px}
+.cases input{width:20px;height:20px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px;margin:8px 0}
+.legend span::before{content:"";display:inline-block;width:12px;height:12px;margin-right:6px;vertical-align:-1px;background:var(--c)}
+#chart{width:100%;height:auto;display:block}
+.cheap{font-size:16px;margin-top:8px}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.case{border:1px solid var(--rule);border-radius:6px;padding:14px;background:#fff}
+.case.bad{border-top:5px solid var(--nothing)}.case.base{border-top:5px solid var(--ink)}.case.good{border-top:5px solid var(--per)}
+.case ul{margin:6px 0 10px;padding-left:18px;font-size:14px;color:var(--soft)}
+.case table{width:100%;font-size:14px;border-collapse:collapse}
+.case td{padding:3px 0;border-bottom:1px solid #eee7da}
+.case td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.case tr.win td{font-weight:700}
+.verdict{margin-top:14px;padding:14px;border-radius:4px;background:#eef3ee;border-left:5px solid var(--per)}
+.verdict.fail{background:#f6e6e3;border-left-color:var(--nothing)}
+table.plain{width:100%;border-collapse:collapse;font-size:15px}
+table.plain th,table.plain td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--rule);vertical-align:top}
+table.plain td.n{text-align:right;font-variant-numeric:tabular-nums}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.two>div{border:1px solid var(--rule);border-radius:6px;padding:14px;background:#fff}
+.promise{font-size:15px;padding:12px;border:1px solid var(--rule);background:#fbf7ee;border-radius:4px;margin-top:12px}
+code,.formula{font:14px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.formula{background:#fbf7ee;border:1px solid var(--rule);border-radius:4px;padding:12px;white-space:pre-wrap;overflow-x:auto}
+textarea{width:100%;font:16px/1.5 var(--sans);padding:10px;border:1px solid #a89f8d;border-radius:4px;min-height:96px;background:#fff;color:var(--ink)}
+.credits{font-size:13px;color:var(--soft);border-top:1px solid var(--rule);padding-top:12px}
+footer{font-size:13px;color:var(--soft);margin-top:8px}
+@media (max-width:700px){
+  h1{font-size:32px}
+  .hero{grid-template-columns:1fr}.hero svg{width:110px;height:110px}
+  .three,.two{grid-template-columns:1fr}
+}
+@media print{
+  body{background:#fff}
+  .box{break-inside:avoid;border-color:#999}
+  .row,.cases,#copyBtn{display:none}
+  .ring{animation:none;opacity:.5}
+  .field input,.field select{border:1px solid #999}
+}
+</style>
+</head>
+<body>
+<main>
+
+<section class="box hero" aria-labelledby="t">
+  <svg viewBox="0 0 150 150" role="img" aria-label="A desk phone ringing with no one answering">
+    <circle class="ring" cx="75" cy="70" r="46"/>
+    <circle class="ring r2" cx="75" cy="70" r="46"/>
+    <circle class="ring r3" cx="75" cy="70" r="46"/>
+    <rect x="35" y="78" width="80" height="44" rx="8" fill="#1d1b18"/>
+    <path d="M30 76c0-22 90-22 90 0l-14 8c-4-12-58-12-62 0z" fill="#b0281f"/>
+    <g fill="#f6f1e7"><rect x="52" y="88" width="10" height="7" rx="1"/><rect x="70" y="88" width="10" height="7" rx="1"/><rect x="88" y="88" width="10" height="7" rx="1"/><rect x="52" y="100" width="10" height="7" rx="1"/><rect x="70" y="100" width="10" height="7" rx="1"/><rect x="88" y="100" width="10" height="7" rx="1"/></g>
+  </svg>
+  <div>
+    <span class="step">1. The call</span>
+    <p class="story">12:40. A mum rings about her son's ear. Ring. Ring. Ring. She rings twice more. By two o'clock she has <b>booked at the clinic on the next street</b>.</p>
+    <h1 id="t">Who Picks Up</h1>
+    <p>Your missed calls, priced at 6, 12 and 24 months. Four paths on one scale: hire, cover the phone on a flat fee, cover the phone per booking, or change nothing.</p>
+    <p class="heroLine" id="heroLine">Loading your numbers.</p>
+  </div>
+</section>
+
+<section class="box" aria-labelledby="h2in">
+  <span class="step">2. Your numbers</span>
+  <h2 id="h2in">Start with the missed-call log on your front desk phone</h2>
+  <p class="help">The example below is a two-room clinic. Change any box. Every figure updates as you type.</p>
+  <div class="grid" id="inputs">
+    <div class="field"><label for="calls">Missed calls last week</label><input id="calls" type="number" inputmode="decimal" min="0" step="1"><div class="help">Count from the phone log. Include lunch and after six.</div></div>
+    <div class="field"><label for="months">How many months has this been happening</label><input id="months" type="number" inputmode="decimal" min="0" step="1"><div class="help">A rough guess is fine.</div></div>
+    <div class="field"><label for="salary">Receptionist salary per year ($)</label><input id="salary" type="number" inputmode="decimal" min="0" step="500"><div class="help">Before on-costs. On-costs are set below.</div></div>
+    <div class="field"><label for="ramp">Weeks until a new hire answers alone</label><input id="ramp" type="number" inputmode="decimal" min="0" step="1"><div class="help">Paid, shadowing, not yet catching calls.</div></div>
+    <div class="field"><label for="value">Average booking value ($)</label><input id="value" type="number" inputmode="decimal" min="0" step="5"><div class="help">What one appointment brings in.</div></div>
+    <div class="field"><label for="fee">Tool monthly fee ($)</label><input id="fee" type="number" inputmode="decimal" min="0" step="10"><div class="help">Use the figure from any quote you hold.</div></div>
+    <div class="field"><label for="hour">Busiest hour for missed calls</label>
+      <select id="hour"></select><div class="help">The hour the log shows most often.</div></div>
+  </div>
+
+  <fieldset>
+    <legend>Assumptions you can change</legend>
+    <div class="grid">
+      <div class="field"><label for="perBook">Tool fee per booked appointment ($)</label><input id="perBook" type="number" inputmode="decimal" min="0" step="0.5"><div class="help">For the pay-per-booking option.</div></div>
+      <div class="field"><label for="onCost">Employer on-costs (% of salary)</label><input id="onCost" type="number" inputmode="decimal" min="0" step="1"><div class="help">Payroll tax, leave, pension. These depend on local rules. Enter your own.</div></div>
+      <div class="field"><label for="bookRate">Answered missed calls that book (%)</label><input id="bookRate" type="number" inputmode="decimal" min="0" max="100" step="1"><div class="help">Out of callers who reach someone.</div></div>
+      <div class="field"><label for="cover">Missed calls a hire would be there for (%)</label><input id="cover" type="number" inputmode="decimal" min="0" max="100" step="1"><div class="help">A receptionist is not there after six.</div></div>
+      <div class="field"><label for="mins">Minutes your desk spends chasing each missed call</label><input id="mins" type="number" inputmode="decimal" min="0" step="1"><div class="help">Voicemail, callbacks, notes.</div></div>
+    </div>
+  </fieldset>
+
+  <div class="row">
+    <button type="button" id="exampleBtn">Load the example</button>
+    <button type="button" class="ghost" id="clearBtn">Clear all boxes</button>
+  </div>
+  <p class="since" id="since"></p>
+</section>
+
+<section class="box" aria-labelledby="h2bars">
+  <span class="step">3. The bars</span>
+  <h2 id="h2bars">Total cost of each path: what you pay plus bookings still lost</h2>
+  <p class="help">Lower is cheaper. All four bars share one scale.</p>
+  <div class="cases" role="radiogroup" aria-label="Case shown in chart">
+    <label><input type="radio" name="case" value="bad"> Bad case</label>
+    <label><input type="radio" name="case" value="base" checked> Base case</label>
+    <label><input type="radio" name="case" value="good"> Good case</label>
+  </div>
+  <div class="legend">
+    <span style="--c:var(--hire)">Hire a receptionist</span>
+    <span style="--c:var(--flat)">Cover the phone, flat fee</span>
+    <span style="--c:var(--per)">Cover the phone, per booking</span>
+    <span style="--c:var(--nothing)">Change nothing</span>
+  </div>
+  <svg id="chart" viewBox="0 0 640 320" role="img" aria-labelledby="chartDesc"><desc id="chartDesc">Bar chart of total cost for four paths at 6, 12 and 24 months.</desc></svg>
+  <p class="cheap" id="cheap"></p>
+
+  <h3 style="margin-top:20px">Bad, base and good, side by side (24 months)</h3>
+  <div class="three" id="three"></div>
+  <div class="verdict" id="verdict"></div>
+</section>
+
+<section class="box" aria-labelledby="h2short">
+  <h2 id="h2short">The shortcut: pay per booking instead of a flat fee</h2>
+  <p>Same inputs, same tool. The only change is how the fee is charged. If calls dry up, the per-booking fee shrinks with them.</p>
+  <div class="two" id="shortcut"></div>
+  <p class="promise">Answered within 3 rings. Clinical calls passed to your staff, callback within 15 minutes. Your practice manager reviews call summaries and any billing each morning.</p>
+</section>
+
+<section class="box" aria-labelledby="h2ai">
+  <h2 id="h2ai">With the tool and without it, per month</h2>
+  <p class="help">Average monthly cost over the first 12 months. Includes bookings still lost.</p>
+  <div style="overflow-x:auto"><table class="plain" id="aiTable"></table></div>
+  <h3 style="margin-top:16px">Steps a person still does</h3>
+  <ul>
+    <li>Every clinical question goes to a staff member. The tool books, moves and takes messages. It gives no clinical advice.</li>
+    <li>A staff member returns clinical calls within 15 minutes.</li>
+    <li>The practice manager reads the call summaries each morning and corrects any wrong booking.</li>
+    <li>The practice manager checks the per-booking bill against the appointment book each month.</li>
+  </ul>
+  <p id="timeBack"></p>
+</section>
+
+<section class="box" aria-labelledby="h2f">
+  <h2 id="h2f">The formula</h2>
+  <div class="formula" id="formula">weeks per month = 52 / 12 = 4.33
+missed calls  M = Missed calls last week x case multiplier
+hang-up share h = share who hang up on a recorded voice (bad 20%, base 10%, good 5%)
+booking rate  b,  booking value v,  months T
+
+Change nothing      = M x b x 4.33 x v x T
+Bookings still lost with the tool = M x h x b x 4.33 x v x T
+Cover, flat fee     = tool fee x T + bookings still lost
+Cover, per booking  = fee per booking x M x (1 - h) x b x 4.33 x T + bookings still lost
+Hire                = salary x (1 + on-costs) / 12 x T
+                      + M x b x 4.33 x v x T
+                      - M x cover x b x 4.33 x v x (T - ramp weeks / 4.33, not below 0)
+
+Bookings lost since this started = Missed calls last week x months x 4.33 x b
+Desk time back (up to) = M x (1 - h) x minutes per call / 60 hours a week</div>
+  <p class="help" style="margin-top:8px">"Workload" here means calls per week. It does not mean hours. "Looked after" means answered within 3 rings, and clinical calls returned by staff within 15 minutes.</p>
+</section>
+
+<section class="box" aria-labelledby="h2s">
+  <span class="step">4. The line to send</span>
+  <h2 id="h2s">Copy this into an email to your practice manager</h2>
+  <label for="summary" style="display:block;font-weight:600;margin-bottom:4px">Summary for email</label>
+  <textarea id="summary" readonly></textarea>
+  <div class="row"><button type="button" id="copyBtn">Copy the summary</button><span id="copied" class="help" aria-live="polite"></span></div>
+</section>
+
+<p class="credits">Credits. Brand strategist: the ringing-phone opening, the four numbered boxes, the four bars on one scale with "change nothing" in red, and the per-booking shortcut. Luthier: "Missed calls last week" as the first box, 16px labels above every field, the definitions of "workload" and "looked after", the bad-case arithmetic, and the email line. Clinic owner: the name "Cover the phone", the lunch and after-six framing, the 12:40 story, and the plain wording of the per-booking bar. Florence Nightingale: the cost of changing nothing as the anchor of the chart, and the single "Busiest hour for missed calls" field.</p>
+<footer>Published by VoxxyAI. These are cost estimates. They are not medical, legal, tax or financial advice. Employment on-costs depend on local rules.</footer>
+</main>
+
+<script>
+(function(){
+  var WPM = 52/12;
+  var KEY = "whoPicksUp.v1";
+  var EXAMPLE = {calls:40,months:9,salary:42000,ramp:6,value:180,fee:600,hour:"12",perBook:8,onCost:20,bookRate:30,cover:80,mins:4};
+  var IDS = Object.keys(EXAMPLE);
+  var CASES = {
+    bad:{name:"Bad case",mul:0.5,h:0.2,note:"Missed calls halved. 1 in 5 hang up on the tool."},
+    base:{name:"Base case",mul:1,h:0.1,note:"Missed calls as logged. 1 in 10 hang up on the tool."},
+    good:{name:"Good case",mul:1.25,h:0.05,note:"Log undercounts by a quarter. 1 in 20 hang up."}
+  };
+  var PATHS = [
+    {k:"hire",name:"Hire a receptionist",c:"#8a5a24"},
+    {k:"flat",name:"Cover the phone, flat fee",c:"#2e5876"},
+    {k:"per",name:"Cover the phone, per booking",c:"#3f7a63"},
+    {k:"nothing",name:"Change nothing",c:"#b0281f"}
+  ];
+  var HORIZONS = [6,12,24];
+
+  var hourSel = document.getElementById("hour");
+  for (var hr=7; hr<=20; hr++){
+    var o=document.createElement("option");
+    o.value=String(hr);
+    o.textContent=pad(hr)+":00 to "+pad(hr+1)+":00";
+    hourSel.appendChild(o);
+  }
+  function pad(n){return (n<10?"0":"")+n;}
+  function el(id){return document.getElementById(id);}
+  function num(id){var v=parseFloat(el(id).value);return isFinite(v)&&v>=0?v:0;}
+  function money(n){return "$"+Math.round(n).toLocaleString("en-US");}
+  function short(n){
+    if (Math.abs(n)>=1000) return "$"+(n/1000).toFixed(Math.abs(n)<10000?1:0)+"k";
+    return "$"+Math.round(n);
+  }
+  function r1(n){return (Math.round(n*10)/10).toLocaleString("en-US");}
+
+  function read(){
+    return {calls:num("calls"),months:num("months"),salary:num("salary"),ramp:num("ramp"),value:num("value"),fee:num("fee"),
+      hour:el("hour").value,perBook:num("perBook"),onCost:num("onCost")/100,b:Math.min(num("bookRate"),100)/100,
+      cover:Math.min(num("cover"),100)/100,mins:num("mins")};
+  }
+
+  function model(p,cs){
+    var M=p.calls*cs.mul, h=cs.h;
+    var lostMo=M*p.b*WPM*p.value;
+    var toolBookMo=M*(1-h)*p.b*WPM;
+    var toolRecMo=toolBookMo*p.value;
+    var hireRecMo=M*p.cover*p.b*WPM*p.value;
+    var hireMo=p.salary*(1+p.onCost)/12;
+    var rampM=p.ramp/WPM;
+    function at(T){
+      var still=(lostMo-toolRecMo)*T;
+      return {
+        nothing:lostMo*T,
+        flat:p.fee*T+still,
+        per:p.perBook*toolBookMo*T+still,
+        hire:hireMo*T+lostMo*T-hireRecMo*Math.max(0,T-rampM),
+        flatFees:p.fee*T, perFees:p.perBook*toolBookMo*T, hireFees:hireMo*T
+      };
+    }
+    return {M:M,h:h,lostMo:lostMo,toolRecMo:toolRecMo,toolBookMo:toolBookMo,hireRecMo:hireRecMo,hireMo:hireMo,rampM:rampM,at:at,
+      timeBack:M*(1-h)*p.mins/60};
+  }
+  function cheapest(r){
+    var best=PATHS[0];
+    PATHS.forEach(function(x){if(r[x.k]<r[best.k]) best=x;});
+    return best;
+  }
+
+  function drawChart(m){
+    var svg=el("chart");
+    var W=640,H=320,L=60,R=10,T=28,B=44;
+    var vals=[];HORIZONS.forEach(function(t){var r=m.at(t);PATHS.forEach(function(x){vals.push(r[x.k]);});});
+    var max=Math.max.apply(null,vals.concat([1]));
+    var step=niceStep(max/4), top=Math.ceil(max/step)*step;
+    var s='<desc id="chartDesc">Bar chart of total cost for four paths at 6, 12 and 24 months.</desc>';
+    for (var g=0; g<=top+0.0001; g+=step){
+      var y=T+(H-T-B)*(1-g/top);
+      s+='<line x1="'+L+'" x2="'+(W-R)+'" y1="'+y+'" y2="'+y+'" stroke="#d9d0bf"/>';
+      s+='<text x="'+(L-6)+'" y="'+(y+4)+'" text-anchor="end" font-size="12" fill="#5a554c">'+short(g)+'</text>';
+    }
+    var gw=(W-L-R)/3, bw=34, gap=8, inner=4*bw+3*gap;
+    HORIZONS.forEach(function(t,i){
+      var r=m.at(t), best=cheapest(r), x0=L+i*gw+(gw-inner)/2;
+      PATHS.forEach(function(x,j){
+        var v=r[x.k], hgt=(H-T-B)*(v/top), x1=x0+j*(bw+gap), y1=H-B-hgt;
+        s+='<rect x="'+x1+'" y="'+y1+'" width="'+bw+'" height="'+Math.max(hgt,0.5)+'" fill="'+x.c+'"'+(x.k===best.k?' stroke="#1d1b18" stroke-width="2.5"':'')+'><title>'+x.name+', '+t+' months: '+money(v)+'</title></rect>';
+        s+='<text x="'+(x1+bw/2)+'" y="'+(y1-5)+'" text-anchor="middle" font-size="11" fill="#1d1b18">'+short(v)+'</text>';
+      });
+      s+='<text x="'+(L+i*gw+gw/2)+'" y="'+(H-B+20)+'" text-anchor="middle" font-size="14" font-weight="600" fill="#1d1b18">'+t+' months</text>';
+    });
+    s+='<text x="'+L+'" y="'+(H-6)+'" font-size="12" fill="#5a554c">Outlined bar is the cheapest path at that point.</text>';
+    svg.innerHTML=s;
+  }
+  function niceStep(x){
+    if(x<=0)return 1;
+    var p=Math.pow(10,Math.floor(Math.log(x)/Math.LN10)), f=x/p;
+    return (f<=1?1:f<=2?2:f<=5?5:10)*p;
+  }
+
+  function caseCard(key,p){
+    var cs=CASES[key], m=model(p,cs), r=m.at(24), best=cheapest(r);
+    var rows=PATHS.map(function(x){
+      return '<tr'+(x.k===best.k?' class="win"':'')+'><td>'+x.name+(x.k===best.k?' (cheapest)':'')+'</td><td>'+money(r[x.k])+'</td></tr>';
+    }).join("");
+    return '<div class="case '+key+'"><h3>'+cs.name+'</h3><p class="help">'+cs.note+'</p><ul>'+
+      '<li>Missed calls: '+r1(m.M)+' a week</li>'+
+      '<li>Hang up on the tool: '+Math.round(cs.h*100)+'%</li>'+
+      '<li>Book once answered: '+Math.round(p.b*100)+'%, at '+money(p.value)+'</li>'+
+      '<li>Tool: '+money(p.fee)+' a month, or '+money(p.perBook)+' a booking</li>'+
+      '<li>Hire: '+money(m.hireMo)+' a month, '+p.ramp+' weeks to answer alone</li>'+
+      '</ul><table>'+rows+'</table><p class="help" style="margin-top:8px">Desk time back: up to '+r1(m.timeBack)+' hours a week.</p></div>';
+  }
+
+  function verdict(p){
+    var base=model(p,CASES.base), bad=model(p,CASES.bad);
+    var plan=cheapest(base.at(24));
+    var badR=bad.at(24), badBest=cheapest(badR);
+    var v=el("verdict");
+    if (plan.k==="nothing"){
+      v.className="verdict fail";
+      v.innerHTML="<b>At these numbers, changing nothing is the cheapest path.</b> No other path pays for itself over 24 months, even in the base case.";
+      return;
+    }
+    var holds=badR[plan.k]<badR.nothing;
+    var limits="";
+    var dBad=bad.h, kBad=p.b*WPM*p.value;
+    if (plan.k==="flat"){
+      var minCalls=kBad>0?p.fee/((1-dBad)*kBad):Infinity;
+      var maxH=bad.M*kBad>0?1-p.fee/(bad.M*kBad):0;
+      var minVal=bad.M*(1-dBad)*p.b*WPM>0?p.fee/(bad.M*(1-dBad)*p.b*WPM):Infinity;
+      limits="In the bad case it still holds down to "+r1(minCalls)+" missed calls a week, up to "+Math.max(0,Math.round(maxH*100))+"% of callers hanging up, or a booking value down to "+money(minVal)+".";
+    } else if (plan.k==="per"){
+      limits="It holds at any call volume and any hang-up rate. It breaks only if the fee per booking reaches the booking value of "+money(p.value)+".";
+    } else {
+      var hireNeed=bad.hireMo*24, eff=Math.max(0,24-bad.rampM)*p.cover*kBad;
+      var minC=eff>0?hireNeed/eff:Infinity;
+      limits="Over 24 months a hire pays for itself only above "+r1(minC)+" missed calls a week at these figures.";
+    }
+    if (holds){
+      v.className="verdict";
+      v.innerHTML="<b>The plan survives the bad case.</b> In the base case the cheapest path over 24 months is "+plan.name.toLowerCase()+". With calls halved and 1 in 5 callers hanging up, it costs "+money(badR[plan.k])+" against "+money(badR.nothing)+" for changing nothing. "+
+        (badBest.k!==plan.k?"In the bad case "+badBest.name.toLowerCase()+" is cheaper still, at "+money(badR[badBest.k])+". ":"")+limits;
+    } else {
+      v.className="verdict fail";
+      v.innerHTML="<b>Safer setting: "+badBest.name.toLowerCase()+".</b> It costs "+money(badR[badBest.k])+" over 24 months in the bad case.<br>The base-case pick, "+plan.name.toLowerCase()+", does not survive the bad case. It costs "+money(badR[plan.k])+" against "+money(badR.nothing)+" for changing nothing. "+limits;
+    }
+  }
+
+  function render(){
+    var p=read();
+    save();
+    var hourText=hourSel.options[hourSel.selectedIndex].textContent;
+    var base=model(p,CASES.base);
+    if (!(p.calls>0 && p.value>0 && p.b>0)){
+      el("heroLine").textContent="Enter missed calls, booking value and booking rate to see the cost.";
+    } else {
+      el("heroLine").textContent="At your numbers, changing nothing costs about "+money(base.lostMo)+" a month, most of it around "+hourText+".";
+    }
+    var lostCalls=p.calls*p.months*WPM, lostBook=lostCalls*p.b;
+    el("since").textContent="Since this started: about "+Math.round(lostCalls).toLocaleString("en-US")+" missed calls and "+Math.round(lostBook).toLocaleString("en-US")+" bookings lost, roughly "+money(lostBook*p.value)+". It keeps running each month the phone goes unanswered.";
+
+    var sel=document.querySelector('input[name="case"]:checked').value;
+    var m=model(p,CASES[sel]);
+    drawChart(m);
+    el("cheap").innerHTML=CASES[sel].name+". "+HORIZONS.map(function(t){return "Cheapest at "+t+" months: <b>"+cheapest(m.at(t)).name+"</b>.";}).join(" ");
+
+    el("three").innerHTML=caseCard("bad",p)+caseCard("base",p)+caseCard("good",p);
+    verdict(p);
+
+    var bad=model(p,CASES.bad), b24=base.at(24), d24=bad.at(24);
+    function sc(k,label,feeKey,how){
+      return '<div><h3>'+label+'</h3><p class="help">'+how+'</p><table class="plain">'+
+        '<tr><td>Fees, base, 24 months</td><td class="n">'+money(b24[feeKey])+'</td></tr>'+
+        '<tr><td>Total cost, base, 24 months</td><td class="n">'+money(b24[k])+'</td></tr>'+
+        '<tr><td>Fees, bad case, 24 months</td><td class="n">'+money(d24[feeKey])+'</td></tr>'+
+        '<tr><td>Total cost, bad case, 24 months</td><td class="n">'+money(d24[k])+'</td></tr>'+
+        '<tr><td>Bookings recovered, bad case</td><td class="n">'+money(bad.toolRecMo*24)+'</td></tr></table></div>';
+    }
+    el("shortcut").innerHTML=sc("flat","The usual path: flat fee","flatFees",money(p.fee)+" every month, whatever the calls.")+
+      sc("per","The shortcut: per booking","perFees",money(p.perBook)+" for each appointment the tool books.");
+
+    var b12=base.at(12), d12=bad.at(12);
+    el("aiTable").innerHTML='<tr><th>Case</th><th>Without the tool: hire</th><th>Without the tool: change nothing</th><th>With the tool: flat fee</th><th>With the tool: per booking</th></tr>'+
+      '<tr><td>Base</td><td class="n">'+money(b12.hire/12)+'</td><td class="n">'+money(b12.nothing/12)+'</td><td class="n">'+money(b12.flat/12)+'</td><td class="n">'+money(b12.per/12)+'</td></tr>'+
+      '<tr><td>Bad</td><td class="n">'+money(d12.hire/12)+'</td><td class="n">'+money(d12.nothing/12)+'</td><td class="n">'+money(d12.flat/12)+'</td><td class="n">'+money(d12.per/12)+'</td></tr>';
+    el("timeBack").textContent="Desk time back: up to "+r1(base.timeBack)+" hours a week in the base case, up to "+r1(bad.timeBack)+" in the bad case. The real figure depends on how many calls need a person.";
+
+    var perBest=cheapest(b24);
+    el("summary").value="Our phone log shows "+p.calls+" missed calls last week, mostly "+hourText+", and it has run for about "+p.months+" months. "+
+      "Over 24 months, changing nothing costs about "+money(b24.nothing)+" in lost bookings. "+
+      "Covering the phone with a tool costs "+money(b24.flat)+" on a flat fee or "+money(b24.per)+" paid per booking, lost bookings included. "+
+      "A new receptionist costs "+money(b24.hire)+" all in. Cheapest: "+perBest.name.toLowerCase()+". "+
+      "Bad case (half the calls, 1 in 5 hang up): per booking "+money(d24.per)+", flat "+money(d24.flat)+", change nothing "+money(d24.nothing)+". "+
+      "Staff still handle every clinical call, and you would review call summaries each morning.";
+  }
+
+  function fill(o){
+    IDS.forEach(function(id){el(id).value=o[id]==null?"":o[id];});
+    if(!hourSel.value) hourSel.value="12";
+  }
+  function save(){
+    try{var o={};IDS.forEach(function(id){o[id]=el(id).value;});localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}
+  }
+  function load(){
+    try{var s=localStorage.getItem(KEY);if(s){var o=JSON.parse(s);if(o&&typeof o==="object")return o;}}catch(e){}
+    return null;
+  }
+
+  fill(load()||EXAMPLE);
+  document.getElementById("inputs").parentNode.addEventListener("input",render);
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="case"]'),function(r){r.addEventListener("change",render);});
+  el("exampleBtn").addEventListener("click",function(){fill(EXAMPLE);render();});
+  el("clearBtn").addEventListener("click",function(){IDS.forEach(function(id){if(id!=="hour")el(id).value="";});render();});
+  el("copyBtn").addEventListener("click",function(){
+    var t=el("summary"), msg=el("copied");
+    function fallback(){try{t.select();document.execCommand("copy");msg.textContent="Copied.";}catch(e){msg.textContent="Select the text and copy it.";}}
+    try{
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(t.value).then(function(){msg.textContent="Copied.";},fallback);
+      } else fallback();
+    }catch(e){fallback();}
+  });
+  render();
+})();
+</script>
+</body>
+</html>
