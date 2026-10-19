@@ -1,0 +1,185 @@
+{
+  "start": "2026-10-26",
+  "base": "2026-10-07",
+  "provider": "claude",
+  "model": "claude-opus-5-5",
+  "added": {
+    "roles": [
+      {
+        "text": "Jeweller",
+        "credit": ""
+      },
+      {
+        "text": "Saddler",
+        "credit": ""
+      },
+      {
+        "text": "Thatcher",
+        "credit": ""
+      },
+      {
+        "text": "Wheelwright",
+        "credit": ""
+      },
+      {
+        "text": "Picture framer",
+        "credit": ""
+      },
+      {
+        "text": "Mosaic artist",
+        "credit": ""
+      },
+      {
+        "text": "Rope maker",
+        "credit": ""
+      },
+      {
+        "text": "Boatbuilder",
+        "credit": ""
+      }
+    ],
+    "methods": [
+      {
+        "text": "Stop each session mid-step so the next one starts easily.",
+        "credit": ""
+      },
+      {
+        "text": "Keep a log of every decision with its reason, one line each.",
+        "credit": ""
+      },
+      {
+        "text": "Make the cheapest version that could fail, and watch how it fails.",
+        "credit": ""
+      },
+      {
+        "text": "Fix one known defect before adding anything new.",
+        "credit": ""
+      },
+      {
+        "text": "Read the work aloud and change every line you stumble on.",
+        "credit": ""
+      },
+      {
+        "text": "Trace every number on the page back to its source before showing it.",
+        "credit": ""
+      },
+      {
+        "text": "Set the deadline at half the time, then use the rest only for fixes.",
+        "credit": ""
+      },
+      {
+        "text": "Describe the finished work in writing first, then compare it at the end.",
+        "credit": ""
+      }
+    ],
+    "constraints": [
+      {
+        "text": "Every result shows the date and time it was calculated.",
+        "credit": ""
+      },
+      {
+        "text": "Every field states the range of values it accepts.",
+        "credit": ""
+      }
+    ],
+    "tasks": [
+      {
+        "text": "Churn cost calculator: customers, monthly loss rate, and average value per customer give the revenue lost each year and what a one-point cut in the rate would save.",
+        "credit": ""
+      },
+      {
+        "text": "Rework cost calculator: cases per month, error rate, and cost to fix each error give the monthly cost of mistakes and the saving if the rate fell by half.",
+        "credit": ""
+      },
+      {
+        "text": "Price rise tester: current price, volume, and margin give how much volume the buyer could lose after a price rise and still earn the same profit.",
+        "credit": ""
+      },
+      {
+        "text": "Tool overlap finder: the buyer's software tools with cost and main job give a list of overlaps and the yearly spend on duplicate tools.",
+        "credit": ""
+      },
+      {
+        "text": "Handoff counter: each step of a process with who does it gives the number of handoffs between people and the waiting time those handoffs add.",
+        "credit": ""
+      },
+      {
+        "text": "Cash gap estimator: monthly costs, billing terms, and typical payment delays give the cash the buyer needs to cover the gap between paying out and getting paid.",
+        "credit": ""
+      }
+    ],
+    "guests": [
+      {
+        "text": "historical | Hypatia | Check every result by working it out a second way. | died 415",
+        "credit": ""
+      },
+      {
+        "text": "myth | Ariadne | Leave a thread so anyone can find the way back. | Greek myth",
+        "credit": ""
+      }
+    ],
+    "temperaments": [
+      {
+        "text": "Repeats the other side's point before answering it.",
+        "credit": ""
+      },
+      {
+        "text": "Asks what it costs before asking if it works.",
+        "credit": ""
+      },
+      {
+        "text": "Keeps steering back to the original question.",
+        "credit": ""
+      },
+      {
+        "text": "Splits every question into smaller ones.",
+        "credit": ""
+      }
+    ]
+  },
+  "retired": {
+    "guests": [
+      "historical | Euclid | State a few assumptions, then build everything from them. | died c. 270 BC",
+      "historical | Ibn al-Haytham | Trust nothing until an experiment shows it. | died c. 1040"
+    ],
+    "temperaments": [
+      "Impatient; cuts people off mid-sentence.",
+      "Hoards evidence before saying anything.",
+      "Agrees fast, then quietly does it their own way.",
+      "Argues the opposite side to test an idea."
+    ],
+    "roles": [
+      "Industrial designer",
+      "Furniture maker",
+      "Set designer",
+      "Lighting designer",
+      "Costume designer",
+      "Game designer",
+      "Puppeteer",
+      "Choreographer"
+    ],
+    "methods": [
+      "Design the error and empty states first.",
+      "List the assumptions in the brief and check each one.",
+      "Make it work in black and white before adding color.",
+      "Prototype in the final material.",
+      "Take the conventions of a genre and break exactly one.",
+      "Storyboard every change of state.",
+      "Write the copy before the layout.",
+      "Scope the work to what fits in one day."
+    ],
+    "constraints": [
+      "Under 100 words of fixed text on the page.",
+      "Three colors at most."
+    ],
+    "tasks": [
+      "Cost-of-inaction calculator: the buyer's current volumes and rates give what the problem costs per month and per year, with each step of the sum shown.",
+      "Readiness scorecard: twelve yes-or-no questions give a score out of 100, the three weakest areas, and one next step for each.",
+      "Benchmark checker: the buyer's own figures sit next to typical ranges they can edit, with each gap marked ahead, level, or behind.",
+      "Leak finder: a funnel of stages with counts gives the stage that loses the most and what fixing half of that loss would be worth.",
+      "Time-back calculator: weekly hours on manual tasks and an hourly cost give the hours and money an automated step would return.",
+      "Before-and-after map: today's process as a list of steps becomes a side-by-side view marking the steps that could be removed or automated."
+    ]
+  },
+  "suggestions": []
+}
