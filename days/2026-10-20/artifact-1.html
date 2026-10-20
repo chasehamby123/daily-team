@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Walk Line: three versions of one loan, downside first</title>
+<style>
+:root{--paper:#f4f1eb;--card:#fbfaf7;--ink:#1c1b19;--mid:#5a564f;--line:#bfb8ad;--grey:#d6d2c9;--accent:#6b2a24}
+*{box-sizing:border-box}
+html{font-size:15px}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+h1,h2{font-size:20px;line-height:1.3;margin:0 0 8px;font-weight:700}
+p,ul,ol{margin:0 0 10px}
+input,select,button,textarea,table,caption,legend,label,pre,code{font:inherit}
+pre,code{font-family:ui-monospace,Menlo,Consolas,"Liberation Mono",monospace;font-size:15px}
+main{max-width:1100px;margin:0 auto;padding:20px 16px 40px}
+header{border-bottom:3px solid var(--ink);padding-bottom:12px;margin-bottom:16px}
+header p{color:var(--mid);max-width:62ch}
+section{background:var(--card);border:1px solid var(--line);padding:16px;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:12px}
+label{display:block;font-weight:600}
+label span{display:block;font-weight:400;color:var(--mid)}
+input[type=number],input[type=text]{width:100%;padding:6px 8px;border:1px solid #8a847a;background:#fff;color:var(--ink);border-radius:0}
+td input[type=number]{width:6.5em}
+fieldset{border:0;padding:0;margin:0 0 12px}
+legend{font-weight:600;padding:0;margin-bottom:4px}
+fieldset label{display:inline-block;font-weight:400;margin-right:16px}
+button{padding:6px 12px;border:1px solid var(--ink);background:var(--card);color:var(--ink);cursor:pointer;margin-right:8px}
+button:focus,input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:620px}
+th,td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid var(--line)}
+thead th{border-bottom:2px solid var(--ink);font-weight:700}
+tbody th{font-weight:600;width:22%}
+tbody th span{display:block;font-weight:400;color:var(--mid)}
+tr.walk>th,tr.walk>td{border-top:3px solid var(--ink)}
+td.fail{background:var(--grey);color:var(--mid);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.tag{font-weight:700;color:var(--ink)}
+#verdict{border-left:6px solid var(--accent);padding:4px 0 2px 12px;margin-bottom:14px}
+.lead{font-weight:700}
+.muted{color:var(--mid)}
+.drv td{color:var(--mid)}
+pre{white-space:pre-wrap;margin:0;background:#fff;border:1px solid var(--line);padding:12px}
+footer{color:var(--mid);padding-top:8px;border-top:1px solid var(--line)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media print{
+ body{background:#fff}
+ main{max-width:none;padding:0}
+ section{border:0;padding:0 0 12px;break-inside:avoid}
+ .noprint{display:none}
+ table{min-width:0}
+ .scroll{overflow:visible}
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>The Walk Line</h1>
+<p>Three versions of one loan, side by side, downside first. Enter the borrower's numbers. The heavy rule sits at 1.0x interest cover and 100% recovery. A grey cell below it reads walk.</p>
+</header>
+
+<section aria-labelledby="h-in">
+<h2 id="h-in">The borrower's numbers</h2>
+<p class="muted">Five inputs. Figures in millions, any currency. The worked example is already entered.</p>
+<div class="grid">
+ <label for="ask">Full ask (m)<input id="ask" type="number" step="0.1" min="0"></label>
+ <label for="coll">Collateral value (m)<input id="coll" type="number" step="0.1" min="0"></label>
+ <label for="ebitda">EBITDA, last 12 months (m)<input id="ebitda" type="number" step="0.1"></label>
+ <label for="rate">Rate (%)<input id="rate" type="number" step="0.1" min="0"></label>
+ <label for="term">Term (years)<input id="term" type="number" step="1" min="0"></label>
+</div>
+<div class="grid">
+ <label for="cut">Cut-down size (m)<span>Middle column</span><input id="cut" type="number" step="0.1" min="0"></label>
+ <label for="auditAdj">Audit adjustment to EBITDA (%)<span>Right column</span><input id="auditAdj" type="number" step="1"></label>
+ <label for="auditWait">Audit wait (weeks)<span>Right column</span><input id="auditWait" type="number" step="1" min="0"></label>
+</div>
+<fieldset>
+ <legend>Case shown in the table</legend>
+ <label><input type="radio" name="view" value="bad"> Bad</label>
+ <label><input type="radio" name="view" value="base"> Base</label>
+ <label><input type="radio" name="view" value="good"> Good</label>
+</fieldset>
+<div class="noprint">
+ <button type="button" id="btnClear">Clear</button>
+ <button type="button" id="btnExample">Worked example</button>
+</div>
+</section>
+
+<section aria-labelledby="h-res">
+<h2 id="h-res">Three versions, downside first</h2>
+<div id="verdict"></div>
+<div class="scroll">
+<table id="main">
+<thead id="mainHead"></thead>
+<tbody id="mainBody"></tbody>
+</table>
+</div>
+<p id="upside" style="margin-top:10px"></p>
+<p id="annual"></p>
+</section>
+
+<section aria-labelledby="h-q">
+<h2 id="h-q">Two questions</h2>
+<div class="grid">
+ <label for="ticket">1. Your typical ticket size (m)<input id="ticket" type="number" step="0.1" min="0"></label>
+ <label for="dead">2. Deals that died in diligence, last 12 months<input id="dead" type="number" step="1" min="0"></label>
+</div>
+<p id="q1"></p>
+<p id="q2"></p>
+</section>
+
+<section aria-labelledby="h-cases">
+<h2 id="h-cases">Bad, base and good, side by side</h2>
+<p class="muted">The drivers are editable. The bad case is the one the verdict uses.</p>
+<div class="scroll">
+<table>
+<thead><tr><th scope="col">Driver or version</th><th scope="col">Bad</th><th scope="col">Base</th><th scope="col">Good</th></tr></thead>
+<tbody class="drv">
+<tr><th scope="row">EBITDA change (%)</th><td><input id="bad_e" type="number" step="1" aria-label="Bad EBITDA change"></td><td><input id="base_e" type="number" step="1" aria-label="Base EBITDA change"></td><td><input id="good_e" type="number" step="1" aria-label="Good EBITDA change"></td></tr>
+<tr><th scope="row">Collateral haircut in a sale (%)<span>Depends on jurisdiction and asset</span></th><td><input id="bad_h" type="number" step="1" aria-label="Bad haircut"></td><td><input id="base_h" type="number" step="1" aria-label="Base haircut"></td><td><input id="good_h" type="number" step="1" aria-label="Good haircut"></td></tr>
+<tr><th scope="row">Close slips (weeks)</th><td><input id="bad_s" type="number" step="1" aria-label="Bad slip"></td><td><input id="base_s" type="number" step="1" aria-label="Base slip"></td><td><input id="good_s" type="number" step="1" aria-label="Good slip"></td></tr>
+</tbody>
+<tbody id="casesRes"></tbody>
+</table>
+</div>
+</section>
+
+<section aria-labelledby="h-sc">
+<h2 id="h-sc">The shortcut: pre-screen before full diligence</h2>
+<p>Usual path: full diligence on every deal. Shortcut: an AI reads the data room first, a named analyst checks and signs what it found, and only deals that pass go to full diligence. Same deals, same costs, both paths below.</p>
+<div class="grid">
+ <label for="dd">Full diligence cost (k)<span>Lawyers and QoE</span><input id="dd" type="number" step="1" min="0"></label>
+ <label for="ddw">Full diligence time (weeks)<input id="ddw" type="number" step="1" min="0"></label>
+ <label for="man">Pre-screen without AI (k)<span>Analyst only</span><input id="man" type="number" step="1" min="0"></label>
+ <label for="mand">Pre-screen without AI (days)<input id="mand" type="number" step="1" min="0"></label>
+</div>
+<div class="scroll">
+<table>
+<thead><tr><th scope="col">On the deals that died</th><th scope="col">Bad</th><th scope="col">Base</th><th scope="col">Good</th></tr></thead>
+<tbody class="drv">
+<tr><th scope="row">Dead deals the screen catches (%)</th><td><input id="bad_c" type="number" step="1" min="0" max="100" aria-label="Bad catch rate"></td><td><input id="base_c" type="number" step="1" min="0" max="100" aria-label="Base catch rate"></td><td><input id="good_c" type="number" step="1" min="0" max="100" aria-label="Good catch rate"></td></tr>
+<tr><th scope="row">AI pre-screen cost per deal (k)<span>Includes analyst review</span></th><td><input id="bad_ai" type="number" step="1" min="0" aria-label="Bad AI cost"></td><td><input id="base_ai" type="number" step="1" min="0" aria-label="Base AI cost"></td><td><input id="good_ai" type="number" step="1" min="0" aria-label="Good AI cost"></td></tr>
+<tr><th scope="row">AI pre-screen time (days)</th><td><input id="bad_aid" type="number" step="1" min="0" aria-label="Bad AI days"></td><td><input id="base_aid" type="number" step="1" min="0" aria-label="Base AI days"></td><td><input id="good_aid" type="number" step="1" min="0" aria-label="Good AI days"></td></tr>
+</tbody>
+<tbody id="scRes"></tbody>
+</table>
+</div>
+<p id="scNote" style="margin-top:10px"></p>
+<p><b>What a person still reviews.</b> The AI reads the data room and flags. A named analyst then checks:</p>
+<ul>
+ <li>every lien and charge search against the registry,</li>
+ <li>the security package and who ranks ahead,</li>
+ <li>each EBITDA adjustment the AI flagged,</li>
+ <li>the pass or fail call, which the analyst signs.</li>
+</ul>
+<label for="signer" style="max-width:360px">Reviewed by (named analyst)<input id="signer" type="text" placeholder="Full name" autocomplete="off"></label>
+</section>
+
+<section aria-labelledby="h-f">
+<h2 id="h-f">Formulas</h2>
+<pre>Interest            = loan × rate
+Stressed EBITDA     = EBITDA × (1 + case EBITDA change)
+Interest cover      = stressed EBITDA ÷ interest        walk below 1.0x
+Collateral cover    = collateral ÷ loan
+Recovery in a sale  = collateral × (1 − haircut) ÷ loan  walk below 100%
+Cash repaid by term = min(loan, max(0, stressed EBITDA − interest) × term)
+Refinance needed    = loan − cash repaid by term
+Largest loan held   = min(stressed EBITDA ÷ rate, collateral × (1 − haircut))
+Wait version EBITDA = EBITDA × (1 + audit adjustment)
+Weeks to close      = diligence weeks + case slip (+ audit wait)
+Dead-deal spend, usual      = dead deals × diligence cost
+Dead-deal spend, pre-screen = dead deals × screen cost
+                              + dead deals × (1 − catch rate) × diligence cost</pre>
+<p style="margin-top:10px" class="muted">Cash after interest ignores tax, capex and working capital. The pre-screen without AI is assumed to catch the same share of dead deals.</p>
+</section>
+
+<footer>
+<p>Arithmetic on figures you enter. This is not investment, legal or tax advice. Haircuts, lien searches and enforcement timelines depend on local rules and the security package. Enter the figures that apply to yours.</p>
+<p>Credits. Chef: the walk line at 1.0x, downside-first columns, the two questions. Upholsterer: the repayment row, two type sizes, the upside cut to one line. Private credit fund manager: the three versions, the cut-down middle column, diligence cost and weeks. Janus: the pre-screen beside the usual path, and the named analyst sign-off.</p>
+<p>Published by OuterHaven Advisory.</p>
+</footer>
+</main>
+
+<script>
+(function(){
+var D={ask:20,coll:28,ebitda:4,rate:11,term:4,cut:16,auditAdj:-10,auditWait:12,view:'bad',
+ bad_e:-40,base_e:0,good_e:15,bad_h:35,base_h:15,good_h:10,bad_s:26,base_s:0,good_s:0,
+ dd:180,ddw:10,man:15,mand:10,bad_c:33,base_c:100,good_c:100,bad_ai:12,base_ai:8,good_ai:6,
+ bad_aid:5,base_aid:2,good_aid:1,ticket:20,dead:3,signer:''};
+var KEYS=Object.keys(D), SK='walkline-v1', CASES=['bad','base','good'], CN={bad:'Bad',base:'Base',good:'Good'};
+function $(id){return document.getElementById(id);}
+function raw(k){return parseFloat($(k).value);}
+function n(k){var x=raw(k);return isFinite(x)?x:0;}
+function getView(){var r=document.querySelector('input[name=view]:checked');return r?r.value:'bad';}
+function setView(v){var r=document.querySelector('input[name=view][value="'+v+'"]');if(r)r.checked=true;}
+function fill(o){KEYS.forEach(function(k){if(k==='view'){setView(o.view||'bad');}else if($(k)&&o[k]!==undefined&&o[k]!==null){$(k).value=o[k];}});}
+function save(){try{var o={};KEYS.forEach(function(k){o[k]=k==='view'?getView():$(k).value;});localStorage.setItem(SK,JSON.stringify(o));}catch(e){}}
+function load(){try{var s=localStorage.getItem(SK);if(s)return JSON.parse(s);}catch(e){}return null;}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function fm(x){return isFinite(x)?x.toFixed(1)+'m':'n/a';}
+function fk(x){return isFinite(x)?Math.round(x).toLocaleString('en-US')+'k':'n/a';}
+function fx(x){return isFinite(x)?x.toFixed(2)+'x':'n/a';}
+function fp(x){return isFinite(x)?Math.round(x*100)+'%':'n/a';}
+function fw(x){return isFinite(x)?(Math.round(x*10)/10)+' wk':'n/a';}
+function sg(x){var r=Math.round(x*100);return (r>=0?'+':'\u2212')+Math.abs(r)+'%';}
+function drv(c){return {e:n(c+'_e')/100,h:n(c+'_h')/100,s:n(c+'_s'),c:Math.min(1,Math.max(0,n(c+'_c')/100)),ai:n(c+'_ai'),aid:n(c+'_aid')};}
+
+function calc(v,c,g){
+ var e=v.e*(1+c.e), it=v.loan*g.rate, ic=e/it, sale=g.coll*(1-c.h), rec=sale/v.loan;
+ var cash=Math.max(0,e-it), repaid=Math.min(v.loan,cash*g.term);
+ return {e:e,it:it,ic:ic,cc:g.coll/v.loan,sale:sale,rec:rec,cash:cash,repaid:repaid,refi:v.loan-repaid,
+  holds:ic>=1&&rec>=1,max:Math.max(0,Math.min(e/g.rate,sale)),
+  headE:1-v.loan*g.rate/v.e,headH:1-v.loan/g.coll,wk:g.ddw+c.s+v.w};
+}
+function reasons(r){
+ return (r.ic<1?'Interest cover '+fx(r.ic)+' is under 1.0x. ':'Interest cover '+fx(r.ic)+' clears 1.0x. ')+
+  (r.rec<1?'Recovery '+fp(r.rec)+' is under 100%.':'Recovery '+fp(r.rec)+' clears 100%.');
+}
+function room(r){return 'Room before it breaks: loan up to '+fm(r.max)+', EBITDA drop up to '+fp(r.headE)+', haircut up to '+fp(r.headH)+'.';}
+
+function blank(msg){
+ $('verdict').innerHTML='<p class="lead">'+msg+'</p>';
+ ['mainHead','mainBody','casesRes','scRes'].forEach(function(id){$(id).innerHTML='';});
+ ['upside','annual','q1','q2','scNote'].forEach(function(id){$(id).textContent='';});
+}
+
+function render(){
+ save();
+ var ask=raw('ask'),coll=raw('coll'),eb=raw('ebitda'),rate=raw('rate')/100,term=raw('term'),cut=raw('cut');
+ if(![ask,coll,eb,rate,term,cut].every(function(x){return isFinite(x)&&x>0;})){
+  blank('Enter the full ask, cut-down size, collateral, EBITDA, rate and term to see the three versions.');return;
+ }
+ var adj=n('auditAdj')/100, aw=n('auditWait');
+ var g={coll:coll,rate:rate,term:term,dd:n('dd'),ddw:n('ddw')};
+ var vers=[{n:'Full ask',loan:ask,e:eb,w:0,sub:fm(ask)},
+  {n:'Cut-down',loan:cut,e:eb,w:0,sub:fm(cut)},
+  {n:'Wait for audited numbers',loan:ask,e:eb*(1+adj),w:aw,sub:fm(ask)+', +'+aw+' wk audit wait'}];
+ var C={};CASES.forEach(function(c){C[c]=drv(c);});
+ var signer=$('signer').value.trim();
+
+ // Verdict, always on the bad case
+ var B=C.bad, rb=vers.map(function(v){return calc(v,B,g);}), f=rb[0], h='';
+ h+='<p class="muted">Bad case: EBITDA '+sg(B.e)+', '+Math.round(B.h*100)+'% haircut, close +'+B.s+' weeks.</p>';
+ if(f.max<=0){h+='<p class="lead">No loan size holds in the bad case on these numbers. Walk.</p>';}
+ else if(!f.holds){h+='<p class="lead">Safer setting first: lend up to '+fm(f.max)+'.</p><p>The full ask of '+fm(ask)+' does not survive the bad case. '+reasons(f)+'</p>';}
+ else{h+='<p class="lead">The full ask of '+fm(ask)+' survives the bad case.</p><p>'+room(f)+'</p>';}
+ var c2=rb[1];
+ h+='<p>'+(c2.holds?'The cut-down '+fm(cut)+' holds at '+fx(c2.ic)+' cover and '+fp(c2.rec)+' recovery. '+room(c2)
+  :'The cut-down '+fm(cut)+' does not survive the bad case. '+reasons(c2))+'</p>';
+ var w3=rb[2];
+ h+='<p>'+(w3.holds?'Waiting for audited numbers holds, and closes '+aw+' weeks later. '+room(w3)
+  :'Waiting for audited numbers does not fix the size: '+reasons(w3)+' It also adds '+aw+' weeks.')+'</p>';
+ $('verdict').innerHTML=h;
+
+ // Main table for chosen case
+ var vc=getView(), c=C[vc], r=vers.map(function(v){return calc(v,c,g);});
+ var head='<tr><th scope="col">'+CN[vc]+' case</th>';
+ vers.forEach(function(v){head+='<th scope="col">'+v.n+'<br><span class="muted">'+v.sub+'</span></th>';});
+ $('mainHead').innerHTML=head+'</tr>';
+ var unsigned=signer?'':' (unsigned)';
+ var rows=[
+  {l:'How it gets repaid',s:'Over the term',cells:r.map(function(x){return {h:'Cash flow: '+fm(x.repaid)+' ('+fp(x.repaid/(x.repaid+x.refi))+')<br>Refinance at maturity: '+fm(x.refi)+'<br>Collateral sale: '+fm(x.sale)};})},
+  {l:'Inputs that drive it',s:CN[vc]+' case',cells:r.map(function(x,i){return {h:'EBITDA '+fm(x.e)+' ('+fm(vers[i].e)+' '+sg(c.e)+')<br>Interest '+fm(x.it)+' at '+(rate*100).toFixed(1)+'%<br>Haircut '+Math.round(c.h*100)+'%, slip '+c.s+' wk'};})},
+  {l:'Interest cover',s:'Walk below 1.0x',cells:r.map(function(x){return {h:fx(x.ic),f:!(x.ic>=1)};})},
+  {l:'Collateral cover',s:'Before haircut',cells:r.map(function(x){return {h:fx(x.cc)};})},
+  {l:'Recovery in a sale',s:'Walk below 100%',cells:r.map(function(x,i){return {h:fp(x.rec)+' ('+fm(x.sale)+' of '+fm(vers[i].loan)+')',f:!(x.rec>=1)};})},
+  {l:'Diligence spend / weeks',s:'Usual path, then pre-screen',cells:r.map(function(x){
+   var pre=x.holds?'Pre-screen: '+fk(c.ai+g.dd)+', '+fw(x.wk+c.aid/5):'Pre-screen: '+fk(c.ai)+', '+fw(c.aid/5)+', stops here';
+   return {h:'Usual: '+fk(g.dd)+', '+fw(x.wk)+'<br>'+pre+unsigned};})},
+  {l:'Verdict',s:CN[vc]+' case',cells:r.map(function(x){return {h:x.holds?'<b>Holds</b>':'<b>Walk</b>',f:!x.holds,nt:true};})}
+ ];
+ var body='',ruled=false;
+ rows.forEach(function(row){
+  var any=row.cells.some(function(z){return z.f;}), cls='';
+  if(any&&!ruled){cls=' class="walk"';ruled=true;}
+  body+='<tr'+cls+'><th scope="row">'+row.l+'<span>'+row.s+'</span></th>';
+  row.cells.forEach(function(z){body+='<td'+(z.f?' class="fail"':'')+'>'+z.h+(z.f&&!z.nt?' <span class="tag">walk</span>':'')+'</td>';});
+  body+='</tr>';
+ });
+ $('mainBody').innerHTML=body;
+
+ var gd=calc(vers[0],C.good,g);
+ $('upside').textContent='Upside, second: in the good case (EBITDA '+sg(C.good.e)+'), the full ask covers interest '+fx(gd.ic)+' and recovers '+fp(gd.rec)+'.';
+
+ var dead=n('dead'), ticket=raw('ticket'), cb=C.base;
+ $('annual').textContent='Over 12 months: '+dead+' deals lost in diligence \u00d7 '+fk(g.dd)+' = '+fk(dead*g.dd)+' on the usual path, against '+dead+' \u00d7 '+fk(cb.ai)+' = '+fk(dead*cb.ai)+' pre-screened, if the screen catches all of them.';
+
+ $('q1').textContent=(isFinite(ticket)&&ticket>0)
+  ?'Full diligence at '+fk(g.dd)+' is '+(g.dd/1000/ticket*100).toFixed(2)+'% of a '+fm(ticket)+' ticket. The AI pre-screen at '+fk(cb.ai)+' is '+(cb.ai/1000/ticket*100).toFixed(2)+'%. This deal is '+(ask/ticket).toFixed(1)+'\u00d7 your typical ticket.'
+  :'Enter a typical ticket to see diligence cost as a share of it.';
+ $('q2').textContent=dead+' dead deals \u00d7 '+g.ddw+' weeks = '+(dead*g.ddw)+' weeks of diligence that ended in no. This repeats every year the process stays the same.';
+
+ // Cases table
+ var cr='';
+ vers.forEach(function(v){
+  cr+='<tr><th scope="row">'+v.n+'<span>'+v.sub+'</span></th>';
+  CASES.forEach(function(k){var x=calc(v,C[k],g);
+   cr+='<td'+(x.holds?'':' class="fail"')+'>'+fx(x.ic)+' cover<br>'+fp(x.rec)+' recovery<br><b>'+(x.holds?'holds':'walk')+'</b></td>';});
+  cr+='</tr>';
+ });
+ $('casesRes').innerHTML=cr;
+
+ // Shortcut table
+ var sr={missed:'',usual:'',man:'',ai:'',save:''};
+ CASES.forEach(function(k){var q=C[k], m=dead*(1-q.c);
+  var u=dead*g.dd, uw=dead*g.ddw, mc=dead*n('man')+m*g.dd, mw=dead*n('mand')/5+m*g.ddw, ac=dead*q.ai+m*g.dd, aw2=dead*q.aid/5+m*g.ddw;
+  sr.missed+='<td>'+m.toFixed(1)+' of '+dead+'</td>';
+  sr.usual+='<td>'+fk(u)+'<br>'+fw(uw)+' of work</td>';
+  sr.man+='<td>'+fk(mc)+'<br>'+fw(mw)+' of work</td>';
+  sr.ai+='<td>'+fk(ac)+'<br>'+fw(aw2)+' of work</td>';
+  sr.save+='<td>'+fk(u-ac)+'<br>'+fw(uw-aw2)+'</td>';
+ });
+ var aiLabel=signer?'Pre-screen with AI<span>Signed by '+esc(signer)+'</span>':'Pre-screen with AI<span>Not yet signed. It counts only when signed.</span>';
+ $('scRes').innerHTML=
+  '<tr><th scope="row">Dead deals the screen misses</th>'+sr.missed+'</tr>'+
+  '<tr><th scope="row">Usual path<span>Full diligence on every deal</span></th>'+sr.usual+'</tr>'+
+  '<tr><th scope="row">Pre-screen without AI<span>Analyst only</span></th>'+sr.man+'</tr>'+
+  '<tr><th scope="row">'+aiLabel+'</th>'+sr.ai+'</tr>'+
+  '<tr><th scope="row">AI pre-screen against usual path<span>Spend and weeks saved</span></th>'+sr.save+'</tr>';
+ $('scNote').textContent='Each deal that passes the screen pays '+fk(cb.ai)+' and '+cb.aid+' days more before full diligence. A missed lien costs more than the '+fk(g.dd)+' the screen saves, which is why a named analyst signs every pre-screen.';
+}
+
+function init(){
+ fill(D);
+ var s=load(); if(s) fill(s);
+ document.addEventListener('input',render);
+ document.addEventListener('change',render);
+ $('btnClear').addEventListener('click',function(){
+  ['ask','coll','ebitda','rate','term','cut','ticket','dead'].forEach(function(k){$(k).value='';});render();});
+ $('btnExample').addEventListener('click',function(){fill(D);render();});
+ render();
+}
+init();
+})();
+</script>
+</body>
+</html>
