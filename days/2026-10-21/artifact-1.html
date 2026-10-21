@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Call Slip: growth-round papers, shelved by who asks</title>
+<style>
+:root{--card:#f2ead8;--ink:#2a241d;--mute:#6f6455;--rule:#d6c8ac;--stamp:#9e3427;--lamp:#e0a33a;--dark:#4a463e;--wood:#2f2822;--shelf:#e6dcc5}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{min-height:100vh;display:grid;place-items:center;background:var(--wood);font:11px/1.3 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);padding:8px}
+.card{width:min(360px,calc(100vw - 16px));aspect-ratio:3/2;perspective:1200px}
+.flip{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .55s ease}
+.card.flipped .flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--card);border-radius:6px;box-shadow:0 6px 18px rgba(0,0,0,.45);padding:7px 9px;display:flex;flex-direction:column;overflow:hidden}
+.back{transform:rotateY(180deg)}
+.hd{display:flex;align-items:center;gap:5px;border-bottom:1.5px solid var(--ink);padding-bottom:3px}
+h1,h2{font:700 15px/1 Georgia,"Times New Roman",serif;margin:0;white-space:nowrap}
+h2{font-size:13px}
+.sub{color:var(--mute);font-size:10px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+button{font:inherit;font-size:10px;border:1px solid var(--ink);background:transparent;color:var(--ink);border-radius:3px;padding:2px 5px;cursor:pointer;white-space:nowrap}
+button:hover{background:var(--shelf)}
+button:focus-visible,input:focus-visible{outline:2px solid var(--stamp);outline-offset:1px}
+.lamps{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:5px 0 2px}
+.lamp{border:1px solid var(--dark);border-radius:3px;padding:2px 4px 3px;text-align:left;background:var(--shelf);display:block}
+.lamp b{display:flex;justify-content:space-between;font:700 10px ui-monospace,Menlo,Consolas,monospace}
+.lamp small{display:block;font-size:9px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar{height:3px;background:var(--rule);margin-top:2px}
+.bar i{display:block;height:100%;background:var(--dark)}
+.lamp.lit{background:var(--lamp);border-color:#8a5d14}
+.lamp.lit small{color:var(--ink)}
+.lamp.lit .bar i{background:var(--ink)}
+.lamp[aria-pressed="true"]{outline:2px solid var(--stamp);outline-offset:-1px}
+.score{font-size:9.5px;color:var(--mute)}
+.score b{color:var(--ink)}
+.list{flex:1;overflow:auto;margin-top:2px;border-top:1px solid var(--rule)}
+.gh{font:700 9px ui-monospace,Menlo,Consolas,monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--stamp);position:sticky;top:0;background:var(--card);padding:3px 0 1px;display:flex;justify-content:space-between}
+.gh span{color:var(--mute);letter-spacing:0;text-transform:none}
+.row{display:flex;align-items:center;gap:4px;padding:1px 0;border-bottom:1px dotted var(--rule)}
+.row label{flex:1;min-width:0;display:flex;gap:4px;align-items:center;cursor:pointer}
+.row input{margin:0;width:13px;height:13px;accent-color:var(--stamp);flex:none}
+.nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chips{display:flex;gap:1px;flex:none}
+.chip{font:8.5px/1.4 ui-monospace,Menlo,Consolas,monospace;width:17px;text-align:center;border:1px solid var(--dark);border-radius:2px;opacity:.15}
+.chip.on{opacity:1}
+.row.done .chip.on{background:var(--lamp)}
+.sig{font-size:9px;color:var(--mute);width:38px;text-align:right;flex:none}
+.row[hidden],.gh[hidden]{display:none}
+.ins{display:flex;gap:6px;margin:4px 0 3px}
+.ins label{display:flex;flex-direction:column;font-size:9px;color:var(--mute);flex:1}
+input[type=number],input[type=text]{font:inherit;font-size:12px;border:1px solid var(--dark);border-radius:2px;padding:1px 3px;background:#fbf7ee;color:var(--ink);width:100%}
+.asm{font-size:9.5px;color:var(--mute);margin-top:2px}
+.asm input{width:46px;font-size:10px;display:inline-block;padding:0 2px}
+.tabs{display:flex;gap:2px;border-bottom:1.5px solid var(--ink)}
+.tab{border-bottom:none;border-radius:3px 3px 0 0;padding:1px 6px}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--card)}
+.pane{flex:1;overflow:auto;padding-top:3px}
+.pane[hidden]{display:none}
+table{width:100%;border-collapse:collapse;font-size:10px;font-variant-numeric:tabular-nums}
+th,td{padding:1px 3px;text-align:right;border-bottom:1px dotted var(--rule);white-space:nowrap}
+th:first-child,td:first-child{text-align:left;color:var(--mute)}
+thead th{font:700 9px ui-monospace,Menlo,Consolas,monospace;text-transform:uppercase;color:var(--ink)}
+thead th.b{color:var(--stamp)}
+td.b{color:var(--stamp)}
+.verdict{font-weight:700;margin:0 0 2px}
+.verdict.no{color:var(--stamp)}
+.f{font:9px/1.35 ui-monospace,Menlo,Consolas,monospace;color:var(--mute);margin-top:3px}
+p{margin:2px 0}
+.cr p{font-size:9.5px}
+.cr b{font-weight:700}
+.foot{font-size:9px;color:var(--mute);border-top:1px solid var(--rule);padding-top:2px;margin-top:2px}
+@media (prefers-reduced-motion:reduce){.flip{transition:none}}
+@page{size:A6 landscape;margin:5mm}
+@media print{
+  body{background:#fff;display:block;padding:0;min-height:0}
+  .card{width:100%;aspect-ratio:auto;perspective:none}
+  .flip,.card.flipped .flip{transform:none;transition:none;height:auto}
+  .back,.noprint{display:none!important}
+  .face.front{position:static;box-shadow:none;border:1px solid #000;border-radius:0;height:auto;overflow:visible;padding:2mm 3mm}
+  .list{overflow:visible;columns:2;column-gap:4mm;font-size:6.5pt}
+  .gh{position:static;break-after:avoid}
+  .row{break-inside:avoid;padding:0}
+  .row[hidden],.gh[hidden]{display:flex!important}
+  .lamp,.lamp.lit,.row.done .chip.on{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .sub{white-space:normal}
+}
+</style>
+</head>
+<body>
+<main class="card" id="card" aria-label="Call Slip postcard">
+<div class="flip">
+
+<section class="face front" id="front" aria-label="Front: the papers">
+  <div class="hd">
+    <h1>Call Slip</h1>
+    <span class="sub" id="sub" aria-live="polite">22 growth-round papers, shelved by who asks</span>
+    <button class="noprint" id="printBtn" type="button" title="Print the front at A6">Print A6</button>
+    <button class="noprint" id="linkBtn" type="button" title="Copy a link with your ticks and inputs">Copy link</button>
+    <button class="noprint" id="toBack" type="button" title="Turn to the back: time and fees">Flip</button>
+  </div>
+  <div class="lamps" id="lamps"></div>
+  <div class="score" id="score"></div>
+  <div class="list" id="list"></div>
+</section>
+
+<section class="face back" id="back" aria-label="Back: what the wait costs">
+  <div class="hd">
+    <h2>Back: what the wait costs</h2>
+    <span class="sub"></span>
+    <button id="toFront" type="button">Flip</button>
+  </div>
+  <div class="ins">
+    <label>Round size, $M <input type="number" id="r" min="0" step="1" inputmode="decimal"></label>
+    <label>Months raising so far <input type="number" id="m" min="0" step="1" inputmode="numeric"></label>
+  </div>
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="t-time" aria-controls="p-time" aria-selected="true" type="button">Time</button>
+    <button class="tab" role="tab" id="t-fees" aria-controls="p-fees" aria-selected="false" type="button">Fees</button>
+    <button class="tab" role="tab" id="t-ai" aria-controls="p-ai" aria-selected="false" type="button">AI fit map</button>
+    <button class="tab" role="tab" id="t-notes" aria-controls="p-notes" aria-selected="false" type="button">Notes</button>
+  </div>
+
+  <div class="pane" id="p-time" role="tabpanel" aria-labelledby="t-time">
+    <p class="verdict" id="tv"></p>
+    <table><thead><tr><th></th><th class="b">Bad</th><th>Base</th><th>Good</th></tr></thead><tbody id="tt"></tbody></table>
+    <p id="sofar"></p>
+    <div class="asm">Burn $<input type="number" id="b" min="1" step="10">k/mo · Runway <input type="number" id="w" min="0" step="1"> mo · Close takes 6 mo</div>
+    <div class="f">Weeks back = 26 wk × 54% unfit × cut. Burn saved = weeks ÷ 4.33 × burn. Bad: slip × burn lost; runway − slip. Breaks when runway after slip &lt; 6 mo.</div>
+  </div>
+
+  <div class="pane" id="p-fees" role="tabpanel" aria-labelledby="t-fees" hidden>
+    <p class="verdict" id="fv"></p>
+    <table><thead><tr><th>Same round</th><th class="b">Bad: no close</th><th id="fbh">Base</th><th id="fgh">Good</th></tr></thead><tbody id="ft"></tbody></table>
+    <div class="asm">Retainer $<input type="number" id="k" min="0" step="5">k up front · Success fee <input type="number" id="fee" min="0" step="0.5">% at close</div>
+    <div class="f">Success fee = round × rate, paid only at close. Retainer = paid up front, close or not. Good case = round × 1.25.</div>
+    <p class="asm">Fee terms and broker rules vary by country. Enter your own.</p>
+  </div>
+
+  <div class="pane" id="p-ai" role="tabpanel" aria-labelledby="t-ai" hidden>
+    <p class="verdict">Base: the model saves $11,950 and 9 days. Bad: a mismatch costs $50 and 1 day more than today. The lost weeks stay the same.</p>
+    <table><thead><tr><th>Fit map for 22 papers × 300 funds</th><th>Base</th><th class="b">Bad: mismatch</th></tr></thead>
+    <tbody>
+      <tr><td>Analyst only</td><td>$12,000 · 10 d</td><td class="b">$12,000 · 10 d</td></tr>
+      <tr><td>Model + review</td><td>$50 · 1 d</td><td class="b">$12,050 · 11 d</td></tr>
+    </tbody></table>
+    <div class="f">Bad with model = $50 + 1 review day + analyst redo $12,000.</div>
+    <p class="asm">Draft, reviewed by <input type="text" id="who" placeholder="name" style="width:110px;font-size:10px;padding:0 3px"></p>
+    <p class="asm">A person still reviews. The founder approves the fit list before any outreach. The CFO signs Numbers. Counsel signs Legal, including the cap table and SPA checklist. The CEO signs Story.</p>
+  </div>
+
+  <div class="pane cr" id="p-notes" role="tabpanel" aria-labelledby="t-notes" hidden>
+    <p>Shelf marks are a draft from common requests before a second meeting. Funds differ. Figures are estimates. Nothing here is investment, legal, or tax advice.</p>
+    <p><b>Librarian:</b> shelf marks on every paper, sorting by which funds ask, the back face.</p>
+    <p><b>Taxidermist:</b> a front that reads finished, A6 print, the share link, the lit-shelf score.</p>
+    <p><b>Founder raising a growth round (buyer):</b> two inputs, fit before any fee, fees on the back.</p>
+    <p><b>Don Quixote:</b> who reads each page, the AI fit map with a named signer. He still objects to any score.</p>
+  </div>
+
+  <div class="foot">Published by OuterHaven Advisory.</div>
+</section>
+
+</div>
+</main>
+
+<script>
+(function(){
+var SH=[['G','GE','Growth equity'],['C','CR','Crossover'],['S','ST','Strategic'],['V','VD','Venture debt']];
+var GR=[
+ ['Numbers','CFO',[['Cohort retention table','GC'],['Net revenue retention by quarter','GC'],['ARR bridge: new, expansion, churn','GCV'],['3-year operating model','GCV'],['Monthly P&L, last 24 months','GV'],['Unit economics: CAC payback, LTV','GC'],['Burn and runway schedule','GV'],['Reviewed or audited financials','CS'],['Pipeline and bookings forecast','GS']]],
+ ['Legal','Counsel',[['Cap table, fully diluted','GCSV'],['Prior financing docs: SPAs, SAFEs','GCV'],['Charter and bylaws','GC'],['Top-20 customer contracts','GS'],['IP assignments','GS'],['Option plan and employment terms','GC'],['Debt and lien schedule','V'],['Data and privacy policy','S']]],
+ ['Story','CEO',[['Deck, 15 slides','GCSV'],['One-page investment memo','GC'],['Market sizing','CS'],['Competitive map','GS'],['Reference customer list','GSV']]]
+];
+var D=[];GR.forEach(function(g){g[2].forEach(function(d){D.push({g:g[0],sig:g[1],n:d[0],s:d[1]});});});
+var EX='0111111101110111011111';
+var def={t:EX,r:20,m:5,b:350,w:18,k:30,f:2,who:''};
+var st=Object.assign({},def),filt=null,KEY='callslip.v1';
+
+function load(){
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j)Object.assign(st,j);}catch(e){}
+  if(location.hash.length>1){
+    var p={};location.hash.slice(1).split('&').forEach(function(x){var a=x.split('=');p[a[0]]=decodeURIComponent(a[1]||'');});
+    if(/^[01]{22}$/.test(p.t||''))st.t=p.t;
+    ['r','m','b','w','k','f'].forEach(function(key){if(p[key]!==undefined&&p[key]!=='')st[key]=parseFloat(p[key]);});
+  }
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}}
+function num(x){x=parseFloat(x);return isFinite(x)?x:0;}
+function money(n){var a=Math.abs(n),s=n<0?'-':'';
+  if(a>=1e6)return s+'$'+(a/1e6).toFixed(a>=1e7?1:2).replace(/\.?0+$/,'')+'M';
+  if(a>=1e5)return s+'$'+Math.round(a/1e3)+'k';
+  return s+'$'+Math.round(a).toLocaleString('en-US');}
+function one(n){return (Math.round(n*10)/10).toFixed(1);}
+function $(id){return document.getElementById(id);}
+
+// front
+var list=$('list'),lamps=$('lamps');
+function buildFront(){
+  var h='',i=0;
+  GR.forEach(function(g){
+    h+='<div class="gh" data-g="'+g[0]+'">'+g[0]+' <span>'+g[2].length+' · signs: '+g[1]+'</span></div>';
+    g[2].forEach(function(){
+      var d=D[i];
+      var chips=SH.map(function(s){var on=d.s.indexOf(s[0])>-1;return '<span class="chip'+(on?' on':'')+'" title="'+s[2]+(on?' asks for this':' does not ask')+'">'+s[1]+'</span>';}).join('');
+      var who=SH.filter(function(s){return d.s.indexOf(s[0])>-1;}).map(function(s){return s[2];}).join(', ');
+      h+='<div class="row" data-i="'+i+'" data-g="'+d.g+'"><label title="Read by: '+who+'"><input type="checkbox" data-i="'+i+'"><span class="nm">'+d.n.replace(/&/g,'&amp;')+'</span></label><span class="chips" aria-label="Read by '+who+'">'+chips+'</span><span class="sig">'+d.sig+'</span></div>';
+      i++;
+    });
+  });
+  list.innerHTML=h;
+  lamps.innerHTML=SH.map(function(s){return '<button type="button" class="lamp" data-s="'+s[0]+'" aria-pressed="false"><b><span>'+s[1]+'</span><span class="ct"></span></b><small>'+s[2]+'</small><span class="bar"><i></i></span></button>';}).join('');
+  list.addEventListener('change',function(e){var i=+e.target.dataset.i;var a=st.t.split('');a[i]=e.target.checked?'1':'0';st.t=a.join('');save();renderFront();});
+  lamps.addEventListener('click',function(e){var b=e.target.closest('.lamp');if(!b)return;filt=filt===b.dataset.s?null:b.dataset.s;renderFront();});
+}
+function renderFront(){
+  var lit=0,names=[];
+  SH.forEach(function(s){
+    var need=0,have=0;D.forEach(function(d,i){if(d.s.indexOf(s[0])>-1){need++;if(st.t[i]==='1')have++;}});
+    var b=lamps.querySelector('[data-s="'+s[0]+'"]'),ok=have===need;
+    if(ok){lit++;names.push(s[2]);}
+    b.classList.toggle('lit',ok);
+    b.querySelector('.ct').textContent=have+'/'+need;
+    b.querySelector('i').style.width=(need?have/need*100:0)+'%';
+    b.setAttribute('aria-pressed',filt===s[0]?'true':'false');
+    b.title=s[2]+': '+have+' of '+need+' papers ready. Tap to show only these.';
+  });
+  list.querySelectorAll('.row').forEach(function(r){
+    var i=+r.dataset.i,on=st.t[i]==='1';
+    r.querySelector('input').checked=on;r.classList.toggle('done',on);
+    r.hidden=!!filt&&D[i].s.indexOf(filt)<0;
+  });
+  list.querySelectorAll('.gh').forEach(function(g){g.hidden=!list.querySelector('.row[data-g="'+g.dataset.g+'"]:not([hidden])');});
+  var f=filt?' · showing '+SH.filter(function(s){return s[0]===filt;})[0][2]+' only':' · tap a shelf to filter';
+  $('score').innerHTML='<b>'+lit+' of 4 shelves lit</b>'+(names.length?' ('+names.join(', ')+')':'')+'. A shelf lights when every paper it asks for is ticked'+f+'.';
+}
+
+// back
+var ids=['r','m','b','w','k','fee'],keys={r:'r',m:'m',b:'b',w:'w',k:'k',fee:'f'};
+function buildBack(){
+  ids.forEach(function(id){var el=$(id);el.value=st[keys[id]];el.addEventListener('input',function(){st[keys[id]]=el.value===''?'':parseFloat(el.value);save();renderBack();});});
+  $('who').value=st.who||'';$('who').addEventListener('input',function(){st.who=this.value;save();});
+  var tabs=document.querySelectorAll('.tab');
+  tabs.forEach(function(t,ix){t.addEventListener('click',function(){sel(t);});
+    t.addEventListener('keydown',function(e){var d=e.key==='ArrowRight'?1:e.key==='ArrowLeft'?-1:0;if(d){var n=tabs[(ix+d+tabs.length)%tabs.length];sel(n);n.focus();}});});
+  function sel(t){tabs.forEach(function(x){var on=x===t;x.setAttribute('aria-selected',on);x.tabIndex=on?0:-1;$(x.getAttribute('aria-controls')).hidden=!on;});}
+  sel(tabs[0]);
+}
+function renderBack(){
+  var R=num(st.r)*1e6,M=num(st.m),B=num(st.b)*1e3,W=num(st.w),K=num(st.k)*1e3,F=num(st.f)/100;
+  var UN=14/26,PROC=26,WPM=4.33,SLIP=6,CLOSE=6;
+  var cases=[{cut:0,slip:SLIP},{cut:.5,slip:0},{cut:.8,slip:0}].map(function(c){
+    var wk=PROC*UN*c.cut,saved=wk/WPM*B;
+    return {cut:c.cut,slip:c.slip,wk:wk,burn:c.slip?-c.slip*B:saved,run:c.slip?W-c.slip:W+wk/WPM};
+  });
+  function row(l,f,cls){return '<tr><td>'+l+'</td>'+cases.map(function(c,i){return '<td'+(i===0?' class="b"':'')+'>'+f(c)+'</td>';}).join('')+'</tr>';}
+  $('tt').innerHTML=
+    row('Unfit meetings cut',function(c){return Math.round(c.cut*100)+'%';})+
+    row('Round slips',function(c){return c.slip+' mo';})+
+    row('Weeks back',function(c){return one(c.wk);})+
+    row('Burn lost / saved',function(c){return (c.burn>0?'+':'')+money(c.burn);})+
+    row('Runway after',function(c){return one(c.run)+' mo';});
+  var tv=$('tv'),left=W-SLIP,maxSlip=W-CLOSE;
+  if(B>0&&left>=CLOSE){
+    tv.className='verdict';
+    tv.textContent='Holds in the bad case: '+one(left)+' mo left after a '+SLIP+'-mo slip ('+money(SLIP*B)+(R?', '+one(SLIP*B/R*100)+'% of the round':'')+'). Breaks past a '+one(maxSlip)+'-mo slip, when runway falls under 6 mo.';
+  }else if(B>0){
+    var safe=W*B/(SLIP+CLOSE);
+    tv.className='verdict no';
+    tv.textContent='Safer first: hold burn at '+money(safe)+'/mo or less. At '+money(B)+'/mo a '+SLIP+'-mo slip leaves '+one(left)+' mo, under the 6 a close takes. The bad case does not hold at this burn.';
+  }else{tv.className='verdict';tv.textContent='Enter a monthly burn to see the cases.';}
+  var spent=M*B;
+  $('sofar').textContent='So far: '+M+' mo × '+money(B)+' = '+money(spent)+' of burn, about '+money(spent*UN)+' of it on funds that did not fit (54%, est.).';
+
+  var cf=[{round:0,lab:'no close'},{round:R},{round:R*1.25}];
+  $('fbh').textContent='Base: '+money(R);$('fgh').textContent='Good: '+money(R*1.25);
+  function fr(l,f){return '<tr><td>'+l+'</td>'+cf.map(function(c,i){return '<td'+(i===0?' class="b"':'')+'>'+money(f(c))+'</td>';}).join('')+'</tr>';}
+  $('ft').innerHTML=fr('Retainer path',function(){return K;})+fr('Success-fee path',function(c){return c.round*F;});
+  $('fv').textContent='Bad case, no close: the retainer path costs '+money(K)+', the success-fee path '+money(0)+'. Base: '+money(K)+' against '+money(R*F)+'.';
+}
+
+// flip
+var card=$('card'),front=$('front'),back=$('back');
+function flip(toBack){
+  card.classList.toggle('flipped',toBack);
+  front.inert=toBack;back.inert=!toBack;
+  front.setAttribute('aria-hidden',toBack);back.setAttribute('aria-hidden',!toBack);
+  (toBack?$('toFront'):$('toBack')).focus();
+}
+$('toBack').onclick=function(){flip(true);};
+$('toFront').onclick=function(){flip(false);};
+$('printBtn').onclick=function(){window.print();};
+$('linkBtn').onclick=function(){
+  var h='t='+st.t+'&r='+num(st.r)+'&m='+num(st.m)+'&b='+num(st.b)+'&w='+num(st.w)+'&k='+num(st.k)+'&f='+num(st.f);
+  try{history.replaceState(null,'','#'+h);}catch(e){location.hash=h;}
+  var url=location.href,sub=$('sub');
+  function done(ok){sub.textContent=ok?'Link copied. It carries your ticks and inputs.':'Link is in the address bar. Copy it from there.';setTimeout(function(){sub.textContent='22 growth-round papers, shelved by who asks';},4000);}
+  function fallback(){try{var ta=document.createElement('textarea');ta.value=url;document.body.appendChild(ta);ta.select();var ok=document.execCommand('copy');ta.remove();done(ok);}catch(e){done(false);}}
+  try{if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(url).then(function(){done(true);},fallback);}else fallback();}catch(e){fallback();}
+};
+
+load();buildFront();renderFront();buildBack();renderBack();
+back.inert=true;back.setAttribute('aria-hidden','true');
+})();
+</script>
+</body>
+</html>
