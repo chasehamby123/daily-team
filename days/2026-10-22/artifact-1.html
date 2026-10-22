@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sized to the Raise: what an unsized deal feed costs each month</title>
+<style>
+:root{
+  --ink:#141414; --paper:#f5f2e9; --card:#fffdf7; --rule:#141414;
+  --muted:#4a4a4a; --accent:#23408e; --soft:#e7e2d3;
+  --s1:4px; --s2:8px; --s3:16px; --s4:24px; --s5:40px;
+}
+*{box-sizing:border-box}
+html{font-size:17px}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.45;font-variant-numeric:tabular-nums}
+main{max-width:760px;margin:0 auto;padding:var(--s4) var(--s3) var(--s5)}
+header{border-bottom:6px solid var(--rule);padding-bottom:var(--s3);margin-bottom:var(--s4)}
+.kicker{font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin:0 0 var(--s2)}
+h1{font-size:2.3rem;line-height:1.05;margin:0 0 var(--s2);font-weight:900;letter-spacing:-.01em}
+h1 span{display:block;font-size:1.05rem;font-weight:600;letter-spacing:0;margin-top:var(--s2)}
+h2{font-size:1.35rem;margin:var(--s5) 0 var(--s2);font-weight:900;border-top:3px solid var(--rule);padding-top:var(--s2)}
+h3{font-size:1.05rem;margin:var(--s4) 0 var(--s2);font-weight:800}
+p{margin:0 0 var(--s3)}
+.step{background:var(--card);border:3px solid var(--rule);padding:var(--s3);margin-bottom:var(--s3)}
+.step .num{display:inline-block;font-weight:900;border:2px solid var(--rule);padding:0 var(--s2);margin-right:var(--s2)}
+label{font-weight:800;display:block;font-size:1.1rem}
+.help{display:block;color:var(--muted);font-size:.9rem;margin:var(--s1) 0 var(--s2)}
+input{font:inherit;font-size:1.25rem;font-weight:700;width:100%;max-width:340px;padding:var(--s2);
+  border:2px solid var(--rule);background:#fff;color:var(--ink);border-radius:0}
+input:focus{outline:3px solid var(--accent);outline-offset:2px}
+input[aria-invalid="true"]{border-style:dashed;border-width:3px}
+.err{display:block;font-weight:700;margin-top:var(--s1)}
+fieldset{border:2px solid var(--rule);background:var(--card);padding:var(--s3);margin:var(--s4) 0 var(--s3)}
+legend{font-weight:900;padding:0 var(--s2)}
+.rates{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:var(--s3)}
+.rates label{font-size:.95rem}
+.rates input{font-size:1rem;max-width:none}
+.rates .help{font-size:.82rem}
+.btns{display:flex;flex-wrap:wrap;gap:var(--s2);margin:var(--s3) 0}
+button{font:inherit;font-weight:800;padding:var(--s2) var(--s3);border:2px solid var(--rule);background:var(--card);color:var(--ink);cursor:pointer;border-radius:0}
+button:focus{outline:3px solid var(--accent);outline-offset:2px}
+.notice{border:3px solid var(--rule);padding:var(--s3);background:var(--card);margin:var(--s3) 0}
+.notice.error{border-style:dashed}
+.notice strong{display:block;font-size:1.15rem;margin-bottom:var(--s1)}
+.big{font-size:1.6rem;font-weight:900;line-height:1.2;margin:0 0 var(--s2)}
+.cases{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s2);margin:var(--s3) 0}
+.case{background:var(--card);border:2px solid var(--rule);padding:var(--s3) var(--s2)}
+.case.base{border-width:4px}
+.case h3{margin:0 0 var(--s2);font-size:1rem;text-transform:uppercase;letter-spacing:.08em}
+.case .drv{font-size:.82rem;color:var(--muted);margin:0 0 var(--s2);border-bottom:1px solid var(--rule);padding-bottom:var(--s2)}
+.case dl{margin:0}
+.case dt{font-size:.8rem;font-weight:700}
+.case dd{margin:0 0 var(--s2);font-weight:800;font-size:1.05rem}
+.verdict{font-weight:900;border-top:2px solid var(--rule);padding-top:var(--s2);font-size:.95rem}
+ol.sum{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9rem;background:var(--card);
+  border:2px solid var(--rule);padding:var(--s3) var(--s3) var(--s3) 2.6rem;margin:0 0 var(--s3)}
+ol.sum li{padding:var(--s1) 0;border-bottom:1px dotted var(--muted)}
+ol.sum li:last-child{border-bottom:0}
+ol.sum li.total{font-weight:800;border-top:2px solid var(--rule);margin-top:var(--s1)}
+.out{font-weight:900;white-space:nowrap}
+.who{font-size:.85rem;color:var(--muted);margin:-8px 0 var(--s3)}
+pre.formula{white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.85rem;
+  background:var(--card);border:2px solid var(--rule);padding:var(--s3);margin:0 0 var(--s3)}
+.small{font-size:.85rem;color:var(--muted)}
+footer{border-top:6px solid var(--rule);margin-top:var(--s5);padding-top:var(--s3);font-size:.85rem}
+footer ul{padding-left:1.1rem;margin:var(--s2) 0}
+.hidden{display:none}
+@media (max-width:640px){
+  html{font-size:16px}
+  h1{font-size:1.8rem}
+  .cases{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important;scroll-behavior:auto !important}}
+@media print{
+  body{background:#fff}
+  .btns,.noprint{display:none !important}
+  .step,fieldset,.case,ol.sum,.notice,pre.formula{background:#fff;break-inside:avoid}
+  .cases{grid-template-columns:repeat(3,1fr)}
+  input{border:1px solid #000}
+  main{max-width:none}
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <p class="kicker">Free tool for search fund buyers</p>
+  <h1>Sized to the Raise<span>Start with what you can close. The page counts what the deals above that number cost you each month.</span></h1>
+</header>
+
+<form id="f" novalidate onsubmit="return false">
+  <div class="step">
+    <label for="cap"><span class="num" aria-hidden="true">1</span>What can you and your investors close?</label>
+    <span class="help" id="cap-h">Equity plus debt, in USD. Nothing above this figure counts as a deal.</span>
+    <input id="cap" name="cap" inputmode="decimal" autocomplete="off" aria-describedby="cap-h cap-e">
+    <span class="err" id="cap-e" aria-live="polite"></span>
+  </div>
+  <div class="step">
+    <label for="months"><span class="num" aria-hidden="true">2</span>How many months have you searched?</label>
+    <span class="help" id="months-h">Used for the cost so far. Leave blank to skip that line.</span>
+    <input id="months" name="months" inputmode="decimal" autocomplete="off" aria-describedby="months-h months-e">
+    <span class="err" id="months-e" aria-live="polite"></span>
+  </div>
+
+  <fieldset>
+    <legend>Your rates</legend>
+    <p class="small">Filled with the worked example. Fees and any tax treatment depend on your market and local rules. Enter your own.</p>
+    <div class="rates" id="rates"></div>
+  </fieldset>
+
+  <div class="btns">
+    <button type="button" id="ex">Load worked example</button>
+    <button type="button" id="clr">Clear all</button>
+    <button type="button" id="prt">Print</button>
+  </div>
+</form>
+
+<section id="result" aria-live="polite" aria-labelledby="rh">
+  <h2 id="rh">What waiting costs</h2>
+  <div id="out"></div>
+</section>
+
+<section aria-labelledby="fh">
+  <h2 id="fh">Formula</h2>
+  <pre class="formula">Hourly cost        = monthly burn ÷ working hours a month
+OUT summaries      = summaries a month × out-of-range share
+
+Usual path, a month
+  wasted reading   = OUT summaries × hours per summary × hourly cost
+  dead diligence   = diligence fee ÷ months per dead LOI
+  total            = wasted reading + dead diligence
+
+Shortcut, a month (size checked before reading)
+  OUT checks       = OUT summaries × check hours × hourly cost
+  AI reads         = summaries a month × AI price per summary
+  dead review      = (CPA review + AI cleanup) ÷ months per dead LOI
+  total            = OUT checks + AI reads + dead review
+
+Per year           = a month × 12
+Cost so far        = a month × months searched
+Slip cost          = a month × slip months
+Share at close     = share % × equity share × closable capital
+                     (paid once, only if a deal closes)</pre>
+  <p class="small">This is arithmetic on your own figures. It is not investment, legal, or tax advice.</p>
+</section>
+
+<footer>
+  <p><strong>Credits</strong></p>
+  <ul>
+    <li>Costume designer: the empty state, the too-small error with the figure needed to clear it, the two questions, the cost-so-far line, and every figure in the sums.</li>
+    <li>Sign painter: one column, a reading order that works aloud, OUT with a hollow square, and no meaning carried by colour.</li>
+    <li>Search fund entrepreneur (buyer): closable capital as the first field, and nothing above it counted as a deal.</li>
+    <li>Alice: size checked before reading, out-of-range deals counted in hours and dollars and never named, and the bad case.</li>
+  </ul>
+  <p>Published by OuterHaven Advisory.</p>
+</footer>
+</main>
+
+<script>
+(function(){
+var RATES=[
+ ['burn','Monthly burn','Salary, office, travel. USD.','25000'],
+ ['hrs','Working hours a month','Hours behind that burn.','160'],
+ ['n','Summaries a month','Teasers and CIMs that arrive.','40'],
+ ['p','Out-of-range share','Percent above what you can close.','60'],
+ ['h','Hours per summary','Reading before you know the size.','3'],
+ ['fee','Diligence fee per LOI','Flat fee, paid win or lose. USD.','45000'],
+ ['k','Months per dead LOI','One LOI dies every this many months.','4'],
+ ['smallest','Smallest deal in your feed','Enterprise value, USD.','3000000'],
+ ['eq','Equity share of capital','Percent of closable capital that is equity.','40'],
+ ['ai','AI price per summary','Shortcut: AI reads and checks size. USD.','40'],
+ ['clean','AI cleanup per LOI','Shortcut: AI cleans trailing financials. USD.','400'],
+ ['cpa','CPA review per LOI','Shortcut: named CPA signs off. USD.','2500'],
+ ['q','Check hours per OUT flag','Shortcut: you confirm each OUT.','0.5'],
+ ['share','Diligence share at close','Shortcut: percent of equity, paid at close.','0.25']
+];
+var EX={cap:'8000000',months:'14'};
+RATES.forEach(function(r){EX[r[0]]=r[3];});
+var KEY='sized-to-the-raise-v1';
+var box=document.getElementById('rates');
+RATES.forEach(function(r){
+  var d=document.createElement('div');
+  d.innerHTML='<label for="'+r[0]+'">'+r[1]+'</label><span class="help" id="'+r[0]+'-h">'+r[2]+'</span>'+
+   '<input id="'+r[0]+'" inputmode="decimal" autocomplete="off" aria-describedby="'+r[0]+'-h '+r[0]+'-e"><span class="err" id="'+r[0]+'-e"></span>';
+  box.appendChild(d);
+});
+var IDS=['cap','months'].concat(RATES.map(function(r){return r[0];}));
+function el(id){return document.getElementById(id);}
+function setAll(v){IDS.forEach(function(id){el(id).value=v?v[id]:'';});}
+function save(){try{var o={};IDS.forEach(function(id){o[id]=el(id).value;});localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}}
+function load(){try{var s=localStorage.getItem(KEY);if(s){var o=JSON.parse(s);if(o&&typeof o==='object'){IDS.forEach(function(id){el(id).value=(o[id]!=null)?String(o[id]):'';});return true;}}}catch(e){}return false;}
+function parse(v){v=String(v).replace(/[$,%\s]/g,'');if(v==='')return null;var n=Number(v);return isFinite(n)?n:NaN;}
+function round2(n){return Math.round(n*100)/100;}
+function money(n){n=round2(n);var c=Math.abs(n%1)>0.0001;return (n<0?'-':'')+'$'+Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:c?2:0,maximumFractionDigits:2});}
+function num(n){return round2(n).toLocaleString('en-US',{maximumFractionDigits:2});}
+var OUT='<span class="out"><span aria-hidden="true">□ </span>OUT</span>';
+
+function calc(r){
+  var hourly=r.burn/r.hrs, outN=r.n*r.p/100;
+  var u={hourly:hourly,outN:outN,hours:outN*r.h};
+  u.wasted=u.hours*hourly; u.dead=r.fee/r.k; u.total=u.wasted+u.dead;
+  var s={checkH:outN*r.q};
+  s.check=s.checkH*hourly; s.ai=r.n*r.ai; s.dead=(r.cpa+r.clean)/r.k; s.total=s.check+s.ai+s.dead;
+  return {u:u,s:s};
+}
+function usualSum(r,c){
+  return '<ol class="sum">'+
+   '<li>'+money(r.burn)+' burn ÷ '+num(r.hrs)+' h = '+money(c.u.hourly)+'/h</li>'+
+   '<li>'+num(r.n)+' summaries × '+num(r.p)+'% = '+num(c.u.outN)+' summaries '+OUT+'</li>'+
+   '<li>'+num(c.u.outN)+' '+OUT+' × '+num(r.h)+' h × '+money(c.u.hourly)+'/h = '+money(c.u.wasted)+' wasted reading ('+num(c.u.hours)+' h)</li>'+
+   '<li>'+money(r.fee)+' fee ÷ '+num(r.k)+' months = '+money(c.u.dead)+' dead diligence</li>'+
+   '<li class="total">'+money(c.u.wasted)+' + '+money(c.u.dead)+' = '+money(c.u.total)+' a month</li>'+
+   '<li class="total">'+money(c.u.total)+' × 12 = '+money(c.u.total*12)+' a year</li></ol>';
+}
+function shortSum(r,c){
+  return '<ol class="sum">'+
+   '<li>AI reads '+num(r.n)+' summaries and checks size first. '+num(c.u.outN)+' flagged '+OUT+'. Names not shown.</li>'+
+   '<li>You confirm: '+num(c.u.outN)+' '+OUT+' × '+num(r.q)+' h × '+money(c.u.hourly)+'/h = '+money(c.s.check)+' ('+num(c.s.checkH)+' h)</li>'+
+   '<li>AI reads: '+num(r.n)+' × '+money(r.ai)+' = '+money(c.s.ai)+'</li>'+
+   '<li>Dead review: ('+money(r.cpa)+' CPA + '+money(r.clean)+' AI cleanup) ÷ '+num(r.k)+' months = '+money(c.s.dead)+'</li>'+
+   '<li class="total">'+money(c.s.check)+' + '+money(c.s.ai)+' + '+money(c.s.dead)+' = '+money(c.s.total)+' a month</li>'+
+   '<li class="total">'+money(c.s.total)+' × 12 = '+money(c.s.total*12)+' a year</li></ol>';
+}
+function caseCard(name,cls,drv,c,slip){
+  var holds=c.s.total<c.u.total;
+  var h='<div class="case '+cls+'"><h3>'+name+'</h3><p class="drv">'+drv+'</p><dl>'+
+   '<dt>Usual path, a month</dt><dd>'+money(c.u.total)+'</dd>'+
+   '<dt>Usual path, a year</dt><dd>'+money(c.u.total*12)+'</dd>'+
+   '<dt>Shortcut, a month</dt><dd>'+money(c.s.total)+'</dd>'+
+   '<dt>Shortcut, a year</dt><dd>'+money(c.s.total*12)+'</dd>';
+  if(slip>0){h+='<dt>Slip of '+num(slip)+' months, usual</dt><dd>'+money(c.u.total*slip)+'</dd>'+
+   '<dt>Slip of '+num(slip)+' months, shortcut</dt><dd>'+money(c.s.total*slip)+'</dd>';}
+  h+='</dl><p class="verdict">'+(holds?'<span aria-hidden="true">■ </span>HOLDS. Shortcut saves '+money(c.u.total-c.s.total)+' a month.':'<span aria-hidden="true">□ </span>BREAKS. Shortcut costs '+money(c.s.total-c.u.total)+' more a month.')+'</p></div>';
+  return h;
+}
+function clearErrs(){IDS.forEach(function(id){el(id+'-e').textContent='';el(id).removeAttribute('aria-invalid');});}
+function fieldErr(id,msg){el(id+'-e').textContent=msg;el(id).setAttribute('aria-invalid','true');}
+
+function render(){
+  save(); clearErrs();
+  var out=el('out'), v={}, bad=[];
+  IDS.forEach(function(id){v[id]=parse(el(id).value);});
+  var allEmpty=IDS.every(function(id){return v[id]===null;});
+  if(allEmpty||v.cap===null){
+    out.innerHTML='<div class="notice"><strong>The rack is empty.</strong>'+
+     '<p>Enter what you and your investors can close in field 1. The page needs that one figure before it counts anything.</p>'+
+     (allEmpty?'<p>Your rates are blank too. Fill them in, or press Load worked example.</p>':'')+'</div>';
+    return;
+  }
+  if(isNaN(v.cap)||v.cap<0){fieldErr('cap','Enter a dollar figure, 0 or more.');bad.push('closable capital');}
+  if(v.months!==null&&(isNaN(v.months)||v.months<0)){fieldErr('months','Enter months, 0 or more, or leave blank.');bad.push('months searched');}
+  RATES.forEach(function(r){
+    var x=v[r[0]];
+    if(x===null){fieldErr(r[0],'Needed.');bad.push(r[1].toLowerCase());return;}
+    if(isNaN(x)||x<0){fieldErr(r[0],'Enter a number, 0 or more.');bad.push(r[1].toLowerCase());return;}
+    if((r[0]==='hrs'||r[0]==='k')&&x===0){fieldErr(r[0],'Must be above 0.');bad.push(r[1].toLowerCase());return;}
+    if((r[0]==='p'||r[0]==='eq')&&x>100){fieldErr(r[0],'100 or less.');bad.push(r[1].toLowerCase());}
+  });
+  if(bad.length){
+    out.innerHTML='<div class="notice error"><strong>'+OUT+': '+bad.length+' field'+(bad.length>1?'s':'')+' need a figure.</strong><p>Check: '+bad.join(', ')+'. Each field shows what it needs.</p></div>';
+    return;
+  }
+  if(v.cap<v.smallest){
+    var hourly=v.burn/v.hrs, all=v.n*v.h*hourly;
+    out.innerHTML='<div class="notice error"><strong>'+OUT+': '+money(v.cap)+' is too small for any deal in your feed.</strong>'+
+     '<p>The smallest deal in your feed is '+money(v.smallest)+'. It takes '+money(v.smallest-v.cap)+' more in equity or debt to clear it.</p>'+
+     '<p>Until then, every summary is out of range. Reading the whole feed costs '+num(v.n)+' × '+num(v.h)+' h × '+money(hourly)+'/h = '+money(all)+' a month, '+money(all*12)+' a year.</p></div>';
+    return;
+  }
+  var base=calc(v);
+  var rb={}; for(var k in v)rb[k]=v[k]; rb.n=v.n*0.5; rb.fee=v.fee*2;
+  var rg={}; for(k in v)rg[k]=v[k]; rg.fee=v.fee*0.8; rg.k=v.k*1.5;
+  var cb=calc(rb), cg=calc(rg), slip=6;
+  var h='';
+  h+='<p class="big">Doing nothing costs '+money(base.u.total)+' a month. '+money(base.u.total*12)+' a year.</p>';
+  h+='<p>At '+money(v.cap)+' closable, '+num(base.u.outN)+' of '+num(v.n)+' summaries a month are '+OUT+'. They take '+num(base.u.hours)+' hours to read. The names are not shown here.</p>';
+  if(v.months!==null){
+    h+='<p><strong>Cost so far:</strong> '+money(base.u.total)+' × '+num(v.months)+' months = '+money(base.u.total*v.months)+'. Sized first, the same months would have cost '+money(base.s.total*v.months)+'.</p>';
+  }else{
+    h+='<p class="small">Enter months searched in field 2 to see the cost so far.</p>';
+  }
+  h+='<h3>Three cases, side by side</h3>';
+  h+='<div class="cases">'+
+    caseCard('Bad','bad',num(rb.n)+' summaries a month. '+money(rb.fee)+' fee. 1 dead LOI per '+num(rb.k)+' months. 6-month slip.',cb,slip)+
+    caseCard('Base','base',num(v.n)+' summaries a month. '+money(v.fee)+' fee. 1 dead LOI per '+num(v.k)+' months. No slip.',base,0)+
+    caseCard('Good','good',num(rg.n)+' summaries a month. '+money(rg.fee)+' fee. 1 dead LOI per '+num(rg.k)+' months. No slip.',cg,0)+
+    '</div>';
+  var holds=cb.s.total<cb.u.total;
+  var aMax=(cb.u.total-cb.s.check-cb.s.dead)/rb.n;
+  var rMax=(cb.u.total-cb.s.check-cb.s.ai)*rb.k-rb.clean;
+  h+='<div class="notice">';
+  if(holds){
+    h+='<strong><span aria-hidden="true">■ </span>The shortcut holds in the bad case.</strong>'+
+     '<p>It costs '+money(cb.s.total)+' a month against '+money(cb.u.total)+' on the usual path.</p>'+
+     '<p>Room before it breaks: AI reading can rise to '+money(aMax)+' a summary, or the CPA review to '+money(Math.max(0,rMax))+' a deal, before the shortcut costs more than the usual path.</p>';
+  }else{
+    h+='<strong><span aria-hidden="true">□ </span>The shortcut breaks in the bad case.</strong>';
+    if(aMax>0){h+='<p>Safer setting first: keep AI reading at '+money(aMax)+' a summary or less. At that price both paths cost the same. Below it, the shortcut costs less.</p>';}
+    else{h+='<p>Safer setting first: stay on the usual path. At these rates no AI price makes the shortcut cheaper.</p>';}
+    h+='<p>Bad case now: shortcut '+money(cb.s.total)+' a month, usual path '+money(cb.u.total)+'.</p>';
+  }
+  h+='</div>';
+
+  h+='<h3>Base case: usual path, no AI</h3><p class="who">You read every summary, then check the size.</p>'+usualSum(v,base);
+  h+='<h3>Base case: shortcut, with AI</h3><p class="who">Size checked before reading. A person still confirms every OUT flag, a named CPA signs off the financials, and you decide every LOI.</p>'+shortSum(v,base);
+  var shareAmt=v.share/100*v.eq/100*v.cap;
+  h+='<p class="small">Shortcut, at close only: '+num(v.share)+'% × '+num(v.eq)+'% equity × '+money(v.cap)+' = '+money(shareAmt)+' to the diligence firm. Paid once if a deal closes. Not part of the monthly cost.</p>';
+  h+='<h3>Bad case: usual path, no AI</h3>'+usualSum(rb,cb)+
+     '<ol class="sum"><li class="total">Slip: '+money(cb.u.total)+' × '+slip+' months = '+money(cb.u.total*slip)+'</li></ol>';
+  h+='<h3>Bad case: shortcut, with AI</h3>'+shortSum(rb,cb)+
+     '<ol class="sum"><li class="total">Slip: '+money(cb.s.total)+' × '+slip+' months = '+money(cb.s.total*slip)+'</li></ol>';
+  out.innerHTML=h;
+}
+var t;
+IDS.forEach(function(id){el(id).addEventListener('input',function(){clearTimeout(t);t=setTimeout(render,150);});});
+el('ex').addEventListener('click',function(){setAll(EX);render();});
+el('clr').addEventListener('click',function(){setAll(null);render();el('cap').focus();});
+el('prt').addEventListener('click',function(){window.print();});
+if(!load())setAll(EX);
+render();
+})();
+</script>
+</body>
+</html>

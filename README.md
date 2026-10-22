@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-10-21: Call Slip
+### 2026-10-22: Sized to the Raise
 
-<a href="days/2026-10-21/"><img src="days/2026-10-21/team.png" alt="Team for 2026-10-21: Librarian · Taxidermist · Founder raising a growth round · Don Quixote" width="100%"></a>
+<a href="days/2026-10-22/"><img src="days/2026-10-22/team.png" alt="Team for 2026-10-22: Costume designer · Sign painter · Search fund entrepreneur · Alice" width="100%"></a>
 
-**Task:** Document checklist: the buyer's stage gives a list of documents to prepare before a deal or rollout, grouped and ticked off in the browser.
+**Task:** Cost-of-inaction calculator: the buyer's current volumes and rates give what the problem costs per month and per year, with each step of the sum shown.
 
-**Decision:** The page is a two-faced postcard.
+**Decision:** The page asks what the searcher and their investors can close and how many months they have searched.
 
-<a href="days/2026-10-21/"><img src="days/2026-10-21/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-10-22/"><img src="days/2026-10-22/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-10-21/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-10-22/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,15 +37,15 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-10-22](days/2026-10-22/) | <a href="days/2026-10-22/"><img src="days/2026-10-22/artifact-1.png" alt="Sized to the Raise" width="160"></a> | Sized to the Raise | Costume designer · Sign painter · Search fund entrepreneur · Alice |
 | [2026-10-21](days/2026-10-21/) | <a href="days/2026-10-21/"><img src="days/2026-10-21/artifact-1.png" alt="Call Slip" width="160"></a> | Call Slip | Librarian · Taxidermist · Founder raising a growth round · Don Quixote |
 | [2026-10-20](days/2026-10-20/) | <a href="days/2026-10-20/"><img src="days/2026-10-20/artifact-1.png" alt="The Walk Line" width="160"></a> | The Walk Line | Chef · Upholsterer · Private credit fund manager · Janus |
 | [2026-10-19](days/2026-10-19/) | <a href="days/2026-10-19/"><img src="days/2026-10-19/artifact-1.png" alt="Who Picks Up" width="160"></a> | Who Picks Up | Brand strategist · Luthier · Clinic owner · Florence Nightingale |
 | [2026-10-18](days/2026-10-18/) | <a href="days/2026-10-18/"><img src="days/2026-10-18/artifact-1.png" alt="Mandate Gaps, One Page" width="160"></a> | Mandate Gaps, One Page | Blacksmith · Urban planner · Family office CIO · Charles Darwin |
 | [2026-10-17](days/2026-10-17/) | <a href="days/2026-10-17/"><img src="days/2026-10-17/artifact-1.png" alt="The Monday Worklist" width="160"></a> | The Monday Worklist | Florist · Teacher · Revenue cycle manager · Daedalus |
 | [2026-10-16](days/2026-10-16/) | <a href="days/2026-10-16/"><img src="days/2026-10-16/artifact-1.png" alt="Blank Before Cut" width="160"></a> | Blank Before Cut | Locksmith · Packaging designer · Corporate development head · Scheherazade |
-| [2026-10-15](days/2026-10-15/) | <a href="days/2026-10-15/"><img src="days/2026-10-15/artifact-1.png" alt="The Card for Your Accountant" width="160"></a> | The Card for Your Accountant | Ceramicist · Textile designer · Owner preparing to sell · Ada Lovelace |
 
-[All 18 days](ARCHIVE.md)
+[All 19 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works
