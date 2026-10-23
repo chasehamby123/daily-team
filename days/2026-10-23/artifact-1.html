@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>The 9:14 Lead: a readiness scorecard for insurance agencies</title>
+<style>
+:root{
+  --bg:#f6f1e7;--card:#fffdf8;--ink:#22201c;--muted:#57503f;--line:#cfc5b3;
+  --thread:#9b2a24;--held:#2c5a4d;--silence:#8a8478;--soft:#ece4d4;--bubble:#e3eee9;--alert:#f3e6d0;
+  --serif:ui-serif,Georgia,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#1a1815;--card:#23201c;--ink:#ece6da;--muted:#b6ad9c;--line:#40392f;
+    --thread:#e58a80;--held:#86c8b1;--silence:#6f6a60;--soft:#2c2823;--bubble:#22332d;--alert:#3a3024;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 var(--sans)}
+.wrap{max-width:46rem;margin:0 auto;padding:1rem 1rem 3rem}
+h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.15;margin:0}
+h1{font-size:2.6rem;letter-spacing:-.01em}
+h2{font-size:1.45rem;margin:2.2rem 0 .4rem}
+h3{font-size:1.1rem}
+p{margin:.4rem 0}
+.kicker{font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:.5rem 0 .3rem}
+.sentence{font-family:var(--serif);font-size:1.2rem;margin:.6rem 0 .8rem;max-width:36rem}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.quick{display:flex;flex-wrap:wrap;gap:.3rem 1rem;align-items:baseline;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:.5rem 0;font-size:.95rem}
+.quick b{font-family:var(--mono)}
+.quick a{color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:.9rem}
+.tabs{display:flex;gap:.3rem;margin:.6rem 0 0}
+.tabs button{font:inherit;font-size:.9rem;background:var(--soft);color:var(--ink);border:1px solid var(--line);border-bottom:none;border-radius:6px 6px 0 0;padding:.35rem .8rem;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--card);font-weight:600}
+.panel{border-top-left-radius:0}
+.phones{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.phone{border:1px solid var(--line);border-radius:14px;padding:.6rem;background:var(--bg);min-width:0}
+.phone h3{font-family:var(--sans);font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.4rem}
+.msg{border-radius:10px;padding:.5rem .6rem;font-size:.88rem;line-height:1.35}
+.msg.sms{background:var(--bubble)}
+.msg.alert{background:var(--alert)}
+.stamp{font-family:var(--mono);font-size:.75rem;color:var(--muted);margin-top:.3rem}
+.names{display:flex;flex-wrap:wrap;gap:.5rem 1rem;margin-top:.7rem;font-size:.85rem}
+.names label{display:flex;flex-direction:column;gap:.15rem}
+input[type=text],input[type=number],input[type=time],input[type=date]{font:inherit;font-size:.95rem;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:.3rem .45rem;max-width:12rem}
+input:focus-visible,button:focus-visible{outline:2px solid var(--held);outline-offset:2px}
+.log{width:100%;border-collapse:collapse;font-size:.88rem}
+.log th,.log td{text-align:left;vertical-align:top;padding:.4rem .3rem;border-bottom:1px solid var(--line)}
+.log th{width:34%;font-weight:600}
+.log td.m{font-family:var(--mono);font-size:.82rem}
+fieldset{border:none;margin:1.2rem 0 0;padding:0}
+legend{font-family:var(--serif);font-size:1.15rem;font-weight:600;padding:0;margin-bottom:.3rem}
+legend span{font-family:var(--sans);font-size:.8rem;font-weight:400;color:var(--muted);margin-left:.4rem}
+.q{display:grid;grid-template-columns:1fr auto;gap:.3rem .8rem;align-items:center;padding:.55rem .1rem .55rem .7rem;border-left:3px dashed var(--thread);margin:.35rem 0;background:var(--card);border-radius:0 4px 4px 0}
+.q.held{border-left:3px solid var(--held)}
+.q p{margin:0}
+.q .src{font-size:.78rem;color:var(--muted)}
+.q .state{font-size:.78rem;font-family:var(--mono)}
+.q.held .state{color:var(--held)}
+.q.cut .state{color:var(--thread)}
+.opts{display:flex;gap:0}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.opt span{display:inline-block;padding:.35rem .8rem;border:1px solid var(--line);font-size:.9rem;background:var(--bg);min-width:3rem;text-align:center}
+.opt:first-child span{border-radius:4px 0 0 4px}
+.opt:last-child span{border-radius:0 4px 4px 0;border-left:none}
+.opt input:checked+span{background:var(--ink);color:var(--bg);font-weight:600}
+.opt input:focus-visible+span{outline:2px solid var(--held);outline-offset:2px}
+.quals{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:1rem}
+.quals label{display:flex;flex-direction:column;gap:.25rem;font-size:.92rem}
+.btns{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
+.btns button{font:inherit;font-size:.9rem;background:var(--card);color:var(--ink);border:1px solid var(--ink);border-radius:4px;padding:.4rem .8rem;cursor:pointer}
+details{margin-top:1rem;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:.6rem .8rem}
+summary{cursor:pointer;font-weight:600}
+.agrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(10.5rem,1fr));gap:.6rem;margin-top:.6rem}
+.agrid label{display:flex;flex-direction:column;gap:.2rem;font-size:.82rem}
+.score{display:flex;align-items:baseline;gap:.4rem;margin-top:.4rem}
+.score b{font-family:var(--serif);font-size:4.2rem;line-height:1}
+.score span{font-size:1.2rem;color:var(--muted)}
+.silence-line{font-size:1.1rem;margin:.2rem 0}
+.formula{font-family:var(--mono);font-size:.78rem;color:var(--muted);background:var(--soft);border-radius:4px;padding:.35rem .5rem;margin:.5rem 0;overflow-wrap:anywhere}
+.tl{margin:.8rem 0}
+.tl .row{margin:.55rem 0}
+.tl .lab{font-size:.82rem;color:var(--muted);margin-bottom:.2rem}
+.track{display:flex;align-items:center;height:1.6rem;border:1px solid var(--line);border-radius:4px;background:var(--card);overflow:hidden}
+.tick{font-family:var(--mono);font-size:.72rem;padding:0 .35rem;white-space:nowrap}
+.bar{height:100%;background:var(--silence);transition:width .4s ease}
+.bar.held{background:var(--held)}
+.tbl{overflow-x:auto;margin:.5rem 0}
+table.cases{border-collapse:collapse;width:100%;font-size:.88rem;min-width:22rem}
+.cases th,.cases td{padding:.4rem .4rem;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+.cases th:first-child,.cases td:first-child{text-align:left}
+.cases thead th{font-family:var(--serif);font-size:.95rem;border-bottom:2px solid var(--ink)}
+.cases tr.sec td{font-weight:600;text-align:left;background:var(--soft)}
+.cases td.inp{color:var(--muted);font-size:.8rem}
+.neg{color:var(--thread);font-weight:600}
+.pos{color:var(--held);font-weight:600}
+.verdict{border-left:3px solid var(--ink);padding:.3rem .7rem;margin:.6rem 0;background:var(--card)}
+.weak{margin:.7rem 0;padding:.8rem;background:var(--card);border:1px solid var(--line);border-left:3px dashed var(--thread);border-radius:0 6px 6px 0}
+.weak h3 .pts{font-family:var(--sans);font-size:.85rem;font-weight:400;color:var(--muted)}
+.weak ul{margin:.3rem 0;padding-left:1.1rem;font-size:.9rem}
+.weak .step{font-weight:600;margin:.4rem 0}
+.paths{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;font-size:.85rem;margin-top:.4rem}
+.paths div{background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:.4rem .5rem}
+.paths b{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+ul.review{padding-left:1.1rem;margin:.3rem 0}
+.credits{margin-top:2.5rem;border-top:1px solid var(--line);padding-top:.8rem;font-size:.8rem;color:var(--muted)}
+footer{font-size:.8rem;color:var(--muted);margin-top:.5rem}
+@media (max-width:30rem){
+  h1{font-size:2.1rem}
+  .q{grid-template-columns:1fr}
+  .quals{grid-template-columns:1fr}
+  .paths{grid-template-columns:1fr}
+  .msg{font-size:.82rem}
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition:none!important;animation:none!important}
+}
+@media print{
+  :root{--bg:#fff;--card:#fff;--ink:#000;--muted:#333;--line:#999;--thread:#8a1f1a;--held:#1f4a3e;--silence:#999;--soft:#eee;--bubble:#eef4f1;--alert:#f6eee0}
+  .noprint,.tabs{display:none!important}
+  .panel{display:block!important;margin-bottom:.6rem}
+  .wrap{max-width:none;padding:0}
+  .q,.weak,table{break-inside:avoid}
+  a{color:#000}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="kicker">Readiness scorecard for insurance agencies</p>
+  <h1>The 9:14 Lead</h1>
+  <p class="sentence">A new lead waits in silence. This page shows who holds the string when the silence ends.</p>
+  <div class="quick" id="quick"></div>
+</header>
+
+<section aria-labelledby="demo-h">
+  <h2 id="demo-h">One lead, 9:14 a.m.</h2>
+  <p class="muted small">A quote form arrives at 9:14:00. This is what a ready agency looks like four seconds later.</p>
+  <div class="tabs noprint" role="tablist">
+    <button role="tab" id="tab-phones" aria-controls="p-phones" aria-selected="true">Both phones</button>
+    <button role="tab" id="tab-log" aria-controls="p-log" aria-selected="false">Consent log</button>
+  </div>
+  <div class="card panel" id="p-phones" role="tabpanel" aria-labelledby="tab-phones">
+    <div class="phones">
+      <div class="phone">
+        <h3>Prospect's phone</h3>
+        <div class="msg sms" id="smsText"></div>
+        <div class="stamp">Received 9:14:04</div>
+      </div>
+      <div class="phone">
+        <h3><span id="agentLabel">Agent</span>'s phone</h3>
+        <div class="msg alert" id="alertText"></div>
+        <div class="stamp">Alert 9:14:04</div>
+      </div>
+    </div>
+    <div class="names noprint">
+      <label>Agent name <input type="text" id="agent" maxlength="30"></label>
+      <label>Agency name <input type="text" id="agency" maxlength="40"></label>
+    </div>
+  </div>
+  <div class="card panel" id="p-log" role="tabpanel" aria-labelledby="tab-log" hidden>
+    <table class="log">
+      <tr><th>Form submitted</th><td class="m">2026-10-23 09:14:00</td></tr>
+      <tr><th>Checkbox text, stored as shown</th><td id="consentText"></td></tr>
+      <tr><th>Checkbox state</th><td class="m">checked, by the prospect</td></tr>
+      <tr><th>First text sent</th><td class="m">09:14:04, from signed script v3</td></tr>
+      <tr><th>Agent copied</th><td class="m" id="logAgent"></td></tr>
+      <tr><th>Script approved by</th><td><input type="text" id="mgr" maxlength="40" placeholder="Compliance manager's name" aria-label="Compliance manager's name"> <input type="date" id="mdate" aria-label="Approval date"></td></tr>
+      <tr><th>Allowed texting hours</th><td class="m" id="logHours"></td></tr>
+    </table>
+    <p class="small muted">Consent wording and texting hours depend on federal, state, and carrier rules. Enter your own hours under Assumptions. Have your compliance manager or counsel approve the exact text. This page is not legal advice.</p>
+  </div>
+</section>
+
+<section aria-labelledby="q-h">
+  <h2 id="q-h">Twelve strings</h2>
+  <p class="muted small">Each question is a string. Yes means someone holds it. No means it is cut. Every question comes from a record you already keep. If you do not know, answer no. Unanswered counts as no. About two minutes.</p>
+  <div id="questions"></div>
+
+  <div class="quals">
+    <label>Leads a month <input type="number" id="leads" min="0" step="10" inputmode="numeric"></label>
+    <label>Months the callback gap has run <input type="number" id="months" min="0" step="1" inputmode="numeric"></label>
+  </div>
+
+  <details id="assump">
+    <summary>Assumptions (example figures, change them to yours)</summary>
+    <div class="agrid">
+      <label>Contact rate now, % <input type="number" id="a_now" step="1"></label>
+      <label>Contact rate, reply in seconds (base), % <input type="number" id="a_base" step="1"></label>
+      <label>Contact rate, bad case, % <input type="number" id="a_bad" step="1"></label>
+      <label>Contact rate, good case, % <input type="number" id="a_good" step="1"></label>
+      <label>Contacts that bind, % <input type="number" id="a_bind" step="1"></label>
+      <label>First-year commission per policy, $ <input type="number" id="a_comm" step="10"></label>
+      <label>Cost per lead, $ <input type="number" id="a_cost" step="1"></label>
+      <label>Flat answering service quote, $/month <input type="number" id="a_flat" step="10"></label>
+      <label>Per-lead first-text quote, $/lead <input type="number" id="a_per" step="0.25"></label>
+      <label>AI first text, $/lead <input type="number" id="a_ai" step="0.01"></label>
+      <label>Staff wage, $/hour <input type="number" id="a_wage" step="1"></label>
+      <label>Minutes to hand-write one first text <input type="number" id="a_mins" step="1"></label>
+      <label>Texting allowed from (your state) <input type="time" id="a_ts"></label>
+      <label>Texting allowed until (your state) <input type="time" id="a_te"></label>
+    </div>
+    <p class="small muted">Texting hours vary by state. Check yours and enter them.</p>
+  </details>
+
+  <div class="btns noprint">
+    <button type="button" id="btnEx">Load the worked example</button>
+    <button type="button" id="btnClear">Clear answers (all count as no)</button>
+    <button type="button" id="btnPrint">Print</button>
+  </div>
+</section>
+
+<section aria-labelledby="r-h" id="results">
+  <h2 id="r-h">Result</h2>
+  <div class="score"><b id="score">0</b><span>/ 100</span></div>
+  <p class="silence-line" id="silenceLine"></p>
+  <p class="formula">Score = sum of points for each yes. Unanswered = no.<br>Silence, minutes = 1 + 20 × Speed no's + 5 × After-hours no's + 4 × Handoff no's (rule of thumb)</p>
+
+  <div class="tl" id="timeline"></div>
+
+  <h3 style="margin-top:1.4rem">What the gap has cost</h3>
+  <p id="coldLine"></p>
+  <div class="tbl" id="coldTable"></div>
+  <p class="formula">Cold leads = leads a month × months × (contact rate with fast reply − contact rate now)<br>Commission missed = cold leads × bind rate × commission. Lead spend = cold leads × cost per lead.</p>
+
+  <h3 style="margin-top:1.4rem">Three weakest areas</h3>
+  <div id="weak"></div>
+
+  <h3 style="margin-top:1.4rem">Two paths, same inputs</h3>
+  <p class="small muted">The usual path is a flat answering service. The shortcut is a per-lead first text that hands off to the assigned agent in under a minute. Bad case: half the leads, and the contact rate rises less.</p>
+  <div class="tbl" id="pathTable"></div>
+  <div id="verdict"></div>
+  <p class="formula">Added commission = leads × (new contact rate − rate now) × bind rate × commission<br>Per-lead net = added commission − leads × per-lead quote<br>Flat net = added commission − flat quote</p>
+
+  <h3 style="margin-top:1.4rem">First text: AI or a person</h3>
+  <div class="tbl" id="aiTable"></div>
+  <p class="formula">AI cost = leads × AI cost per lead. Person cost = leads × minutes per text ÷ 60 × wage.</p>
+  <p class="small">AI drafts the first text from the signed script only. A person still reviews:</p>
+  <ul class="review small">
+    <li>The script, signed by your compliance manager before it goes live, and again after any change.</li>
+    <li>Every thread. The assigned agent is copied on the first text and every reply.</li>
+    <li>Any reply that is not a time or a yes. It goes to the agent, not back to the AI.</li>
+    <li>The call itself. Only an agent quotes, advises, or binds.</li>
+    <li>The opt-out list, checked weekly by the owner or office manager.</li>
+  </ul>
+</section>
+
+<p class="credits">Credits. Puppeteer: the one-sentence summary, cut strings, and the silence line under the score. Bookbinder: questions taken from records you already keep, fixed visible weights, unanswered as no, and the light and dark themes. Insurance agency owner (buyer): the 9:14 demo before the results, the agent's name in every text, and the bad case. Katsushika Hokusai (guest): the separate consent log, and Handoff scored apart from Speed.</p>
+<footer>Published by VoxxyAI. Your answers stay in this browser. Not legal, tax, or investment advice.</footer>
+</div>
+
+<script>
+(function(){
+var $=function(s){return document.querySelector(s)};
+var AREAS=['Speed','Handoff','After hours','Consent','Follow-up','Visibility'];
+var Q=[
+ {a:0,w:9,t:'Does your CRM record the minute each lead arrives?',src:'Lead record: created time',fix:'Turn on the arrival time in your CRM lead record, to the minute. Without it, nothing else can be measured.'},
+ {a:0,w:9,t:'During office hours, does a new lead get a first text within 60 seconds?',src:'Text log: first outbound time',fix:'Send the first text within 60 seconds, signed with the assigned agent\u2019s name and a call-by time.'},
+ {a:1,w:8,t:'Is each lead assigned to a named agent the moment it arrives?',src:'Lead record: assigned agent',fix:'Set a round-robin rule so each lead gets a named agent on arrival, not when someone picks it up.'},
+ {a:1,w:8,t:'Does that agent see the first text and the lead\u2019s reply on their phone?',src:'Agent phone: lead alerts',fix:'Copy the assigned agent on the first text and every reply, on their phone.'},
+ {a:2,w:8,t:'Does a lead that arrives after hours get a text when your allowed texting hours open?',src:'Text log: send times',fix:'Queue after-hours leads for one text at {ts}, signed by the agent who will call.'},
+ {a:2,w:8,t:'Is there a set time the next morning by which an agent calls them?',src:'Office policy or CRM task rule',fix:'Set a fixed next-day call time, such as 30 minutes after opening, and put it in the text.'},
+ {a:3,w:9,t:'Does your form store the exact consent checkbox text with each lead?',src:'Lead record: consent fields',fix:'Store the exact checkbox wording and the submit time with every lead record.'},
+ {a:3,w:8,t:'Has your compliance manager signed the first-text script in writing?',src:'Signed script on file',fix:'Get the first-text script signed in writing by your compliance manager before it goes live.'},
+ {a:4,w:8,t:'Does a lead that doesn\u2019t answer get at least five tries over seven days?',src:'CRM activity history',fix:'Set a five-try plan over seven days, calls and texts, inside your allowed hours.'},
+ {a:4,w:8,t:'Does an opt-out reply stop texts and calls from every agent?',src:'Opt-out list',fix:'Keep one opt-out list that every agent and every tool checks before contact.'},
+ {a:5,w:9,t:'Can you see each lead\u2019s first-call time without asking an agent?',src:'CRM: first call time column',fix:'Add first-call time as a CRM column and a weekly report of minutes from arrival to call.'},
+ {a:5,w:8,t:'Do you review cold leads by source at least once a month?',src:'Lead source report',fix:'Once a month, sort cold leads by source and drop or reprice the source that wastes the most.'}
+];
+var PATHS=[
+ ['Hire or share a person to watch the inbox.','AI writes the first text from the signed script, sent in seconds, agent copied.'],
+ ['Agents claim leads from a shared inbox.','Lead assigned on arrival. Agent alerted with the text thread.'],
+ ['Flat answering service takes calls overnight.','Text queued for opening hour. Cost only when a lead arrives.'],
+ ['Review the forms once a year.','Consent text saved with each lead. Script signed once and versioned.'],
+ ['Agents follow up when they remember.','Five-try plan drafted by AI from approved messages. Agents make the calls.'],
+ ['Ask agents at the Monday meeting.','Arrival and first-call columns in the CRM. One weekly report.']
+];
+var EX={ans:[1,0,0,0,0,1,1,0,0,1,0,1],leads:200,months:9,agent:'Maria',agency:'Dunn Insurance',mgr:'J. Alvarez',mdate:'2026-10-20',
+ a:{now:22,base:45,bad:30,good:55,bind:25,comm:160,cost:28,flat:600,per:3,ai:0.04,wage:15,mins:3,ts:'08:00',te:'20:00'}};
+var AK=Object.keys(EX.a);
+var KEY='the-914-lead-v1';
+
+/* build questions */
+var qh='';
+AREAS.forEach(function(name,ai){
+  var pts=0;Q.forEach(function(q){if(q.a===ai)pts+=q.w});
+  qh+='<fieldset><legend>'+name+'<span>'+pts+' points</span></legend>';
+  Q.forEach(function(q,i){
+    if(q.a!==ai)return;
+    qh+='<div class="q cut" id="qr'+i+'"><div><p>'+(i+1)+'. '+q.t+'</p><p class="src">Found in: '+q.src+' \u00b7 '+q.w+' pts \u00b7 <span class="state" id="qs'+i+'"></span></p></div>'+
+      '<div class="opts" role="radiogroup" aria-label="Question '+(i+1)+'">'+
+      '<label class="opt"><input type="radio" name="q'+i+'" value="1"><span>Yes</span></label>'+
+      '<label class="opt"><input type="radio" name="q'+i+'" value="0"><span>No</span></label></div></div>';
+  });
+  qh+='</fieldset>';
+});
+$('#questions').innerHTML=qh;
+
+function num(id){var v=parseFloat($('#'+id).value);return isFinite(v)?v:0}
+function money(n,sign){var r=Math.round(n);var s=r<0?'\u2212':(sign&&r>0?'+':'');return s+'$'+Math.abs(r).toLocaleString('en-US')}
+function money2(n){return '$'+(Math.round(n*100)/100).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function int(n){return Math.round(n).toLocaleString('en-US')}
+function one(n){return (Math.round(n*10)/10).toLocaleString('en-US')}
+function pct(n){return one(n*100)+'%'}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function clock(minAfter){var t=9*60+14+Math.round(minAfter);var h=Math.floor(t/60)%24,m=t%60;var ap=h>=12?'p.m.':'a.m.';var h12=h%12||12;return h12+':'+(m<10?'0':'')+m+' '+ap}
+function hhmm(v){if(!v)return '--:--';var p=v.split(':');var h=+p[0],m=p[1];var ap=h>=12?'p.m.':'a.m.';return (h%12||12)+':'+m+' '+ap}
+
+function getAns(){return Q.map(function(q,i){var r=document.querySelector('input[name=q'+i+']:checked');return r?+r.value:null})}
+
+function save(){
+  try{
+    var o={ans:getAns(),leads:$('#leads').value,months:$('#months').value,agent:$('#agent').value,agency:$('#agency').value,mgr:$('#mgr').value,mdate:$('#mdate').value,a:{}};
+    AK.forEach(function(k){o.a[k]=$('#a_'+k).value});
+    localStorage.setItem(KEY,JSON.stringify(o));
+  }catch(e){}
+}
+function load(o){
+  Q.forEach(function(q,i){
+    document.querySelectorAll('input[name=q'+i+']').forEach(function(r){r.checked=(o.ans&&o.ans[i]!==null&&o.ans[i]!==undefined&&+r.value===+o.ans[i])});
+  });
+  $('#leads').value=o.leads;$('#months').value=o.months;
+  $('#agent').value=o.agent;$('#agency').value=o.agency;$('#mgr').value=o.mgr;$('#mdate').value=o.mdate;
+  AK.forEach(function(k){$('#a_'+k).value=(o.a&&o.a[k]!==undefined)?o.a[k]:EX.a[k]});
+}
+
+function demo(){
+  var ag=$('#agent').value.trim()||'your agent',co=$('#agency').value.trim()||'your agency';
+  $('#agentLabel').textContent=ag;
+  $('#smsText').textContent='Hi Dana, this is '+ag+' at '+co+'. Got your auto quote request. I\u2019ll call you by 9:30 this morning. Reply with a better time, or STOP to opt out.';
+  $('#alertText').innerHTML='<b>New lead: Dana R., auto quote.</b><br>Assigned to you. First text sent 9:14:04, copy below. Call by 9:30.<br><span class="muted">\u201cHi Dana, this is '+esc(ag)+'\u2026\u201d</span>';
+  $('#consentText').textContent='\u201cI agree that '+co+' may call and text me about this quote at the number above. Consent is not a condition of purchase. Msg and data rates may apply. Reply STOP to opt out.\u201d';
+  $('#logAgent').textContent=ag+', 09:14:04';
+  $('#logHours').textContent=hhmm($('#a_ts').value)+' to '+hhmm($('#a_te').value)+' local time, entered by you';
+}
+
+function table(head,rows){
+  var h='<table class="cases"><thead><tr><th></th>'+head.map(function(x){return '<th>'+x+'</th>'}).join('')+'</tr></thead><tbody>';
+  rows.forEach(function(r){
+    if(r.sec){h+='<tr class="sec"><td colspan="'+(head.length+1)+'">'+r.sec+'</td></tr>';return}
+    h+='<tr><td'+(r.inp?' class="inp"':'')+'>'+r[0]+'</td>'+r.slice(1).map(function(c){return '<td'+(r.inp?' class="inp"':'')+'>'+c+'</td>'}).join('')+'</tr>';
+  });
+  return '<div class="tbl">'+h+'</tbody></table></div>';
+}
+function signed(n){return '<span class="'+(Math.round(n)<0?'neg':'pos')+'">'+money(n,true)+'</span>'}
+
+function calc(){
+  var ans=getAns(),score=0,no=[0,0,0,0,0,0],got=[0,0,0,0,0,0],max=[0,0,0,0,0,0];
+  Q.forEach(function(q,i){
+    var held=ans[i]===1;
+    max[q.a]+=q.w;
+    if(held){score+=q.w;got[q.a]+=q.w}else no[q.a]++;
+    var row=$('#qr'+i);row.className='q '+(held?'held':'cut');
+    $('#qs'+i).textContent=held?'string held':(ans[i]===0?'string cut':'not answered: cut');
+  });
+  var silence=1+20*no[0]+5*no[2]+4*no[1];
+  var L=Math.max(0,num('leads')),M=Math.max(0,num('months'));
+  var now=num('a_now')/100,base=num('a_base')/100,bad=num('a_bad')/100,good=num('a_good')/100;
+  var bind=num('a_bind')/100,comm=num('a_comm'),cost=num('a_cost'),flat=num('a_flat'),per=num('a_per'),ai=num('a_ai'),wage=num('a_wage'),mins=num('a_mins');
+
+  $('#score').textContent=score;
+  $('#silenceLine').innerHTML='About <b>'+silence+' minutes</b> of silence per lead before the first call.';
+  $('#quick').innerHTML='<span>Score <b>'+score+'/100</b></span><span>Silence <b>'+silence+' min</b> per lead</span><span><a href="#results">See the full result</a></span>';
+
+  var w=Math.min(silence,60)/60*100;
+  $('#timeline').innerHTML=
+   '<div class="row"><div class="lab">Your 9:14 lead today</div><div class="track"><span class="tick">9:14</span><div class="bar" style="width:'+w+'%" aria-hidden="true"></div><span class="tick">first call '+clock(silence)+'</span></div></div>'+
+   '<div class="row"><div class="lab">With every string held</div><div class="track"><span class="tick">9:14</span><div class="bar held" style="width:2%" aria-hidden="true"></div><span class="tick">9:14:04 text and agent alert \u00b7 call by 9:30</span></div></div>';
+
+  var cases=[
+    {n:'Bad',L:L*0.5,r:bad,lab:'half the leads'},
+    {n:'Base',L:L,r:base,lab:'your leads'},
+    {n:'Good',L:L,r:good,lab:'your leads'}
+  ];
+  cases.forEach(function(c){
+    c.rise=Math.max(0,c.r-now);
+    c.cold=c.L*M*c.rise;
+    c.missed=c.cold*bind*comm;
+    c.spend=c.cold*cost;
+    c.gain=c.L*c.rise*bind*comm;
+    c.perCost=c.L*per;c.perNet=c.gain-c.perCost;
+    c.flatNet=c.gain-flat;
+    c.aiCost=c.L*ai;c.personCost=c.L*mins/60*wage;
+  });
+  var b=cases[1];
+  $('#coldLine').innerHTML='At '+int(L)+' leads a month for '+int(M)+' months, about <b>'+int(b.cold)+' leads</b> went cold before a call. That is about '+money(b.missed)+' in first-year commission missed and '+money(b.spend)+' spent on leads that never heard back.';
+  var head=cases.map(function(c){return c.n});
+  $('#coldTable').innerHTML=table(head,[
+    ['Leads a month'].concat(cases.map(function(c){return int(c.L)})),
+    ['Contact rate: now \u2192 fast reply'].concat(cases.map(function(c){return pct(now)+' \u2192 '+pct(c.r)})),
+    ['Months'].concat(cases.map(function(){return int(M)})),
+    ['Leads gone cold'].concat(cases.map(function(c){return int(c.cold)})),
+    ['Commission missed'].concat(cases.map(function(c){return money(c.missed)})),
+    ['Lead spend with no callback'].concat(cases.map(function(c){return money(c.spend)}))
+  ].map(function(r,i){if(i<3)r.inp=true;return r}));
+
+  /* weakest areas */
+  var ts=$('#a_ts').value?hhmm($('#a_ts').value):'your allowed start time';
+  var areas=AREAS.map(function(n,i){return {i:i,n:n,f:max[i]?got[i]/max[i]:1}}).filter(function(a){return a.f<1});
+  areas.sort(function(x,y){return x.f-y.f||x.i-y.i});
+  var wk=areas.slice(0,3),wh='';
+  if(!wk.length)wh='<p>Every string is held. Check again in a month: answer no to anything you cannot show in a record.</p>';
+  wk.forEach(function(a){
+    var cut=[],first=null;
+    Q.forEach(function(q,i){if(q.a===a.i&&ans[i]!==1){cut.push('<li>'+(i+1)+'. '+q.t+'</li>');if(!first||q.w>first.w)first=q}});
+    wh+='<div class="weak"><h3>'+a.n+' <span class="pts">'+got[a.i]+' of '+max[a.i]+' points</span></h3>'+
+      '<p class="small muted">Cut strings:</p><ul>'+cut.join('')+'</ul>'+
+      '<p class="step">Next step: '+first.fix.replace('{ts}',ts)+'</p>'+
+      '<div class="paths"><div><b>Usual path</b>'+PATHS[a.i][0]+'</div><div><b>Shortcut</b>'+PATHS[a.i][1]+'</div></div></div>';
+  });
+  $('#weak').innerHTML=wh;
+
+  /* paths */
+  $('#pathTable').innerHTML=table(head,[
+    ['Leads a month'].concat(cases.map(function(c){return int(c.L)+' ('+c.lab+')'})),
+    ['Contact rate: now \u2192 new'].concat(cases.map(function(c){return pct(now)+' \u2192 '+pct(c.r)})),
+    ['Added contacts / policies'].concat(cases.map(function(c){return one(c.L*c.rise)+' / '+one(c.L*c.rise*bind)})),
+    ['Added commission'].concat(cases.map(function(c){return money(c.gain)})),
+    {sec:'Shortcut: per-lead first text, agent handoff'},
+    ['Cost at '+money2(per)+' per lead'].concat(cases.map(function(c){return money(c.perCost)})),
+    ['Net a month'].concat(cases.map(function(c){return signed(c.perNet)})),
+    {sec:'Usual: flat answering service'},
+    ['Cost, flat'].concat(cases.map(function(){return money(flat)})),
+    ['Net a month'].concat(cases.map(function(c){return signed(c.flatNet)}))
+  ].map(function(r,i){if(i<2&&!r.sec)r.inp=true;return r}));
+
+  var bd=cases[0],v=[];
+  var perBreak=(bind*comm)>0?per/(bind*comm):Infinity;
+  var badRise=bd.rise;
+  var perOK=Math.round(bd.perNet)>=0,flatOK=Math.round(bd.flatNet)>=0;
+  var perTxt,flatTxt;
+  if(perOK){
+    var bindBreak=(badRise*comm)>0?per/(badRise*comm):Infinity;
+    perTxt='<b>Per-lead path survives the bad case</b>: '+money(bd.perNet,true)+' a month. It breaks only if the contact rate rises less than '+one(perBreak*100)+' points ('+pct(now)+' \u2192 '+pct(now+perBreak)+'), at any lead count. At the bad-case rise, the bind rate can fall to '+pct(bindBreak)+' before it loses money. Over '+int(M)+' months at base it nets '+money(b.perNet*M,true)+'.';
+  }else{
+    var safePer=bd.L>0?bd.gain/bd.L:0;
+    perTxt='<b>Per-lead path does not survive the bad case</b>: '+money(bd.perNet,true)+' a month. Safer setting first: a per-lead quote at or below '+money2(safePer)+', or a contact rise of at least '+one(perBreak*100)+' points, keeps it at zero or better.';
+  }
+  var flatNeed=(badRise*bind*comm)>0?Math.ceil(flat/(badRise*bind*comm)):Infinity;
+  if(flatOK){
+    flatTxt='<b>Flat path survives the bad case</b>: '+money(bd.flatNet,true)+' a month. It breaks below '+(isFinite(flatNeed)?int(flatNeed):'any')+' leads a month at the bad-case rise.';
+  }else{
+    flatTxt='<b>Flat path does not survive the bad case</b>: '+money(bd.flatNet,true)+' a month. It needs at least '+(isFinite(flatNeed)?int(flatNeed):'more')+' leads a month at the bad-case rise to break even. The flat fee is owed whether leads come or not.';
+  }
+  var order=(perOK||!flatOK)?[perTxt,flatTxt]:[flatTxt,perTxt];
+  $('#verdict').innerHTML=order.map(function(t){return '<p class="verdict">'+t+'</p>'}).join('');
+
+  /* AI */
+  $('#aiTable').innerHTML=table(head,[
+    ['Leads a month'].concat(cases.map(function(c){return int(c.L)})),
+    ['First text written by AI'].concat(cases.map(function(c){return money2(c.aiCost)})),
+    ['First text written by a person'].concat(cases.map(function(c){return money2(c.personCost)})),
+    ['Difference a month'].concat(cases.map(function(c){return money(c.personCost-c.aiCost)}))
+  ].map(function(r,i){if(i===0)r.inp=true;return r}));
+
+  demo();
+  save();
+}
+
+/* tabs */
+var tabs=[['#tab-phones','#p-phones'],['#tab-log','#p-log']];
+tabs.forEach(function(t){
+  $(t[0]).addEventListener('click',function(){
+    tabs.forEach(function(u){var on=u===t;$(u[0]).setAttribute('aria-selected',on?'true':'false');$(u[1]).hidden=!on});
+  });
+});
+
+document.addEventListener('input',calc);
+document.addEventListener('change',calc);
+$('#btnEx').addEventListener('click',function(){load(EX);calc()});
+$('#btnClear').addEventListener('click',function(){document.querySelectorAll('#questions input').forEach(function(r){r.checked=false});calc()});
+$('#btnPrint').addEventListener('click',function(){window.print()});
+window.addEventListener('beforeprint',function(){$('#assump').open=true;tabs.forEach(function(t){$(t[1]).hidden=false})});
+window.addEventListener('afterprint',function(){tabs.forEach(function(t){$(t[1]).hidden=$(t[0]).getAttribute('aria-selected')!=='true'})});
+
+var stored=null;
+try{stored=JSON.parse(localStorage.getItem(KEY))}catch(e){stored=null}
+load(stored&&stored.ans?stored:EX);
+calc();
+})();
+</script>
+</body>
+</html>

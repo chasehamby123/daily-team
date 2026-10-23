@@ -1,11 +1,12 @@
 # Archive
 
-Every daily team and the asset it made, newest first. 19 days recorded.
+Every daily team and the asset it made, newest first. 20 days recorded.
 
 [Today](README.md)
 
 | Date | Task | Team | Constraint | Asset |
 |---|---|---|---|---|
+| [2026-10-23](days/2026-10-23/) | The 9:14 Lead | Puppeteer · Bookbinder · Insurance agency owner · Katsushika Hokusai | Has a dark mode that follows the system setting. | [asset](days/2026-10-23/artifact-1.html) |
 | [2026-10-22](days/2026-10-22/) | Sized to the Raise | Costume designer · Sign painter · Search fund entrepreneur · Alice | Meaning never depends on color alone. | [asset](days/2026-10-22/artifact-1.html) |
 | [2026-10-21](days/2026-10-21/) | Call Slip | Librarian · Taxidermist · Founder raising a growth round · Don Quixote | Fits in a postcard-sized area. | [asset](days/2026-10-21/artifact-1.html) |
 | [2026-10-20](days/2026-10-20/) | The Walk Line | Chef · Upholsterer · Private credit fund manager · Janus | Uses no more than two font sizes. | [asset](days/2026-10-20/artifact-1.html) |
