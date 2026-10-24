@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>the red thread: where partner hours go in a fund raise</title>
+<style>
+:root{--paper:#f6f3ee;--ink:#1a1a1a;--red:#c41e2a;--grey:#8f8a83;--line:#d9d3ca;--soft:#ebe6de;--white:#fff}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,"segoe ui",roboto,"helvetica neue",arial,sans-serif;background:var(--paper);color:var(--ink);text-transform:lowercase}
+.wrap{max-width:1040px;margin:0 auto;padding:24px 20px 48px}
+h1{font-size:clamp(1.5rem,4vw,2.3rem);line-height:1.15;margin:0 0 8px;letter-spacing:-.01em}
+h2{font-size:1.25rem;margin:40px 0 8px}
+h3{font-size:1rem;margin:0 0 4px}
+p{margin:0 0 10px}
+.lede{max-width:640px;color:#3a3732}
+.big{font-size:clamp(3rem,11vw,6.6rem);font-weight:800;letter-spacing:-.04em;line-height:1;margin:18px 0 6px;white-space:nowrap}
+.big .arrow{color:var(--red);font-weight:400;padding:0 .12em}
+.big .unit{font-size:.4em;font-weight:600;letter-spacing:0}
+.bars{margin:10px 0 24px;max-width:720px}
+.bar{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:.9rem}
+.bar .lab{width:68px;flex:none;color:#55514b}
+.bar .track{flex:1;background:var(--soft);height:14px}
+.bar .fill{height:14px;background:var(--red);transition:width .5s ease}
+.bar .val{width:64px;flex:none;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.qs{display:flex;flex-wrap:wrap;gap:16px 24px;align-items:flex-end;background:var(--white);border:1px solid var(--line);padding:16px;margin:8px 0 6px}
+.qs label{display:flex;flex-direction:column;font-size:.85rem;color:#55514b;gap:4px}
+.qs input{font:inherit;font-size:1.15rem;width:140px;padding:6px 8px;border:1px solid #b9b2a7;background:var(--paper);color:var(--ink)}
+.qs input:focus,details input:focus,button:focus{outline:2px solid var(--red);outline-offset:1px}
+button{font:inherit;font-size:.9rem;padding:7px 12px;border:1px solid var(--ink);background:var(--white);color:var(--ink);cursor:pointer;text-transform:lowercase}
+details.assume{margin:6px 0 0;font-size:.9rem}
+details.assume summary{cursor:pointer;color:#55514b}
+.agrid{display:flex;flex-wrap:wrap;gap:12px 20px;padding:12px 0}
+.agrid label{display:flex;flex-direction:column;font-size:.8rem;color:#55514b;gap:3px}
+.agrid input{font:inherit;width:120px;padding:4px 6px;border:1px solid #b9b2a7;background:var(--white)}
+.note{font-size:.85rem;color:#55514b}
+.warn{color:var(--red);font-weight:600}
+.map{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;margin-top:10px}
+.colhead{font-weight:700;font-size:.85rem;padding:6px 0 8px;border-bottom:2px solid var(--ink);display:flex;justify-content:space-between}
+.cell{background:var(--white);border-left:2px solid var(--red);border-bottom:1px solid var(--line);padding:12px 14px;display:flex;gap:10px;justify-content:space-between;transition:border-left-width .4s ease,padding .4s ease}
+.cell.t2{border-left-width:2px}.cell.t6{border-left-width:6px}.cell.t12{border-left-width:12px}
+.cell .side{display:none;font-size:.7rem;color:var(--grey)}
+.cell .step{font-size:.72rem;color:var(--grey);letter-spacing:.04em}
+.cell .what{font-weight:600}
+.cell .cnt{font-size:.85rem;color:#55514b;font-variant-numeric:tabular-nums}
+.cell .cnt b{color:var(--red)}
+.cell .own{font-size:.8rem;color:#55514b;margin-top:2px}
+.cell .hrs{font-size:1.35rem;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums;text-align:right}
+.cell .hrs small{display:block;font-size:.7rem;font-weight:400;color:var(--grey)}
+.cell.rm{background:var(--soft);color:#6d6862;padding-top:7px;padding-bottom:7px}
+.cell.rm .what{font-weight:500}
+.tag{display:inline-block;font-size:.72rem;padding:0 8px;border:1px solid var(--ink);margin:4px 6px 0 0;line-height:1.6}
+.tag.automate{border-color:var(--red);color:var(--red)}
+.tag.remove{background:var(--grey);border-color:var(--grey);color:var(--white)}
+.tot{display:flex;justify-content:space-between;font-weight:700;padding:10px 14px;border-top:2px solid var(--ink)}
+.rowsbtn{display:none;margin:4px 0 0}
+.cases{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:10px}
+.case{background:var(--white);border:1px solid var(--line);border-top:6px solid var(--ink);padding:14px}
+.case.bad{border-top-color:var(--red)}
+.case.good{border-top-color:var(--grey)}
+.case .drv{font-size:.8rem;color:#55514b;margin-bottom:8px}
+.case dl{margin:0;display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:.88rem}
+.case dt{color:#55514b}
+.case dd{margin:0;text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.verdict{background:var(--white);border-left:12px solid var(--red);padding:14px 16px;margin:16px 0}
+.verdict p:last-child{margin:0}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;background:var(--white);font-size:.9rem;min-width:560px}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:right;vertical-align:top;font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}
+thead th{background:var(--soft);font-weight:600}
+td small{display:block;color:#55514b;font-size:.78rem}
+.lower{color:var(--red);font-weight:700}
+.formula{background:var(--white);border:1px solid var(--line);padding:12px 16px;font-family:ui-monospace,"sf mono",menlo,consolas,monospace;font-size:.82rem;line-height:1.7;overflow-x:auto}
+ul.review{margin:6px 0 0;padding-left:20px;font-size:.92rem}
+footer{margin-top:44px;padding-top:14px;border-top:1px solid var(--line);font-size:.8rem;color:#55514b}
+footer p{margin:0 0 6px}
+@media (max-width:760px){.cases{grid-template-columns:1fr}}
+@media (max-width:480px){
+  .wrap{padding:18px 14px 40px}
+  .map{display:none;grid-template-columns:1fr}
+  .map.open{display:grid}
+  .map .colhead{display:none}
+  .cell .side{display:block}
+  .cell:nth-of-type(odd){margin-top:10px}
+  .rowsbtn{display:inline-block}
+  .qs input{width:120px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+@media print{
+  body{background:#fff}
+  .wrap{max-width:none;padding:0}
+  button,.rowsbtn{display:none !important}
+  .map,.map.open{display:grid !important;grid-template-columns:1fr 1fr}
+  .map .colhead{display:flex}
+  .cell .side{display:none}
+  details.assume{display:block}
+  details.assume>*{display:block}
+  .cases{grid-template-columns:repeat(3,1fr)}
+  .case,.cell,.verdict,table{break-inside:avoid}
+  .bar .fill,.cell,.tag.remove,.case{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>the red thread: where partner hours go in a fund raise</h1>
+  <p class="lede">today's raise on the left. a filtered raise on the right. the red thread is partner hours. it is thick where hours burn and thin where they don't. grey rows are steps cut.</p>
+  <div class="big" id="big" aria-live="polite">531<span class="unit"> h</span><span class="arrow">&rarr;</span>156<span class="unit"> h</span></div>
+  <div class="bars" aria-hidden="true">
+    <div class="bar"><span class="lab">today</span><span class="track"><span class="fill" id="barT" style="width:100%;display:block"></span></span><span class="val" id="valT">531 h</span></div>
+    <div class="bar"><span class="lab">filtered</span><span class="track"><span class="fill" id="barA" style="width:29%;display:block"></span></span><span class="val" id="valA">156 h</span></div>
+  </div>
+</header>
+
+<section aria-label="two questions">
+  <div class="qs">
+    <label for="target">target raise ($m)<input id="target" type="number" min="1" step="1" inputmode="decimal" value="200"></label>
+    <label for="months">months in market<input id="months" type="number" min="1" step="1" inputmode="numeric" value="14"></label>
+    <button type="button" id="reset">load the worked example</button>
+  </div>
+  <p class="note">worked example: a $200m fund, 14 months in market, 120 lps met, 6 commits at $25m each. change the two numbers. everything else follows.</p>
+  <p class="note warn" id="err" hidden>enter a target raise and months in market above zero.</p>
+  <details class="assume">
+    <summary>assumptions (fee terms vary by market and jurisdiction. enter yours.)</summary>
+    <div class="agrid">
+      <label for="cheque">average cheque ($m)<input id="cheque" type="number" min="0.1" step="0.5" value="25"></label>
+      <label for="ret">agent retainer ($k / month)<input id="ret" type="number" min="0" step="5" value="40"></label>
+      <label for="retpct">agent success fee (%)<input id="retpct" type="number" min="0" step="0.1" value="2"></label>
+      <label for="share">success share, screened lps (%)<input id="share" type="number" min="0" step="0.1" value="1.5"></label>
+      <label for="aicost">ai draft cost ($ / questionnaire)<input id="aicost" type="number" min="0" step="1" value="5"></label>
+    </div>
+  </details>
+</section>
+
+<h2>five steps, side by side</h2>
+<p class="note">same rows on both sides. read across. tags: keep, automate, remove.</p>
+<button type="button" class="rowsbtn" id="rowsbtn" aria-expanded="false" aria-controls="map">open the five rows</button>
+<div class="map" id="map"></div>
+
+<h2>three cases</h2>
+<p class="note">partner hours follow the funnel. commits and months decide what the hours buy.</p>
+<div class="cases" id="cases"></div>
+<div class="verdict" id="verdict"></div>
+
+<h2>usual path and shortcut</h2>
+<p class="note">usual path: a placement agent on a monthly retainer plus a success fee. shortcut: a success share paid only on screened lps who commit. same inputs.</p>
+<div class="scroll"><table id="fees"></table></div>
+<p class="note">some jurisdictions regulate placement agents and fee disclosure. check the rules where you market the fund.</p>
+
+<h2>the data room row, with and without ai</h2>
+<p class="note">the repeated questionnaire is the stone. it comes back for every investor. ai drafts the answers. the coo signs each one.</p>
+<div class="scroll"><table id="ai"></table></div>
+<p class="note" id="ainote"></p>
+<p><b>a person still reviews:</b></p>
+<ul class="review">
+  <li>the coo reads and signs every questionnaire answer. nothing goes out unsigned.</li>
+  <li>a partner reviews the screened lp list before any call is booked.</li>
+  <li>partners run every first call, second meeting and close.</li>
+</ul>
+
+<h2>formulas</h2>
+<div class="formula" id="formula"></div>
+
+<footer>
+  <p>credits: animator, the red thread and the before-and-after bars. front-end engineer, the two-column grid, three tags, the border thread and the fee table. fund manager raising capital, five rows, the cheque-size and track-record filter as row one, two inputs. sisyphus, the &times;counts on repeated rows and the coo signature on ai drafts.</p>
+  <p>a planning sketch with stated assumptions. it is not investment, legal or tax advice. no data leaves this page.</p>
+  <p>published by outerhaven advisory.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+var REF=200, KEY='redthread-v1';
+var DEF={target:200,months:14,cheque:25,ret:40,retpct:2,share:1.5,aicost:5};
+var ROWS=[
+ {step:'lp list',tLabel:'list built from any intro',tFix:20,aLabel:'screen by cheque size and track record',aFix:6,tag:'automate',own:'tool screens. a partner reviews the list.'},
+ {step:'first call',tLabel:'first call with every intro',tN:120,tPer:1.5,aLabel:'first call, screened lps only',aN:40,aPer:1.5,tag:'remove',own:'partner'},
+ {step:'second meeting',tLabel:'second meeting',tN:40,tPer:2.5,aLabel:'second meeting',aN:22,aPer:2.5,tag:'remove',own:'partner'},
+ {step:'data room and questionnaire',tLabel:'walk-through, answers typed by hand',tN:18,tPer:12,tQ:60,aLabel:'walk-through, answers drafted by ai',aN:10,aPer:2,aQ:20,tag:'automate',own:'signed by coo'},
+ {step:'close',tLabel:'term sheet, side letter, close',tFix:15,aLabel:'term sheet, side letter, close',aFix:15,tag:'keep',own:'partner and counsel'}
+];
+var ids=['target','months','cheque','ret','retpct','share','aicost'];
+function el(id){return document.getElementById(id)}
+function num(id){var v=parseFloat(el(id).value);return isFinite(v)?v:NaN}
+function h(v){return Math.round(v).toLocaleString('en-US')}
+function fm(v){
+  if(!isFinite(v))return '—';
+  var a=Math.abs(v),s;
+  if(a>=1e6)s=(v/1e6).toFixed(3).replace(/\.?0+$/,'')+'m';
+  else if(a>=1e3)s=(v/1e3).toFixed(1).replace(/\.0$/,'')+'k';
+  else s=String(Math.round(v));
+  return '$'+s;
+}
+function thread(hrs,s){var r=hrs/(s||1);return r>=100?'t12':(r>=30?'t6':'t2')}
+
+function load(){
+  try{var raw=localStorage.getItem(KEY);if(raw){var o=JSON.parse(raw);ids.forEach(function(k){if(o[k]!==undefined&&o[k]!==null)el(k).value=o[k]})}}catch(e){}
+}
+function save(){
+  try{var o={};ids.forEach(function(k){o[k]=el(k).value});localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}
+}
+
+function compute(){
+  var T=num('target'),M=num('months');
+  var A={cheque:num('cheque'),ret:num('ret'),retpct:num('retpct'),share:num('share'),aicost:num('aicost')};
+  if(!(T>0)||!(M>0)||!(A.cheque>0))return null;
+  ['ret','retpct','share','aicost'].forEach(function(k){if(!(A[k]>=0))A[k]=DEF[k]});
+  var s=T/REF, todayH=0, afterH=0, rows=[];
+  ROWS.forEach(function(r){
+    var o={r:r};
+    if(r.tFix!==undefined){o.th=r.tFix*s}else{o.tn=Math.round(r.tN*s);o.th=o.tn*r.tPer}
+    if(r.aFix!==undefined){o.ah=r.aFix*s}else{o.an=Math.round(r.aN*s);o.ah=o.an*r.aPer}
+    if(r.tQ){o.tq=Math.round(r.tQ*s);o.aq=Math.round(r.aQ*s)}
+    todayH+=o.th;afterH+=o.ah;rows.push(o);
+  });
+  var baseC=Math.max(1,Math.round(6*s));
+  var badC=Math.max(1,Math.round(baseC/2));
+  var goodC=Math.max(baseC+1,Math.ceil(T/A.cheque));
+  var cases=[
+    {key:'bad',name:'bad case',c:badC,m:M+6,why:'commits halve. the raise slips 6 months.'},
+    {key:'base',name:'base case',c:baseC,m:M,why:'commits as in the last raise.'},
+    {key:'good',name:'good case',c:goodC,m:Math.max(1,M-2),why:'enough commits to fill the target, 2 months sooner.'}
+  ];
+  cases.forEach(function(c){
+    c.cap=c.c*A.cheque*1e6;
+    c.retPre=A.ret*1000*c.m;
+    c.retTot=c.retPre+A.retpct/100*c.cap;
+    c.shareTot=A.share/100*c.cap;
+    c.hpcT=todayH/c.c;c.hpcA=afterH/c.c;
+  });
+  return {T:T,M:M,A:A,s:s,rows:rows,todayH:todayH,afterH:afterH,cases:cases,baseC:baseC};
+}
+
+function cellHTML(o,side){
+  var r=o.r,html,cls,hrs,cnt='',own='',tag='';
+  if(side==='t'){
+    hrs=o.th;cls='cell '+thread(hrs,1);
+    if(o.tn!==undefined)cnt='<b>&times;'+h(o.tn)+'</b> &middot; '+r.tPer+' h each';
+    if(o.tq)cnt+=' &middot; <b>&times;'+h(o.tq)+'</b> questionnaires';
+    if(!cnt)cnt='once';
+    html='<div><span class="side">today</span><div class="step">'+r.step+'</div><div class="what">'+r.tLabel+'</div><div class="cnt">'+cnt+'</div></div>';
+  }else{
+    hrs=o.ah;cls='cell '+thread(hrs,1)+(r.tag==='remove'?' rm':'');
+    if(o.an!==undefined)cnt='<b>&times;'+h(o.an)+'</b> &middot; '+r.aPer+' h each';
+    if(o.aq)cnt+=' &middot; <b>&times;'+h(o.aq)+'</b> questionnaires';
+    if(!cnt)cnt='once';
+    var note='';
+    if(r.tag==='remove'&&o.tn!==undefined)note=' &middot; '+h(o.tn-o.an)+' of '+h(o.tn)+' cut';
+    tag='<span class="tag '+r.tag+'">'+r.tag+(r.tag==='automate'&&r.own==='signed by coo'?' &middot; signed by coo':'')+'</span>';
+    own='<div class="own">'+(r.own==='signed by coo'?'ai drafts. the coo reads and signs.':r.own)+note+'</div>';
+    html='<div><span class="side">filtered</span><div class="step">'+r.step+'</div><div class="what">'+r.aLabel+'</div><div class="cnt">'+cnt+'</div>'+own+tag+'</div>';
+  }
+  return '<div class="'+cls+'">'+html+'<div class="hrs">'+h(hrs)+'<small>partner h</small></div></div>';
+}
+
+function render(){
+  var d=compute();
+  el('err').hidden=!!d;
+  if(!d){
+    ['map','cases','verdict','fees','ai','formula','ainote'].forEach(function(k){el(k).innerHTML=''});
+    el('big').innerHTML='&mdash;<span class="arrow">&rarr;</span>&mdash;';
+    return;
+  }
+  save();
+  var tH=d.todayH,aH=d.afterH,A=d.A;
+  el('big').innerHTML=h(tH)+'<span class="unit"> h</span><span class="arrow">&rarr;</span>'+h(aH)+'<span class="unit"> h</span>';
+  el('barT').style.width='100%';el('barA').style.width=(tH>0?Math.max(1,aH/tH*100):0)+'%';
+  el('valT').textContent=h(tH)+' h';el('valA').textContent=h(aH)+' h';
+
+  var m='<div class="colhead"><span>today</span><span>partner h</span></div><div class="colhead"><span>filtered</span><span>partner h</span></div>';
+  d.rows.forEach(function(o){m+=cellHTML(o,'t')+cellHTML(o,'a')});
+  m+='<div class="tot"><span>today total</span><span>'+h(tH)+' h</span></div><div class="tot"><span>filtered total</span><span>'+h(aH)+' h</span></div>';
+  el('map').innerHTML=m;
+
+  var cs='';
+  d.cases.forEach(function(c){
+    var gap=d.T*1e6-c.cap;
+    cs+='<div class="case '+c.key+'"><h3>'+c.name+'</h3>'+
+      '<div class="drv">inputs: '+c.c+' commits &times; $'+A.cheque+'m &middot; '+c.m+' months. '+c.why+'</div><dl>'+
+      '<dt>partner hours, today</dt><dd>'+h(tH)+' h</dd>'+
+      '<dt>partner hours, filtered</dt><dd>'+h(aH)+' h</dd>'+
+      '<dt>hours per commit, today</dt><dd>'+h(c.hpcT)+' h</dd>'+
+      '<dt>hours per commit, filtered</dt><dd>'+h(c.hpcA)+' h</dd>'+
+      '<dt>capital closed</dt><dd>'+fm(c.cap)+' of '+fm(d.T*1e6)+'</dd>'+
+      '<dt>'+(gap>0?'short by':'over target by')+'</dt><dd>'+fm(Math.abs(gap))+'</dd>'+
+      '<dt>retainer path fees</dt><dd>'+fm(c.retTot)+'</dd>'+
+      '<dt>success share fees</dt><dd>'+fm(c.shareTot)+'</dd></dl></div>';
+  });
+  el('cases').innerHTML=cs;
+
+  var bad=d.cases[0],base=d.cases[1];
+  var refHpc=tH/base.c;
+  var hoursHold=bad.hpcA<=refHpc;
+  var costHold=bad.shareTot<=bad.retTot;
+  var capHold=bad.cap>=d.T*1e6;
+  var cMin=Math.max(1,Math.ceil(aH*base.c/tH));
+  var v='';
+  if(!hoursHold||!capHold||!costHold){
+    v+='<p><b>safer setting first:</b> ';
+    if(!capHold)v+='plan on the bad-case close. set the target to '+fm(bad.cap)+' and treat the rest as upside. ';
+    if(!hoursHold)v+='keep the screen tighter so fewer first calls go to lps who will not commit. ';
+    if(!costHold)v+='the retainer path costs less here at your fee terms. use it for this case. ';
+    v+='</p>';
+  }
+  v+='<p><b>bad case verdict:</b> the plan '+(hoursHold?'holds':'does not hold')+' on hours'+(costHold?' and holds on cost':' and does not hold on cost')+'. '+
+     'it '+(capHold?'reaches':'does not reach')+' the target. '+bad.c+' commits close '+fm(bad.cap)+' against '+fm(d.T*1e6)+'. the page does not round up.</p>';
+  v+='<p>bad-case filtered hours per commit: '+h(bad.hpcA)+' h, against '+h(refHpc)+' h per commit today in the base case. ';
+  if(hoursHold)v+='hours hold down to '+cMin+' commit'+(cMin===1?'':'s')+'. '+(cMin>1?'at '+(cMin-1)+' commit'+(cMin-1===1?'':'s')+' the filtered path costs '+h(aH/(cMin-1))+' h per commit and breaks.':'it holds even at 1 commit.')+'</p>';
+  else v+='hours break below '+cMin+' commits.</p>';
+  v+='<p>retainer path in the bad case: '+fm(bad.retPre)+' in retainer over '+bad.m+' months, then '+fm(bad.retTot-bad.retPre)+' in success fee. success share: $0 until first close, then '+fm(bad.shareTot)+'.</p>';
+  el('verdict').innerHTML=v;
+
+  var f='<thead><tr><th>path</th>';
+  d.cases.forEach(function(c){f+='<th>'+c.name+'<small>'+c.m+' months &middot; '+fm(c.cap)+' closed</small></th>'});
+  f+='</tr></thead><tbody><tr><td>usual: agent on retainer<small>$'+A.ret+'k / month + '+A.retpct+'% of capital closed</small></td>';
+  d.cases.forEach(function(c){var lo=c.retTot<c.shareTot;f+='<td class="'+(lo?'lower':'')+'">'+fm(c.retTot)+'<small>'+fm(c.retPre)+' paid during the raise</small></td>'});
+  f+='</tr><tr><td>shortcut: success share<small>'+A.share+'% of capital closed from screened lps</small></td>';
+  d.cases.forEach(function(c){var lo=c.shareTot<=c.retTot;f+='<td class="'+(lo?'lower':'')+'">'+fm(c.shareTot)+'<small>$0 before first close</small></td>'});
+  f+='</tr><tr><td>difference</td>';
+  d.cases.forEach(function(c){f+='<td>'+fm(Math.abs(c.retTot-c.shareTot))+'<small>'+(c.shareTot<=c.retTot?'shortcut lower':'usual lower')+'</small></td>'});
+  f+='</tr></tbody>';
+  el('fees').innerHTML=f;
+
+  var dd=d.rows[3];
+  function aiRow(label,n,q){
+    var w=n*12, bP=n*2, bC=q*0.5, xP=n*4, xC=q*1.5, tool=q*A.aicost;
+    return '<tr><td>'+label+'<small>&times;'+h(n)+' data rooms &middot; &times;'+h(q)+' questionnaires</small></td>'+
+      '<td>'+h(w)+' partner h<small>0 coo h &middot; $0 tool</small></td>'+
+      '<td class="lower">'+h(bP)+' partner h<small>'+h(bC)+' coo h &middot; '+fm(tool)+' tool</small></td>'+
+      '<td>'+h(xP)+' partner h<small>'+h(xC)+' coo h &middot; '+fm(tool)+' tool</small></td></tr>';
+  }
+  el('ai').innerHTML='<thead><tr><th>funnel</th><th>without ai<small>12 partner h per data room</small></th><th>with ai, base<small>2 partner h per room &middot; 0.5 coo h per answer set</small></th><th>with ai, bad<small>drafts need rework: 4 partner h &middot; 1.5 coo h</small></th></tr></thead><tbody>'+
+    aiRow('today',dd.tn,dd.tq)+aiRow('filtered',dd.an,dd.aq)+'</tbody>';
+  var noAi=aH-dd.ah+dd.an*12;
+  el('ainote').innerHTML='the filtered column above assumes ai drafts. without ai it is '+h(aH)+' &minus; '+h(dd.ah)+' + '+h(dd.an*12)+' = '+h(noAi)+' partner h. with bad drafts it is '+h(aH-dd.ah+dd.an*4)+' partner h. both still sit under today\'s '+h(tH)+' h.';
+
+  el('formula').innerHTML=
+    'scale s = target &divide; $200m = '+d.T+' &divide; 200 = '+(+d.s.toFixed(3))+'<br>'+
+    'step count = reference count &times; s (rounded)<br>'+
+    'partner hours = &Sigma; (step count &times; hours per step) &nbsp; today '+h(tH)+' h, filtered '+h(aH)+' h<br>'+
+    'commits: base = round(6 &times; s); bad = round(base &divide; 2); good = max(base + 1, ceil(target &divide; cheque))<br>'+
+    'months: bad = months + 6; good = months &minus; 2<br>'+
+    'hours per commit = partner hours &divide; commits<br>'+
+    'capital closed = commits &times; average cheque<br>'+
+    'retainer path = retainer &times; months + success fee % &times; capital closed<br>'+
+    'success share = share % &times; capital closed<br>'+
+    'hours hold while filtered hours &divide; commits &le; today hours &divide; base commits<br>'+
+    'ai tool cost = questionnaires &times; $'+A.aicost+'; coo review = questionnaires &times; 0.5 h (bad: 1.5 h)';
+}
+
+load();
+ids.forEach(function(k){el(k).addEventListener('input',render)});
+el('reset').addEventListener('click',function(){ids.forEach(function(k){el(k).value=DEF[k]});render()});
+el('rowsbtn').addEventListener('click',function(){
+  var mp=el('map'),open=mp.classList.toggle('open');
+  this.setAttribute('aria-expanded',open?'true':'false');
+  this.textContent=open?'close the five rows':'open the five rows';
+});
+render();
+})();
+</script>
+</body>
+</html>
