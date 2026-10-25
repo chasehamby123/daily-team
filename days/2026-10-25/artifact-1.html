@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Name on the Door: missed booking counter</title>
+<style>
+:root{--ink:#1f1b16;--paper:#f3ede2;--card:#fffaf1;--brass:#b08d57;--loss:#8a3b2e;--line:#cdbfa6;--muted:#5d5448}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+main{max-width:1000px;margin:0 auto;padding:24px 16px 40px}
+h1,h2,.serif{font-family:Georgia,"Times New Roman",serif;font-weight:normal}
+h1{font-size:2.5rem;line-height:1.1;margin:4px 0 8px;letter-spacing:.01em}
+h2{font-size:1.45rem;margin:0 0 8px}
+.kicker{text-transform:uppercase;letter-spacing:.14em;font-size:.78rem;color:var(--muted);margin:0}
+.sub{max-width:640px;color:var(--muted);margin:0 0 14px}
+label{display:block;font-size:.9rem;color:var(--muted)}
+input,select{display:block;width:100%;margin-top:4px;padding:8px 10px;font:inherit;font-size:1rem;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:3px}
+input:focus,select:focus{outline:2px solid var(--brass);outline-offset:1px}
+.namefield{max-width:420px}
+.lead{margin:22px 0 10px}
+.lead p{margin:0 0 6px}
+#s1{font-family:Georgia,serif;font-size:1.55rem;line-height:1.3}
+#s2{font-size:1.15rem}
+#s3{font-size:1.15rem;color:var(--loss)}
+.plates{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:18px 0 8px}
+figure{margin:0}
+figure svg{display:block;width:100%;height:auto;transition:opacity .5s}
+figcaption{font-size:.78rem;color:var(--muted);text-align:center;margin-top:3px}
+.p13{display:grid;grid-template-columns:minmax(140px,200px) 1fr;gap:16px;align-items:center;border-top:1px dashed var(--line);padding-top:12px;margin-top:6px}
+.p13 p{margin:0}
+section{border-top:2px solid var(--ink);margin-top:34px;padding-top:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px 20px;margin-top:10px}
+.help{font-size:.8rem;color:var(--muted);margin:3px 0 0}
+.q label{font-family:Georgia,serif;font-size:1.1rem;color:var(--ink)}
+.tw{overflow-x:auto;margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:.95rem;min-width:560px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+th:first-child,td:first-child{text-align:left}
+thead th{font-weight:600;border-bottom:2px solid var(--ink)}
+.in td{color:var(--muted)}
+.bad{background:#f1e2dc}
+.tag{font-size:.75rem;color:var(--loss);display:block}
+.verdict{background:var(--card);border-left:4px solid var(--brass);padding:10px 14px;margin:12px 0 0}
+.verdict p{margin:0 0 6px}
+.verdict p:last-child{margin:0}
+.check{display:flex;gap:10px;align-items:flex-start;color:var(--ink);font-size:1rem}
+.check input{width:auto;margin-top:5px}
+ul{margin:6px 0 0;padding-left:20px}
+pre{white-space:pre-wrap;background:var(--card);border:1px solid var(--line);padding:12px;font:.85rem/1.55 ui-monospace,Menlo,Consolas,monospace;margin:8px 0 0}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+button{font:inherit;padding:8px 14px;background:var(--ink);color:var(--paper);border:0;border-radius:3px;cursor:pointer}
+button.alt{background:transparent;color:var(--ink);border:1px solid var(--ink)}
+.note{font-size:.85rem;color:var(--muted)}
+footer{margin-top:36px;border-top:1px solid var(--line);padding-top:12px;font-size:.85rem;color:var(--muted)}
+footer p{margin:0 0 6px}
+@media (max-width:640px){h1{font-size:2rem}#s1{font-size:1.3rem}.plates{grid-template-columns:repeat(3,1fr);gap:8px}.p13{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{body{background:#fff}.btns,.noprint{display:none}section{break-inside:avoid}main{padding:0}input,select{border:0;padding:0;background:none}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<p class="kicker">Missed booking counter</p>
+<h1>The Name on the Door</h1>
+<p class="sub">Twelve plates, one for each month. Each plate dims by the bookings that went elsewhere before anyone called back.</p>
+<label class="namefield">Name on the door<input id="nm" type="text" maxlength="60"></label>
+</header>
+
+<div class="lead" aria-live="polite">
+<p id="s1"></p>
+<p id="s2"></p>
+<p id="s3"></p>
+</div>
+
+<div class="plates" id="plates" aria-label="Twelve months of nameplates"></div>
+<div class="p13"><figure id="plate13"></figure><p id="p13t"></p></div>
+
+<section>
+<h2>Two questions</h2>
+<div class="grid">
+<div class="q"><label for="staff">How many people work for you?</label><input id="staff" type="number" min="0" step="1" inputmode="numeric"></div>
+<div class="q"><label for="months">How many months until you step back?</label><input id="months" type="number" min="0" step="1" inputmode="numeric"></div>
+</div>
+</section>
+
+<section>
+<h2>The figures from your book</h2>
+<div class="grid">
+<label>Inbound calls a month<input id="calls" type="number" min="0" step="1" inputmode="numeric"></label>
+<label>Usual time to call back
+<select id="reply">
+<option value="0">5 minutes (5% go elsewhere)</option>
+<option value="1">1 hour (20% go elsewhere)</option>
+<option value="2">4 hours (40% go elsewhere)</option>
+<option value="3">6 hours (45% go elsewhere)</option>
+<option value="4">8 hours or more (55% go elsewhere)</option>
+</select></label>
+<label>Close rate, as you remember it (%)<input id="close" type="number" min="0" max="100" step="0.1" inputmode="decimal"></label>
+<div><label>Close rate, from the booking ledger (%)<input id="ledger" type="number" min="0" max="100" step="0.1" inputmode="decimal"></label><p class="help">Leave blank if you have not counted it.</p></div>
+<label>Average job value ($)<input id="job" type="number" min="0" step="10" inputmode="decimal"></label>
+<div><label>Monthly cost of one staff member ($)<input id="wage" type="number" min="0" step="50" inputmode="decimal"></label><p class="help">Wages plus payroll taxes and benefits.</p></div>
+<label>Annual profit today ($)<input id="profit" type="number" min="0" step="1000" inputmode="decimal"></label>
+</div>
+<p class="verdict" id="ledgerNote"></p>
+<div class="btns"><button type="button" id="reset">Load the worked example</button><button type="button" class="alt" id="clear">Clear the figures</button><button type="button" class="alt" id="print">Print for your accountant</button></div>
+</section>
+
+<section>
+<h2>Three cases</h2>
+<p class="note">Bad: calls halved, handover six months late. Good: calls up a quarter, handover on schedule.</p>
+<div class="tw"><table id="cases"></table></div>
+<div class="verdict" id="caseVerdict"></div>
+</section>
+
+<section>
+<h2>Who picks up after four</h2>
+<p class="note">Two ways to answer within 5 minutes in the evening. Both use the 5% loss rate.</p>
+<div class="grid">
+<label>Automated front desk, monthly cost ($)<input id="ai" type="number" min="0" step="10" inputmode="decimal"></label>
+<label>Evening hire, monthly cost ($)<input id="hire" type="number" min="0" step="50" inputmode="decimal"></label>
+</div>
+<div class="tw"><table id="desk"></table></div>
+<div class="verdict" id="deskVerdict"></div>
+<p><strong>A person still does these steps.</strong></p>
+<ul>
+<li>The desk says at the start of every call that it is automated.</li>
+<li>A person calls back every caller by 9:00 the next morning.</li>
+<li>Your office manager reviews every booking at 9:00.</li>
+<li>Your accountant signs off the handover figures.</li>
+</ul>
+<p class="note">The front desk is off by default. Turn it on to count what it wins back in the share path below.</p>
+<label class="check"><input id="deskOn" type="checkbox"> Count the front desk in the share path</label>
+</section>
+
+<section>
+<h2>Two ways to hand over the name</h2>
+<p class="note">Same inputs for both. The usual path pays at signing on today's profit. The share path pays less at signing, then a share of profit for a set number of years, with a floor in writing.</p>
+<div class="grid">
+<label>Usual path: multiple of profit at signing<input id="mU" type="number" min="0" step="0.1" inputmode="decimal"></label>
+<label>Share path: multiple at signing<input id="mS" type="number" min="0" step="0.1" inputmode="decimal"></label>
+<label>Share path: share of profit (%)<input id="sh" type="number" min="0" max="100" step="1" inputmode="decimal"></label>
+<label>Share path: floor, as a multiple of profit a year<input id="fl" type="number" min="0" step="0.05" inputmode="decimal"></label>
+<label>Share path: years paid<input id="yrs" type="number" min="0" step="1" inputmode="numeric"></label>
+</div>
+<p class="help">Multiples, tax on each payment, and how a floor is enforced depend on your buyer and where you are. Enter the terms you are offered. This page does not give legal, tax, or investment advice.</p>
+<div class="tw"><table id="paths"></table></div>
+<div class="verdict" id="pathVerdict"></div>
+</section>
+
+<section>
+<h2>The formulas</h2>
+<pre>Loss by reply time: 5 min 5%, 1 h 20%, 4 h 40%, 6 h 45%, 8 h+ 55%
+Callers lost a month = inbound calls × loss
+Bookings slipped a month = inbound calls × loss × close rate
+Value slipped a month = bookings slipped × average job value
+Value until handover = value slipped a month × months until you step back
+Staff it could pay = value slipped a month ÷ monthly cost of one staff member, rounded down
+Plate shine, month k = 1 − (bookings slipped through month k ÷ (inbound × close rate × 12)), lowest 0.25
+Front desk wins back = inbound × (loss − 5%) × close rate × job value
+Net = wins back − monthly cost
+Margin = annual profit ÷ (inbound × (1 − loss) × close rate × job value × 12)
+Profit after signing = profit at signing + (front desk wins back × 12 × margin − desk cost × 12), if counted
+Usual path = usual multiple × profit at signing
+Share path = share multiple × profit at signing + years × max(share % × profit after, floor × profit at signing)
+Bad case: calls ÷ 2, handover + 6 months, profit at signing scales with calls
+Good case: calls × 1.25, handover on schedule</pre>
+</section>
+
+<footer>
+<p>Bookings reviewed by your office manager. Handover figures signed off by your accountant.</p>
+<p>Credits. Museum curator: the twelve plates, the thirteenth plate, the share path. Radio producer: the opening sentence and the front desk line. Retiring owner with no successor: staff count first, the written floor, the 9:00 callback. Leonardo da Vinci: the bad case and the ledger close rate.</p>
+<p>Published by OuterHaven Advisory.</p>
+</footer>
+</main>
+
+<script>
+(function(){
+var $=function(id){return document.getElementById(id)};
+var LOSS=[.05,.2,.4,.45,.55],RL=['5 min','1 h','4 h','6 h','8 h+'];
+var IDS=['nm','staff','months','calls','reply','close','ledger','job','wage','profit','ai','hire','deskOn','mU','mS','sh','fl','yrs'];
+var EX={nm:'Brennan Heating & Plumbing',staff:11,months:12,calls:120,reply:3,close:30,ledger:28,job:2400,wage:4200,profit:210000,ai:400,hire:3800,deskOn:false,mU:3,mS:2,sh:20,fl:0.25,yrs:3};
+var KEY='oh-name-door-v1';
+function n(id){var v=parseFloat($(id).value);return isFinite(v)&&v>0?v:0}
+function money(x){return (x<0?'−$':'$')+Math.round(Math.abs(x)).toLocaleString('en-US')}
+function d1(x){return (Math.round(x*10)/10).toLocaleString('en-US')}
+function whole(x){return Math.round(x).toLocaleString('en-US')}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function setAll(o){IDS.forEach(function(k){var e=$(k);if(e.type==='checkbox')e.checked=!!o[k];else e.value=(o[k]===undefined||o[k]===null)?'':o[k]})}
+function save(){try{var o={};IDS.forEach(function(k){var e=$(k);o[k]=e.type==='checkbox'?e.checked:e.value});localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}}
+function load(){try{var s=localStorage.getItem(KEY);if(s){var o=JSON.parse(s),m={};for(var k in EX)m[k]=EX[k];for(k in o)m[k]=o[k];setAll(m);return}}catch(e){}setAll(EX)}
+
+function lines(name){
+  name=name.length>40?name.slice(0,39)+'…':name;
+  if(name.length<=17)return [name];
+  var w=name.split(' '),a='',b='';
+  for(var i=0;i<w.length;i++){if((a+' '+w[i]).trim().length<=Math.ceil(name.length/2)+3&&!b)a=(a+' '+w[i]).trim();else b=(b+' '+w[i]).trim()}
+  if(!b){a=name.slice(0,20);b=name.slice(20)}
+  return [a,b];
+}
+function plate(op,name,label){
+  var L=lines(name),t='';
+  if(L.length===1)t='<text x="80" y="40" text-anchor="middle" font-family="Georgia,serif" font-size="12" fill="#2a2116">'+esc(L[0])+'</text>';
+  else t='<text x="80" y="35" text-anchor="middle" font-family="Georgia,serif" font-size="11" fill="#2a2116">'+esc(L[0])+'</text><text x="80" y="49" text-anchor="middle" font-family="Georgia,serif" font-size="11" fill="#2a2116">'+esc(L[1])+'</text>';
+  return '<svg viewBox="0 0 160 70" role="img" aria-label="'+esc(name+', '+label)+'" style="opacity:'+op.toFixed(2)+'"><rect x="1" y="1" width="158" height="68" rx="4" fill="#7a5c2e"/><rect x="6" y="6" width="148" height="58" rx="2" fill="#d2b277"/><rect x="6" y="6" width="148" height="13" fill="#e8d3a2"/><circle cx="14" cy="38" r="2.6" fill="#7a5c2e"/><circle cx="146" cy="38" r="2.6" fill="#7a5c2e"/>'+t+'</svg>';
+}
+function row(cells,cls){return '<tr'+(cls?' class="'+cls+'"':'')+'>'+cells.map(function(c){return '<td>'+c+'</td>'}).join('')+'</tr>'}
+function head(cells){return '<thead><tr>'+cells.map(function(c){return '<th>'+c+'</th>'}).join('')+'</tr></thead>'}
+
+function calc(){
+  var c=n('calls'),cl=n('close')/100,ri=+$('reply').value||0,L=LOSS[ri],j=n('job'),w=n('wage'),st=Math.round(n('staff')),mo=Math.round(n('months')),P=n('profit'),ai=n('ai'),hi=n('hire'),desk=$('deskOn').checked,led=n('ledger')/100;
+  var name=$('nm').value.trim()||'Your name here';
+  function cs(calls,months){var lost=calls*L,sl=lost*cl,v=sl*j;return{calls:calls,months:months,lost:lost,sl:sl,v:v,tot:v*months,pay:w>0?Math.floor(v/w):0}}
+  var bad=cs(c/2,mo+6),base=cs(c,mo),good=cs(c*1.25,mo);
+  function payText(p){if(st<=0)return p+' people';if(p>=st)return 'all '+st;return p+' of '+st}
+
+  $('s1').textContent='Last month, '+whole(base.lost)+' people called and went somewhere else before anyone called back. About '+whole(base.sl)+' of them would have booked.';
+  $('s2').textContent='That is '+money(base.v)+' of work a month, and '+money(base.tot)+' over the '+mo+' months until you step back.';
+  var s3;
+  if(w<=0)s3='Enter the monthly cost of one staff member to see what it would pay.';
+  else if(st>0&&base.pay>=st)s3='Enough to pay all '+st+' of your people.';
+  else if(st>0)s3='Enough to pay '+base.pay+' of your '+st+' people.';
+  else s3='Enough to pay '+base.pay+' people.';
+  $('s3').textContent=s3;
+
+  var pot=c*cl*12,h='';
+  for(var k=1;k<=12;k++){
+    var cum=base.sl*k,op=pot>0?Math.max(.25,1-cum/pot):1;
+    h+='<figure>'+plate(op,name,'month '+k+', '+d1(cum)+' bookings slipped')+'<figcaption>Month '+k+'<br>'+d1(cum)+' slipped</figcaption></figure>';
+  }
+  $('plates').innerHTML=h;
+  var fast=c*.05*cl*12,op13=pot>0?Math.max(.25,1-fast/pot):1;
+  $('plate13').innerHTML=plate(op13,name,'same year answered in 5 minutes');
+  $('p13t').textContent='The thirteenth plate is the same year with the phone answered in 5 minutes. '+d1(fast)+' bookings slip, against '+d1(base.sl*12)+' at '+RL[ri]+'.';
+
+  var ln;
+  if(!led)ln='Add the ledger close rate to check the remembered one.';
+  else if(Math.abs(led-cl)<.005)ln='The ledger matches your figure of '+d1(cl*100)+'%.';
+  else{var ls=c*L*led;ln='You remember '+d1(cl*100)+'%. The ledger shows '+d1(led*100)+'%. At the ledger rate, '+d1(ls)+' bookings slip a month, worth '+money(ls*j)+'. The page uses your remembered rate. Change it above if the ledger is right.'}
+  $('ledgerNote').textContent=ln;
+
+  var C=[bad,base,good];
+  function r(lbl,f,cls){return row([lbl].concat(C.map(f)),cls)}
+  $('cases').innerHTML=head(['','Bad','Base','Good'])+'<tbody>'+
+    r('Inbound calls a month',function(x){return d1(x.calls)},'in')+
+    r('Reply time',function(){return RL[ri]},'in')+
+    r('Close rate',function(){return d1(cl*100)+'%'},'in')+
+    r('Months until handover',function(x){return x.months},'in')+
+    r('Callers lost a month',function(x){return d1(x.lost)})+
+    r('Bookings slipped a month',function(x){return d1(x.sl)})+
+    r('Value slipped a month',function(x){return money(x.v)})+
+    r('Value slipped until handover',function(x){return money(x.tot)})+
+    r('Staff it could pay',function(x){return w>0?payText(x.pay):'–'})+'</tbody>';
+  $('caseVerdict').innerHTML=bad.v>0?'<p>The problem holds in the bad case. With calls halved to '+d1(bad.calls)+' and the handover '+bad.months+' months out, '+money(bad.v)+' still slips away each month, '+money(bad.tot)+' in total.</p>':'<p>At these figures nothing slips. Check the calls, close rate and job value.</p>';
+
+  function rec(calls){return calls*Math.max(0,L-.05)*cl*j}
+  var rb=rec(c),rx=rec(c/2);
+  function dr(lbl,cost,on){var a=on?rb:0,b=on?rx:0;return row([lbl,money(a),money(cost),money(a-cost),money(b),money(cost),money(b-cost)])}
+  $('desk').innerHTML=head(['Option','Base: wins back','Base: cost','Base: net','Bad: wins back','Bad: cost','Bad: net'])+'<tbody>'+
+    dr('No change',0,false)+dr('Evening hire (person)',hi,true)+dr('Automated front desk',ai,true)+'</tbody>';
+  var dv='';
+  if(L<=.05)dv='<p>Your reply time is already 5 minutes. There is nothing for the desk to win back. Safer setting: leave it off.</p>';
+  else if(rx>ai){
+    var per=(L-.05)*cl*j,bc=per>0?ai/per:0,bcl=c*(L-.05)*j>0?ai/(c*(L-.05)*j)*100:0;
+    dv='<p>The front desk survives the bad case. At '+d1(c/2)+' calls a month it wins back '+money(rx)+' against '+money(ai)+'.</p><p>It stops paying for itself below '+Math.ceil(bc)+' calls a month, or below a close rate of '+d1(bcl)+'% at '+d1(c)+' calls.</p><p>An evening hire wins back the same bookings and costs '+money(hi-ai)+' more a month.</p>';
+  }else dv='<p>Safer setting first: keep the front desk off. In the bad case it costs '+money(ai)+' a month and wins back '+money(rx)+'.</p>';
+  $('deskVerdict').innerHTML=dv;
+
+  var rev=c*(1-L)*cl*j*12,mg=rev>0?Math.min(1,P/rev):0,mU=n('mU'),mS=n('mS'),sh=n('sh')/100,fl=n('fl'),yrs=Math.round(n('yrs'));
+  function path(f){
+    var Ps=P*f,add=desk?rec(c*f)*12*mg-ai*12:0,A=Ps+add,fy=fl*Ps,sy=sh*A;
+    return{Ps:Ps,A:A,usual:mU*Ps,sp:mS*Ps,yr:Math.max(sy,fy),floorOn:fy>=sy&&fy>0,tot:mS*Ps+yrs*Math.max(sy,fy)};
+  }
+  var hb=path(1),hx=path(.5);
+  function tag(x){return x.floorOn?'<span class="tag">floor applies</span>':''}
+  $('paths').innerHTML=head(['Path','Profit at signing','Paid at signing','Profit a year after','Paid each later year','Total'])+'<tbody>'+
+    row(['Usual, base',money(hb.Ps),money(hb.usual),money(hb.A),'$0',money(hb.usual)])+
+    row(['Usual, bad',money(hx.Ps),money(hx.usual),money(hx.A),'$0',money(hx.usual)],'bad')+
+    row(['Share, base',money(hb.Ps),money(hb.sp),money(hb.A),money(hb.yr)+tag(hb),money(hb.tot)])+
+    row(['Share, bad',money(hx.Ps),money(hx.sp),money(hx.A),money(hx.yr)+tag(hx),money(hx.tot)],'bad')+'</tbody>';
+  var diff=hb.tot-hb.usual,pv='';
+  if(P<=0)pv='<p>Enter annual profit to compare the two paths.</p>';
+  else{
+    pv='<p>'+(diff>=0?'The share path':'The usual path')+' pays more in the base case, by '+money(Math.abs(diff))+'. In the bad case the gap is '+money(Math.abs(hx.tot-hx.usual))+' in favour of the '+(hx.tot>=hx.usual?'share':'usual')+' path.</p>';
+    if(mS+yrs*fl>=mU)pv+='<p>At these terms the floor alone makes the share path pay at least as much as the usual path.</p>';
+    else if(sh>0&&yrs>0)pv+='<p>The share path pays more once profit after signing passes '+money((mU-mS)*P/(yrs*sh))+' a year. Profit after signing here is '+money(hb.A)+'.</p>';
+    if(hx.floorOn)pv+='<p>In the bad case the floor sets each later payment at '+money(hx.yr)+'. The floor has to be written into the agreement. Without it, take the share path off the table.</p>';
+    pv+='<p class="note">Margin used: '+d1(mg*100)+'% (annual profit ÷ booked revenue of '+money(rev)+'). '+(desk?'Front desk counted in profit after signing.':'Front desk not counted. Turn it on above to include the bookings it wins back.')+'</p>';
+  }
+  $('pathVerdict').innerHTML=pv;
+}
+
+load();calc();
+document.addEventListener('input',function(){calc();save()});
+document.addEventListener('change',function(){calc();save()});
+$('reset').addEventListener('click',function(){setAll(EX);calc();save()});
+$('clear').addEventListener('click',function(){var o={reply:$('reply').value,deskOn:false};setAll(o);$('reply').value=o.reply;calc();save()});
+$('print').addEventListener('click',function(){window.print()});
+})();
+</script>
+</body>
+</html>

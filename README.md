@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-10-24: the red thread
+### 2026-10-25: The Name on the Door
 
-<a href="days/2026-10-24/"><img src="days/2026-10-24/team.png" alt="Team for 2026-10-24: Animator · Front-end engineer · Fund manager raising capital · Sisyphus" width="100%"></a>
+<a href="days/2026-10-25/"><img src="days/2026-10-25/team.png" alt="Team for 2026-10-25: Museum curator · Radio producer · Retiring owner with no successor · Leonardo da Vinci" width="100%"></a>
 
-**Task:** Before-and-after map: today's process as a list of steps becomes a side-by-side view marking the steps that could be removed or automated.
+**Task:** Missed opportunity counter: inbound volume, response time, and close rate give how many deals or bookings slip away each month.
 
-**Decision:** the page takes a fund manager's target raise and months in market, lays today's fundraising steps beside a filtered version, tags each step keep, automate, or remove, and shows partner hours, capital closed, and placement costs for the b...
+**Decision:** The page turns inbound calls, reply time, close rate and job value into the bookings that slip away each month, shows what that costs the staff over the months before a handover, and sets the usual sale next to a share-based handover wit...
 
-<a href="days/2026-10-24/"><img src="days/2026-10-24/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-10-25/"><img src="days/2026-10-25/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-10-24/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-10-25/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,15 +37,15 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-10-25](days/2026-10-25/) | <a href="days/2026-10-25/"><img src="days/2026-10-25/artifact-1.png" alt="The Name on the Door" width="160"></a> | The Name on the Door | Museum curator · Radio producer · Retiring owner with no successor · Leonardo da Vinci |
 | [2026-10-24](days/2026-10-24/) | <a href="days/2026-10-24/"><img src="days/2026-10-24/artifact-1.png" alt="the red thread" width="160"></a> | the red thread | Animator · Front-end engineer · Fund manager raising capital · Sisyphus |
 | [2026-10-23](days/2026-10-23/) | <a href="days/2026-10-23/"><img src="days/2026-10-23/artifact-1.png" alt="The 9:14 Lead" width="160"></a> | The 9:14 Lead | Puppeteer · Bookbinder · Insurance agency owner · Katsushika Hokusai |
 | [2026-10-22](days/2026-10-22/) | <a href="days/2026-10-22/"><img src="days/2026-10-22/artifact-1.png" alt="Sized to the Raise" width="160"></a> | Sized to the Raise | Costume designer · Sign painter · Search fund entrepreneur · Alice |
 | [2026-10-21](days/2026-10-21/) | <a href="days/2026-10-21/"><img src="days/2026-10-21/artifact-1.png" alt="Call Slip" width="160"></a> | Call Slip | Librarian · Taxidermist · Founder raising a growth round · Don Quixote |
 | [2026-10-20](days/2026-10-20/) | <a href="days/2026-10-20/"><img src="days/2026-10-20/artifact-1.png" alt="The Walk Line" width="160"></a> | The Walk Line | Chef · Upholsterer · Private credit fund manager · Janus |
 | [2026-10-19](days/2026-10-19/) | <a href="days/2026-10-19/"><img src="days/2026-10-19/artifact-1.png" alt="Who Picks Up" width="160"></a> | Who Picks Up | Brand strategist · Luthier · Clinic owner · Florence Nightingale |
-| [2026-10-18](days/2026-10-18/) | <a href="days/2026-10-18/"><img src="days/2026-10-18/artifact-1.png" alt="Mandate Gaps, One Page" width="160"></a> | Mandate Gaps, One Page | Blacksmith · Urban planner · Family office CIO · Charles Darwin |
 
-[All 21 days](ARCHIVE.md)
+[All 22 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works
