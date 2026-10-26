@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Hours Bridge: teaser screening time-back calculator</title>
+<style>
+:root{
+  --stage:#15130f;--panel:#201d17;--line:#3a342a;--ink:#ece6da;--muted:#b9af9e;
+  --wood:#c08f5e;--lit:#f2c14e;--litink:#1a1408;--bad:#e8957a;--good:#a7d1a4;
+  --s1:.5rem;--s2:1rem;--s3:1.5rem;--s4:2.5rem;
+}
+*{box-sizing:border-box}
+html{font-size:100%}
+body{margin:0;background:var(--stage);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:.95rem;line-height:1.5}
+.wrap{max-width:68rem;margin:0 auto;padding:var(--s3) var(--s2) var(--s4)}
+h1{font-size:2.1rem;line-height:1.15;margin:0 0 var(--s1);letter-spacing:-.01em}
+h2{font-size:1.5rem;margin:0 0 var(--s2);font-weight:650}
+h3{font-size:1.1rem;margin:var(--s3) 0 var(--s1)}
+p{margin:0 0 var(--s1)}
+.lede{color:var(--muted);max-width:44rem;font-size:1.05rem}
+.num,td,th,.bridge .v,.lit{font-variant-numeric:tabular-nums}
+.grid{display:grid;grid-template-columns:20rem 1fr;gap:var(--s3);margin-top:var(--s3)}
+@media (max-width:52rem){.grid{grid-template-columns:1fr}h1{font-size:1.7rem}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:var(--s2)}
+label{display:block;font-weight:600;margin-top:var(--s2)}
+label:first-of-type{margin-top:0}
+.hint{display:block;font-weight:400;color:var(--muted);font-size:.85rem}
+input[type=number]{width:100%;font:inherit;font-size:1.25rem;padding:.45rem .6rem;margin-top:.3rem;
+  background:var(--stage);color:var(--ink);border:1px solid var(--wood);border-radius:3px}
+:focus-visible{outline:3px solid var(--lit);outline-offset:2px}
+input:focus{outline:3px solid var(--lit);outline-offset:2px}
+fieldset{border:1px solid var(--line);border-radius:4px;margin:var(--s2) 0 0;padding:var(--s2)}
+legend{padding:0 .4rem;color:var(--muted);font-size:.85rem;text-transform:uppercase;letter-spacing:.06em}
+button{font:inherit;background:transparent;color:var(--ink);border:1px solid var(--wood);
+  border-radius:3px;padding:.4rem .8rem;margin:var(--s2) var(--s1) 0 0;cursor:pointer}
+.bridge{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.bridge li{display:grid;grid-template-columns:1.6rem 1fr auto;gap:var(--s1);align-items:baseline;
+  padding:.65rem 0;border-bottom:1px solid var(--line)}
+.bridge .k{color:var(--muted)}
+.bridge .f{display:block;color:var(--muted);font-size:.82rem}
+.bridge .v{font-size:1.25rem;text-align:right;white-space:nowrap}
+.bridge li.total{border-bottom:2px solid var(--wood)}
+.bridge li.total .v{font-weight:700}
+.lit{background:var(--lit);color:var(--litink);padding:var(--s2);margin:var(--s2) 0 0;border-radius:3px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s2)}
+.lit div span{display:block;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
+.lit div b{display:block;font-size:1.55rem;line-height:1.2}
+@media (max-width:40rem){.lit{grid-template-columns:1fr 1fr}}
+.sign{border-left:3px solid var(--wood);padding:.2rem 0 .2rem var(--s2);margin:var(--s2) 0 0}
+.sign p:first-child{font-weight:600}
+section{margin-top:var(--s4)}
+table{border-collapse:collapse;width:100%;margin-top:var(--s1)}
+th,td{text-align:right;padding:.45rem .55rem;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:.85rem;color:var(--muted);font-weight:600}
+th.bad{color:var(--bad)}th.good{color:var(--good)}
+tr.key td{font-weight:700}
+.scroll{overflow-x:auto}
+.verdict{padding:var(--s2);border:1px solid var(--line);border-radius:4px;margin-top:var(--s2)}
+.verdict.ok{border-color:var(--good)}.verdict.no{border-color:var(--bad)}
+.verdict .safe{font-weight:700;color:var(--lit)}
+details{margin-top:var(--s2);border:1px solid var(--line);border-radius:4px;padding:var(--s1) var(--s2)}
+summary{cursor:pointer;font-weight:600;padding:.3rem 0}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.85rem;
+  background:var(--panel);border:1px solid var(--line);padding:var(--s2);border-radius:4px;overflow-x:auto;white-space:pre}
+ul.rules{margin:0;padding-left:1.2rem}
+.note{color:var(--muted);font-size:.85rem}
+footer{margin-top:var(--s4);padding-top:var(--s2);border-top:1px solid var(--line);color:var(--muted);font-size:.82rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media print{
+  :root{--stage:#fff;--panel:#fff;--ink:#000;--muted:#333;--line:#999;--lit:#fff;--litink:#000}
+  body{font-size:10.5pt}
+  .lit{border:2px solid #000}
+  button,.kbd{display:none}
+  input[type=number]{border:none;padding:0;font-size:11pt}
+  .grid{grid-template-columns:1fr 1.6fr}
+  section{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>The Hours Bridge</h1>
+  <p class="lede">Reported reading hours on the left. Each adjustment in its own line. Hours and dollars returned over 12 months at the end. Three fields drive it. The worked example is a fund that receives 60 teasers a week.</p>
+  <p class="note kbd">Keyboard: Tab moves between fields. Up and Down arrows step each number. Enter or Space opens the share comparison.</p>
+</header>
+
+<div class="grid">
+  <form class="panel" id="f" onsubmit="return false" aria-label="Inputs">
+    <label for="t">Teasers a week
+      <span class="hint">Question 1 of 2. Every teaser someone opens. Arrows step by 5.</span></label>
+    <input id="t" type="number" min="0" step="5" inputmode="decimal">
+    <label for="m">Minutes to read one teaser today
+      <span class="hint">Include rebuilding adjusted EBITDA. Arrows step by 1.</span></label>
+    <input id="m" type="number" min="0" step="1" inputmode="decimal">
+    <label for="rate">Loaded hourly cost of the reader ($)
+      <span class="hint">Salary, bonus, benefits, payroll tax. Tax and benefit costs depend on local rules. Enter your own. Arrows step by 10.</span></label>
+    <input id="rate" type="number" min="0" step="10" inputmode="decimal">
+
+    <fieldset>
+      <legend>Defaults in plain sight</legend>
+      <label for="r">Review minutes per teaser, with AI
+        <span class="hint">A person checks the AI draft and every flagged add-back.</span></label>
+      <input id="r" type="number" min="0" step="1" inputmode="decimal">
+      <label for="fee">AI tool cost per teaser ($)
+        <span class="hint">The figure your vendor quotes you.</span></label>
+      <input id="fee" type="number" min="0" step="1" inputmode="decimal">
+      <label for="w">Working weeks in 12 months</label>
+      <input id="w" type="number" min="0" max="52" step="1" inputmode="decimal">
+    </fieldset>
+    <button type="button" id="reset">Reset to worked example</button><button type="button" id="clear">Clear fields</button>
+    <p class="note" id="empty" hidden>Empty fields count as 0.</p>
+  </form>
+
+  <div>
+    <h2>Hours bridge, one week</h2>
+    <ol class="bridge" aria-label="Hours bridge">
+      <li><span class="k">1</span><span>Reported reading hours<span class="f" id="f1"></span></span><span class="v" id="b1"></span></li>
+      <li><span class="k">2</span><span>Minus the AI pre-read<span class="f">AI drafts the EBITDA bridge and flags each add-back</span></span><span class="v" id="b2"></span></li>
+      <li><span class="k">3</span><span>Plus human review, added back<span class="f" id="f3"></span></span><span class="v" id="b3"></span></li>
+      <li class="total"><span class="k">=</span><span>Hours returned each week</span><span class="v" id="b4"></span></li>
+    </ol>
+    <div class="lit" role="status" aria-live="polite" aria-atomic="true">
+      <div><span>12 months, hours back</span><b id="y1"></b></div>
+      <div><span>Value of those hours</span><b id="y2"></b></div>
+      <div><span>AI tool cost</span><b id="y3"></b></div>
+      <div><span>Net over 12 months</span><b id="y4"></b></div>
+    </div>
+    <div class="sign">
+      <p>AI drafts each EBITDA bridge and flags every add-back. A named associate reviews and signs off every pass.</p>
+      <p>"Automated" on this page means: AI drafts, a named associate signs. No teaser leaves the pile without a signature.</p>
+      <p>The cost this page cannot count: a good deal passed by mistake. One wrong pass can outweigh every hour above. That is why the review line stays in the bridge.</p>
+    </div>
+  </div>
+</div>
+
+<section aria-labelledby="h-cases">
+  <h2 id="h-cases">Bad, base, and good case</h2>
+  <p class="note">Bad case: half the volume and double the review time. Good case: 1.5 times the volume and two thirds of the review time. Minutes to read and hourly cost stay as entered.</p>
+  <div id="verdict" class="verdict" aria-live="polite"></div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th scope="col">Line</th><th scope="col" class="bad">Bad</th><th scope="col">Base</th><th scope="col" class="good">Good</th></tr></thead>
+    <tbody id="cases"></tbody>
+  </table>
+  </div>
+</section>
+
+<section aria-labelledby="h-ai">
+  <h2 id="h-ai">Cost with and without AI, 12 months</h2>
+  <div class="scroll">
+  <table>
+    <thead><tr><th scope="col">Path</th><th scope="col">Base</th><th scope="col" class="bad">Bad</th></tr></thead>
+    <tbody id="ai"></tbody>
+  </table>
+  </div>
+  <h3>What a person still does</h3>
+  <ul class="rules">
+    <li>Checks every add-back the AI flags against the teaser and its reason.</li>
+    <li>Decides call or pass. The AI never rejects a teaser.</li>
+    <li>Signs off every pass by name.</li>
+    <li>Reads in full any teaser where the AI draft and the banker's figure disagree.</li>
+  </ul>
+</section>
+
+<section aria-labelledby="h-share">
+  <h2 id="h-share">Per-teaser fee or a success share</h2>
+  <p class="note">Same inputs, two ways a vendor might charge. The hours returned are the same. Only the cost changes.</p>
+  <details id="det">
+    <summary>Compare a 0.1% success share with the per-teaser fee</summary>
+    <label for="chk">Typical equity check, $ millions
+      <span class="hint">Question 2 of 2. Used only in this comparison. Arrows step by 5.</span></label>
+    <input id="chk" type="number" min="0" step="5" inputmode="decimal">
+    <p class="note">Assumed closes in 12 months: bad 0, base 1, good 2. Share owed = 0.1% × equity check × closes.</p>
+    <div class="scroll">
+    <table>
+      <thead><tr><th scope="col">Path</th><th scope="col">Base cost</th><th scope="col">Base net</th><th scope="col" class="bad">Bad case</th><th scope="col" class="bad">Bad cost</th><th scope="col" class="bad">Bad net</th></tr></thead>
+      <tbody id="share"></tbody>
+    </table>
+    </div>
+    <p id="shareNote"></p>
+    <p class="note">A success share ties the vendor's income to deals you close. Weigh what that pays them to steer you toward.</p>
+  </details>
+</section>
+
+<section aria-labelledby="h-form">
+  <h2 id="h-form">Formula</h2>
+  <div class="formula">reported hours/week   = teasers × read minutes ÷ 60
+review hours/week     = teasers × review minutes ÷ 60
+hours returned/week   = reported − reported + review  = teasers × (read − review) ÷ 60
+hours back, 12 months = hours returned/week × working weeks
+value                 = hours back × loaded hourly cost
+per-teaser cost       = teasers × fee × working weeks
+net                   = value − per-teaser cost
+success share         = 0.001 × equity check × closes
+break point, review   = read − 60 × fee ÷ hourly cost</div>
+  <h3>Build rules. This page never:</h3>
+  <ul class="rules">
+    <li>shows a total without the lines that build it.</li>
+    <li>needs a mouse. Tab, arrows, Enter, and Space reach every control.</li>
+    <li>hides a default. Every assumed number is a field or is printed on the page.</li>
+  </ul>
+  <p class="note">This is arithmetic on your inputs. It is not investment, legal, or tax advice. Inputs stay in this browser if storage is allowed. Nothing is sent anywhere.</p>
+</section>
+
+<footer>
+  <p>Credits. Lighting designer: the hours bridge layout, the never-do build rules, the lit 12-month row. Furniture maker: three fields, live update with no button, fixed tab order, no popup, no email gate. Private equity principal (buyer): the loaded rate, review time as its own bridge line, the slow-year bad case. Cassandra: the definition of "automated" and the line on the cost of a wrong pass.</p>
+  <p>Published by OuterHaven Advisory.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+  var D={t:60,m:12,rate:180,r:3,fee:4,w:48,chk:20};
+  var ids=Object.keys(D), KEY="hoursBridge.v1";
+  function $(i){return document.getElementById(i)}
+  var usd=new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0});
+  function $$(v){return (v<0?"−":"")+usd.format(Math.abs(Math.round(v)))}
+  function h(v){return (v<0?"−":"")+Math.abs(v).toFixed(1)+" h"}
+  function n(v,d){return (Math.round(v*Math.pow(10,d||0))/Math.pow(10,d||0)).toLocaleString("en-US")}
+
+  function load(){
+    var s=null;
+    try{s=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){s=null}
+    ids.forEach(function(k){$(k).value=(s&&s[k]!==undefined)?s[k]:D[k]});
+  }
+  function save(){
+    var o={};ids.forEach(function(k){o[k]=$(k).value});
+    try{localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}
+  }
+  function get(){
+    var o={},empty=false;
+    ids.forEach(function(k){var v=parseFloat($(k).value);if(!isFinite(v)){v=0;empty=true}o[k]=Math.max(0,v)});
+    $("empty").hidden=!empty;return o;
+  }
+  function calc(T,M,R,rate,W,fee){
+    var hr=T*M/60,rv=T*R/60,back=hr-rv,yr=back*W,val=yr*rate,feeY=T*fee*W;
+    return{T:T,M:M,R:R,hr:hr,rv:rv,back:back,yr:yr,val:val,feeY:feeY,net:val-feeY,
+      without:hr*W*rate,withAI:rv*W*rate+feeY};
+  }
+  function row(label,vals,cls){
+    return "<tr"+(cls?' class="'+cls+'"':"")+"><td>"+label+"</td>"+vals.map(function(v){return "<td>"+v+"</td>"}).join("")+"</tr>";
+  }
+  function render(){
+    var i=get();
+    var base=calc(i.t,i.m,i.r,i.rate,i.w,i.fee);
+    var bad=calc(i.t/2,i.m,i.r*2,i.rate,i.w,i.fee);
+    var good=calc(i.t*1.5,i.m,i.r*2/3,i.rate,i.w,i.fee);
+
+    $("f1").textContent=n(i.t)+" teasers × "+n(i.m,1)+" min ÷ 60";
+    $("f3").textContent=n(i.t)+" teasers × "+n(i.r,1)+" min ÷ 60";
+    $("b1").textContent=h(base.hr);
+    $("b2").textContent=h(-base.hr);
+    $("b3").textContent="+"+h(base.rv);
+    $("b4").textContent=h(base.back);
+    $("y1").textContent=n(base.yr)+" h";
+    $("y2").textContent=$$(base.val);
+    $("y3").textContent=$$(-base.feeY);
+    $("y4").textContent=$$(base.net);
+
+    var C=[bad,base,good];
+    function m(f){return C.map(f)}
+    $("cases").innerHTML=
+      row("Teasers a week",m(function(c){return n(c.T,1)}))+
+      row("Read minutes per teaser",m(function(c){return n(c.M,1)}))+
+      row("Review minutes per teaser",m(function(c){return n(c.R,1)}))+
+      row("Hours returned a week",m(function(c){return h(c.back)}))+
+      row("Hours back, 12 months",m(function(c){return n(c.yr)+" h"}))+
+      row("Value at "+$$(i.rate)+"/h",m(function(c){return $$(c.val)}))+
+      row("AI tool cost at "+$$(i.fee)+"/teaser",m(function(c){return $$(-c.feeY)}))+
+      row("Net, 12 months",m(function(c){return $$(c.net)}),"key");
+
+    // verdict
+    var v=$("verdict"),ok=bad.net>0&&bad.back>0;
+    var maxReview=i.m-60*i.fee/(i.rate||Infinity);
+    var maxFee=i.rate*(i.m-bad.R)/60;
+    var minRate=(i.m-bad.R)>0?60*i.fee/(i.m-bad.R):Infinity;
+    if(ok){
+      v.className="verdict ok";
+      v.innerHTML="<p><b>The plan survives the bad case.</b> Net "+$$(bad.net)+" over 12 months at "+n(bad.T,1)+" teasers a week and "+n(bad.R,1)+" review minutes.</p>"+
+        "<p>Room before it breaks, at bad-case volume: review can rise to "+n(maxReview,1)+" minutes per teaser, the tool cost can rise to "+$$(maxFee)+" per teaser, or the loaded rate can fall to "+$$(minRate)+" an hour. Past any one of these, the cost cancels the hours.</p>";
+    }else{
+      var safeR=Math.max(0,(i.m-60*i.fee/(i.rate||Infinity))/2);
+      var safe;
+      if(safeR>0.05){safe="Safer setting: keep review at or under "+n(safeR*0.9,1)+" minutes per teaser. At that setting the bad case, with review doubled, still nets above zero.";}
+      else if(i.m>2*i.r){safe="Safer setting: keep the tool cost under "+$$(maxFee)+" per teaser at this review time.";}
+      else{safe="Safer setting: cut review time below half the read time ("+n(i.m/2,1)+" minutes) first. No tool cost works until then.";}
+      v.className="verdict no";
+      v.innerHTML="<p class='safe'>"+safe+"</p><p><b>The plan does not survive the bad case.</b> Net "+$$(bad.net)+" over 12 months at "+n(bad.T,1)+" teasers a week and "+n(bad.R,1)+" review minutes.</p>";
+    }
+
+    $("ai").innerHTML=
+      row("Without AI: all reading by a person",[$$(base.without),$$(bad.without)])+
+      row("With AI: review time",[$$(base.rv*i.w*i.rate),$$(bad.rv*i.w*i.rate)])+
+      row("With AI: tool cost",[$$(base.feeY),$$(bad.feeY)])+
+      row("With AI: total",[$$(base.withAI),$$(bad.withAI)])+
+      row("Difference",[$$(base.without-base.withAI),$$(bad.without-bad.withAI)],"key");
+
+    var unit=0.001*i.chk*1e6;
+    var shBase=unit*1,shBad=0;
+    $("share").innerHTML=
+      row("Per-teaser fee, "+$$(i.fee),[$$(base.feeY),$$(base.net),"Slow year, "+n(bad.T,1)+"/wk",$$(bad.feeY),$$(bad.net)])+
+      row("0.1% success share",[$$(shBase),$$(base.val-shBase),"Zero closes",$$(shBad),$$(bad.val-shBad)]);
+    $("shareNote").textContent="Share in the slow year with one close of a "+$$(i.chk*1e6)+" check: "+$$(unit)+" owed, net "+$$(bad.val-unit)+". Good case, two closes: "+$$(unit*2)+" owed, net "+$$(good.val-unit*2)+".";
+    save();
+  }
+  load();
+  ids.forEach(function(k){$(k).addEventListener("input",render)});
+  $("reset").addEventListener("click",function(){ids.forEach(function(k){$(k).value=D[k]});render();$("t").focus()});
+  $("clear").addEventListener("click",function(){["t","m","rate"].forEach(function(k){$(k).value=""});render();$("t").focus()});
+  window.addEventListener("beforeprint",function(){$("det").open=true});
+  render();
+})();
+</script>
+</body>
+</html>
