@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Close-By Line: payback calculator for the gap in a capital stack</title>
+<style>
+:root{
+  --paper:#f4f1ea;--card:#fbf9f4;--ink:#1d1d1b;--mute:#5d5a52;--rule:#d8d2c4;
+  --spend:#a8402a;--carry:#a8740f;--ret:#2f6b4f;--win:#1f4e8c;--grey:#8e8c86;
+  --senior:#3b3a36;--equity:#8a7558;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.45}
+.wrap{max-width:1000px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:2.25rem;line-height:1.1;margin:.2rem 0 .5rem;letter-spacing:-.01em}
+h2{font-size:1.35rem;margin:.1rem 0 .6rem}
+h3{font-size:1rem;margin:.1rem 0 .5rem}
+p{margin:.3rem 0 .6rem}
+.kicker,.actno{font-size:.75rem;text-transform:uppercase;letter-spacing:.12em;color:var(--mute);margin:0}
+.lede{font-size:1.05rem;max-width:42rem}
+.small{font-size:.85rem;color:var(--mute)}
+section{margin-top:22px}
+.panel{background:var(--card);border:1px solid var(--rule);padding:16px;border-radius:4px}
+.questions{display:grid;grid-template-columns:1fr 1fr;gap:14px;border-left:6px solid var(--win)}
+.questions .q{display:flex;flex-direction:column;gap:4px}
+.qnum{font-weight:700;color:var(--win)}
+label{font-size:.9rem;font-weight:600}
+input{font:inherit;font-variant-numeric:tabular-nums;padding:7px 9px;border:1px solid #b9b2a2;border-radius:3px;background:#fff;color:var(--ink);width:100%;min-width:0}
+input:focus{outline:2px solid var(--win);outline-offset:1px}
+.field{display:flex;flex-direction:column;gap:3px;margin-bottom:10px}
+.help{font-size:.8rem;color:var(--mute)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+button{font:inherit;font-size:.9rem;padding:7px 12px;border:1px solid var(--ink);background:transparent;color:var(--ink);border-radius:3px;cursor:pointer}
+button:hover{background:#ebe6da}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.82rem;color:var(--mute);margin:6px 0}
+.sw{display:inline-block;width:18px;height:0;border-top:3px solid;vertical-align:middle;margin-right:5px}
+.sw.thin{border-top-width:1.5px}
+.sw.band{height:9px;border:0;background:var(--grey);opacity:.45}
+#chart{width:100%;min-height:300px}
+#chart svg{display:block;width:100%;height:auto}
+#chart text{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.act{border-top:6px solid var(--ink)}
+.act.a1{border-top-color:var(--spend)}
+.act.a2{border-top-color:var(--carry)}
+.act.a3{border-top-color:var(--ret)}
+.strip{display:flex;height:34px;border:1px solid var(--ink);margin:6px 0 8px}
+.strip div{height:100%}
+.stack{list-style:none;padding:0;margin:0 0 10px;font-size:.9rem}
+.stack li{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-bottom:1px solid var(--rule)}
+.dot{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:baseline}
+.tagline{font-size:.8rem;background:#efe8d6;border-left:3px solid var(--carry);padding:6px 8px;margin:-4px 0 10px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+details{margin-top:6px}
+summary{cursor:pointer;font-weight:600;font-size:.9rem}
+.headline{display:flex;flex-wrap:wrap;gap:8px 28px;align-items:baseline}
+.big{font-size:2.6rem;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.big small{font-size:.9rem;font-weight:600;color:var(--mute);margin-left:6px}
+.verdict{padding:12px 14px;margin:12px 0;border-left:6px solid var(--spend);background:#f5e7e1}
+.verdict.ok{border-left-color:var(--ret);background:#e4efe8}
+.verdict ul{margin:.3rem 0 .2rem 1.1rem;padding:0}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.card{background:#fff;border:1px solid var(--rule);border-top:5px solid var(--ret);padding:12px;border-radius:3px}
+.card.base{border-top-color:var(--carry);box-shadow:0 0 0 2px var(--carry) inset}
+.card.bad{border-top-color:var(--grey)}
+.card .tag{font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:var(--mute);margin:0}
+.card dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;font-size:.82rem;margin:6px 0 10px}
+.card dt{color:var(--mute)}
+.card dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
+.res{font-size:.95rem;border-top:1px solid var(--rule);padding-top:8px}
+.res b{font-variant-numeric:tabular-nums}
+table{width:100%;border-collapse:collapse;font-size:.9rem;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--mute);font-weight:600}
+td.n{text-align:right}
+.scroll{overflow-x:auto}
+pre{white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.85rem;background:#fff;border:1px solid var(--rule);padding:12px;margin:6px 0;border-radius:3px}
+footer{margin-top:28px;border-top:1px solid var(--rule);padding-top:12px;font-size:.8rem;color:var(--mute)}
+footer p{margin:.3rem 0}
+@media (max-width:720px){
+  h1{font-size:1.8rem}
+  .questions,.acts,.cards{grid-template-columns:1fr}
+  .big{font-size:2.1rem}
+}
+@media (prefers-reduced-motion:no-preference){
+  .card,.verdict{transition:background-color .2s}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+}
+@media print{
+  body{background:#fff;font-size:12px}
+  .noprint{display:none!important}
+  .panel,.card,pre{background:#fff;break-inside:avoid}
+  input{border:0;padding:0;background:transparent}
+  section{margin-top:12px}
+  .verdict{background:#fff}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="kicker">Payback calculator for the gap in a capital stack</p>
+  <h1>The Close-By Line</h1>
+  <p class="lede">Your capital must close by one month. Your gap is paid back in a later month. This page draws both on one timeline, months 0 to 120. Answer two questions, then check the three acts below.</p>
+
+  <div class="panel questions">
+    <div class="q">
+      <label for="qCost"><span class="qnum">1.</span> Total project cost ($)</label>
+      <input id="qCost" type="number" inputmode="decimal" min="0" step="1000">
+      <span class="help">Senior debt, your equity, and the gap together.</span>
+    </div>
+    <div class="q">
+      <label for="qWin"><span class="qnum">2.</span> Months until your capital window closes</label>
+      <input id="qWin" type="number" inputmode="numeric" min="0" step="1">
+      <span class="help">Read it from the term sheet or rate lock. Round up. A 61-day lock ends in month 3.</span>
+    </div>
+  </div>
+  <div class="actions noprint">
+    <button type="button" id="reset">Load worked example</button>
+    <button type="button" id="clear">Clear all fields</button>
+  </div>
+</header>
+
+<section aria-labelledby="tl">
+  <h2 id="tl">Timeline: Spend, Carry, Return</h2>
+  <div class="legend" id="legend"></div>
+  <div id="chart"></div>
+  <p class="small" id="chartNote"></p>
+</section>
+
+<section class="acts">
+  <div class="panel act a1">
+    <p class="actno">Act one</p>
+    <h2>Spend: the stack at month 0</h2>
+    <div class="strip" id="strip" aria-hidden="true"></div>
+    <ul class="stack" id="stackList"></ul>
+    <div class="field">
+      <label for="gap">Gap to fill ($). This is the setup cost.</label>
+      <input id="gap" type="number" inputmode="decimal" min="0" step="1000">
+      <span class="help">The capital this page measures payback on.</span>
+    </div>
+    <div class="field">
+      <label for="senior">Senior debt ($)</label>
+      <input id="senior" type="number" inputmode="decimal" min="0" step="1000">
+      <span class="help">Your equity is project cost minus senior debt minus gap.</span>
+    </div>
+    <details>
+      <summary>Path terms</summary>
+      <div class="two" style="margin-top:8px">
+        <div class="field">
+          <label for="feePct">Fee path: placement fee (%)</label>
+          <input id="feePct" type="number" inputmode="decimal" min="0" step="0.1">
+        </div>
+        <div class="field">
+          <label for="stakePct">Stake path: partner share of net after break-even (%)</label>
+          <input id="stakePct" type="number" inputmode="decimal" min="0" max="100" step="1">
+        </div>
+      </div>
+      <p class="help">Fees and stake terms vary by deal and by local rules. Enter the terms on your own sheet.</p>
+    </details>
+  </div>
+
+  <div class="panel act a2">
+    <p class="actno">Act two</p>
+    <h2>Carry: the months before the gain</h2>
+    <div class="field">
+      <label for="carry">Monthly carry ($)</label>
+      <input id="carry" type="number" inputmode="decimal" min="0" step="100">
+    </div>
+    <div class="field">
+      <label for="gain">Monthly gain ($)</label>
+      <input id="gain" type="number" inputmode="decimal" min="0" step="100">
+    </div>
+    <p class="tagline">Filled from rent roll and T-12. Reviewed by: <input id="reviewer" type="text" placeholder="name of the CPA who signed" style="margin-top:4px"> <span id="revState"></span></p>
+    <details>
+      <summary>Test settings</summary>
+      <div class="two" style="margin-top:8px">
+        <div class="field">
+          <label for="delay">Base case: gain starts after month</label>
+          <input id="delay" type="number" inputmode="numeric" min="0" step="1">
+        </div>
+        <div class="field">
+          <label for="badPct">Bad case: gain at (%) of entered</label>
+          <input id="badPct" type="number" inputmode="decimal" min="0" max="100" step="1">
+        </div>
+        <div class="field">
+          <label for="survive">Line the plan must clear (month)</label>
+          <input id="survive" type="number" inputmode="numeric" min="1" step="1">
+        </div>
+      </div>
+      <p class="help">The stake path shows only when the base case breaks even by this month.</p>
+    </details>
+  </div>
+</section>
+
+<section class="panel act a3" aria-live="polite">
+  <p class="actno">Act three</p>
+  <h2>Return: plan on the base case</h2>
+  <div class="headline" id="headline"></div>
+  <p id="windowText"></p>
+  <div id="verdict" class="verdict"></div>
+  <div class="cards" id="cards"></div>
+</section>
+
+<section class="panel">
+  <h2>Fee path beside stake path</h2>
+  <p class="small">Same gap, carry, and gain. The fee is paid at close. The stake costs nothing at close and pays the partner from the break-even month, not from month 1.</p>
+  <div class="scroll"><table id="paths"></table></div>
+  <p class="small" id="stakeNote"></p>
+</section>
+
+<section class="panel">
+  <h2>Who fills the carry and gain fields</h2>
+  <p class="small">A model can read the rent roll and trailing twelve months and fill carry and gain. A CPA checks the figures and signs. The cost of each route:</p>
+  <div class="two">
+    <div class="field"><label for="analyst">Analyst diligence ($)</label><input id="analyst" type="number" inputmode="decimal" min="0" step="100"></div>
+    <div class="field"><label for="model">Model pass ($)</label><input id="model" type="number" inputmode="decimal" min="0" step="10"></div>
+    <div class="field"><label for="cpaH">CPA review (hours)</label><input id="cpaH" type="number" inputmode="decimal" min="0" step="0.5"></div>
+    <div class="field"><label for="cpaRate">CPA rate ($ per hour)</label><input id="cpaRate" type="number" inputmode="decimal" min="0" step="10"></div>
+  </div>
+  <div class="scroll"><table id="ai"></table></div>
+  <h3 style="margin-top:12px">A person still reviews</h3>
+  <ul class="small" style="margin:0 0 0 1.1rem;padding:0">
+    <li>The CPA checks carry and gain against the rent roll and T-12, and signs the field above.</li>
+    <li>You confirm the gap amount and the stack in act one.</li>
+    <li>You read the window month from the lender's term sheet or rate lock.</li>
+    <li>The model does one step: reading the documents and filling two numbers.</li>
+  </ul>
+</section>
+
+<section class="panel">
+  <h2>Formula</h2>
+<pre>net(m)          = gain − carry     (gain = 0 for months 1 to delay)
+cumulative(m)   = −setup + net(1) + … + net(m)
+break-even      = first month where cumulative(m) ≥ 0
+Fee path        : setup = gap × (1 + fee %)
+Stake path      : setup = gap; after break-even the partner takes stake % of each month's net
+Bad-case line   : bad-case break-even must land by the month you set
+Safe gap        ≤ line × (gain × bad % − carry) ÷ (1 + fee %)</pre>
+  <p class="small" id="worked"></p>
+  <p class="small">Dollars round to whole dollars. Months round up to whole months. If gain does not cover carry, the page says No break-even.</p>
+</section>
+
+<section>
+  <p class="small">This page does arithmetic on the figures you enter. It is not investment, tax, or legal advice. Fees, stake terms, and how returns are split depend on your agreements and on local rules. Enter your own figures. Nothing you type leaves this device. Inputs are saved in this browser when storage is allowed.</p>
+</section>
+
+<footer>
+  <p>Credits. Exhibition designer: the three acts, the stack strip, and the two questions. Creative coder: one SVG, one loop, the system font stack, the No break-even message, and the model-filled fields with their cost. Real estate developer: the close-by line, the stack in dollars, and the stake path beside the fee path. Ibn al-Haytham: three runs on one scale, with the window and break-even on the same chart.</p>
+  <p>Published by OuterHaven Advisory.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+var $=function(id){return document.getElementById(id);};
+var DEF={qCost:20000000,qWin:3,gap:2400000,senior:14000000,carry:38000,gain:96000,reviewer:'',delay:6,badPct:50,survive:84,feePct:2,stakePct:15,analyst:18000,model:600,cpaH:2,cpaRate:400};
+var KEYS=Object.keys(DEF);
+var STORE='closeByLine.v1';
+var MAXM=120;
+var COL={good:'#2f6b4f',base:'#a8740f',bad:'#8e8c86',spend:'#a8402a',win:'#1f4e8c',ink:'#1d1d1b',mute:'#5d5a52',rule:'#d8d2c4',senior:'#3b3a36',equity:'#8a7558'};
+var last=null;
+
+function load(){
+  var s=null;
+  try{s=JSON.parse(localStorage.getItem(STORE)||'null');}catch(e){s=null;}
+  KEYS.forEach(function(k){$(k).value=(s&&Object.prototype.hasOwnProperty.call(s,k))?s[k]:DEF[k];});
+}
+function save(){
+  try{var o={};KEYS.forEach(function(k){o[k]=$(k).value;});localStorage.setItem(STORE,JSON.stringify(o));}catch(e){}
+}
+function num(k){var v=parseFloat(String($(k).value).replace(/,/g,''));return isFinite(v)&&v>0?v:0;}
+function money(v){if(v===null||!isFinite(v))return '—';var r=Math.round(v);return (r<0?'−':'')+'$'+Math.abs(r).toLocaleString('en-US');}
+function short(v){var a=Math.abs(v),s=v<0?'−':'';if(a>=1e6)return s+'$'+(a/1e6).toFixed(1).replace(/\.0$/,'')+'M';if(a>=1e3)return s+'$'+Math.round(a/1e3)+'k';return s+'$'+Math.round(a);}
+function mo(m){return m===null?'No break-even':'Month '+m;}
+function ym(m){if(m===null)return 'Gain does not cover carry.';var y=Math.floor(m/12),r=m%12;return y+' yr '+r+' mo';}
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+function breakEven(setup,cost,gain,delayMonths){
+  if(setup<=0)return 0;
+  if(gain<=cost)return null;
+  var c=-setup;
+  for(var m=1;m<=6000;m++){c+=(m>delayMonths?gain:0)-cost;if(c>=0)return m;}
+  return null;
+}
+function series(setup,cost,gain,delay,share,be){
+  var a=[-setup],c=-setup;
+  for(var m=1;m<=MAXM;m++){var net=(m>delay?gain:0)-cost;c+=(share>0&&be!==null&&m>be)?net*(1-share):net;a.push(c);}
+  return a;
+}
+function partnerTake(cost,gain,delay,share,be,upto){
+  if(be===null||share<=0)return 0;var t=0;
+  for(var m=be+1;m<=upto;m++){var net=(m>delay?gain:0)-cost;if(net>0)t+=share*net;}
+  return t;
+}
+
+function compute(){
+  var v={};KEYS.forEach(function(k){if(k!=='reviewer')v[k]=num(k);});
+  if(!v.survive)v.survive=1;
+  v.qWin=Math.ceil(v.qWin);v.delay=Math.round(v.delay);v.survive=Math.ceil(v.survive);
+  var f=v.feePct/100,s=Math.min(v.stakePct,100)/100,p=Math.min(v.badPct,100)/100;
+  var fee=v.gap*f;
+  var defs=[
+    {k:'good',name:'Good',sub:'Gain as entered, from month 1',gain:v.gain,delay:0},
+    {k:'base',name:'Base',sub:'Gain starts after month '+v.delay,gain:v.gain,delay:v.delay},
+    {k:'bad',name:'Bad',sub:'Gain at '+Math.round(p*100)+'% of entered',gain:v.gain*p,delay:0}
+  ];
+  var C={};
+  defs.forEach(function(d){
+    var bf=breakEven(v.gap+fee,v.carry,d.gain,d.delay),bs=breakEven(v.gap,v.carry,d.gain,d.delay);
+    C[d.k]={k:d.k,name:d.name,sub:d.sub,gain:d.gain,delay:d.delay,fee:bf,stake:bs,
+      sf:series(v.gap+fee,v.carry,d.gain,d.delay,0,bf),
+      ss:series(v.gap,v.carry,d.gain,d.delay,s,bs),
+      take:partnerTake(v.carry,d.gain,d.delay,s,bs,MAXM)};
+  });
+  var stakeShown=C.base.stake!==null&&C.base.stake<=v.survive;
+  var L=v.survive;
+  var bnet=v.gain*p-v.carry;
+  var res={v:v,fee:fee,s:s,p:p,C:C,stakeShown:stakeShown,
+    survives:C.bad.fee!==null&&C.bad.fee<=L,
+    maxGap:bnet>0?Math.floor(L*bnet/(1+f)):0,
+    minGain:p>0?Math.ceil((v.carry+(v.gap+fee)/L)/p):null,
+    maxCarry:Math.floor(v.gain*p-(v.gap+fee)/L)};
+  return res;
+}
+
+function render(){
+  var r=compute(),v=r.v,C=r.C;last=r;
+  // reviewer
+  var who=$('reviewer').value.trim();
+  $('revState').textContent=who?'Signed off by '+who+'.':'Not yet reviewed.';
+  // stack
+  var eq=v.qCost-v.senior-v.gap,tot=v.senior+Math.max(eq,0)+v.gap;
+  var parts=[['Senior debt',v.senior,COL.senior],['Your equity',eq,COL.equity],['Gap',v.gap,COL.spend]];
+  $('strip').innerHTML=tot>0?parts.map(function(x){return '<div style="flex:'+Math.max(x[1],0)+' 0 0;background:'+x[2]+'"></div>';}).join(''):'';
+  $('stackList').innerHTML=parts.map(function(x){var pc=tot>0?Math.round(Math.max(x[1],0)/tot*100):0;return '<li><span><span class="dot" style="background:'+x[2]+'"></span>'+x[0]+'</span><span>'+money(x[1])+' · '+pc+'%</span></li>';}).join('')+
+    (eq<0?'<li><span>Senior debt and gap exceed project cost. Check the stack.</span></li>':'');
+  // legend
+  $('legend').innerHTML=
+    '<span><span class="sw" style="border-color:'+COL.good+'"></span>Good, stake</span>'+
+    '<span><span class="sw thin" style="border-color:'+COL.good+'"></span>Good, fee</span>'+
+    '<span><span class="sw" style="border-color:'+COL.base+'"></span>Base, stake</span>'+
+    '<span><span class="sw thin" style="border-color:'+COL.base+'"></span>Base, fee</span>'+
+    '<span><span class="sw band"></span>Bad, both paths</span>'+
+    '<span><span class="sw" style="border-color:'+COL.win+';border-top-style:dashed"></span>Close-by line</span>'+
+    (r.stakeShown?'':'<span>Stake lines hidden.</span>');
+  // headline
+  var hb=C.base;
+  $('headline').innerHTML=
+    (r.stakeShown?'<div class="big">'+(hb.stake===null?'None':hb.stake)+'<small>stake path, month</small></div>':'')+
+    '<div class="big">'+(hb.fee===null?'None':hb.fee)+'<small>fee path, month</small></div>';
+  var bm=hb.fee;
+  var wt;
+  if(bm===null)wt='Capital must close by month '+v.qWin+'. In the base case the gap is never paid back. Gain does not cover carry.';
+  else if(bm>v.qWin)wt='Capital must close by month '+v.qWin+'. Base break-even is month '+bm+'. You commit '+(bm-v.qWin)+' months before the gap is paid back. Act on the window. Sign on the break-even.';
+  else wt='Capital must close by month '+v.qWin+'. Base break-even is month '+bm+', on or before the window.';
+  $('windowText').textContent=wt;
+  // verdict
+  var vd=$('verdict'),L=v.survive,h='';
+  if(r.survives){
+    vd.className='verdict ok';
+    h='<strong>The plan survives the bad case.</strong> With gain at '+Math.round(r.p*100)+'%, the fee path breaks even at month '+C.bad.fee+', inside the month-'+L+' line.'+
+      '<p style="margin:.4rem 0 0"><strong>How far you can push before it breaks:</strong></p><ul>'+
+      '<li>Monthly gain can fall to '+money(r.minGain)+' ('+Math.max(0,Math.round((1-r.minGain/v.gain)*100))+'% below entered).</li>'+
+      '<li>The gap can grow to '+money(r.maxGap)+' ('+money(r.maxGap-v.gap)+' more).</li>'+
+      '<li>Monthly carry can rise to '+money(r.maxCarry)+'.</li></ul>';
+  }else{
+    vd.className='verdict';
+    h='<p style="margin:0 0 .3rem"><strong>Safer setting first.</strong> Any one of these clears the month-'+L+' line in the bad case:</p><ul>'+
+      (r.maxGap>0?'<li>Keep the gap at or under '+money(r.maxGap)+'.</li>':'<li>No gap size works while gain at '+Math.round(r.p*100)+'% does not cover carry.</li>')+
+      (r.minGain!==null?'<li>Or reach monthly gain of at least '+money(r.minGain)+'.</li>':'')+
+      (r.maxCarry>0?'<li>Or cut monthly carry to '+money(r.maxCarry)+' or less.</li>':'')+
+      '</ul><strong>The plan does not survive the bad case.</strong> With gain at '+Math.round(r.p*100)+'%, the fee path '+(C.bad.fee===null?'never breaks even':'breaks even at month '+C.bad.fee+' ('+ym(C.bad.fee)+')')+'. That is past the month-'+L+' line.';
+  }
+  vd.innerHTML=h;
+  // cards
+  $('cards').innerHTML=['good','base','bad'].map(function(k){
+    var c=C[k];
+    var after=function(m){return m===null?'':(m>v.qWin?(m-v.qWin)+' months after the close-by line':'on or before the close-by line');};
+    return '<div class="card '+k+'"><p class="tag">'+c.name+(k==='base'?' · headline':'')+'</p><h3>'+esc(c.sub)+'</h3>'+
+      '<dl><dt>Gap</dt><dd>'+money(v.gap)+'</dd><dt>Carry / month</dt><dd>'+money(v.carry)+'</dd><dt>Gain / month</dt><dd>'+money(c.gain)+'</dd><dt>Gain starts</dt><dd>Month '+(c.delay+1)+'</dd><dt>Net / month</dt><dd>'+money(c.gain-v.carry)+'</dd></dl>'+
+      '<div class="res">'+
+      (r.stakeShown?'<p>Stake path: <b>'+mo(c.stake)+'</b><br><span class="small">'+ym(c.stake)+'</span></p>':'')+
+      '<p>Fee path: <b>'+mo(c.fee)+'</b><br><span class="small">'+ym(c.fee)+(c.fee!==null?'. '+after(c.fee)+'.':'')+'</span></p>'+
+      '</div></div>';
+  }).join('');
+  // paths table
+  var sc=function(m){return r.stakeShown?mo(m):'Hidden';};
+  var rows=[
+    ['Paid at close',money(r.fee),r.stakeShown?'$0':'Hidden'],
+    ['Good case break-even',mo(C.good.fee),sc(C.good.stake)],
+    ['Base case break-even',mo(C.base.fee),sc(C.base.stake)],
+    ['Bad case break-even',mo(C.bad.fee),sc(C.bad.stake)],
+    ['Paid to gap partner by month 120, base case',money(r.fee),r.stakeShown?money(C.base.take):'Hidden'],
+    ['Paid to gap partner by month 120, bad case',money(r.fee),r.stakeShown?money(C.bad.take):'Hidden'],
+    ['If the deal dies after close',money(r.fee)+' gone',r.stakeShown?'No fee paid':'Hidden']
+  ];
+  $('paths').innerHTML='<thead><tr><th></th><th>Fee path ('+v.feePct+'% at close)</th><th>Stake path ('+v.stakePct+'% of net after break-even)</th></tr></thead><tbody>'+
+    rows.map(function(x){return '<tr><td>'+x[0]+'</td><td class="n">'+x[1]+'</td><td class="n">'+x[2]+'</td></tr>';}).join('')+'</tbody>';
+  $('stakeNote').textContent=r.stakeShown?
+    'The stake path shows because the base case breaks even by month '+L+'. In the bad case the stake is not an offer that holds: the partner waits '+(C.bad.stake===null?'without end':C.bad.stake+' months')+'.':
+    'Stake path hidden. The base case breaks even '+(C.base.stake===null?'never':'at month '+C.base.stake)+', after month '+L+'. A share of returns that far out is not drawn as an offer.';
+  // AI table
+  var withAI=v.model+v.cpaH*v.cpaRate;
+  var bA=breakEven(v.gap+r.fee+v.analyst,v.carry,v.gain,v.delay),bM=breakEven(v.gap+r.fee+withAI,v.carry,v.gain,v.delay);
+  $('ai').innerHTML='<thead><tr><th>Case</th><th>Analyst diligence</th><th>Model pass + CPA review</th></tr></thead><tbody>'+
+    '<tr><td>Base: deal closes, cost added to the gap</td><td class="n">'+money(v.analyst)+'<br><span class="small">fee path '+mo(bA)+'</span></td><td class="n">'+money(withAI)+'<br><span class="small">fee path '+mo(bM)+'</span></td></tr>'+
+    '<tr><td>Bad: deal dies after diligence</td><td class="n">'+money(v.analyst)+' lost</td><td class="n">'+money(withAI)+' lost</td></tr>'+
+    '<tr><td>Bad: CPA rejects the model figures, analyst redoes them</td><td class="n">'+money(v.analyst)+'</td><td class="n">'+money(withAI+v.analyst)+'</td></tr></tbody>';
+  // worked line
+  var gnet=v.gain-v.carry,gs=v.gap+r.fee;
+  $('worked').textContent=gnet>0?
+    'With your inputs, good case, fee path: '+money(gs)+' ÷ '+money(gnet)+' = '+(gs/gnet).toFixed(1)+', rounded up to month '+C.good.fee+'.':
+    'With your inputs, gain does not cover carry. No break-even.';
+  draw(r);
+  save();
+}
+
+function draw(r){
+  var box=$('chart'),v=r.v,C=r.C;
+  var w=Math.max(300,Math.floor(box.clientWidth||720)),narrow=w<560,h=narrow?320:390;
+  var ml=narrow?46:62,mr=narrow?10:18,mt=42,mb=34;
+  var X=function(m){return ml+m/MAXM*(w-ml-mr);};
+  var arrs=[C.good.sf,C.base.sf,C.bad.sf];
+  if(r.stakeShown)arrs.push(C.good.ss,C.base.ss,C.bad.ss);
+  var lo=0,hi=0;arrs.forEach(function(a){a.forEach(function(x){if(x<lo)lo=x;if(x>hi)hi=x;});});
+  var pad=(hi-lo)*0.08||1;lo-=pad;hi+=pad;
+  var Y=function(x){return mt+(hi-x)/(hi-lo)*(h-mt-mb);};
+  var o=[],y0=Y(0),bot=h-mb;
+  var T=function(x,y,t,a,fill,size,weight){return '<text x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" text-anchor="'+(a||'start')+'" fill="'+(fill||COL.mute)+'" font-size="'+(size||11)+'"'+(weight?' font-weight="'+weight+'"':'')+'>'+esc(t)+'</text>';};
+  // zones
+  var be=C.base.fee,ce=(be===null||be>MAXM)?MAXM:be;
+  o.push('<rect x="'+X(0)+'" y="'+mt+'" width="'+(X(ce)-X(0)).toFixed(1)+'" height="'+(bot-mt)+'" fill="'+COL.base+'" opacity=".08"/>');
+  if(ce<MAXM)o.push('<rect x="'+X(ce).toFixed(1)+'" y="'+mt+'" width="'+(X(MAXM)-X(ce)).toFixed(1)+'" height="'+(bot-mt)+'" fill="'+COL.good+'" opacity=".09"/>');
+  o.push(T(X(0),16,'1 Spend','start',COL.spend,12,700));
+  if(X(ce)-X(0)>110)o.push(T((X(0)+X(ce))/2+20,16,'2 Carry','middle',COL.base,12,700));
+  else o.push(T(X(0)+62,16,'2 Carry','start',COL.base,12,700));
+  if(ce<MAXM&&X(MAXM)-X(ce)>60)o.push(T((X(ce)+X(MAXM))/2,16,'3 Return','middle',COL.good,12,700));
+  // grid
+  var raw=(hi-lo)/5,mag=Math.pow(10,Math.floor(Math.log10(raw||1))),st=[1,2,2.5,5,10].map(function(x){return x*mag;}).filter(function(x){return x>=raw;})[0]||mag*10;
+  for(var t=Math.ceil(lo/st)*st;t<=hi;t+=st){
+    var yy=Y(t);o.push('<line x1="'+ml+'" x2="'+X(MAXM)+'" y1="'+yy.toFixed(1)+'" y2="'+yy.toFixed(1)+'" stroke="'+COL.rule+'" stroke-width="1"/>');
+    o.push(T(ml-6,yy+4,short(Math.abs(t)<1e-6?0:t),'end'));
+  }
+  var stepX=narrow?24:12;
+  for(var m=0;m<=MAXM;m+=stepX){o.push(T(X(m),bot+16,String(m),'middle'));}
+  o.push(T(X(MAXM),bot+30,'months','end',COL.mute,10));
+  // gap block at month 0
+  o.push('<rect x="'+X(0)+'" y="'+y0.toFixed(1)+'" width="7" height="'+Math.max(0,Y(-v.gap)-y0).toFixed(1)+'" fill="'+COL.spend+'"/>');
+  // bad band
+  var path=function(a){return 'M'+a.map(function(x,i){return X(i).toFixed(1)+','+Y(x).toFixed(1);}).join('L');};
+  if(r.stakeShown){
+    var pts=C.bad.ss.map(function(x,i){return X(i).toFixed(1)+','+Y(x).toFixed(1);}).concat(C.bad.sf.slice().reverse().map(function(x,i){return X(MAXM-i).toFixed(1)+','+Y(x).toFixed(1);}));
+    o.push('<polygon points="'+pts.join(' ')+'" fill="'+COL.bad+'" opacity=".45" stroke="'+COL.bad+'" stroke-width="2"/>');
+  }else o.push('<path d="'+path(C.bad.sf)+'" fill="none" stroke="'+COL.bad+'" stroke-width="3" opacity=".7"/>');
+  // zero line
+  o.push('<line x1="'+ml+'" x2="'+X(MAXM)+'" y1="'+y0.toFixed(1)+'" y2="'+y0.toFixed(1)+'" stroke="'+COL.ink+'" stroke-width="1.5"/>');
+  // lines
+  ['good','base'].forEach(function(k){
+    if(r.stakeShown)o.push('<path d="'+path(C[k].ss)+'" fill="none" stroke="'+COL[k]+'" stroke-width="3" stroke-linejoin="round"/>');
+    o.push('<path d="'+path(C[k].sf)+'" fill="none" stroke="'+COL[k]+'" stroke-width="1.5" stroke-linejoin="round"/>');
+  });
+  // window line
+  if(v.qWin<=MAXM){
+    var wx=X(v.qWin);
+    o.push('<line x1="'+wx.toFixed(1)+'" x2="'+wx.toFixed(1)+'" y1="'+(mt-14)+'" y2="'+bot+'" stroke="'+COL.win+'" stroke-width="2" stroke-dasharray="5 3"/>');
+    o.push(T(wx+5,mt-2,'Close by month '+v.qWin,wx>w-150?'end':'start',COL.win,11,700));
+  }else o.push(T(X(MAXM),mt-2,'Close-by line past month 120','end',COL.win,11,700));
+  // pins and arrows
+  var lab=function(c){var f=c.fee===null?'none':c.fee;return c.name+' · month '+(r.stakeShown?(c.stake===null?'none':c.stake)+' / ':'')+f;};
+  var anchor=function(x){return x>w-90?'end':(x<ml+60?'start':'middle');};
+  var arrow=function(x,y,col){return '<polygon points="'+(x-7)+','+(y-5)+' '+x+','+y+' '+(x-7)+','+(y+5)+'" fill="'+col+'"/>';};
+  [['good',-12],['base',22],['bad',40]].forEach(function(e){
+    var c=C[e[0]],col=e[0]==='bad'?'#6e6c66':COL[e[0]];
+    if(c.fee!==null&&c.fee<=MAXM){
+      var px=X(c.fee);
+      o.push('<circle cx="'+px.toFixed(1)+'" cy="'+y0.toFixed(1)+'" r="5" fill="#fff" stroke="'+col+'" stroke-width="2.5"/>');
+      o.push(T(px,y0+e[1],lab(c),anchor(px),col,11,700));
+    }else{
+      var ey=Y(c.sf[MAXM]),ex=X(MAXM);
+      o.push(arrow(ex,ey,col));
+      if(r.stakeShown)o.push(arrow(ex,Y(c.ss[MAXM]),col));
+      o.push(T(ex-10,ey+(e[0]==='good'?-10:(e[0]==='base'?-10:-12)),lab(c),'end',col,11,700));
+    }
+  });
+  var desc='Timeline from month 0 to 120. Close-by line at month '+v.qWin+'. Base case break-even at '+mo(C.base.fee)+' on the fee path. Bad case break-even at '+mo(C.bad.fee)+'.';
+  box.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" role="img" aria-label="'+esc(desc)+'">'+o.join('')+'</svg>';
+  $('chartNote').textContent='Below the black line the gap is still owed. Each line climbs by net gain per month. A pin marks the month it crosses zero, stake / fee. Lines past month 120 end in an arrow with their month.';
+}
+
+load();
+KEYS.forEach(function(k){$(k).addEventListener('input',render);});
+$('reset').addEventListener('click',function(){KEYS.forEach(function(k){$(k).value=DEF[k];});render();});
+$('clear').addEventListener('click',function(){KEYS.forEach(function(k){$(k).value='';});render();});
+var rt=null;
+window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){if(last)draw(last);},120);});
+if(window.matchMedia){var mq=window.matchMedia('print');var redraw=function(){if(last)draw(last);};if(mq.addEventListener)mq.addEventListener('change',redraw);else if(mq.addListener)mq.addListener(redraw);}
+render();
+})();
+</script>
+</body>
+</html>

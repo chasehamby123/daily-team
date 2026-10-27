@@ -1,11 +1,12 @@
 # Archive
 
-Every daily team and the asset it made, newest first. 23 days recorded.
+Every daily team and the asset it made, newest first. 24 days recorded.
 
 [Today](README.md)
 
 | Date | Task | Team | Constraint | Asset |
 |---|---|---|---|---|
+| [2026-10-27](days/2026-10-27/) | The Close-By Line | Exhibition designer · Creative coder · Real estate developer · Ibn al-Haytham | System fonts only. | [asset](days/2026-10-27/artifact-1.html) |
 | [2026-10-26](days/2026-10-26/) | The Hours Bridge | Lighting designer · Furniture maker · Private equity principal · Cassandra | Usable with the keyboard alone. | [asset](days/2026-10-26/artifact-1.html) |
 | [2026-10-25](days/2026-10-25/) | The Name on the Door | Museum curator · Radio producer · Retiring owner with no successor · Leonardo da Vinci | Under 30 KB in total. | [asset](days/2026-10-25/artifact-1.html) |
 | [2026-10-24](days/2026-10-24/) | the red thread | Animator · Front-end engineer · Fund manager raising capital · Sisyphus | Lowercase only. | [asset](days/2026-10-24/artifact-1.html) |
