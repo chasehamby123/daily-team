@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setup Sheet: twelve questions to ask a deal sponsor before signing</title>
+<!--
+  Entropy's seven stale rows, kept for the 2028 revision.
+  These answers go stale by month 18. Re-ask them first when the memo expires.
+  Row 1  - Auditor and custodian
+  Row 5  - Key person
+  Row 6  - Fees and fee offsets
+  Row 7  - Reporting cadence
+  Row 8  - Valuation policy
+  Row 9  - Side letters
+  Row 10 - Fund size and concentration
+-->
+<style>
+:root{
+  --spruce:#f1e7d3;
+  --paper:#fbf7ee;
+  --rosewood:#3a2419;
+  --walnut:#6b4a35;
+  --nickel:#a39e93;
+  --fret:#cfc7b6;
+  --red:#b3261e;
+  --brass:#9a7a36;
+  --green:#3f6b3a;
+  --serif:ui-serif,Georgia,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--spruce);color:var(--rosewood);font:16px/1.5 var(--sans)}
+.wrap{max-width:1080px;margin:0 auto;padding:24px 16px 48px}
+header{border-bottom:3px solid var(--rosewood);padding-bottom:16px;margin-bottom:24px}
+.kicker{font:600 12px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--walnut);margin:0 0 8px}
+h1{font:700 40px/1.1 var(--serif);margin:0 0 8px}
+.sub{margin:0 0 16px;max-width:680px;color:var(--walnut)}
+.help{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none;counter-reset:h}
+.help li{counter-increment:h;background:var(--paper);border:1px solid var(--fret);border-radius:3px;padding:8px 12px;font-weight:600}
+.help li::before{content:counter(h) ". ";color:var(--brass);font-family:var(--mono)}
+.help li.stop{border-color:var(--red);color:var(--red)}
+.help li.stop::before{color:var(--red)}
+h2{font:700 22px/1.2 var(--serif);margin:0 0 8px}
+.note{font-size:14px;color:var(--walnut);margin:8px 0}
+section{margin-bottom:32px}
+.inputs{display:grid;grid-template-columns:1fr 1fr;gap:16px;background:var(--paper);border:1px solid var(--fret);padding:16px;border-radius:4px}
+label.f{display:block;font-weight:600;font-size:14px}
+label.f input{display:block;width:100%;margin-top:4px;font:600 20px/1.2 var(--mono);color:var(--rosewood);background:#fff;border:1px solid var(--nickel);border-radius:3px;padding:8px}
+label.f small{display:block;font-weight:400;color:var(--walnut);margin-top:4px}
+details.fees{margin-top:12px;font-size:14px}
+details.fees summary{cursor:pointer;color:var(--walnut)}
+.feegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.feegrid label.f input{font-size:16px}
+.verdict{border-left:6px solid var(--green);background:var(--paper);padding:12px 16px;margin:16px 0;font-weight:600}
+.verdict.fail{border-left-color:var(--red)}
+.cases{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.case{background:var(--paper);border:1px solid var(--fret);border-top:4px solid var(--nickel);border-radius:4px;padding:12px}
+.case.bad{border-top-color:var(--red)}
+.case.good{border-top-color:var(--green)}
+.case h3{font:700 18px/1.2 var(--serif);margin:0 0 4px}
+.drivers{font-size:13px;color:var(--walnut);margin:0 0 8px;padding:0;list-style:none}
+.drivers li{border-bottom:1px dotted var(--fret);padding:2px 0}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pair div{background:#fff;border:1px solid var(--fret);border-radius:3px;padding:8px}
+.pair .lbl{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--walnut)}
+.pair .num{font:700 18px/1.2 var(--mono)}
+.pair .sm{font-size:12px;color:var(--walnut)}
+.pair .lossn{font:600 15px/1.2 var(--mono);color:var(--red)}
+.delta{margin:8px 0 0;font-size:14px;font-weight:600}
+.formula{font:13px/1.6 var(--mono);background:#fff;border:1px dashed var(--nickel);padding:12px;margin-top:12px;overflow-x:auto;white-space:pre-wrap}
+.ai{display:grid;grid-template-columns:1.2fr 1fr;gap:16px;background:var(--paper);border:1px solid var(--fret);padding:16px;border-radius:4px}
+table.t{border-collapse:collapse;width:100%;font-size:14px}
+table.t th,table.t td{border-bottom:1px solid var(--fret);padding:6px 8px;text-align:right}
+table.t th:first-child,table.t td:first-child{text-align:left}
+table.t td{font-family:var(--mono)}
+table.t td:first-child{font-family:var(--sans)}
+.aside{font-size:14px;border:1px solid var(--fret);background:#fff;padding:12px;margin-top:12px;border-radius:3px}
+.aside s{color:var(--walnut)}
+.sheethead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:12px;margin-bottom:8px}
+.sheethead label.f{min-width:280px;flex:1}
+.sheethead label.f input{font:600 18px/1.2 var(--serif)}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+button{font:600 14px/1 var(--sans);padding:10px 14px;border-radius:3px;border:1px solid var(--rosewood);background:var(--paper);color:var(--rosewood);cursor:pointer}
+button.primary{background:var(--rosewood);color:var(--paper)}
+button:disabled{opacity:.4;cursor:not-allowed}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--brass);outline-offset:1px}
+.sheet{background:var(--paper);border:1px solid var(--rosewood);border-radius:4px}
+.row{display:grid;grid-template-columns:40px 1.3fr 1.3fr 1.4fr .9fr;gap:12px;padding:12px;border-bottom:1px solid var(--fret);align-items:start}
+.row.head{font:700 12px/1.2 var(--sans);text-transform:uppercase;letter-spacing:.08em;color:var(--walnut);background:var(--spruce);border-bottom:2px solid var(--rosewood)}
+.row:last-child{border-bottom:0}
+.row.r3{border-bottom:2px solid var(--red)}
+.n{font:700 20px/1 var(--mono);color:var(--nickel);text-align:center}
+.row.stoprow .n{color:var(--red)}
+.q{font-weight:600}
+.snd{font-size:14px;color:var(--walnut)}
+.row textarea{width:100%;min-height:56px;font:14px/1.4 var(--sans);border:1px solid var(--nickel);border-radius:3px;padding:6px;resize:vertical;background:#fff;color:var(--rosewood)}
+.srcbox{border:1px solid var(--nickel);border-radius:3px;background:#fff;padding:4px 6px}
+.srcbox span{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--walnut)}
+.srcbox input{width:100%;border:0;font:13px/1.4 var(--mono);padding:2px 0;background:transparent;color:var(--rosewood)}
+.stopchk{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:13px;color:var(--red);font-weight:700}
+.mlabel{display:none}
+.stopbanner{display:none;background:var(--red);color:#fff;font-weight:700;padding:10px 12px;margin-bottom:8px;border-radius:3px}
+.stopbanner.on{display:block}
+.sign{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:16px;background:var(--paper);border:1px solid var(--rosewood);border-top:0;padding:16px;border-radius:0 0 4px 4px}
+.sign label.f input{font-size:16px}
+.expiry{font:700 16px/1.2 var(--mono);padding:9px 0}
+.gate{margin:12px 0 0;font-size:14px;font-weight:600}
+.gate.off{color:var(--red)}
+.gate.on{color:var(--green)}
+.legal{font-size:13px;color:var(--walnut);border-top:1px solid var(--fret);padding-top:12px}
+.credits{font-size:13px;color:var(--walnut);margin-top:24px;border-top:3px solid var(--rosewood);padding-top:12px}
+footer{font-size:13px;color:var(--walnut);margin-top:8px}
+#memo,#unsignedNote{display:none}
+@media (max-width:760px){
+  h1{font-size:30px}
+  .inputs,.cases,.ai,.sign,.feegrid{grid-template-columns:1fr}
+  .row{grid-template-columns:32px 1fr;gap:6px 10px}
+  .row.head{display:none}
+  .row>*:not(.n){grid-column:2}
+  .row .n{grid-row:1/span 4}
+  .mlabel{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--walnut)}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+}
+@page{size:A4;margin:11mm}
+@media print{
+  body{background:#fff;font-size:9pt}
+  .wrap{display:none!important}
+  #memo{display:block}
+  body.unsigned #memo{display:none}
+  body.unsigned #unsignedNote{display:block;font:14pt/1.4 var(--serif);padding:40mm 10mm;text-align:center}
+  #memo h1{font:700 16pt/1.1 var(--serif);margin:0 0 2mm}
+  #memo p{margin:0 0 2mm;font-size:8.5pt}
+  #memo table{width:100%;border-collapse:collapse;font-size:7.6pt;line-height:1.3}
+  #memo th{text-align:left;border-bottom:1.5pt solid #3a2419;padding:1.5mm 1.5mm;font-size:7pt;text-transform:uppercase;letter-spacing:.05em}
+  #memo td{border-bottom:.5pt solid #bbb;padding:1.5mm;vertical-align:top}
+  #memo tr.r3 td{border-bottom:2px solid #b3261e}
+  #memo td.n{font-family:var(--mono);font-weight:700;width:6mm}
+  #memo tr.stoprow td.n{color:#b3261e}
+  #memo .sig{display:flex;gap:8mm;border:1pt solid #3a2419;padding:3mm;margin-top:3mm;font-size:9pt}
+  #memo .sig b{display:block;font-size:7pt;text-transform:uppercase;letter-spacing:.06em}
+  #memo .stopped{border:1.5pt solid #b3261e;color:#b3261e;font-weight:700;padding:2mm;margin:2mm 0}
+  #memo .small{font-size:7pt;color:#444}
+}
+</style>
+</head>
+<body class="unsigned">
+<div class="wrap">
+<header>
+  <p class="kicker">Setup Sheet</p>
+  <h1>Setup Sheet: twelve questions before your client signs</h1>
+  <p class="sub">Ask any deal sponsor or provider these twelve questions. One A4 page. Rows 1 to 3 are stop rows. The filled sheet prints as a client memo, and only with a named reviewer and a date.</p>
+  <ol class="help" aria-label="How to use the sheet">
+    <li>Ask in order.</li>
+    <li>Write the answer.</li>
+    <li>Cite the page.</li>
+    <li class="stop">Stop if a red row fails.</li>
+  </ol>
+</header>
+
+<section aria-labelledby="h-cost">
+  <h2 id="h-cost">What diligence costs you each year</h2>
+  <p class="note">Two numbers. The example is a family office desk that sees 10 private deals a year at $2M a ticket.</p>
+  <div class="inputs">
+    <label class="f">Deals your clients bring per year
+      <input id="deals" type="number" min="0" step="1" inputmode="numeric">
+      <small>Count every deck a family forwards you, closed or not.</small>
+    </label>
+    <label class="f">Average ticket ($)
+      <input id="ticket" type="number" min="0" step="50000" inputmode="numeric">
+      <small id="ticketNote"></small>
+    </label>
+  </div>
+  <details class="fees">
+    <summary id="feeSummary"></summary>
+    <p class="note">Fees differ by firm and by country. Enter the quotes you have.</p>
+    <div class="feegrid">
+      <label class="f">Full diligence, per deal ($)<input id="feeD" type="number" min="0" step="500"></label>
+      <label class="f">AI read of the stop rows, per deal ($)<input id="feeA" type="number" min="0" step="100"></label>
+      <label class="f">Refresh after a six-month slip ($)<input id="feeR" type="number" min="0" step="500"></label>
+    </div>
+  </details>
+
+  <div id="verdict" class="verdict" role="status" aria-live="polite"></div>
+  <div class="cases" id="cases"></div>
+
+  <div class="formula" aria-label="Formula">Survivors      = deals x (1 - stop-row catch)
+Usual spend    = deals x (diligence + slip share x refresh)
+Usual loss     = die share x deals x diligence
+Staged spend   = deals x AI read + survivors x diligence + slip share x survivors x (AI read + refresh)
+Staged loss    = deals x AI read + die share x survivors x diligence
+"Loss" is money spent on deals that die after diligence. Deals per year scale both paths the same way.</div>
+</section>
+
+<section aria-labelledby="h-ai">
+  <h2 id="h-ai">Where AI does part of the work</h2>
+  <div class="ai">
+    <div>
+      <p class="note" style="margin-top:0">AI reads the offering memo and data room for the three stop rows, about $1,500 a deal. A named reviewer signs the memo.</p>
+      <table class="t" id="aiTable" aria-label="Yearly cost with and without the AI read"></table>
+    </div>
+    <div>
+      <p style="margin:0 0 6px;font-weight:700">A person still does these steps</p>
+      <ul style="margin:0;padding-left:18px;font-size:14px">
+        <li>Checks each stop-row answer against the cited page.</li>
+        <li>Runs or commissions full diligence on deals that pass rows 1 to 3.</li>
+        <li>Asks rows 4 to 12 on the sponsor call. Budget: 25 minutes, about 2 minutes a row.</li>
+        <li>Signs and dates the memo. The AI does not sign.</li>
+      </ul>
+      <div class="aside" id="successFee"></div>
+    </div>
+  </div>
+</section>
+
+<section aria-labelledby="h-sheet">
+  <div class="sheethead">
+    <div>
+      <h2 id="h-sheet">The sheet</h2>
+      <p class="note" style="margin:0">Call budget: 25 minutes, twelve rows. The red rule under row 3 marks the stop rows.</p>
+    </div>
+    <label class="f">Deal or provider
+      <input id="dealName" type="text" autocomplete="off">
+    </label>
+  </div>
+  <div class="btns" style="margin-bottom:12px">
+    <button type="button" id="btnClear">Clear answers</button>
+    <button type="button" id="btnExample">Load the example</button>
+  </div>
+  <div class="stopbanner" id="stopBanner" role="alert"></div>
+  <div class="sheet" id="sheet">
+    <div class="row head" aria-hidden="true"><div>#</div><div>Question</div><div>Sound answer</div><div>Their answer</div><div>Source</div></div>
+  </div>
+  <div class="sign">
+    <label class="f">Reviewed by (a named person)
+      <input id="revName" type="text" autocomplete="name" placeholder="Full name">
+    </label>
+    <label class="f">Review date
+      <input id="revDate" type="date">
+    </label>
+    <div>
+      <span class="f" style="font-weight:600;font-size:14px;display:block">Expires (review date + 18 months)</span>
+      <div class="expiry" id="expiry">Not set</div>
+    </div>
+  </div>
+  <div class="btns" style="margin-top:12px">
+    <button type="button" class="primary" id="btnPrint" disabled>Print client memo</button>
+  </div>
+  <p class="gate off" id="gate"></p>
+</section>
+
+<p class="legal">This sheet lists questions. It is not legal, tax, or investment advice. Disclosure duties, fee rules, and what counts as diligence depend on where you and your clients are. Check them locally and enter your own figures. Answers are saved in this browser only, when the browser allows it.</p>
+
+<p class="credits">Credits. Luthier: twelve rows on one A4 sheet, three stop rows at the top, the sound-answer column. Upholsterer: the four-sentence help, the red rule under row 3, the source box, the 25-minute call budget, the staged AI-first path. Multi-family office adviser: the client memo print and the rule that it needs a named reviewer and a date. Entropy: the expiry 18 months after review, and the seven stale rows kept for 2028.</p>
+<footer>Published by OuterHaven Advisory.</footer>
+</div>
+
+<div id="memo" aria-hidden="true"></div>
+<div id="unsignedNote">This memo prints only with a named reviewer and a review date.<br>Add both on the sheet, then print again.</div>
+
+<script>
+(function(){
+"use strict";
+var KEY="setupSheet.v1";
+var ROWS=[
+ {q:"Who audits the vehicle, and who holds the cash?",s:"A named outside audit firm and a separate custodian. Last audited statements on request.",ex:["Hale & Brook LLP audits. Cash held at First Coastal Trust.","PPM p.31"]},
+ {q:"Any regulatory actions, lawsuits, or investor complaints against the sponsor or principals in 10 years?",s:"None, or each one disclosed with its outcome. A public records search agrees.",ex:["One 2021 investor dispute, settled. No regulatory actions.","DDQ q.8"]},
+ {q:"Can we verify the track record?",s:"Deal-level returns for every prior deal, and two prior investors you can call.",ex:["Fund I: 14 deals, deal-level sheet sent. Two references named.","Track record xlsx, tab 2"]},
+ {q:"How much of the sponsor's own money is in this deal?",s:"A stated amount, in cash, on the same terms as your client.",ex:["2% of commitments from the principals, cash.","PPM p.9"]},
+ {q:"Key person: who must stay, and what happens if they leave?",s:"Named people. Investing pauses if any one leaves, unless investors vote to go on.",ex:["Two named partners. Pause only if both leave.","LPA s.7.2"]},
+ {q:"List every fee, and how deal fees offset the management fee.",s:"All fees in one table. Deal fees offset 100% against the management fee.",ex:["1.75% management, 20% carry over 8%. 100% deal-fee offset.","LPA s.9"]},
+ {q:"What reports, how often, and how many days after quarter end?",s:"A fixed schedule with a day count, for example 45 days after quarter end.",ex:["Quarterly within 60 days. Audited annual within 120 days.","LPA s.12.1"]},
+ {q:"Who values the assets, how often, and by what method?",s:"A written policy. An outside firm reviews the marks at least once a year.",ex:["GP marks quarterly. Third-party review once a year.","Valuation policy p.2"]},
+ {q:"Which investors have side letters, and on what terms?",s:"A list of side letters by term. Most-favored-nation rights at your client's size.",ex:["Two anchors have fee breaks. MFN offered above $5M.","Side letter summary"]},
+ {q:"Target size, hard cap, and largest single position?",s:"A target, a hard cap, and a written limit on any one position.",ex:["Target $250M, hard cap $300M, max 15% per asset.","PPM p.4"]},
+ {q:"How much notice on a capital call, and what happens on a missed call?",s:"At least 10 business days' notice. Default terms written out.",ex:["10 business days. Default: 10% interest, then forfeiture.","LPA s.5.4"]},
+ {q:"Term, extensions, and how a client can sell or transfer?",s:"Term and extensions in years. Transfer rights and who must consent.",ex:["8 years, two 1-year extensions with LPAC consent. Transfers need GP consent.","LPA s.3"]}
+];
+var CASES=[
+ {id:"bad",name:"Bad case",k:.5,d:.6,s:.5},
+ {id:"base",name:"Base case",k:.5,d:.4,s:.2},
+ {id:"good",name:"Good case",k:.6,d:.2,s:0}
+];
+function example(){
+  return {deals:10,ticket:2000000,D:30000,a:1500,R:8000,
+    deal:"Northgate Cold Storage Fund II (example)",
+    rows:ROWS.map(function(r){return {ans:r.ex[0],src:r.ex[1],stop:false};}),
+    name:"",date:""};
+}
+var state=null;
+try{state=JSON.parse(localStorage.getItem(KEY)||"null");}catch(e){state=null;}
+if(!state||!state.rows||state.rows.length!==12){state=example();}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+
+function $(id){return document.getElementById(id);}
+function num(v){var n=parseFloat(v);return isFinite(n)&&n>0?n:0;}
+function money(x){return "$"+Math.round(x).toLocaleString("en-US");}
+function pct(x){return Math.round(x*100)+"%";}
+function esc(t){return String(t==null?"":t).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+
+function calc(c){
+  var N=state.deals,D=state.D,a=state.a,R=state.R;
+  var surv=(1-c.k)*N;
+  return {
+    surv:surv,
+    usualSpend:N*(D+c.s*R),
+    usualLoss:c.d*N*D,
+    stagedSpend:N*a+surv*D+c.s*surv*(a+R),
+    stagedLoss:N*a+c.d*surv*D,
+    aiSpend:N*a+c.s*surv*a
+  };
+}
+function breaks(c){
+  var D=state.D,a=state.a,R=state.R,s=c.s,d=c.d,k=c.k;
+  var kSpend=(D+s*(a+R))>0?1-(D+s*R-a)/(D+s*(a+R)):1;
+  var kLoss=(d*D)>0?a/(d*D):1;
+  var kB=Math.min(1,Math.max(0,Math.max(kSpend,kLoss)));
+  var aSpend=k*(D+s*R)/(1+(1-k)*s);
+  var aLoss=d*k*D;
+  return {k:kB,a:Math.max(0,Math.min(aSpend,aLoss))};
+}
+
+function renderCost(){
+  var N=state.deals,T=state.ticket,D=state.D,a=state.a,R=state.R;
+  $("ticketNote").textContent=T>0?("Full diligence at "+money(D)+" is "+(D/T*100).toFixed(2)+"% of this ticket."):"Enter a ticket size.";
+  $("feeSummary").textContent="Fees used: diligence "+money(D)+", AI read "+money(a)+", refresh after a slip "+money(R)+". Change them.";
+  var html="";
+  CASES.forEach(function(c){
+    var r=calc(c);
+    var save1=r.usualSpend-r.stagedSpend;
+    html+='<div class="case '+c.id+'"><h3>'+c.name+'</h3>'+
+      '<ul class="drivers"><li>'+N+' deals, '+money(T)+' ticket</li>'+
+      '<li>Stop rows catch '+pct(c.k)+' of deals</li>'+
+      '<li>'+pct(c.d)+' of diligenced deals die</li>'+
+      '<li>'+pct(c.s)+' slip six months</li></ul>'+
+      '<div class="pair"><div><span class="lbl">Usual, no AI</span><span class="num">'+money(r.usualSpend)+'</span><span class="sm">a year</span><br><span class="lossn">'+money(r.usualLoss)+'</span><span class="sm"> lost</span></div>'+
+      '<div><span class="lbl">Staged, AI first</span><span class="num">'+money(r.stagedSpend)+'</span><span class="sm">a year</span><br><span class="lossn">'+money(r.stagedLoss)+'</span><span class="sm"> lost</span></div></div>'+
+      '<p class="delta">'+(save1>=0?"Staged spends "+money(save1)+" less.":"Staged spends "+money(-save1)+" more.")+'</p></div>';
+  });
+  $("cases").innerHTML=html;
+
+  var bad=CASES[0],rb=calc(bad),b=breaks(bad),v=$("verdict");
+  if(N<=0||D<=0){
+    v.className="verdict fail";
+    v.textContent="Enter deals per year and a diligence fee above zero to see the result.";
+  }else if(rb.stagedSpend<rb.usualSpend&&rb.stagedLoss<rb.usualLoss){
+    v.className="verdict";
+    v.textContent="The staged path survives the bad case. It spends "+money(rb.usualSpend-rb.stagedSpend)+" less a year and loses "+money(rb.usualLoss-rb.stagedLoss)+" less on dead deals. It breaks only if the stop rows catch fewer than "+Math.ceil(b.k*100)+"% of deals, or the AI read costs more than "+money(b.a)+" a deal.";
+  }else{
+    v.className="verdict fail";
+    v.textContent="Safer setting: the usual path, full diligence on every deal, "+money(rb.usualSpend)+" a year in the bad case. The staged path does not survive the bad case at these fees. It needs the stop rows to catch at least "+Math.ceil(b.k*100)+"% of deals, or an AI read under "+money(b.a)+".";
+  }
+
+  var base=calc(CASES[1]);
+  $("aiTable").innerHTML='<tr><th>Per year</th><th>Without AI</th><th>With AI</th><th>AI part</th></tr>'+
+    '<tr><td>Base case</td><td>'+money(base.usualSpend)+'</td><td>'+money(base.stagedSpend)+'</td><td>'+money(base.aiSpend)+'</td></tr>'+
+    '<tr><td>Bad case</td><td>'+money(rb.usualSpend)+'</td><td>'+money(rb.stagedSpend)+'</td><td>'+money(rb.aiSpend)+'</td></tr>';
+  $("successFee").innerHTML='<b>Set aside:</b> <s>a diligence firm paid 0.5% of the ticket at close, '+money(T*0.005)+' a deal, nothing on deals that die.</s> A firm paid only when the deal closes cannot write a memo you can defend to a family.';
+}
+
+function buildSheet(){
+  var sh=$("sheet");
+  ROWS.forEach(function(r,i){
+    var d=document.createElement("div");
+    d.className="row"+(i<3?" stoprow":"")+(i===2?" r3":"");
+    d.innerHTML='<div class="n">'+(i+1)+'</div>'+
+      '<div><span class="mlabel">Question</span><div class="q">'+esc(r.q)+'</div>'+
+      (i<3?'<label class="stopchk"><input type="checkbox" data-i="'+i+'" data-k="stop"> Fails: stop here</label>':'')+'</div>'+
+      '<div><span class="mlabel">Sound answer</span><div class="snd">'+esc(r.s)+'</div></div>'+
+      '<div><label><span class="mlabel">Their answer</span><textarea data-i="'+i+'" data-k="ans" aria-label="Their answer to row '+(i+1)+'"></textarea></label></div>'+
+      '<div class="srcbox"><span>Source: doc, page</span><input type="text" data-i="'+i+'" data-k="src" aria-label="Source for row '+(i+1)+'"></div>';
+    sh.appendChild(d);
+  });
+  sh.addEventListener("input",onRow);
+  sh.addEventListener("change",onRow);
+}
+function onRow(e){
+  var t=e.target,i=t.getAttribute("data-i"),k=t.getAttribute("data-k");
+  if(i===null||!k)return;
+  state.rows[+i][k]=(k==="stop")?t.checked:t.value;
+  save();renderSign();
+}
+function fillSheet(){
+  var f=document.querySelectorAll("#sheet [data-i]");
+  for(var j=0;j<f.length;j++){
+    var el=f[j],r=state.rows[+el.getAttribute("data-i")],k=el.getAttribute("data-k");
+    if(k==="stop")el.checked=!!r.stop;else el.value=r[k]||"";
+  }
+  $("deals").value=state.deals;$("ticket").value=state.ticket;
+  $("feeD").value=state.D;$("feeA").value=state.a;$("feeR").value=state.R;
+  $("dealName").value=state.deal||"";
+  $("revName").value=state.name||"";$("revDate").value=state.date||"";
+}
+
+function expiryOf(iso){
+  var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(iso||"");if(!m)return null;
+  var y=+m[1],mo=+m[2]-1+18,d=+m[3];
+  var ty=y+Math.floor(mo/12),tm=mo%12;
+  var last=new Date(Date.UTC(ty,tm+1,0)).getUTCDate();
+  return new Date(Date.UTC(ty,tm,Math.min(d,last)));
+}
+function fmtDate(dt){return dt.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric",timeZone:"UTC"});}
+
+function renderSign(){
+  var name=(state.name||"").trim(),date=state.date||"";
+  var ex=expiryOf(date);
+  $("expiry").textContent=ex?fmtDate(ex):"Not set";
+  var ok=!!(name&&ex);
+  $("btnPrint").disabled=!ok;
+  document.body.classList.toggle("unsigned",!ok);
+  var g=$("gate");
+  g.className="gate "+(ok?"on":"off");
+  g.textContent=ok?"Signed by "+name+". Ask again before "+fmtDate(ex)+".":"Print is off until a named person signs and dates the memo.";
+  var stops=[];state.rows.forEach(function(r,i){if(i<3&&r.stop)stops.push(i+1);});
+  var sb=$("stopBanner");
+  sb.className="stopbanner"+(stops.length?" on":"");
+  sb.textContent=stops.length?"Row "+stops.join(" and ")+" failed. Close the folder. Do not run full diligence.":"";
+  renderMemo(name,date,ex,stops);
+}
+
+function renderMemo(name,date,ex,stops){
+  var base=calc(CASES[1]);
+  var rows=ROWS.map(function(r,i){
+    var s=state.rows[i];
+    return '<tr class="'+(i<3?"stoprow ":"")+(i===2?"r3":"")+'"><td class="n">'+(i+1)+'</td><td>'+esc(r.q)+'</td><td>'+esc(r.s)+'</td><td>'+esc(s.ans||"No answer")+'</td><td>'+esc(s.src||"None cited")+'</td></tr>';
+  }).join("");
+  var rd=date?fmtDate(new Date(date+"T00:00:00Z")):"";
+  $("memo").innerHTML='<h1>Client memo: '+esc(state.deal||"Unnamed deal")+'</h1>'+
+    '<p>Twelve questions asked of the sponsor before signing. Rows 1 to 3 are stop rows. Each answer cites its source.</p>'+
+    (stops.length?'<div class="stopped">Stopped at row '+stops.join(" and ")+'. The reviewer advises the client not to proceed on this file.</div>':'')+
+    '<table><thead><tr><th>#</th><th>Question</th><th>Sound answer</th><th>Their answer</th><th>Source</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+    '<div class="sig"><div><b>Reviewed by</b>'+esc(name)+'</div><div><b>Date</b>'+esc(rd)+'</div><div><b>Expires</b>'+(ex?fmtDate(ex):"")+' (18 months)</div></div>'+
+    '<p class="small">If an AI read drafted rows 1 to 3, the reviewer checked each answer against the cited page. Diligence budget, base case, '+state.deals+' deals a year: usual path '+money(base.usualSpend)+', staged path '+money(base.stagedSpend)+'. This memo lists questions and answers. It is not legal, tax, or investment advice.</p>';
+}
+
+function bindNum(id,key){
+  $(id).addEventListener("input",function(e){state[key]=num(e.target.value);save();renderCost();renderSign();});
+}
+bindNum("deals","deals");bindNum("ticket","ticket");
+bindNum("feeD","D");bindNum("feeA","a");bindNum("feeR","R");
+$("dealName").addEventListener("input",function(e){state.deal=e.target.value;save();renderSign();});
+$("revName").addEventListener("input",function(e){state.name=e.target.value;save();renderSign();});
+$("revDate").addEventListener("input",function(e){state.date=e.target.value;save();renderSign();});
+$("revDate").addEventListener("change",function(e){state.date=e.target.value;save();renderSign();});
+$("btnClear").addEventListener("click",function(){
+  state.rows=ROWS.map(function(){return {ans:"",src:"",stop:false};});
+  state.deal="";state.name="";state.date="";
+  save();fillSheet();renderSign();
+});
+$("btnExample").addEventListener("click",function(){
+  state=example();save();fillSheet();renderCost();renderSign();
+});
+$("btnPrint").addEventListener("click",function(){if(!this.disabled)window.print();});
+
+buildSheet();fillSheet();renderCost();renderSign();
+})();
+</script>
+</body>
+</html>
