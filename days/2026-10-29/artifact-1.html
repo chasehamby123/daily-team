@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three-Cell Pipeline Sheet: add-on benchmarks, marked ahead, level or behind</title>
+<style>
+@page { size: A4; margin: 12mm; }
+:root{
+  --paper:#fbfaf7; --ink:#1c1e21; --soft:#5d636b; --rule:#cfcac0; --faint:#ece8e0;
+  --ahead:#2e6a4e; --level:#56606c; --behind:#a13a28; --mars:#8f3a1f; --ex:#9a958c;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink)}
+body{font:14px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-variant-numeric:tabular-nums}
+.page{max-width:860px;margin:0 auto;padding:18px 16px 28px}
+h1{font-size:22px;line-height:1.15;margin:0;letter-spacing:-.01em}
+h2{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--soft);margin:0 0 6px;font-weight:600}
+h3{font-size:12px;margin:0;text-transform:uppercase;letter-spacing:.06em}
+p{margin:0}
+.sub{color:var(--soft);margin-top:3px}
+input,select{font:inherit;color:inherit;background:#fff;border:1px solid var(--rule);border-radius:3px;padding:3px 5px}
+input[type=number]{width:64px;text-align:right}
+input:focus,select:focus{outline:2px solid var(--ink);outline-offset:0}
+.q{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:10px;padding:8px 0;border-top:2px solid var(--ink);border-bottom:1px solid var(--rule)}
+.q label{display:flex;align-items:center;gap:8px;font-weight:600}
+.months{display:grid;grid-template-columns:minmax(200px,1.1fr) 2fr;gap:12px;margin-top:12px;align-items:start}
+.big{border-left:4px solid var(--mars);padding-left:10px}
+.big b{font-size:24pt;line-height:1;color:var(--mars);font-weight:700}
+.big .u{font-size:14px;font-weight:600;color:var(--mars)}
+.big p{font-size:12px;color:var(--soft);margin-top:2px}
+.cases{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.case{border:1px solid var(--rule);padding:6px 7px;background:#fff}
+.case.bad{border-top:3px solid var(--behind)}
+.case.base{border-top:3px solid var(--ink)}
+.case.good{border-top:3px solid var(--ahead)}
+.case .cv{font-size:18px;font-weight:700;margin:2px 0}
+.case .cv small{font-size:11px;font-weight:600;color:var(--soft)}
+.case p{font-size:11.5px}
+.case .in{color:var(--soft);margin-top:3px}
+.case input[type=number]{width:44px;padding:1px 3px;font-size:11.5px}
+.verdict{margin-top:8px;font-size:13px}
+.verdict b{font-weight:700}
+.flag{margin-top:4px;font-size:12.5px;color:var(--mars);font-weight:600}
+.dry{font-size:12px;color:var(--soft);margin-top:4px}
+table{border-collapse:collapse;width:100%}
+.sheet{margin-top:12px;font-size:11pt}
+.sheet th,.sheet td{border-bottom:1px solid var(--faint);padding:4px 6px;text-align:left;vertical-align:middle}
+.sheet thead th{border-bottom:2px solid var(--ink);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--soft)}
+.sheet tbody th{font-weight:600}
+.sheet tbody th small{display:block;font-weight:400;color:var(--soft);font-size:10.5px}
+.sheet .rng{white-space:nowrap}
+.sheet .rng input{width:52px}
+input.ex{color:var(--ex);border-style:dashed}
+.mark{display:inline-block;min-width:66px;text-align:center;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:2px 6px;border:1.5px solid currentColor;border-radius:2px}
+.mark.ahead{color:var(--ahead)} .mark.level{color:var(--level)} .mark.behind{color:var(--behind)} .mark.none{color:var(--ex);border-style:dotted}
+.tools{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+button{font:inherit;font-size:12px;background:#fff;border:1px solid var(--ink);border-radius:3px;padding:4px 9px;cursor:pointer;color:var(--ink)}
+button:hover{background:var(--faint)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.panel{border-top:2px solid var(--ink);padding-top:6px}
+.panel .ins{display:flex;flex-wrap:wrap;gap:4px 10px;font-size:11.5px;margin-bottom:6px}
+.panel .ins label{display:flex;align-items:center;gap:4px}
+.panel .ins input[type=number]{width:52px;padding:1px 3px;font-size:11.5px}
+.mini{font-size:11.5px}
+.mini th,.mini td{padding:2px 4px;border-bottom:1px solid var(--faint);text-align:right}
+.mini th:first-child,.mini td:first-child{text-align:left}
+.mini thead th{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--soft);border-bottom:1px solid var(--ink)}
+.mini .win{font-weight:700}
+.note{font-size:11px;color:var(--soft);margin-top:5px}
+.owners{margin-top:14px;border-top:2px solid var(--ink);padding-top:6px}
+.ohead{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;align-items:baseline}
+.ocount{font-size:12px;color:var(--soft)}
+.pins{display:grid;grid-template-columns:1fr 1fr;gap:5px 12px;margin-top:6px}
+.pin{display:grid;grid-template-columns:14px 1.2fr 76px 1.6fr 0.8fr;gap:4px;align-items:center;padding:3px 0;border-bottom:1px solid var(--faint)}
+.pin input,.pin select{font-size:11.5px;padding:2px 4px;width:100%;min-width:0}
+.dot{width:11px;height:11px;border-radius:50%;border:2px solid var(--ink);background:var(--ink)}
+.pin.stay .dot{background:var(--ahead);border-color:var(--ahead)}
+.pin.out .dot{background:var(--behind);border-color:var(--behind)}
+.pin.unclear .dot{background:transparent}
+.pin.loose{opacity:.62;transform:translateY(2px) rotate(-.6deg)}
+.pin.loose .dot{background:transparent;border-color:var(--ex);border-style:dashed}
+.pin.empty{opacity:.45}
+.pin.empty .dot{border-color:var(--faint);background:transparent}
+.plegend{font-size:11px;color:var(--soft);margin-top:4px}
+footer{margin-top:14px;border-top:2px solid var(--ink);padding-top:6px;font-size:11px;color:var(--soft)}
+footer .log{color:var(--ink);font-weight:600;font-size:12px}
+footer ol{margin:4px 0;padding-left:16px}
+footer li{margin:0}
+footer code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:10.5px;color:var(--ink)}
+footer p{margin-top:4px}
+.credits{color:var(--ink)}
+@media (max-width:680px){
+  .months,.two{grid-template-columns:1fr}
+  .cases{grid-template-columns:1fr 1fr 1fr}
+  .pins{grid-template-columns:1fr}
+  .pin{grid-template-columns:14px 1fr 84px;grid-template-areas:"d n s" ". q q" ". g g"}
+  .pin .dot{grid-area:d} .pin .pn{grid-area:n} .pin .ps{grid-area:s} .pin .pq{grid-area:q} .pin .pg{grid-area:g}
+  .sheet{font-size:13px}
+  .sheet .rng input{width:46px}
+  input[type=number]{width:56px}
+  .mark{min-width:56px}
+}
+@media (max-width:420px){ .cases{grid-template-columns:1fr} }
+@media (prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important} .pin.loose{transform:none} }
+@media print{
+  html,body{background:#fff}
+  body{font-size:9pt}
+  .page{max-width:none;padding:0}
+  .noprint{display:none!important}
+  input,select{border:none!important;background:transparent;padding:0 1px;-webkit-appearance:none;appearance:none}
+  input.ex{color:#6f6a62}
+  h1{font-size:16pt}
+  .q{margin-top:5px;padding:4px 0}
+  .months{grid-template-columns:1fr 2fr;margin-top:6px;gap:8px}
+  .case{padding:3px 5px}
+  .case .cv{font-size:13pt}
+  .case p,.verdict,.flag,.dry{font-size:8.5pt}
+  .sheet{font-size:11pt;margin-top:6px}
+  .sheet th,.sheet td{padding:2px 5px}
+  .sheet tbody th small{font-size:7.5pt}
+  .two{grid-template-columns:1fr 1fr;margin-top:7px;gap:10px}
+  .mini,.panel .ins,.panel .ins input[type=number]{font-size:8pt}
+  .note{font-size:7.5pt;margin-top:3px}
+  .owners{margin-top:7px}
+  .pins{grid-template-columns:1fr 1fr;gap:1px 10px}
+  .pin{grid-template-columns:12px 1.2fr 60px 1.7fr .8fr;padding:1px 0}
+  .pin input,.pin select{font-size:8pt}
+  .pin.empty{display:none}
+  footer{margin-top:7px;font-size:7.5pt}
+  footer .log{font-size:8.5pt}
+  footer code{font-size:7.5pt}
+  .months,.sheet,.two,.owners,footer{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <h1>Three-Cell Pipeline Sheet</h1>
+  <p class="sub">Each row holds three cells: your figure, a range you set, and one mark. The mark is ahead, level, or behind.</p>
+  <div class="q">
+    <label for="planned">Add-ons planned in the next 18 months <input id="planned" type="number" min="0" step="1" inputmode="numeric"></label>
+    <label for="since">Months since your last close <input id="since" type="number" min="0" step="1" inputmode="numeric"></label>
+  </div>
+</header>
+
+<section class="months" aria-label="Months to next close">
+  <div class="big">
+    <b id="gBase">7.0</b> <span class="u">months</span>
+    <p>to next close if this one breaks. Base case, built from your figures only.</p>
+    <p class="dry" id="dry"></p>
+  </div>
+  <div>
+    <div class="cases">
+      <div class="case bad">
+        <h3>Bad</h3>
+        <div class="cv"><span id="gBad">13.0</span> <small>mo</small></div>
+        <p>Closes that fit in 18 mo: <b id="cBad"></b></p>
+        <p class="in"><label>LOIs per close <input id="badL" type="number" min="1" step="any" inputmode="decimal"></label><br><label>Close takes + <input id="badX" type="number" min="0" step="any" inputmode="decimal"> mo</label></p>
+      </div>
+      <div class="case base">
+        <h3>Base</h3>
+        <div class="cv"><span id="gBase2">7.0</span> <small>mo</small></div>
+        <p>Closes that fit in 18 mo: <b id="cBase"></b></p>
+        <p class="in">LOIs per close <b id="baseL"></b><br>Close takes <b id="baseM"></b> mo</p>
+      </div>
+      <div class="case good">
+        <h3>Good</h3>
+        <div class="cv"><span id="gGood">5.0</span> <small>mo</small></div>
+        <p>Closes that fit in 18 mo: <b id="cGood"></b></p>
+        <p class="in"><label>LOIs per close <input id="goodL" type="number" min="1" step="any" inputmode="decimal"></label><br><label>Close takes − <input id="goodS" type="number" min="0" step="any" inputmode="decimal"> mo</label></p>
+      </div>
+    </div>
+    <p class="verdict" id="verdict"></p>
+    <p class="flag" id="flag"></p>
+  </div>
+</section>
+
+<table class="sheet" aria-label="Benchmark sheet">
+  <thead><tr><th scope="col">Row</th><th scope="col">Your figure</th><th scope="col">Typical range</th><th scope="col">Mark</th></tr></thead>
+  <tbody id="rows"></tbody>
+</table>
+<div class="tools noprint">
+  <button type="button" id="clrR">Clear example ranges</button>
+  <button type="button" id="clrAll">Clear the sheet</button>
+  <button type="button" id="reset">Reload worked example</button>
+</div>
+
+<section class="two">
+  <div class="panel">
+    <h2>Owner-intent first pass: by hand vs model pre-read</h2>
+    <div class="ins">
+      <label>Hours per CIM by hand <input id="aH" type="number" min="0" step="any" inputmode="decimal"></label>
+      <label>Min per CIM with model <input id="aM" type="number" min="0" step="any" inputmode="decimal"></label>
+      <label>Sign-off min per tag <input id="aR" type="number" min="0" step="any" inputmode="decimal"></label>
+      <label>Deal-lead cost $/h <input id="aRate" type="number" min="0" step="any" inputmode="decimal"></label>
+      <label>Model run $/CIM <input id="aRun" type="number" min="0" step="any" inputmode="decimal"></label>
+      <label>Spent before a break, $k: by hand <input id="dH" type="number" min="0" step="any" inputmode="decimal"></label>
+      <label>with pre-read <input id="dW" type="number" min="0" step="any" inputmode="decimal"></label>
+    </div>
+    <table class="mini" aria-label="AI pre-read cost">
+      <thead><tr><th></th><th>Bad</th><th>Base</th><th>Good</th></tr></thead>
+      <tbody>
+        <tr><td>CIMs read per close</td><td id="ai0b"></td><td id="ai0m"></td><td id="ai0g"></td></tr>
+        <tr><td>First pass by hand</td><td id="ai1b"></td><td id="ai1m"></td><td id="ai1g"></td></tr>
+        <tr><td>With model pre-read</td><td id="ai2b" class="win"></td><td id="ai2m" class="win"></td><td id="ai2g" class="win"></td></tr>
+        <tr><td>Spent before the break</td><td id="ai3b"></td><td>closes</td><td>closes</td></tr>
+      </tbody>
+    </table>
+    <p class="note">The model tags each owner stay, out, or unclear and quotes the line it read. A person still reviews: the deal lead signs off every tag against the CIM, makes the owner call, and runs QoE, legal and price.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Sourcing: retainer vs success share</h2>
+    <div class="ins">
+      <label>Broker retainer, $k <input id="sRet" type="number" min="0" step="any" inputmode="decimal"></label>
+      <label>Success share, % <input id="sPct" type="number" min="0" step="any" inputmode="decimal"></label>
+      <label>Add-on price, $M <input id="sPrice" type="number" min="0" step="any" inputmode="decimal"></label>
+    </div>
+    <table class="mini" aria-label="Sourcing paths">
+      <thead><tr><th>$k per close cycle</th><th>Bad</th><th>Base</th><th>Good</th></tr></thead>
+      <tbody>
+        <tr><td>Retainer path</td><td id="sh1b"></td><td id="sh1m"></td><td id="sh1g"></td></tr>
+        <tr><td>Share path</td><td id="sh2b"></td><td id="sh2m"></td><td id="sh2g"></td></tr>
+        <tr><td>Cheaper</td><td id="sh3b"></td><td id="sh3m"></td><td id="sh3g"></td></tr>
+      </tbody>
+    </table>
+    <p class="note" id="shNote"></p>
+    <p class="note">Bad: this deal breaks and nothing closes. Base and good: it closes after the dead LOIs before it. Same calls, same diligence on both paths. Fee terms depend on your contracts and local rules. Enter your own. This is arithmetic, not investment advice.</p>
+  </div>
+</section>
+
+<section class="owners">
+  <div class="ohead">
+    <h2>Owner pins</h2>
+    <span class="ocount" id="ocount"></span>
+  </div>
+  <div class="pins" id="pins"></div>
+  <p class="plegend">A pin sits in line once it has a quoted line and a sign-off. Until then it hangs loose and grey. Up to 10 owners.</p>
+</section>
+
+<footer>
+  <p class="log" id="log"></p>
+  <ol>
+    <li><code>sourcing months = calls per LOI × LOIs per close ÷ calls per month</code></li>
+    <li><code>months to next close = sourcing months + months LOI to close</code></li>
+    <li><code>closes in 18 mo = (18 − months LOI to close) × calls per month ÷ (calls per LOI × LOIs per close)</code>. The plan holds if this is at least the add-ons planned.</li>
+    <li><code>calls per month needed = planned × calls per LOI × LOIs per close ÷ (18 − months LOI to close)</code></li>
+    <li><code>CIMs per close = CIMs per LOI × LOIs per close</code>; by hand <code>= CIMs × hours × $/h</code>; with model <code>= CIMs × (model min + sign-off min) ÷ 60 × $/h + CIMs × run $</code></li>
+    <li><code>retainer path = retainer + dead LOIs × spent before break</code>; <code>share path = share % × price (on close only) + dead LOIs × spent before break</code>; <code>dead LOIs = LOIs per close − 1</code></li>
+    <li>Mark: inside the range is level. Better than the range is ahead. Worse is behind. A row with no figure or no range stays unmarked.</li>
+  </ol>
+  <p>Grey dashed ranges are a worked example for a commercial HVAC and plumbing services roll-up. They are a starting point, not survey data. Type your own. Your entries stay in this browser only.</p>
+  <p class="credits">Perfumer: the three-cell rule and the footer log of where it fails. Locksmith: owner pins and the retainer vs share panel. Roll-up operator: the rows, owner names, and ranges you type yourself. Settler on Mars in 2090: months to next close in 24pt.</p>
+  <p>Published by OuterHaven Advisory.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+var KEY='tcps-v1';
+var ROWS=[
+ {id:'cpm',label:'Broker calls per month',dir:1,v:40,lo:30,hi:60},
+ {id:'cpl',label:'Broker calls per LOI',dir:-1,v:40,lo:25,hi:35},
+ {id:'lpc',label:'LOIs per close',dir:-1,v:3,lo:2,hi:3},
+ {id:'mtc',label:'Months, LOI to close',dir:-1,v:4,lo:3,hi:5},
+ {id:'int',label:'Integration cost, % of price',dir:-1,v:8,lo:3,hi:6},
+ {id:'own',label:'Owners in seat at 12 months, %',dir:1,v:40,lo:50,hi:70},
+ {id:'key',label:'Ops leads kept at 12 months, %',dir:1,v:70,lo:60,hi:80},
+ {id:'cim',label:'CIMs read per LOI',dir:-1,v:8,lo:6,hi:10}
+];
+var OWNERS=[
+ {n:'D. Marsh, Marsh Mechanical',i:'stay',q:'I would run the north branch for three more years.',s:'K. Lowe'},
+ {n:'R. Okafor, Okafor Plumbing',i:'out',q:'Ready to hand over the keys by spring.',s:'K. Lowe'},
+ {n:'J. Brandt, Brandt Air',i:'unclear',q:'Depends on who I report to.',s:''},
+ {n:'S. Lindqvist, Lind Heat',i:'stay',q:'My son and I both stay on the vans.',s:''},
+ {n:'P. Haddad, Haddad Service',i:'unclear',q:'',s:''},
+ {n:'T. Moreno, Moreno Climate',i:'out',q:'Two years at most, then I am done.',s:'A. Reyes'}
+];
+var FIELDS={planned:3,since:6,badL:6,badX:3,goodL:2,goodS:1,aH:6,aM:20,aR:10,aRate:150,aRun:12,dH:120,dW:35,sRet:60,sPct:1.5,sPrice:6};
+
+function defaults(){
+  var s={f:{},rows:{},owners:[]};
+  for(var k in FIELDS) s.f[k]=String(FIELDS[k]);
+  ROWS.forEach(function(r){s.rows[r.id]={v:String(r.v),lo:String(r.lo),hi:String(r.hi),exLo:true,exHi:true};});
+  for(var i=0;i<10;i++){var o=OWNERS[i]||{n:'',i:'unclear',q:'',s:''};s.owners.push({n:o.n,i:o.i,q:o.q,s:o.s});}
+  return s;
+}
+var S=defaults();
+try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&p.f&&p.rows&&p.owners)S=p;}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+function $(id){return document.getElementById(id);}
+function num(v){if(v===''||v==null)return NaN;var n=parseFloat(v);return isFinite(n)?n:NaN;}
+function f1(n){return isFinite(n)?n.toFixed(1):'—';}
+function k0(n){return isFinite(n)?'$'+Math.round(n).toLocaleString('en-US')+'k':'—';}
+function d0(n){return isFinite(n)?'$'+Math.round(n).toLocaleString('en-US'):'—';}
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+function buildRows(){
+  var h='';
+  ROWS.forEach(function(r){
+    var d=S.rows[r.id];
+    h+='<tr><th scope="row">'+esc(r.label)+'<small>'+(r.dir>0?'higher is better':'lower is better')+'</small></th>'+
+      '<td><input type="number" step="any" inputmode="decimal" data-r="'+r.id+'" data-k="v" aria-label="'+esc(r.label)+', your figure" value="'+esc(d.v)+'"></td>'+
+      '<td class="rng"><input type="number" step="any" inputmode="decimal" data-r="'+r.id+'" data-k="lo" aria-label="'+esc(r.label)+', range low" value="'+esc(d.lo)+'" class="'+(d.exLo?'ex':'')+'"> – '+
+      '<input type="number" step="any" inputmode="decimal" data-r="'+r.id+'" data-k="hi" aria-label="'+esc(r.label)+', range high" value="'+esc(d.hi)+'" class="'+(d.exHi?'ex':'')+'"></td>'+
+      '<td><span class="mark none" id="m-'+r.id+'">—</span></td></tr>';
+  });
+  $('rows').innerHTML=h;
+  Array.prototype.forEach.call($('rows').querySelectorAll('input'),function(el){
+    el.addEventListener('input',function(){
+      var d=S.rows[el.dataset.r],k=el.dataset.k;d[k]=el.value;
+      if(k==='lo'){d.exLo=false;el.classList.remove('ex');}
+      if(k==='hi'){d.exHi=false;el.classList.remove('ex');}
+      save();calc();
+    });
+  });
+}
+
+function buildPins(){
+  var h='';
+  S.owners.forEach(function(o,i){
+    h+='<div class="pin" id="pin'+i+'"><span class="dot" aria-hidden="true"></span>'+
+     '<input class="pn" data-o="'+i+'" data-k="n" placeholder="Owner, company" aria-label="Owner '+(i+1)+' name" value="'+esc(o.n)+'">'+
+     '<select class="ps" data-o="'+i+'" data-k="i" aria-label="Owner '+(i+1)+' intent">'+
+       ['stay','out','unclear'].map(function(v){return '<option value="'+v+'"'+(o.i===v?' selected':'')+'>'+v+'</option>';}).join('')+'</select>'+
+     '<input class="pq" data-o="'+i+'" data-k="q" placeholder="Quoted line" aria-label="Owner '+(i+1)+' quoted line" value="'+esc(o.q)+'">'+
+     '<input class="pg" data-o="'+i+'" data-k="s" placeholder="Signed off by" aria-label="Owner '+(i+1)+' signed off by" value="'+esc(o.s)+'">'+
+     '</div>';
+  });
+  $('pins').innerHTML=h;
+  Array.prototype.forEach.call($('pins').querySelectorAll('input,select'),function(el){
+    el.addEventListener(el.tagName==='SELECT'?'change':'input',function(){S.owners[+el.dataset.o][el.dataset.k]=el.value;save();calc();});
+  });
+}
+
+function bindFields(){
+  for(var k in FIELDS){(function(k){var el=$(k);el.value=S.f[k];el.addEventListener('input',function(){S.f[k]=el.value;save();calc();});})(k);}
+}
+
+function F(k){return num(S.f[k]);}
+function R(id){return num(S.rows[id].v);}
+
+function markRow(r){
+  var d=S.rows[r.id],v=num(d.v),lo=num(d.lo),hi=num(d.hi);
+  if(!isFinite(v)||!isFinite(lo)||!isFinite(hi))return 'none';
+  var a=Math.min(lo,hi),b=Math.max(lo,hi);
+  if(v>=a&&v<=b)return 'level';
+  var better=r.dir>0?v>b:v<a;
+  return better?'ahead':'behind';
+}
+
+function caseCalc(cpm,cpl,lpc,mtc){
+  var src=cpl*lpc/cpm,gap=src+mtc,closes=Math.max(0,18-mtc)*cpm/(cpl*lpc);
+  return {gap:gap,closes:closes,lpc:lpc,mtc:mtc};
+}
+function set(id,t){$(id).textContent=t;}
+
+function calc(){
+  var unmarked=0;
+  ROWS.forEach(function(r){
+    var m=markRow(r),el=$('m-'+r.id);
+    el.className='mark '+m;
+    el.textContent=m==='none'?'—':m.charAt(0).toUpperCase()+m.slice(1);
+    if(m==='none')unmarked++;
+  });
+
+  var cpm=R('cpm'),cpl=R('cpl'),lpc=R('lpc'),mtc=R('mtc'),cim=R('cim');
+  var planned=F('planned'),since=F('since');
+  var ok=cpm>0&&cpl>0&&lpc>0&&mtc>=0;
+  var bL=F('badL'),bX=F('badX'),gL=F('goodL'),gS=F('goodS');
+  var B,M,G;
+  if(ok){
+    M=caseCalc(cpm,cpl,lpc,mtc);
+    B=caseCalc(cpm,cpl,bL>0?bL:lpc,mtc+(isFinite(bX)?bX:0));
+    G=caseCalc(cpm,cpl,gL>0?gL:lpc,Math.max(0,mtc-(isFinite(gS)?gS:0)));
+  }
+  set('gBase',ok?f1(M.gap):'—');set('gBase2',ok?f1(M.gap):'—');
+  set('gBad',ok?f1(B.gap):'—');set('gGood',ok?f1(G.gap):'—');
+  set('cBase',ok?f1(M.closes):'—');set('cBad',ok?f1(B.closes):'—');set('cGood',ok?f1(G.closes):'—');
+  set('baseL',isFinite(lpc)?String(lpc):'—');set('baseM',isFinite(mtc)?String(mtc):'—');
+
+  var v='',fl='';
+  if(!ok){v='Enter calls per month, calls per LOI, LOIs per close and months LOI to close to see the months.';}
+  else if(!(planned>0)){v='Enter the add-ons you plan in the next 18 months to test the plan.';}
+  else{
+    var needB=planned*cpl*B.lpc/Math.max(0.0001,18-B.mtc);
+    var needM=planned*cpl*M.lpc/Math.max(0.0001,18-M.mtc);
+    if(M.closes<planned){
+      v='<b>Base case breaks.</b> '+f1(M.closes)+' closes fit in 18 months against '+planned+' planned. Safer setting first: '+Math.ceil(needM)+' broker calls a month, or plan '+Math.floor(M.closes)+' add-on'+(Math.floor(M.closes)===1?'':'s')+'. Bad case: '+f1(B.closes)+' closes.';
+    }else if(B.closes<planned){
+      v='<b>Bad case breaks.</b> Safer setting first: '+Math.ceil(needB)+' broker calls a month, or plan '+Math.floor(B.closes)+' add-on'+(Math.floor(B.closes)===1?'':'s')+'. Base case holds: '+f1(M.closes)+' closes fit in 18 months against '+planned+' planned. Bad case fits '+f1(B.closes)+'.';
+    }else{
+      var maxL=Math.max(0,18-B.mtc)*cpm/(cpl*planned);
+      v='<b>Bad case holds.</b> '+f1(B.closes)+' closes fit against '+planned+' planned. You can push to '+Math.ceil(needB)+' calls a month, or '+f1(maxL)+' LOIs per close at the bad-case close time, before it breaks.';
+    }
+    if(planned>=3&&since>=6)fl='Flag: 3 or more add-ons planned and 6 or more months since the last close. This pipeline is worth a call with your deal team before the next broker call.';
+  }
+  $('verdict').innerHTML=v;set('flag',fl);
+  set('dry',ok&&isFinite(since)?'With '+since+' months since your last close, that is '+f1(since+M.gap)+' months without a close in the base case and '+f1(since+B.gap)+' in the bad case.':'');
+
+  // AI panel
+  var aH=F('aH'),aM=F('aM'),aR=F('aR'),rate=F('aRate'),run=F('aRun'),dH=F('dH'),dW=F('dW');
+  [['b',B],['m',M],['g',G]].forEach(function(p){
+    var c=p[1],cims=ok&&isFinite(cim)?cim*c.lpc:NaN;
+    set('ai0'+p[0],isFinite(cims)?f1(cims).replace(/\.0$/,''):'—');
+    set('ai1'+p[0],d0(cims*aH*rate));
+    set('ai2'+p[0],d0(cims*((aM+aR)/60)*rate+cims*run));
+  });
+  set('ai3b',k0(dH)+' → '+k0(dW));
+
+  // Shortcut panel
+  var ret=F('sRet'),pct=F('sPct'),price=F('sPrice'),fee=pct/100*price*1000;
+  function cheaper(a,b){if(!isFinite(a)||!isFinite(b))return '—';return a<b?'Retainer':a>b?'Share':'Level';}
+  var r1=ret+dW,s1=dW;
+  set('sh1b',k0(r1));set('sh2b',k0(s1));set('sh3b',cheaper(r1,s1));
+  [['m',M],['g',G]].forEach(function(p){
+    var dead=ok?Math.max(0,p[1].lpc-1):NaN,r=ret+dead*dW,s=fee+dead*dW;
+    set('sh1'+p[0],k0(r));set('sh2'+p[0],k0(s));set('sh3'+p[0],cheaper(r,s));
+  });
+  var be=pct>0?ret/(pct/100)/1000:NaN;
+  set('shNote',(isFinite(be)?'The share beats the retainer when the deal dies, or on closed deals under $'+be.toFixed(1)+'M. ':'')+'Without the pre-read, the bad case is '+k0(ret+dH)+' on the retainer and '+k0(dH)+' on the share. Share partners get paid on any close, including owners who want out on day one. Check the pins before signing.');
+
+  // Owners
+  var filled=0,inline=0,loose=0,unclear=0;
+  S.owners.forEach(function(o,i){
+    var el=$('pin'+i),has=o.n.trim()!=='',set2=has&&o.q.trim()!==''&&o.s.trim()!=='';
+    el.className='pin '+(has?o.i:'empty')+(has&&!set2?' loose':'');
+    if(has){filled++;if(set2)inline++;else loose++;if(o.i==='unclear'||!set2)unclear++;}
+  });
+  set('ocount','In line: '+inline+'. Loose: '+loose+'. Empty slots: '+(10-filled)+'.');
+  set('log','Rule failure log: '+unclear+' of '+filled+' owner'+(filled===1?'':'s')+' have no range and no clear mark. '+unmarked+' of 8 rows unmarked.');
+}
+
+$('clrR').addEventListener('click',function(){ROWS.forEach(function(r){var d=S.rows[r.id];d.lo='';d.hi='';d.exLo=false;d.exHi=false;});save();buildRows();calc();});
+$('clrAll').addEventListener('click',function(){
+  ROWS.forEach(function(r){S.rows[r.id]={v:'',lo:'',hi:'',exLo:false,exHi:false};});
+  S.owners=S.owners.map(function(){return {n:'',i:'unclear',q:'',s:''};});
+  S.f.planned='';S.f.since='';$('planned').value='';$('since').value='';
+  save();buildRows();buildPins();calc();
+});
+$('reset').addEventListener('click',function(){try{localStorage.removeItem(KEY);}catch(e){}S=defaults();buildRows();buildPins();for(var k in FIELDS)$(k).value=S.f[k];calc();});
+
+bindFields();buildRows();buildPins();calc();
+})();
+</script>
+</body>
+</html>

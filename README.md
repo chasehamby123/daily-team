@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-10-28: Setup Sheet
+### 2026-10-29: Three-Cell Pipeline Sheet
 
-<a href="days/2026-10-28/"><img src="days/2026-10-28/team.png" alt="Team for 2026-10-28: Luthier · Upholsterer · Multi-family office adviser · Entropy" width="100%"></a>
+<a href="days/2026-10-29/"><img src="days/2026-10-29/team.png" alt="Team for 2026-10-29: Perfumer · Locksmith · Roll-up operator · Settler on Mars in 2090" width="100%"></a>
 
-**Task:** Vendor question list: the buyer's priorities give a printable list of questions to ask before signing with any provider.
+**Task:** Benchmark checker: the buyer's own figures sit next to typical ranges they can edit, with each gap marked ahead, level, or behind.
 
-**Decision:** The page takes two numbers, deals the clients bring per year and the average ticket, and returns a one-sheet list of twelve questions to ask any deal sponsor before signing, three of them stop rows, which prints as a signed and dated cli...
+**Decision:** The page puts the operator's add-on pipeline figures next to ranges they type themselves, marks each gap ahead, level, or behind, and lists each target owner by name as stay, out, or unclear.
 
-<a href="days/2026-10-28/"><img src="days/2026-10-28/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-10-29/"><img src="days/2026-10-29/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-10-28/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-10-29/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,15 +37,15 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-10-29](days/2026-10-29/) | <a href="days/2026-10-29/"><img src="days/2026-10-29/artifact-1.png" alt="Three-Cell Pipeline Sheet" width="160"></a> | Three-Cell Pipeline Sheet | Perfumer · Locksmith · Roll-up operator · Settler on Mars in 2090 |
 | [2026-10-28](days/2026-10-28/) | <a href="days/2026-10-28/"><img src="days/2026-10-28/artifact-1.png" alt="Setup Sheet" width="160"></a> | Setup Sheet | Luthier · Upholsterer · Multi-family office adviser · Entropy |
 | [2026-10-27](days/2026-10-27/) | <a href="days/2026-10-27/"><img src="days/2026-10-27/artifact-1.png" alt="The Close-By Line" width="160"></a> | The Close-By Line | Exhibition designer · Creative coder · Real estate developer · Ibn al-Haytham |
 | [2026-10-26](days/2026-10-26/) | <a href="days/2026-10-26/"><img src="days/2026-10-26/artifact-1.png" alt="The Hours Bridge" width="160"></a> | The Hours Bridge | Lighting designer · Furniture maker · Private equity principal · Cassandra |
 | [2026-10-25](days/2026-10-25/) | <a href="days/2026-10-25/"><img src="days/2026-10-25/artifact-1.png" alt="The Name on the Door" width="160"></a> | The Name on the Door | Museum curator · Radio producer · Retiring owner with no successor · Leonardo da Vinci |
 | [2026-10-24](days/2026-10-24/) | <a href="days/2026-10-24/"><img src="days/2026-10-24/artifact-1.png" alt="the red thread" width="160"></a> | the red thread | Animator · Front-end engineer · Fund manager raising capital · Sisyphus |
 | [2026-10-23](days/2026-10-23/) | <a href="days/2026-10-23/"><img src="days/2026-10-23/artifact-1.png" alt="The 9:14 Lead" width="160"></a> | The 9:14 Lead | Puppeteer · Bookbinder · Insurance agency owner · Katsushika Hokusai |
-| [2026-10-22](days/2026-10-22/) | <a href="days/2026-10-22/"><img src="days/2026-10-22/artifact-1.png" alt="Sized to the Raise" width="160"></a> | Sized to the Raise | Costume designer · Sign painter · Search fund entrepreneur · Alice |
 
-[All 25 days](ARCHIVE.md)
+[All 26 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works
