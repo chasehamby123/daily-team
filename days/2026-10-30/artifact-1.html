@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Priced Leak: which stage cost you the most last month, in dollars</title>
+<style>
+:root{
+  --paper:#F4EFE6;--card:#FBF8F2;--ink:#1F1B16;--mute:#6B5E50;--line:#D8CFC1;
+  --rust:#8B3A1E;--rust-soft:#F1DED4;--ok:#2F5D3A;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.num,.fig,td,input{font-variant-numeric:tabular-nums}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;
+  max-width:1200px;margin:0 auto;padding:24px}
+.span{grid-column:1/-1}
+header h1{margin:0;font-size:32px;line-height:1.1;letter-spacing:-.5px}
+header h1 b{color:var(--rust);font-weight:800}
+header p{margin:6px 0 0;color:var(--mute)}
+.sentence{background:var(--card);border:2px solid var(--ink);padding:16px 18px;
+  font-size:20px;line-height:1.35;margin:0}
+.sentence-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
+.col{background:var(--card);border:1px solid var(--line);padding:18px}
+h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:0 0 12px}
+h3{font-size:16px;margin:0 0 8px}
+.field{display:grid;grid-template-columns:1fr 128px;gap:10px;align-items:center;margin-bottom:8px}
+.field label{font-weight:600}
+.field small{display:block;font-weight:400;color:var(--mute);font-size:13px}
+input{height:48px;width:100%;font-size:20px;padding:0 10px;border:1px solid var(--mute);
+  background:#fff;color:var(--ink);border-radius:2px;text-align:right}
+input:focus{outline:3px solid var(--rust);outline-offset:1px}
+.small-in{height:40px;font-size:17px;width:96px}
+button,.btn{height:44px;padding:0 14px;font:inherit;font-weight:600;border:1px solid var(--ink);
+  background:var(--card);color:var(--ink);cursor:pointer;border-radius:2px;
+  text-decoration:none;display:inline-flex;align-items:center}
+button.primary,.btn.primary{background:var(--ink);color:var(--paper)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.q{border-top:1px solid var(--line);margin-top:14px;padding-top:14px}
+.leak-stage{font-size:18px;font-weight:700;margin:0}
+.leak-gap{color:var(--mute);margin:2px 0 10px}
+.fig{font-size:72px;line-height:1;font-weight:800;color:var(--rust);letter-spacing:-1px;margin:6px 0 4px;word-break:break-all}
+.fig-cap{color:var(--mute);margin:0 0 14px}
+.badline{border-top:2px solid var(--rust);padding-top:10px;font-size:15px}
+.badline b{color:var(--rust)}
+.half{font-size:40px;font-weight:800;line-height:1.05;margin:4px 0}
+.mute{color:var(--mute)}
+.note{font-size:14px;color:var(--mute);margin:8px 0 0}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:6px 4px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+th:first-child,td:first-child{text-align:left}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--mute);font-weight:600}
+tr.hit td{background:var(--rust-soft);font-weight:700}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;
+  background:var(--paper);border:1px dashed var(--mute);padding:8px 10px;margin:10px 0 0;white-space:pre-wrap}
+.verdict{padding:10px 12px;margin:12px 0 0;font-weight:600;border-left:6px solid var(--ok);background:#E5EDE4}
+.verdict.fail{border-left-color:var(--rust);background:var(--rust-soft)}
+.path{border:1px solid var(--line);padding:12px;margin-bottom:12px;background:#fff}
+.path-head{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap}
+.path-head label{font-size:13px;color:var(--mute);display:flex;align-items:center;gap:6px}
+.tag{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+.warn{color:var(--rust);font-weight:600;font-size:14px;margin:8px 0 0}
+ul{padding-left:18px;margin:6px 0 0}
+li{margin-bottom:2px}
+footer{color:var(--mute);font-size:13px;border-top:1px solid var(--line);padding-top:12px}
+footer p{margin:4px 0}
+.print-only{display:none}
+@media (max-width:860px){
+  .grid{grid-template-columns:minmax(0,1fr);gap:16px;padding:14px}
+  .sentence{font-size:18px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media print{
+  body{background:#fff;font-size:11pt}
+  .grid{display:block;padding:0;max-width:none}
+  .grid>*{margin-bottom:10pt}
+  .col{border:none;padding:0;background:#fff}
+  .noprint,button,.btn,.inputs-col,.paths-col,.half-col{display:none!important}
+  .print-only{display:block}
+  .sentence{border:1.5pt solid #000;font-size:14pt}
+  .fig{font-size:36pt}
+  tr.hit td{background:#eee}
+}
+</style>
+</head>
+<body>
+<main class="grid">
+
+  <header class="span">
+    <h1><b>Priced Leak</b>: last month, in dollars</h1>
+    <p>Six numbers from last month's calls. The sheet prices every lost customer by what they would have paid and names the stage that cost you the most.</p>
+  </header>
+
+  <section class="span" aria-live="polite">
+    <p class="sentence" id="sentence">Last month 58 callers did not reach you; getting half of them back is worth about $5,510 a month.</p>
+    <div class="sentence-row noprint">
+      <a class="btn primary" id="mail" href="mailto:">Send to someone</a>
+      <button type="button" id="printBtn">Print this</button>
+    </div>
+    <p class="print-only mute" id="countsLine"></p>
+  </section>
+
+  <!-- Row 1, column 1: inputs -->
+  <section class="col inputs-col" aria-labelledby="h-in">
+    <h2 id="h-in">Last month</h2>
+    <div class="field"><label for="calls">Calls in<small>Nights and Saturdays too</small></label><input id="calls" inputmode="numeric" value="140"></div>
+    <div class="field"><label for="picked">Picked up<small>A person or machine answered</small></label><input id="picked" inputmode="numeric" value="82"></div>
+    <div class="field"><label for="quoted">Quoted<small>Got a price</small></label><input id="quoted" inputmode="numeric" value="64"></div>
+    <div class="field"><label for="booked">Booked<small>On the schedule</small></label><input id="booked" inputmode="numeric" value="44"></div>
+    <div class="field"><label for="paid">Paid<small>Money in</small></label><input id="paid" inputmode="numeric" value="41"></div>
+    <div class="field"><label for="ticket">Average ticket ($)<small>Before tax. Tax rules vary by state.</small></label><input id="ticket" inputmode="decimal" value="380"></div>
+
+    <div class="q">
+      <h2>Two questions</h2>
+      <div class="field"><label for="months">Months it has run like this</label><input id="months" inputmode="numeric" value="6"></div>
+      <div class="field"><label for="trucks">Trucks on the road</label><input id="trucks" inputmode="numeric" value="2"></div>
+    </div>
+
+    <div class="btns noprint">
+      <button type="button" id="exBtn">Example month</button>
+      <button type="button" id="clearBtn">Clear</button>
+      <button type="button" id="restoreBtn" hidden>My last numbers</button>
+    </div>
+    <p class="warn" id="warn" hidden></p>
+    <p class="note">Example: a two-truck plumbing shop, 140 calls, 58 missed after hours. Nothing leaves this page. No sign-up.</p>
+  </section>
+
+  <!-- Row 1, column 2: the one figure -->
+  <section class="col" aria-labelledby="h-leak">
+    <h2 id="h-leak">The leak</h2>
+    <p class="leak-stage" id="leakName">Missed calls</p>
+    <p class="leak-gap" id="leakGap">Calls in → Picked up</p>
+    <p class="fig" id="fig">$11,020</p>
+    <p class="fig-cap" id="figCap">lost last month at this stage</p>
+    <p class="badline" id="badLine">Bad month: <b>$2,204</b> back</p>
+  </section>
+
+  <!-- Row 1, column 3: half fixed, over months -->
+  <section class="col half-col" aria-labelledby="h-half">
+    <h2 id="h-half">Half of it fixed</h2>
+    <p class="half" id="half">$5,510</p>
+    <p class="mute" style="margin:0">a month back, base case</p>
+    <p id="overMonths" style="margin:14px 0 0">× 6 months it has run = <b>$33,060</b> left on the table.</p>
+    <p id="nextYear" style="margin:6px 0 0">Next 12 months at this rate: <b>$66,120</b>.</p>
+    <p id="perTruck" class="note">14.5 more paid jobs a month, about 7.3 per truck. The money only comes back if the trucks have room.</p>
+  </section>
+
+  <!-- Row 2, column 1: stage table + formula -->
+  <section class="col" aria-labelledby="h-stages">
+    <h2 id="h-stages">Every stage, priced</h2>
+    <table>
+      <thead><tr><th>Stage</th><th>Lost</th><th>Would pay</th><th>Worth</th></tr></thead>
+      <tbody id="stageBody"></tbody>
+    </table>
+    <p class="formula">Worth = lost × (paid ÷ count that got past this stage) × ticket
+Ties go to the earlier stage.</p>
+    <p class="note">Counting lost people lies. Pricing them does not. Twenty lost at the quote can cost more than forty lost at the phone.</p>
+  </section>
+
+  <!-- Row 2, column 2: three cases -->
+  <section class="col" aria-labelledby="h-cases">
+    <h2 id="h-cases">Bad, base, good</h2>
+    <table>
+      <thead><tr><th></th><th>Bad</th><th>Base</th><th>Good</th></tr></thead>
+      <tbody id="caseBody"></tbody>
+    </table>
+    <p class="formula">Jobs back = lost × (1 − junk) × 50% × close rate
+Money back = jobs back × ticket
+Bad close = measured × 0.8. Good close = measured × 1.2, max 1.</p>
+    <p class="verdict" id="verdict"></p>
+  </section>
+
+  <!-- Row 2, column 3: the two paths -->
+  <section class="col paths-col" aria-labelledby="h-paths">
+    <h2 id="h-paths">Two ways to answer the phone</h2>
+    <p class="note" style="margin:0 0 10px">Same leak, same cases. Fees are example quotes. Enter the ones you get.</p>
+    <div id="paths"></div>
+    <p class="note">Recording or texting callers can need consent under your state's rules. Check yours before switching anything on.</p>
+  </section>
+
+  <footer class="span">
+    <p>Credits. Chef: priced each loss by what it would have paid, and the two questions. Taxidermist: the filled-in example month, 48px boxes, the one rust figure. Home services owner: six boxes, dollars instead of funnels, no sign-up. Archivist from 2300: the one printable sentence on top.</p>
+    <p>Published by VoxxyAI.</p>
+  </footer>
+
+</main>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var FUN=['calls','picked','quoted','booked','paid','ticket'];
+  var QS=['months','trucks'];
+  var COST=['hfee','share','afee'];
+  var EX={calls:140,picked:82,quoted:64,booked:44,paid:41,ticket:380,months:6,trucks:2,hfee:450,share:10,afee:0};
+  var KEY='pricedleak.v1';
+  var LEAK=[
+    {name:'Missed calls',gap:'Calls in → Picked up',say:function(n){return n+(n===1?' caller':' callers')+' did not reach you'}},
+    {name:'Answered, never quoted',gap:'Picked up → Quoted',say:function(n){return n+(n===1?' caller you spoke to':' callers you spoke to')+' never got a quote'}},
+    {name:'Quoted, never booked',gap:'Quoted → Booked',say:function(n){return n+(n===1?' quote':' quotes')+' did not turn into a booking'}},
+    {name:'Booked, never paid',gap:'Booked → Paid',say:function(n){return n+' booked '+(n===1?'job was':'jobs were')+' never paid'}}
+  ];
+  function money(x){return (x<0?'−$':'$')+Math.round(Math.abs(x)).toLocaleString('en-US')}
+  function n1(x){return (Math.round(x*10)/10).toLocaleString('en-US')}
+  function pct(x){return Math.round(x*100)+'%'}
+  function num(id){var el=$(id);if(!el)return NaN;var v=el.value.trim().replace(/[$,\s]/g,'');if(v==='')return NaN;var n=Number(v);return isFinite(n)&&n>=0?n:NaN}
+
+  // Path inputs live inside the paths column; build them once.
+  $('paths').innerHTML=
+    '<div class="path" id="pHuman"><div class="path-head"><h3>Usual path: answering service</h3>'+
+    '<label for="hfee">Flat $/month <input class="small-in" id="hfee" inputmode="decimal" value="450"></label></div>'+
+    '<p class="tag">Without AI. People answer every call.</p><table><thead><tr><th></th><th>Bad</th><th>Base</th><th>Good</th></tr></thead><tbody id="hBody"></tbody></table><p class="note" id="hHold"></p></div>'+
+    '<div class="path" id="pAI"><div class="path-head"><h3>Shortcut: AI answering, paid by share</h3>'+
+    '<label for="share">Share % <input class="small-in" id="share" inputmode="decimal" value="10"></label>'+
+    '<label for="afee">Plus $/month <input class="small-in" id="afee" inputmode="decimal" value="0"></label></div>'+
+    '<p class="tag">With AI. Costs nothing when nothing comes back.</p><table><thead><tr><th></th><th>Bad</th><th>Base</th><th>Good</th></tr></thead><tbody id="aBody"></tbody></table><p class="note" id="aHold"></p>'+
+    '<p class="note"><b>AI does:</b> picks up, asks what broke and where, offers a slot, texts you a summary.<br><b>A person still reviews:</b> every price quote, emergencies (gas smell, flooding, no heat), the next-morning booking list, any complaint or refund.</p>'+
+    '<p class="note">Example assumes the AI running cost, about $60 a month, sits inside the share.</p></div>'+
+    '<p class="note" id="cross"></p>'+
+    '<p class="formula">Answering service keeps = money back − flat fee\nAI keeps = money back × (1 − share) − monthly fee</p>';
+
+  var ALL=FUN.concat(QS,COST);
+
+  function save(){try{var o={};ALL.forEach(function(k){o[k]=$(k).value});localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}}
+  function loadSaved(){try{var s=localStorage.getItem(KEY);return s?JSON.parse(s):null}catch(e){return null}}
+  function setAll(o){ALL.forEach(function(k){if(o&&o[k]!==undefined)$(k).value=o[k]})}
+
+  function empty(msg){
+    $('sentence').textContent=msg;
+    $('leakName').textContent='No leak yet';$('leakGap').textContent='';
+    $('fig').textContent='$0';$('figCap').textContent='enter last month to price it';
+    $('badLine').innerHTML='Bad month: <b>$0</b> back';
+    $('half').textContent='$0';$('overMonths').textContent='';$('nextYear').textContent='';$('perTruck').textContent='';
+    $('stageBody').innerHTML='';$('caseBody').innerHTML='';
+    $('hBody').innerHTML='';$('aBody').innerHTML='';$('hHold').textContent='';$('aHold').textContent='';$('cross').textContent='';
+    $('verdict').textContent='';$('verdict').className='verdict';
+    $('mail').href='mailto:?subject='+encodeURIComponent('Priced Leak');
+    $('countsLine').textContent='';
+  }
+
+  function holdText(need,maxR,label){
+    if(need<=0)return label+' never drops below zero: no jobs back, no cost.';
+    if(maxR<=0)return label+' loses money at these numbers.';
+    var j=1-need/maxR;
+    if(j<=0)return label+' loses money in the bad month even with zero junk calls. Needs '+money(need)+' a month back to break even.';
+    return label+' holds in the bad close rate until '+pct(Math.min(1,j))+' of the lost were junk. Break-even: '+money(need)+' a month back.';
+  }
+
+  function run(){
+    var v={};ALL.forEach(function(k){v[k]=num(k)});
+    var warn=[];
+    if(FUN.some(function(k){return isNaN(v[k])})){
+      empty('Enter last month: calls in, picked up, quoted, booked, paid, and your average ticket.');
+      $('warn').hidden=true;save();return;
+    }
+    var c=[v.calls,v.picked,v.quoted,v.booked,v.paid],t=v.ticket,names=['Calls in','Picked up','Quoted','Booked','Paid'];
+    var rows=[],best=null;
+    for(var i=1;i<5;i++){
+      if(c[i]>c[i-1])warn.push(names[i]+' is higher than '+names[i-1]+'. Counted as zero lost.');
+      var lost=Math.max(0,c[i-1]-c[i]);
+      var rate=c[i]>0?Math.min(1,c[4]/c[i]):0;
+      var r={i:i,lost:lost,rate:rate,val:lost*rate*t,name:LEAK[i-1].name,gap:LEAK[i-1].gap,say:LEAK[i-1].say};
+      rows.push(r);
+      if(!best||r.val>best.val)best=r;
+    }
+    $('warn').hidden=!warn.length;$('warn').textContent=warn.join(' ');
+    $('countsLine').textContent='Counts used: '+c[0]+' calls in, '+c[1]+' picked up, '+c[2]+' quoted, '+c[3]+' booked, '+c[4]+' paid. Ticket '+money(t)+'.';
+
+    var sb='';rows.forEach(function(r){
+      sb+='<tr'+(r===best&&r.val>0?' class="hit"':'')+'><td>'+r.name+'</td><td>'+n1(r.lost)+'</td><td>'+pct(r.rate)+'</td><td>'+money(r.val)+'</td></tr>';
+    });
+    $('stageBody').innerHTML=sb;
+
+    if(!best||best.val<=0){
+      empty('At these numbers no stage lost paying work last month.');
+      $('stageBody').innerHTML=sb;save();return;
+    }
+
+    var months=isNaN(v.months)||v.months<1?1:v.months;
+    var trucks=isNaN(v.trucks)||v.trucks<1?1:v.trucks;
+    var H=isNaN(v.hfee)?0:v.hfee,S=isNaN(v.share)?0:Math.min(100,v.share)/100,A=isNaN(v.afee)?0:v.afee;
+
+    var cases=[
+      {k:'Bad',junk:.5,close:best.rate*.8},
+      {k:'Base',junk:0,close:best.rate},
+      {k:'Good',junk:0,close:Math.min(1,best.rate*1.2)}
+    ];
+    cases.forEach(function(x){x.jobs=best.lost*(1-x.junk)*.5*x.close;x.rec=x.jobs*t;x.h=x.rec-H;x.aCost=x.rec*S+A;x.a=x.rec-x.aCost});
+    var bad=cases[0],base=cases[1];
+    var lostN=Math.round(best.lost*10)/10;
+    var sentence='Last month '+best.say(lostN)+'; getting half of them back is worth about '+money(base.rec)+' a month.';
+    $('sentence').textContent=sentence;
+    $('leakName').textContent=best.name;$('leakGap').textContent=best.gap;
+    $('fig').textContent=money(best.val);$('figCap').textContent='lost last month at this stage';
+    $('badLine').innerHTML='Bad month: <b>'+money(bad.rec)+'</b> back (half junk, close rate '+bad.close.toFixed(2)+')';
+    $('half').textContent=money(base.rec);
+    $('overMonths').innerHTML='× '+n1(months)+(months===1?' month':' months')+' it has run = <b>'+money(base.rec*months)+'</b> left on the table.';
+    $('nextYear').innerHTML='Next 12 months at this rate: <b>'+money(base.rec*12)+'</b>.';
+    $('perTruck').textContent=n1(base.jobs)+' more paid jobs a month, about '+n1(base.jobs/trucks)+' per truck. The money only comes back if the trucks have room.';
+
+    function row(label,f){return '<tr><td>'+label+'</td>'+cases.map(function(x){return '<td>'+f(x)+'</td>'}).join('')+'</tr>'}
+    $('caseBody').innerHTML=
+      row('Junk share',function(x){return pct(x.junk)})+
+      row('Close rate',function(x){return x.close.toFixed(2)})+
+      row('Share fixed',function(){return '50%'})+
+      row('Jobs back',function(x){return n1(x.jobs)})+
+      row('Money / month',function(x){return '<b>'+money(x.rec)+'</b>'})+
+      row('× '+n1(months)+' mo',function(x){return money(x.rec*months)});
+
+    $('hBody').innerHTML=row('Costs',function(){return money(H)})+row('Keeps',function(x){return '<b>'+money(x.h)+'</b>'});
+    $('aBody').innerHTML=row('Costs',function(x){return money(x.aCost)})+row('Keeps',function(x){return '<b>'+money(x.a)+'</b>'});
+
+    var maxR=best.lost*.5*bad.close*t;
+    $('hHold').textContent=holdText(H,maxR,'Answering service');
+    $('aHold').textContent=S>=1?'At a 100% share you keep nothing.':holdText(A/(1-S),maxR,'AI path');
+
+    if(S>0){
+      var cross=H/S;
+      $('cross').textContent='Cost with AI vs without: '+money(base.aCost)+' vs '+money(H)+' in the base month, '+money(bad.aCost)+' vs '+money(H)+' in the bad month. The flat fee costs less once more than '+money(cross)+' a month comes back; below that the share costs less.';
+    }else{
+      $('cross').textContent='Cost with AI vs without: '+money(A)+' vs '+money(H)+' a month in every case.';
+    }
+
+    var hOk=bad.h>0,aOk=bad.a>0,vd=$('verdict');
+    if(hOk&&aOk){
+      vd.className='verdict';
+      vd.textContent='Survives the bad case. Both paths stay above zero: answering service keeps '+money(bad.h)+', AI path keeps '+money(bad.a)+' a month. Limits are under each path.';
+    }else if(hOk||aOk){
+      vd.className='verdict fail';
+      var safe=aOk?'AI path, paid by share':'answering service';
+      vd.textContent='Survives the bad case on one path only. Safer setting: '+safe+', which keeps '+money(aOk?bad.a:bad.h)+' in the bad month. The other loses '+money(Math.abs(aOk?bad.h:bad.a))+'.';
+    }else{
+      vd.className='verdict fail';
+      vd.textContent='Does not survive the bad case. Safer setting: no paid service. Forward after-hours calls to your own phone for one month, recount, and run this again.';
+    }
+    // Safer path first.
+    var p=$('paths');
+    if(aOk&&!hOk)p.insertBefore($('pAI'),$('pHuman'));else p.insertBefore($('pHuman'),$('pAI'));
+
+    var body=sentence+'\n\n'+$('countsLine').textContent+'\nBad month (half junk, close '+bad.close.toFixed(2)+'): '+money(bad.rec)+' a month back.\nWorth = lost × (paid ÷ count that got past the stage) × ticket.';
+    $('mail').href='mailto:?subject='+encodeURIComponent('What last month cost: '+best.name)+'&body='+encodeURIComponent(body);
+    save();
+  }
+
+  var saved=loadSaved();
+  if(saved){var diff=ALL.some(function(k){return saved[k]!==undefined&&String(saved[k])!==String(EX[k])});if(diff)$('restoreBtn').hidden=false}
+
+  ALL.forEach(function(k){$(k).addEventListener('input',run)});
+  $('exBtn').addEventListener('click',function(){setAll(EX);run()});
+  $('clearBtn').addEventListener('click',function(){FUN.concat(QS).forEach(function(k){$(k).value=''});run();$('calls').focus()});
+  $('restoreBtn').addEventListener('click',function(){var s=loadSaved();if(s){setAll(s);run()}});
+  $('printBtn').addEventListener('click',function(){window.print()});
+  // Do not overwrite saved numbers before the user chooses to restore them.
+  var firstSave=save;save=function(){};run();save=firstSave;
+})();
+</script>
+</body>
+</html>

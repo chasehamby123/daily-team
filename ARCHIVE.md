@@ -1,11 +1,12 @@
 # Archive
 
-Every daily team and the asset it made, newest first. 26 days recorded.
+Every daily team and the asset it made, newest first. 27 days recorded.
 
 [Today](README.md)
 
 | Date | Task | Team | Constraint | Asset |
 |---|---|---|---|---|
+| [2026-10-30](days/2026-10-30/) | Priced Leak | Chef · Taxidermist · Home services owner · Archivist from 2300 | Three-column grid only. | [asset](days/2026-10-30/artifact-1.html) |
 | [2026-10-29](days/2026-10-29/) | Three-Cell Pipeline Sheet | Perfumer · Locksmith · Roll-up operator · Settler on Mars in 2090 | Prints on one A4 page. | [asset](days/2026-10-29/artifact-1.html) |
 | [2026-10-28](days/2026-10-28/) | Setup Sheet | Luthier · Upholsterer · Multi-family office adviser · Entropy | Learnable in 30 seconds. | [asset](days/2026-10-28/artifact-1.html) |
 | [2026-10-27](days/2026-10-27/) | The Close-By Line | Exhibition designer · Creative coder · Real estate developer · Ibn al-Haytham | System fonts only. | [asset](days/2026-10-27/artifact-1.html) |
