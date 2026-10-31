@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Use-By Date: the month your seniors run out of reconciliation hours</title>
+<style>
+:root{
+  --kraft:#ebe0cb;--card:#f8f2e5;--paper:#fffaf0;--ink:#1f1b16;--muted:#5b5144;
+  --rule:#8a7b66;--honey:#d7992c;--honeyl:#f2dca8;--spill:#2b2119;--bad:#8f2a1c;--ok:#2d5a37;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--kraft);color:var(--ink);font:16px/1.45 var(--sans)}
+.wrap{max-width:1060px;margin:0 auto;padding:12px 14px 32px}
+.privacy{margin:0 0 10px;padding:8px 10px;border:2px solid var(--ink);background:var(--paper);font-weight:600;font-size:.95rem}
+h1{font-size:2rem;line-height:1.1;margin:8px 0 4px;letter-spacing:-.01em}
+.sub{margin:0 0 4px;color:var(--muted);max-width:44em}
+h2{font-size:1.25rem;margin:0 0 4px}
+h3{font-size:1.05rem;margin:0 0 4px}
+.lede{margin:0 0 12px;color:var(--muted);font-size:.92rem}
+.panel{background:var(--card);border:1.5px dashed var(--rule);padding:14px;margin:14px 0}
+.front{display:grid;gap:14px;margin-top:14px}
+.front .panel{margin:0}
+@media(min-width:860px){.front{grid-template-columns:1.05fr 1fr;align-items:start}.stamp-panel{position:sticky;top:10px}}
+.kicker{margin:0;font-size:.8rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--muted)}
+.stamp{display:inline-block;margin:6px 0 4px;padding:.15em .45em;border:3px solid var(--ink);background:var(--paper);font:700 clamp(1.9rem,9vw,3.2rem)/1.1 var(--mono);letter-spacing:.05em}
+.stamp.over{background:var(--spill);color:var(--paper)}
+.when{margin:0 0 8px;font-size:.9rem;color:var(--muted)}
+.adv{margin:8px 0;padding:8px 10px;background:var(--honeyl);border-left:4px solid var(--honey);font-size:.95rem}
+.alts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.alt{border:1.5px solid var(--ink);background:var(--paper);padding:6px 8px}
+.alt span{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+.alt strong{font:700 1.2rem/1.2 var(--mono)}
+.alt small{display:block;color:var(--muted);font-size:.78rem}
+.last{margin:10px 0 0;font-size:.86rem;padding-top:8px;border-top:1px dashed var(--rule)}
+.grid{display:grid;gap:10px}
+@media(min-width:520px){.grid.two{grid-template-columns:1fr 1fr}}
+.f{display:block}
+.f .n{display:block;font-weight:700;font-size:.92rem}
+.f input[type=number],.f input[type=text]{display:block;width:100%;margin:3px 0 2px;padding:8px 9px;font:600 16px var(--mono);color:var(--ink);background:var(--paper);border:1.5px solid var(--ink);border-radius:0}
+.f input:focus{outline:3px solid var(--honey);outline-offset:1px}
+.f .why{display:block;font-size:.8rem;color:var(--muted)}
+.f .why b{color:var(--ink);font-weight:600}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.88rem;background:var(--paper)}
+th,td{border:1.5px solid var(--ink);padding:6px 7px;text-align:left;vertical-align:top}
+thead th{background:var(--ink);color:var(--paper);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
+tbody th{font-weight:700;background:var(--card)}
+td.inp{font-size:.8rem;color:var(--muted);background:var(--card)}
+td .d{font:700 1rem var(--mono)}
+td.brk .d{color:var(--bad)}
+td.hold .d{color:var(--ok)}
+td small{display:block;color:var(--muted);font-size:.76rem}
+.verdict{margin:12px 0 0;padding:10px 12px;border:2px solid var(--ink);background:var(--paper)}
+.verdict p{margin:0 0 6px}
+.verdict p:last-child{margin:0}
+.verdict .safer{border-left:4px solid var(--bad);padding-left:8px}
+.verdict .push{border-left:4px solid var(--ok);padding-left:8px}
+.paths{display:grid;gap:14px}
+@media(min-width:920px){.paths{grid-template-columns:repeat(3,1fr)}}
+.path{background:var(--card);border:1.5px dashed var(--rule);padding:12px}
+.path .tag{display:inline-block;font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;font-weight:700;padding:1px 6px;border:1.5px solid var(--ink);margin-bottom:6px}
+.path .tag.short{background:var(--honey)}
+.pdate{font:700 1.4rem/1.2 var(--mono);margin:2px 0}
+.pbad{font-size:.85rem;margin:0 0 8px;color:var(--muted)}
+.strip{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;margin:6px 0 4px}
+.fr{position:relative;height:42px;border:1.5px solid var(--ink);background:var(--paper);overflow:hidden}
+.fr i{position:absolute;left:0;right:0;bottom:0;background:var(--honey);transition:height .25s ease}
+.fr b{position:absolute;top:1px;left:3px;font:600 10px var(--mono);z-index:2;color:var(--muted)}
+.fr.ov{background:var(--spill)}
+.fr.ov i{background:var(--spill)}
+.fr.ov b{color:var(--kraft)}
+.fr.first{box-shadow:0 0 0 2px var(--bad)}
+.fr em{position:absolute;left:0;right:0;bottom:3px;z-index:2;text-align:center;font:700 9px var(--mono);font-style:normal;text-transform:uppercase;color:var(--ink)}
+.cap{font-size:.78rem;color:var(--muted);margin:0 0 8px}
+.tog{display:flex;gap:6px;align-items:center;font-size:.85rem;margin:4px 0 8px}
+.tog input{width:18px;height:18px;accent-color:var(--ink)}
+.note{font-size:.85rem;margin:6px 0}
+.sign{margin:8px 0;padding:6px 8px;border:2px solid var(--ink);background:var(--paper);font-weight:700}
+.warn{color:var(--bad);font-weight:600}
+.settings{margin-top:10px;padding-top:8px;border-top:1px dashed var(--rule)}
+ul.steps{margin:6px 0;padding-left:20px}
+ul.steps li{margin:3px 0}
+.formula{font:13px/1.55 var(--mono);background:var(--paper);border:1.5px solid var(--ink);padding:10px;white-space:pre-wrap;overflow-wrap:anywhere;margin:0}
+.qout{margin:10px 0 0;padding:10px;background:var(--paper);border:2px solid var(--ink)}
+.qout p{margin:0 0 6px}
+.qout p:last-child{margin:0}
+.big{font:700 1.3rem var(--mono)}
+footer{margin-top:20px;padding-top:10px;border-top:2px solid var(--ink);font-size:.82rem;color:var(--muted)}
+footer p{margin:0 0 6px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{
+  body{background:#fff}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .stamp-panel{position:static}
+  .panel,.path{break-inside:avoid;border-color:#777}
+  .tog{display:none}
+  .f input[type=number],.f input[type=text]{border:1px solid #777;padding:3px 6px}
+  .paths{grid-template-columns:1fr 1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<p class="privacy">Counts only. Nothing is uploaded. Nothing leaves this page.</p>
+<h1>Use-By Date</h1>
+<p class="sub">Five counts give the month your senior staff run out of reconciliation hours. The date changes as you type. The example is a firm with 4 seniors and 400 recs a month.</p>
+
+<div class="front">
+  <section class="panel stamp-panel" aria-live="polite">
+    <p class="kicker">Senior capacity runs out</p>
+    <div class="stamp" id="stamp">USE BY</div>
+    <p class="when" id="when"></p>
+    <p class="adv" id="adv"></p>
+    <div class="alts">
+      <div class="alt"><span>AI first pass</span><strong id="altAi"></strong><small id="altAiS"></small></div>
+      <div class="alt"><span>Hire one senior</span><strong id="altHire"></strong><small id="altHireS"></small></div>
+    </div>
+    <p class="last" id="last"></p>
+  </section>
+
+  <section class="panel">
+    <h2>The counts</h2>
+    <p class="lede">Each field says what it is for. No client names, no ledgers, no files.</p>
+    <div class="grid two">
+      <label class="f"><span class="n">Reconciliations per month</span>
+        <input id="recs" type="number" inputmode="decimal" min="0" step="1" value="400">
+        <span class="why"><b>For:</b> the work that arrives each month.</span></label>
+      <label class="f"><span class="n">Growth per month (%)</span>
+        <input id="growth" type="number" inputmode="decimal" step="0.1" value="3">
+        <span class="why"><b>For:</b> how fast that work grows. Use your last 12 months.</span></label>
+      <label class="f"><span class="n">Senior hours for recs per month</span>
+        <input id="cap" type="number" inputmode="decimal" min="0" step="1" value="640">
+        <span class="why"><b>For:</b> what your seniors can give. Example: 4 seniors × 160 h.</span></label>
+      <label class="f"><span class="n">Senior share of rec hours (%)</span>
+        <input id="share" type="number" inputmode="decimal" min="0" max="100" step="1" value="80">
+        <span class="why"><b>For:</b> dating the senior break, not the firm average. Junior hours are left out.</span></label>
+      <label class="f"><span class="n">Hours per rec</span>
+        <input id="hpr" type="number" inputmode="decimal" min="0" step="0.1" value="1.5">
+        <span class="why"><b>Default 1.5.</b> Change if yours differ.</span></label>
+      <label class="f"><span class="n">Senior cost per hour (£)</span>
+        <input id="costRate" type="number" inputmode="decimal" min="0" step="1" value="90">
+        <span class="why"><b>For:</b> pricing a rec hour. Take it from your own payroll.</span></label>
+    </div>
+  </section>
+</div>
+
+<section class="panel">
+  <h2>Bad, base and good case</h2>
+  <p class="lede">Same counts in every column. Only the driving inputs change. A path survives when it holds past month 12, one budget year.</p>
+  <div class="tw"><table id="cases"></table></div>
+  <div class="verdict" id="verdict" aria-live="polite"></div>
+</section>
+
+<section>
+  <h2>Three paths, same counts</h2>
+  <p class="lede">One frame per month, 18 frames. Honey is senior rec hours used. A dark frame is a month over capacity. The red edge marks the month it spills.</p>
+  <div class="paths">
+    <article class="path">
+      <span class="tag">Usual path</span>
+      <h3>Manual, as now</h3>
+      <p class="pdate" id="d-man"></p>
+      <p class="pbad" id="b-man"></p>
+      <label class="tog"><input type="checkbox" id="t-man"> Frames show bad case</label>
+      <div class="strip" id="s-man" role="img"></div>
+      <p class="cap" id="c-man"></p>
+      <p class="note" id="n-man"></p>
+    </article>
+
+    <article class="path">
+      <span class="tag">Usual fix</span>
+      <h3>Hire one senior</h3>
+      <p class="pdate" id="d-hire"></p>
+      <p class="pbad" id="b-hire"></p>
+      <label class="tog"><input type="checkbox" id="t-hire"> Frames show bad case</label>
+      <div class="strip" id="s-hire" role="img"></div>
+      <p class="cap" id="c-hire"></p>
+      <p class="note" id="n-hire"></p>
+      <div class="settings grid">
+        <label class="f"><span class="n">Months to find a senior</span>
+          <input id="hireDelay" type="number" inputmode="decimal" min="0" step="1" value="4">
+          <span class="why"><b>For:</b> when the extra hours arrive.</span></label>
+        <label class="f"><span class="n">Rec hours a new senior adds per month</span>
+          <input id="hireAdd" type="number" inputmode="decimal" min="0" step="1" value="120">
+          <span class="why"><b>For:</b> net of ramp-up and their other work.</span></label>
+        <label class="f"><span class="n">New senior cost per month (£)</span>
+          <input id="hireCost" type="number" inputmode="decimal" min="0" step="100" value="6500">
+          <span class="why"><b>For:</b> the salary that stays if volume falls. Your payroll figure.</span></label>
+      </div>
+    </article>
+
+    <article class="path">
+      <span class="tag short">Shortcut</span>
+      <h3>AI first pass</h3>
+      <p class="pdate" id="d-ai"></p>
+      <p class="pbad" id="b-ai"></p>
+      <label class="tog"><input type="checkbox" id="t-ai"> Frames show bad case</label>
+      <div class="strip" id="s-ai" role="img"></div>
+      <p class="cap" id="c-ai"></p>
+      <p class="sign">AI matches. Your senior signs.</p>
+      <p class="note" id="n-ai"></p>
+      <div class="settings grid">
+        <label class="f"><span class="n">Named reviewer</span>
+          <input id="reviewer" type="text" autocomplete="off" value="R. Okafor" placeholder="Senior who signs">
+          <span class="why"><b>For:</b> the audit file. Every rec on this path has one signer.</span></label>
+        <label class="f"><span class="n">Senior review hours per rec</span>
+          <input id="rev" type="number" inputmode="decimal" min="0" step="0.1" value="0.4">
+          <span class="why"><b>For:</b> senior time left after the AI pass. The bad case doubles it.</span></label>
+        <label class="f"><span class="n">AI fee per rec (£)</span>
+          <input id="aiPrice" type="number" inputmode="decimal" min="0" step="0.1" value="3">
+          <span class="why"><b>For:</b> the per-rec price on any quote you hold. Example figure only.</span></label>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>Monthly cost of rec work in month 12</h2>
+  <p class="lede">Senior hours priced at your cost per hour. Base and bad case, same counts.</p>
+  <div class="tw"><table id="cost"></table></div>
+  <p class="note" id="half"></p>
+</section>
+
+<section class="panel">
+  <h2>Who does what on the AI path</h2>
+  <ul class="steps">
+    <li><b>AI:</b> reads bank and ledger lines as counts and amounts, proposes matches, lists what it could not match.</li>
+    <li><b>Named senior:</b> checks the proposed matches.</li>
+    <li><b>Named senior:</b> clears every unmatched line by hand.</li>
+    <li><b>Named senior:</b> signs the rec and the note on file.</li>
+  </ul>
+  <p class="note">The review hours field is the time for those three senior steps. What your audit file must hold depends on your regulator and your firm's rules. Check them. This page does not.</p>
+</section>
+
+<section class="panel">
+  <h2>Two questions</h2>
+  <p class="lede">Optional. They turn freed hours into the figure your partners will ask for.</p>
+  <div class="grid two">
+    <label class="f"><span class="n">Advisory rate per hour (£)</span>
+      <input id="advRate" type="number" inputmode="decimal" min="0" step="5" value="220">
+      <span class="why"><b>For:</b> what a freed senior hour could bill. Rates vary by firm and market.</span></label>
+    <label class="f"><span class="n">Months recs have closed late</span>
+      <input id="lateMonths" type="number" inputmode="decimal" min="0" step="1" value="6">
+      <span class="why"><b>For:</b> how long this has run.</span></label>
+  </div>
+  <div class="qout" id="qout" aria-live="polite"></div>
+</section>
+
+<section class="panel">
+  <h2>The formula</h2>
+  <pre class="formula" id="formula"></pre>
+</section>
+
+<footer>
+  <p><b>Credits.</b> Packaging designer: a purpose label on every field, the carton date, nothing unlabelled. Beekeeper: the 18-frame strips, advisory hours under the date, the 375px phone test. Accounting firm partner: the counts-only line, the named reviewer, the deadline as headline. Mary Anning: the senior-share field and the last-close figure.</p>
+  <p>Not accounting, legal or tax advice. Payroll costs, billing rates and audit-file rules depend on your firm and jurisdiction. Enter your own figures. Last-close figures stay in this browser only.</p>
+  <p>Published by VoxxyAI.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+'use strict';
+var $=function(id){return document.getElementById(id)};
+var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var now=new Date(),BASE=now.getFullYear()*12+now.getMonth(),H=12,FR=18,MAXM=240,KEY='useby-closes-v1';
+
+function lab(i){return MON[((i%12)+12)%12]+' '+Math.floor(i/12)}
+function num(id){var el=$(id);if(!el)return null;var v=String(el.value).trim();if(v==='')return null;var n=Number(v);return isFinite(n)?n:null}
+function r(x,d){var p=Math.pow(10,d||0);return Math.round(x*p)/p}
+function fh(x){return Math.round(x).toLocaleString('en-GB')}
+function money(x){return '£'+Math.round(x).toLocaleString('en-GB')}
+function load(o,m){return o.recs*Math.pow(1+o.g,m)*o.h*o.share}
+function capAt(o,m){return o.cap+(m>=o.at?o.add:0)}
+function brk(o){for(var m=0;m<=MAXM;m++){if(load(o,m)>capAt(o,m)+1e-9)return m}return null}
+function holds(m){return m===null||m>H}
+function when(m){if(m===null)return 'Clear for 20 years';if(m===0)return 'Already over';return 'Month '+m+' · '+lab(BASE+m)}
+function short(m){if(m===null)return 'Clear 20+ yrs';if(m===0)return 'Over now';return lab(BASE+m)}
+function absM(m){return m===null?null:BASE+m}
+function labAbs(x){return x===null||x===undefined?'clear 20+ yrs':lab(x)}
+
+function getStore(){try{var s=window.localStorage.getItem(KEY);var d=s?JSON.parse(s):{};return {ok:true,data:(d&&typeof d==='object')?d:{}}}catch(e){return {ok:false,data:{}}}}
+function putStore(d){try{window.localStorage.setItem(KEY,JSON.stringify(d));return true}catch(e){return false}}
+
+function strip(o,bm){
+  var s='';
+  for(var m=1;m<=FR;m++){
+    var L=load(o,m),C=capAt(o,m),q=C>0?L/C:9,ov=L>C+1e-9;
+    var first=(m===bm)||(bm===0&&m===1);
+    s+='<div class="fr'+(ov?' ov':'')+(first?' first':'')+'" title="Month '+m+' ('+lab(BASE+m)+'): '+Math.round(q*100)+'% of senior rec hours"><b>'+m+'</b><i style="height:'+Math.min(100,q*100).toFixed(1)+'%"></i>'+((m===FR&&(bm===null||bm>FR))?'<em>clear</em>':'')+'</div>';
+  }
+  return s;
+}
+
+function blank(msg){
+  $('stamp').textContent='ENTER COUNTS';$('stamp').className='stamp';
+  $('when').textContent=msg;
+  ['adv','altAi','altAiS','altHire','altHireS','verdict','half','qout','formula'].forEach(function(id){$(id).textContent=''});
+  $('cases').innerHTML='';$('cost').innerHTML='';
+  ['man','hire','ai'].forEach(function(k){$('d-'+k).textContent='';$('b-'+k).textContent='';$('s-'+k).innerHTML='';$('c-'+k).textContent='';$('n-'+k).textContent=''});
+}
+
+function run(user){
+  var recs=num('recs'),gp=num('growth'),cap=num('cap'),sp=num('share'),hpr=num('hpr');
+  var ok=recs!==null&&recs>0&&gp!==null&&gp>-100&&cap!==null&&cap>0&&sp!==null&&sp>0&&sp<=100&&hpr!==null&&hpr>0;
+  if(!ok){blank('Fill in reconciliations, growth, senior hours, senior share and hours per rec. Share runs from 1 to 100.');showLast(null);return}
+  var g=gp/100,share=sp/100;
+  var d=num('hireDelay'),add=num('hireAdd'),hc=num('hireCost');
+  if(d===null||d<0)d=0; if(add===null||add<0)add=0;
+  var rev=num('rev'); if(rev===null||rev<0)rev=0;
+  var price=num('aiPrice'),rate=num('costRate'),adv=num('advRate'),late=num('lateMonths');
+  var who=String($('reviewer').value).trim();
+
+  var badG=Math.max(g*2,g+0.01),goodG=Math.min(g/2,g-0.01);
+  var cases=[
+    {k:'bad',name:'Bad',g:badG,rev:rev*2},
+    {k:'base',name:'Base',g:g,rev:rev},
+    {k:'good',name:'Good',g:goodG,rev:rev*0.75}
+  ];
+  cases.forEach(function(c){
+    c.om={recs:recs,g:c.g,h:hpr,share:share,cap:cap,add:0,at:Infinity};
+    c.oh={recs:recs,g:c.g,h:hpr,share:share,cap:cap,add:add,at:d};
+    c.oa={recs:recs,g:c.g,h:c.rev,share:share,cap:cap,add:0,at:Infinity};
+    c.man=brk(c.om);c.hire=brk(c.oh);c.ai=brk(c.oa);
+  });
+  var bad=cases[0],base=cases[1];
+
+  /* headline */
+  var st=$('stamp');
+  if(base.man===0){st.textContent='OVER NOW';st.className='stamp over'}
+  else if(base.man===null){st.textContent='CLEAR 20+ YRS';st.className='stamp'}
+  else{st.textContent='USE BY '+lab(BASE+base.man).toUpperCase();st.className='stamp'}
+  $('when').textContent=(base.man===null?'Manual path, base case. Load stays under capacity for 20 years.':(base.man===0?'Manual path, base case. Senior rec load is above capacity this month.':'Month '+base.man+' from now. Manual path, base case.'))+' Bad case: '+short(bad.man)+'.';
+
+  var freed=0;for(var m=1;m<=FR;m++){freed+=recs*Math.pow(1+g,m)*share*(hpr-rev)}
+  freed=Math.max(0,freed);
+  $('adv').textContent='AI first pass frees '+fh(freed)+' senior hours over the next 18 months for advisory work.'+(adv!==null&&adv>0?' At '+money(adv)+' an hour that is '+money(freed*adv)+' of billable time.':'');
+  $('altAi').textContent=short(base.ai);$('altAiS').textContent='Bad case: '+short(bad.ai);
+  $('altHire').textContent=short(base.hire);$('altHireS').textContent='Bad case: '+short(bad.hire);
+
+  /* case table */
+  function cell(mm){return '<td class="'+(holds(mm)?'hold':'brk')+'"><span class="d">'+(mm===null?'Clear':(mm===0?'Over':'M'+mm))+'</span><small>'+(mm===null?'20+ yrs':(mm===0?'now':lab(BASE+mm)))+'</small></td>'}
+  var t='<thead><tr><th scope="col">Path</th>'+cases.map(function(c){return '<th scope="col">'+c.name+'</th>'}).join('')+'</tr></thead><tbody>';
+  t+='<tr><th scope="row">Driving inputs</th>'+cases.map(function(c){return '<td class="inp">Growth '+r(c.g*100,2)+'% a month<br>Review '+r(c.rev,2)+' h per rec<br>Hire lands month '+d+'</td>'}).join('')+'</tr>';
+  t+='<tr><th scope="row">Manual</th>'+cases.map(function(c){return cell(c.man)}).join('')+'</tr>';
+  t+='<tr><th scope="row">Hire one senior</th>'+cases.map(function(c){return cell(c.hire)}).join('')+'</tr>';
+  t+='<tr><th scope="row">AI first pass</th>'+cases.map(function(c){return cell(c.ai)}).join('')+'</tr></tbody>';
+  $('cases').innerHTML=t;
+
+  /* verdict */
+  var v='',worst=Math.max(1,Math.pow(1+bad.g,H));
+  var line='<p>Bad case, same counts: manual '+when(bad.man).toLowerCase()+'. Hire '+when(bad.hire).toLowerCase()+'. AI first pass '+when(bad.ai).toLowerCase()+'.</p>';
+  if(holds(bad.ai)){
+    var gMax=Math.pow(cap/(recs*bad.rev*share||1e-9),1/H)-1;
+    var revMax=cap/(recs*share*worst);
+    v='<p class="push"><b>The AI plan survives the bad case.</b> It holds past month 12. It still holds a full year at up to '+(bad.rev>0?r(gMax*100,1)+'% growth a month (at '+r(bad.rev,2)+' h review)':'any growth while review is zero')+', or up to '+r(revMax,2)+' h review per rec (at '+r(bad.g*100,2)+'% growth).</p>'+line;
+  }else{
+    var revSafe=cap/(recs*share*worst);
+    var addSafe=recs*bad.rev*share*worst-cap;
+    v='<p class="safer"><b>Safer setting first:</b> keep senior review at or under '+r(revSafe,2)+' h per rec, or add '+fh(addSafe)+' senior rec hours a month. Either holds the bad case for 12 months.</p><p><b>As entered, the AI plan does not survive the bad case.</b> It breaks in '+when(bad.ai).toLowerCase()+'.</p>'+line;
+  }
+  if(!holds(bad.man))v+='<p>The manual path does not survive the bad case. Hours per rec would need to fall to '+r(cap/(recs*share*worst),2)+' to hold a year.</p>';
+  $('verdict').innerHTML=v;
+
+  /* paths */
+  var P={man:{c:'om',k:'man'},hire:{c:'oh',k:'hire'},ai:{c:'oa',k:'ai'}};
+  Object.keys(P).forEach(function(id){
+    var useBad=$('t-'+id).checked,c=useBad?bad:base,mm=c[P[id].k];
+    $('d-'+id).textContent=when(base[P[id].k]);
+    $('b-'+id).textContent='Bad case: '+when(bad[P[id].k]).toLowerCase()+'. '+(holds(bad[P[id].k])?'Holds the budget year.':'Breaks inside the budget year.');
+    var s=$('s-'+id);s.innerHTML=strip(c[P[id].c],mm);
+    s.setAttribute('aria-label',(useBad?'Bad':'Base')+' case, 18 months. '+(mm===null||mm>FR?'No month over capacity.':'First month over capacity: '+(mm===0?'now':'month '+mm)+'.'));
+    $('c-'+id).textContent='Showing '+(useBad?'bad':'base')+' case. Frames M1 to M18.'+(id==='ai'?' Empty space is senior time free for advisory.':'');
+  });
+
+  var L0=recs*hpr*share;
+  $('n-man').textContent='This month seniors need '+fh(L0)+' h for recs against '+fh(cap)+' h available.';
+  $('n-hire').textContent='Capacity rises to '+fh(cap+add)+' h from month '+d+'.'+(hc!==null?' The '+money(hc)+' monthly salary is paid from the day they start.':'');
+  $('n-ai').innerHTML=(who?'Reviewer: '+who.replace(/[&<>"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]})+' signs every rec on this path.':'<span class="warn">No reviewer named. Name one before this path goes in the audit file.</span>');
+
+  /* cost */
+  function costCol(c){
+    var r12=recs*Math.pow(1+c.g,12);
+    var mh=r12*hpr*share,ah=r12*c.rev*share,fee=price!==null?r12*price:null;
+    return {r12:r12,mh:mh,ah:ah,fee:fee,
+      mc:rate!==null?mh*rate:null,
+      ac:rate!==null?ah*rate+(fee||0):null};
+  }
+  var cb=costCol(base),cd=costCol(bad);
+  function mc(x){return '<td>'+fh(x.mh)+' h'+(x.mc!==null?'<br><b>'+money(x.mc)+'</b>':'')+(x.mh>cap?'<small>'+fh(x.mh-cap)+' h over capacity</small>':'')+'</td>'}
+  function hc2(x){return '<td>'+fh(x.mh)+' h'+(x.mc!==null?'<br><b>'+money(x.mc)+'</b>':'')+(hc!==null?'<small>plus '+money(hc)+' salary, fixed</small>':'')+(x.mh>cap+add?'<small>'+fh(x.mh-cap-add)+' h over capacity</small>':'')+'</td>'}
+  function ac(x){return '<td>'+fh(x.ah)+' h review'+(x.fee!==null?'<small>AI fee '+money(x.fee)+'</small>':'')+(x.ac!==null?'<b>'+money(x.ac)+'</b>':'')+'</td>'}
+  function sv(x){return '<td>'+(x.mc!==null&&x.ac!==null?'<b>'+money(x.mc-x.ac)+'</b> a month':'Enter cost per hour')+'<small>'+fh(x.mh-x.ah)+' senior h freed</small></td>'}
+  $('cost').innerHTML='<thead><tr><th scope="col">Path</th><th scope="col">Base, month 12</th><th scope="col">Bad, month 12</th></tr></thead><tbody>'+
+    '<tr><th scope="row">Recs that month</th><td>'+fh(cb.r12)+'</td><td>'+fh(cd.r12)+'</td></tr>'+
+    '<tr><th scope="row">Without AI: manual</th>'+mc(cb)+mc(cd)+'</tr>'+
+    '<tr><th scope="row">Without AI: hire</th>'+hc2(cb)+hc2(cd)+'</tr>'+
+    '<tr><th scope="row">With AI first pass</th>'+ac(cb)+ac(cd)+'</tr>'+
+    '<tr><th scope="row">AI against manual</th>'+sv(cb)+sv(cd)+'</tr></tbody>';
+  var idle=Math.max(0,cap+add-L0/2);
+  var halfAi=(recs/2)*(rev*share*(rate||0)+(price||0));
+  $('half').textContent='If volume halves: the hire path leaves seniors '+fh(idle)+' h a month with no recs'+(hc!==null?', and the '+money(hc)+' salary stays':'')+'. The AI path cost falls with volume, to '+(rate!==null||price!==null?money(halfAi):'half its current level')+' a month.';
+
+  /* questions */
+  var q='';
+  if(late!==null&&late>0){
+    q+='<p>Recs have closed late for '+r(late,0)+' months. At this month\'s volume that is about '+fh(L0*late)+' senior rec hours. The AI path would have cut that to about '+fh(recs*rev*share*late)+'.</p>';
+  }
+  if(adv!==null&&adv>0&&late!==null&&late>0){
+    q+='<p>Advisory revenue held up over 18 months:</p><p class="big">'+money(freed*adv)+'</p><p>'+fh(freed)+' freed senior hours × '+money(adv)+' an hour. Take this and the date above to your partners.</p>';
+  }else if(!q){
+    q='<p>Answer both questions to see the advisory revenue held up over 18 months.</p>';
+  }else{
+    q+='<p>Add an advisory rate to see the revenue held up over 18 months.</p>';
+  }
+  $('qout').innerHTML=q;
+
+  /* formula */
+  var fx;
+  if(L0>cap)fx='This month\'s load ('+fh(L0)+' h) is already above capacity ('+fh(cap)+' h). Break month = 0.';
+  else if(g<=0)fx='Growth is zero or below, so load does not pass capacity on this path.';
+  else{var lv=Math.log(cap/L0)/Math.log(1+g);fx='floor( ln('+fh(cap)+' ÷ '+r(L0,1)+') ÷ ln('+r(1+g,4)+') ) + 1\n  = floor('+r(lv,2)+') + 1 = '+(Math.floor(lv)+1)}
+  $('formula').textContent=
+'Senior rec load in month m\n  = recs × (1 + growth)^m × hours per rec × senior share\n\n'+
+'Break month (first month load is above capacity)\n  = floor( ln(capacity ÷ load in month 0) ÷ ln(1 + growth) ) + 1\n\n'+
+'Manual, base case:\n  '+fx+'\n\n'+
+'AI first pass: same formula, review hours per rec ('+r(rev,2)+') in place of hours per rec ('+r(hpr,2)+').\n'+
+'Hire: capacity rises by '+fh(add)+' h from month '+d+'. Checked month by month.\n'+
+'Bad case: growth '+r(badG*100,2)+'%, review × 2. Good case: growth '+r(goodG*100,2)+'%, review × 0.75.\n\n'+
+'Advisory hours freed over 18 months\n  = sum for m = 1 to 18 of recs × (1 + growth)^m × senior share × (hours per rec − review hours)';
+
+  /* last close */
+  var cur={at:BASE,man:absM(base.man),ai:absM(base.ai),hire:absM(base.hire)};
+  if(user){
+    var s0=getStore();
+    if(s0.ok){var dd=s0.data;if(dd.cur&&dd.cur.at!==BASE)dd.prev=dd.cur;dd.cur=cur;putStore(dd)}
+  }
+  showLast(cur);
+}
+
+function showLast(cur){
+  var s=getStore(),el=$('last');
+  if(!s.ok){el.textContent='This browser blocks storage. The last close cannot be kept here.';return}
+  var d=s.data,last=(d.cur&&d.cur.at!==BASE)?d.cur:d.prev;
+  if(!last||typeof last.at!=='number'){el.textContent='No earlier close saved in this browser. Once you change a field, this month\'s figures are kept on this device for next close.';return}
+  var t='Last close ('+lab(last.at)+'): manual '+labAbs(last.man)+', AI '+labAbs(last.ai)+'.';
+  if(cur&&cur.man!==null&&last.man!==null&&last.man!==undefined){
+    var diff=cur.man-last.man;
+    t+=' Manual date '+(diff===0?'did not move.':'moved '+Math.abs(diff)+' month'+(Math.abs(diff)===1?'':'s')+' '+(diff<0?'earlier.':'later.'));
+  }
+  el.textContent=t;
+}
+
+document.addEventListener('input',function(e){if(e.target&&e.target.tagName==='INPUT')run(e.target.type!=='checkbox')});
+document.addEventListener('change',function(e){if(e.target&&e.target.type==='checkbox')run(false)});
+run(false);
+})();
+</script>
+</body>
+</html>
