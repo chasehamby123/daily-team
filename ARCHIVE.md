@@ -1,11 +1,12 @@
 # Archive
 
-Every daily team and the asset it made, newest first. 28 days recorded.
+Every daily team and the asset it made, newest first. 29 days recorded.
 
 [Today](README.md)
 
 | Date | Task | Team | Constraint | Asset |
 |---|---|---|---|---|
+| [2026-11-01](days/2026-11-01/) | Drop-Off Ledger | Clockmaker · Florist · Investment banker · Repair technician from 2140 | Under 100 words of fixed text on the page. | [asset](days/2026-11-01/artifact-1.html) |
 | [2026-10-31](days/2026-10-31/) | Use-By Date | Packaging designer · Beekeeper · Accounting firm partner · Mary Anning | Results update as the user types, with no submit button. | [asset](days/2026-10-31/artifact-1.html) |
 | [2026-10-30](days/2026-10-30/) | Priced Leak | Chef · Taxidermist · Home services owner · Archivist from 2300 | Three-column grid only. | [asset](days/2026-10-30/artifact-1.html) |
 | [2026-10-29](days/2026-10-29/) | Three-Cell Pipeline Sheet | Perfumer · Locksmith · Roll-up operator · Settler on Mars in 2090 | Prints on one A4 page. | [asset](days/2026-10-29/artifact-1.html) |

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drop-Off Ledger</title>
+<style>
+:root{
+  --paper:#f6f1e4;--card:#fbf8f0;--ink:#1f2a36;--soft:#5a6573;
+  --rule:#cfc4a8;--brass:#a8761e;--brass-l:#f0e2c2;--red:#9b2d20;--green:#2f6b3a;
+  --num:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --serif:ui-serif,Georgia,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.4 var(--sans)}
+header{padding:20px 20px 8px;border-bottom:2px solid var(--ink);max-width:1120px;margin:0 auto}
+h1{font:600 30px/1.1 var(--serif);margin:0;letter-spacing:.01em}
+main{max-width:1120px;margin:0 auto;padding:16px 20px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:24px}
+section{min-width:0}
+.q{display:flex;gap:12px;margin-bottom:14px}
+.q label{flex:1;display:flex;flex-direction:column;font-size:13px;color:var(--soft);gap:4px}
+input[type=number]{font:600 18px var(--num);color:var(--ink);background:var(--card);border:1px solid var(--rule);border-radius:3px;padding:6px 8px;width:100%}
+table{border-collapse:collapse;width:100%}
+#causes th{font:500 12px var(--sans);color:var(--soft);text-align:left;padding:4px 4px 6px;border-bottom:1px solid var(--ink)}
+#causes td{padding:8px 4px;border-bottom:1px solid var(--rule);vertical-align:middle}
+#causes td.n{font-weight:600;font-size:14px}
+.tag{font:600 10px var(--num);color:var(--brass);border:1px solid var(--brass);border-radius:2px;padding:0 3px;margin-left:4px;vertical-align:1px}
+.sl{display:flex;align-items:center;gap:6px}
+.sl input{flex:1;min-width:60px;accent-color:var(--brass)}
+.sl output{font:600 13px var(--num);min-width:34px;text-align:right}
+#causes input[type=checkbox]{width:18px;height:18px;accent-color:var(--red)}
+.dialbar{display:flex;align-items:center;gap:10px;background:var(--ink);color:var(--paper);padding:10px 12px;border-radius:3px 3px 0 0}
+.dialbar label{font-size:14px;white-space:nowrap}
+.dialbar input{flex:1;accent-color:var(--brass)}
+.dialbar output{font:600 15px var(--num);min-width:48px;text-align:right;color:var(--brass-l)}
+.grid{display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--ink);border-top:0;background:var(--card)}
+.box{padding:10px;min-height:120px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.box:nth-child(2n){border-right:0}
+.box:nth-child(n+3){border-bottom:0}
+.box h3{margin:0 0 6px;font:600 12px var(--sans);text-transform:uppercase;letter-spacing:.08em;color:var(--soft)}
+.box.tl{background:var(--brass-l)}
+.box.tl h3{color:var(--brass)}
+.box ul{list-style:none;margin:0;padding:0}
+.box li{display:flex;justify-content:space-between;gap:6px;font-size:14px;padding:3px 0;border-bottom:1px dotted var(--rule);transition:background .2s}
+.box li span:last-child{font:13px var(--num);white-space:nowrap}
+.box li.first{font-weight:700;border-left:4px solid var(--brass);padding-left:6px;background:#fff8e6}
+.box li .warn{color:var(--red);font-weight:700}
+#verdict{font:600 17px var(--serif);margin:16px 0 8px;padding:8px 10px;border-left:4px solid var(--green);background:var(--card)}
+#verdict.bad{border-color:var(--red);color:var(--red)}
+#cases{background:var(--card);border:1px solid var(--rule)}
+#cases th,#cases td{padding:6px 8px;border-bottom:1px solid var(--rule);text-align:right;font-size:14px}
+#cases thead th{font:600 13px var(--sans);border-bottom:2px solid var(--ink)}
+#cases thead th.b{color:var(--red)}#cases thead th.g{color:var(--green)}
+#cases tbody th{text-align:left;font-weight:500;color:var(--soft);white-space:nowrap}
+#cases td{font-family:var(--num)}
+#cases tr.gap th,#cases tr.gap td{border-top:2px solid var(--ink)}
+.note{font-size:13px;color:var(--soft);margin:8px 0}
+.formula code{display:block;font:12px/1.6 var(--num);background:var(--card);border:1px dashed var(--rule);padding:8px 10px;white-space:normal;word-break:break-word}
+.formula input{width:52px;font-size:12px;padding:1px 4px;display:inline-block}
+footer{max-width:1120px;margin:0 auto;padding:12px 20px 28px;border-top:1px solid var(--rule);font-size:12px;color:var(--soft)}
+footer p{margin:4px 0}
+@media (max-width:760px){
+  main{grid-template-columns:1fr;gap:16px;padding:12px}
+  header{padding:16px 12px 8px}
+  h1{font-size:24px}
+  #cases th,#cases td{padding:5px 4px;font-size:12px}
+  .box{min-height:90px;padding:8px}
+  .box li{font-size:13px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{
+  body{background:#fff}
+  main{grid-template-columns:1fr 1fr;gap:12px}
+  .dialbar{background:#fff;color:#000;border:2px solid #000}
+  .dialbar output{color:#000}
+  .box.tl,.box li.first{background:#eee}
+  section{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header><h1>Drop-Off Ledger</h1></header>
+<main>
+<section>
+  <div class="q">
+    <label>Deal, $m<input id="deal" type="number" min="0" step="5" value="120"></label>
+    <label>Weeks<input id="weeks" type="number" min="0" step="1" value="9"></label>
+  </div>
+  <table id="causes">
+    <thead><tr><th></th><th>Buyers lost</th><th>Hours</th><th>2+ tools</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</section>
+<section>
+  <div class="dialbar">
+    <label for="slip">Your timetable slips</label>
+    <input type="range" id="slip" min="0" max="6" step="1" value="0">
+    <output id="slipv">0 mo</output>
+  </div>
+  <div class="grid">
+    <div class="box tl"><h3>Fix first</h3><ul id="b0"></ul></div>
+    <div class="box"><h3>Plan</h3><ul id="b1"></ul></div>
+    <div class="box"><h3>Batch</h3><ul id="b2"></ul></div>
+    <div class="box"><h3>Drop</h3><ul id="b3"></ul></div>
+  </div>
+  <p id="verdict"></p>
+  <table id="cases">
+    <thead><tr><th></th><th class="b">Bad</th><th>Base</th><th class="g">Good</th></tr></thead>
+    <tbody>
+      <tr><th>Slip</th><td id="s0"></td><td id="s1"></td><td id="s2"></td></tr>
+      <tr><th>Buyers</th><td id="l0"></td><td id="l1"></td><td id="l2"></td></tr>
+      <tr><th>At risk</th><td id="r0"></td><td id="r1"></td><td id="r2"></td></tr>
+      <tr><th>First fix</th><td id="f0"></td><td id="f1"></td><td id="f2"></td></tr>
+      <tr class="gap"><th>AI off</th><td id="x0"></td><td id="x1"></td><td id="x2"></td></tr>
+      <tr><th>AI on</th><td id="y0"></td><td id="y1"></td><td id="y2"></td></tr>
+      <tr class="gap"><th>Retainer</th><td id="p0"></td><td id="p1"></td><td id="p2"></td></tr>
+      <tr><th>Fee share</th><td id="q0"></td><td id="q1"></td><td id="q2"></td></tr>
+    </tbody>
+  </table>
+  <p class="note">Associate signs off AI. Dead deal: $40k vs $0.</p>
+  <p class="formula"><code>fee = deal × <input id="rate" type="number" min="0" step="0.1" value="1.5" aria-label="fee rate">% · left = ⌈12 × ½^(weeks/7 + slip/3)⌉ · cost = lost × fee/12 · first: hours ≤ 1, cost ≥ fee/12 · holds: left ≥ 2 · AI: 24h → 2h × $250 × (1 + slip/6) · share = 5% fee</code></p>
+</section>
+</main>
+<footer>
+  <p>Clockmaker: causes · Florist: hours, shortcut · Banker: wording · Technician: dial</p>
+  <p>Publisher: OuterHaven Advisory</p>
+</footer>
+<script>
+(function(){
+  var C=[
+    {n:"Data room",b:1,h:4,t:0,ai:0},
+    {n:"Q&A backlog",b:3,h:1,t:0,ai:1},
+    {n:"Add-backs",b:1,h:2,t:0,ai:1},
+    {n:"Mgmt deck",b:1,h:8,t:1,ai:0},
+    {n:"Timetable",b:0.5,h:0.5,t:0,ai:0},
+    {n:"Price guidance",b:0.5,h:3,t:0,ai:0}
+  ];
+  var KEY="dropoff-ledger-v1";
+  var $=function(id){return document.getElementById(id)};
+  try{
+    var s=JSON.parse(localStorage.getItem(KEY)||"null");
+    if(s&&s.c&&s.c.length===C.length){
+      $("deal").value=s.deal;$("weeks").value=s.weeks;$("rate").value=s.rate;$("slip").value=s.slip;
+      for(var i=0;i<C.length;i++){C[i].b=+s.c[i].b;C[i].h=+s.c[i].h;C[i].t=s.c[i].t?1:0;}
+    }
+  }catch(e){}
+  var tb=document.querySelector("#causes tbody");
+  C.forEach(function(c,i){
+    var tr=document.createElement("tr");
+    tr.innerHTML='<td class="n">'+c.n.replace("&","&amp;")+(c.ai?'<span class="tag">AI</span>':'')+'</td>'+
+      '<td><div class="sl"><input type="range" min="0" max="6" step="0.5" data-i="'+i+'" data-k="b" value="'+c.b+'" aria-label="'+c.n+'"><output></output></div></td>'+
+      '<td><div class="sl"><input type="range" min="0.5" max="24" step="0.5" data-i="'+i+'" data-k="h" value="'+c.h+'" aria-label="'+c.n+'"><output></output></div></td>'+
+      '<td><input type="checkbox" data-i="'+i+'" data-k="t"'+(c.t?' checked':'')+' aria-label="'+c.n+'"></td>';
+    tb.appendChild(tr);
+  });
+  function num(id,d){var v=parseFloat($(id).value);return isFinite(v)&&v>=0?v:d}
+  function money(v){
+    var a=Math.abs(v);
+    if(a>=1e6)return "$"+(+(v/1e6).toFixed(2))+"m";
+    if(a>=1e4)return "$"+Math.round(v/1e3)+"k";
+    return "$"+Math.round(v).toLocaleString("en-US");
+  }
+  function b(v){return (+v.toFixed(1)).toString()}
+  function render(){
+    var deal=num("deal",0),weeks=num("weeks",0),rate=num("rate",0),slip=+$("slip").value;
+    tb.querySelectorAll("input").forEach(function(el){
+      var c=C[+el.dataset.i],k=el.dataset.k;
+      if(k==="t"){c.t=el.checked?1:0;return}
+      c[k]=+el.value;
+      el.nextElementSibling.textContent=k==="h"?b(c.h)+"h":b(c.b);
+    });
+    $("slipv").textContent=slip+" mo";
+    var fee=deal*1e6*rate/100,fpb=fee/12;
+    function left(s){return Math.max(0,Math.ceil(12*Math.pow(0.5,weeks/7+s/3)-1e-9))}
+    var lost0=Math.max(1,12-left(0));
+    function costs(s){var k=(12-left(s))/lost0;return C.map(function(c){return {n:c.n,b:c.b,h:c.h,t:c.t,cost:c.b*fpb*k}})}
+    function first(list){
+      var q=list.filter(function(x){return x.h<=1&&x.cost>=fpb&&x.cost>0}).sort(function(a,z){return z.cost-a.cost});
+      if(q.length)return q[0];
+      var r=list.slice().sort(function(a,z){return z.cost/z.h-a.cost/a.h});
+      return r[0];
+    }
+    var list=costs(slip),f=first(list);
+    var boxes=[[],[],[],[]];
+    list.forEach(function(x){
+      var hi=x.cost>=fpb&&x.cost>0,qk=x.h<=1;
+      boxes[(hi?0:2)+(qk?0:1)].push(x);
+    });
+    boxes.forEach(function(arr,i){
+      arr.sort(function(a,z){return z.cost-a.cost});
+      $("b"+i).innerHTML=arr.map(function(x){
+        return '<li'+(x===f?' class="first"':'')+'><span>'+x.n.replace("&","&amp;")+(x.t?' <span class="warn">⚠</span>':'')+'</span><span>'+money(x.cost)+' · '+b(x.h)+'h</span></li>';
+      }).join("");
+    });
+    var cases=[slip+6,slip,0];
+    cases.forEach(function(s,i){
+      var l=left(s),fx=first(costs(s));
+      if(i===2){l=Math.min(12,left(0)+first(costs(0)).b)}
+      var risk=(12-l)/12*fee,af=1+s/6;
+      $("s"+i).textContent=s+" mo";
+      $("l"+i).textContent=b(l);
+      $("r"+i).textContent=money(risk);
+      $("f"+i).textContent=fx?fx.n:"";
+      $("x"+i).textContent=money(24*af*250);
+      $("y"+i).textContent=money(2*af*250);
+      $("p"+i).textContent=money(40000);
+      $("q"+i).textContent=money(l>=2?0.05*fee:0);
+    });
+    var max=-1;for(var s=0;s<=120;s++){if(left(s)>=2)max=s;else break}
+    var v=$("verdict");
+    if(left(slip+6)>=2){v.className="";v.textContent="Bad case holds. Breaks past "+max+" mo."}
+    else{v.className="bad";v.textContent="Bad case breaks. Safer slip: "+(max<0?"none":"≤ "+max+" mo")+"."}
+    try{localStorage.setItem(KEY,JSON.stringify({deal:$("deal").value,weeks:$("weeks").value,rate:$("rate").value,slip:slip,c:C.map(function(c){return {b:c.b,h:c.h,t:c.t}})}))}catch(e){}
+  }
+  document.addEventListener("input",render);
+  document.addEventListener("change",render);
+  render();
+})();
+</script>
+</body>
+</html>
