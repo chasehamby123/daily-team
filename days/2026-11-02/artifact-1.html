@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Who's In First: a doubt sorter for merchant bankers</title>
+<style>
+:root{--ink:#111;--paper:#FAF8F3;--red:#B3261E}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink)}
+body{font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+.wrap{max-width:1140px;margin:0 auto;padding:28px 20px 40px}
+h1,h2,h3{font-family:ui-serif,Georgia,"Times New Roman",serif;font-weight:700;line-height:1.15;margin:0}
+h1{font-size:2.6rem;letter-spacing:-.01em}
+h2{font-size:1.45rem;margin:0 0 10px}
+h3{font-size:1.05rem;margin:0 0 6px}
+.for{font-size:1.1rem;max-width:60ch;margin:10px 0 0}
+.rule{border:0;border-top:3px solid var(--ink);margin:18px 0 22px}
+.mono,input[type=number],td.n{font-family:ui-monospace,Menlo,Consolas,"Liberation Mono",monospace}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:36px;align-items:start}
+@media (max-width:880px){.grid{grid-template-columns:1fr;gap:28px}h1{font-size:2.1rem}}
+.cheque{border:3px solid var(--ink);padding:16px 16px 14px}
+.cheque label{display:block;font-weight:700;font-size:1.05rem}
+.cheque input{font-size:1.7rem;width:100%;margin-top:6px}
+.hint{font-size:.88rem;margin:6px 0 0;max-width:60ch}
+input[type=number],input[type=text],textarea{background:var(--paper);color:var(--ink);border:2px solid var(--ink);border-radius:0;padding:6px 8px;font-size:1rem}
+input:focus,textarea:focus,button:focus,label.item:focus-within{outline:3px solid var(--red);outline-offset:2px}
+.qs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.qs label{font-weight:700;font-size:.95rem;display:block}
+.qs input{width:100%;margin-top:4px}
+.sect{margin-top:22px}
+fieldset{border:0;border-top:2px solid var(--ink);margin:14px 0 0;padding:8px 0 0}
+legend{font-weight:700;padding:0 8px 0 0;font-size:.95rem}
+label.item{display:flex;gap:10px;align-items:flex-start;padding:5px 0;cursor:pointer}
+label.item input{width:20px;height:20px;margin:2px 0 0;accent-color:#111;flex:none}
+.flag{display:inline-block;border:1px solid var(--ink);font-size:.78rem;padding:0 6px;margin-left:4px;white-space:nowrap}
+.flag:empty{display:none}
+textarea{width:100%;min-height:110px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem}
+button{background:var(--ink);color:var(--paper);border:2px solid var(--ink);border-radius:0;padding:8px 14px;font:inherit;font-weight:700;cursor:pointer}
+button.alt{background:var(--paper);color:var(--ink)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.panel{border:2px solid var(--ink);padding:16px;margin-bottom:22px}
+.stop{color:var(--red);font-family:ui-serif,Georgia,serif;font-size:2rem;font-weight:700;margin:0;border:3px solid var(--red);padding:18px}
+.verdict{font-family:ui-serif,Georgia,serif;font-size:1.5rem;font-weight:700;margin:0 0 8px}
+.dull{color:var(--red)}
+.bars{font-family:ui-monospace,Menlo,Consolas,monospace;margin:8px 0;line-height:1.7}
+.formula{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem;border-left:3px solid var(--ink);padding:4px 10px;margin:10px 0}
+table{border-collapse:collapse;width:100%;margin:10px 0;font-size:.92rem}
+th,td{border:1px solid var(--ink);padding:6px 8px;text-align:left;vertical-align:top}
+th{font-weight:700}
+td.n{text-align:right;white-space:nowrap}
+.why{font-size:.8rem;display:block;font-weight:400}
+.loss,.gain{font-size:1.05rem;font-weight:700;margin:6px 0}
+.loss{color:var(--red)}
+.ans{border-top:1px solid var(--ink);padding:10px 0}
+.ans p{margin:4px 0;max-width:60ch}
+.ten{font-style:italic}
+.assume{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:8px}
+.assume label{font-size:.85rem;font-weight:700}
+.assume input{width:100%;margin-top:3px}
+.small{font-size:.82rem;max-width:70ch}
+#link{width:100%;margin-top:8px;font-size:.8rem}
+footer{border-top:3px solid var(--ink);margin-top:34px;padding-top:12px;font-size:.85rem}
+footer p{margin:4px 0;max-width:90ch}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media print{
+ .noprint{display:none!important}
+ .grid{display:block}
+ body{font-size:10.5pt}
+ .wrap{padding:0}
+ .panel,table,.ans{break-inside:avoid}
+ h1{font-size:22pt}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+ <h1>Who's In First</h1>
+ <p class="for">What it is for: it tells you which worries about a deal are real before you spend a lunch on them. Tick the doubts you hold. Each one gets a plain answer and one question to put to the sponsor.</p>
+</header>
+<hr class="rule">
+
+<div class="grid">
+<main>
+ <div class="cheque">
+  <label for="c">1. The sponsor's own cheque, in dollars</label>
+  <input type="number" id="c" min="0" step="100000" inputmode="numeric">
+  <p class="hint">Money wired in, from the sponsor's own pocket. A "commitment" counts as 0.</p>
+ </div>
+
+ <div class="qs">
+  <div><label for="r">2. Raise size, $</label><input type="number" id="r" min="0" step="1000000" inputmode="numeric"></div>
+  <div><label for="m">3. Months the stack has been open</label><input type="number" id="m" min="0" step="1" inputmode="numeric"></div>
+ </div>
+
+ <div class="sect">
+  <h2>The stack, read from the bottom up</h2>
+  <p class="hint">Tick the doubts you hold. All twelve are on one sheet. A flag means the clause scan found something. It never ticks for you.</p>
+  <div id="stack"></div>
+ </div>
+
+ <div class="sect panel">
+  <h3>Term-sheet clause scan</h3>
+  <p class="hint">Paste the term sheet or load a .txt file. The scan checks four clauses: GP commitment, springing lien, PIK toggle, key-person. It runs on this device. Nothing is sent anywhere. Flags appear beside the boxes. You do the ticking.</p>
+  <textarea id="ts" aria-label="Term sheet text"></textarea>
+  <div class="btns noprint">
+   <label class="alt" style="border:2px solid #111;padding:8px 14px;font-weight:700;cursor:pointer">Load .txt<input type="file" id="tsf" accept=".txt,text/plain" style="display:none"></label>
+  </div>
+  <p class="hint" id="scanout"></p>
+ </div>
+
+ <div class="btns noprint">
+  <button id="ex" class="alt">Load the worked example</button>
+  <button id="clr" class="alt">Clear everything</button>
+ </div>
+</main>
+
+<section id="out" aria-live="polite"></section>
+</div>
+
+<footer>
+ <p>Credits. Glassblower: the what-it-is-for line and the tap-test weight. Tailor: all twelve doubts on one sheet, answers set at 60 characters, the fee and share table with its bad-case rows. Merchant banker: the sponsor's cheque first, the red stop, the stack from the bottom up, "sponsor" over "provider", and questions that end in documents or a wire. Time: the ten-year lines, the shared link, and clause flags that never tick for you.</p>
+ <p class="small">Dealing with a provider instead, such as a law firm or data-room vendor: the same questions apply. Ask them for the document.</p>
+ <p class="small">Not legal, tax or investment advice. Placement fees and promote sharing depend on local rules and your licence. Enter your own figures.</p>
+ <p>Published by OuterHaven Advisory.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+var L=['Sponsor equity','Preferred','Mezz','Senior'];
+var D=[
+{l:0,d:"The sponsor's cheque is a commitment, not cash.",a:"Committed is not funded. Ask when the money moved, and from where.",q:"Send the wire confirmation for your equity, with date and amount.",t:"Year ten: the deal is remembered for a sponsor who never paid in."},
+{l:0,d:"The sponsor's money comes back out early.",a:"Fees and early distributions can return their cheque before you see yours.",q:"Send the fee schedule and the waterfall showing when your equity can leave.",t:"Year ten: the sponsor has been paid out and you still hold the asset."},
+{l:0,d:"The sponsor's stake is small against the raise.",a:"A small cheque means a small loss for them if it fails.",q:"Send a bank or auditor letter setting this cheque against your other funds.",t:"Year ten: a recap where the sponsor walks and you fund the gap."},
+{l:1,d:"The preferred return is loose.",a:"Preferred without a fixed return and a date is common equity with a label.",q:"Send the preferred terms with the return, the cap and the redemption date.",t:"Year ten: a return that was never fixed has been cut twice."},
+{l:1,d:"Board control after a default is unclear.",a:"Look for a switch that hands seats to preferred on a missed payment.",q:"Send the shareholder agreement clause on board control after default.",t:"Year ten: a board that kept control while your layer took the loss."},
+{l:1,d:"Others in this layer have better terms.",a:"Side letters can put another investor ahead inside the same layer.",q:"Send every side letter for this layer, or a signed statement there are none.",t:"Year ten: a second class inside your layer that was paid first."},
+{l:2,d:"The mezz has a springing lien.",a:"A springing lien jumps ahead of you when a trigger trips.",q:"Send the intercreditor agreement with every lien trigger marked.",t:"Year ten: the lien sprang in year three and you found out late."},
+{l:2,d:"Mezz interest is PIK and compounds.",a:"PIK interest is not paid in cash. It adds to what is owed above you.",q:"Send the PIK toggle terms and a schedule of the mezz balance by year.",t:"Year ten: the mezz balance is twice the loan and sits above you."},
+{l:2,d:"There is no key-person clause.",a:"If the one person who runs this leaves, nothing changes on paper.",q:"Send the key-person clause, or confirm in writing that there is none.",t:"Year ten: the founder left in year two and the plan left with them."},
+{l:3,d:"Senior covenants are tight against the plan.",a:"Thin headroom means one soft quarter hands the lender the keys.",q:"Send the covenant model with headroom by quarter for three years.",t:"Year ten: a breach in one soft quarter and a new owner."},
+{l:3,d:"The senior loan matures before the exit.",a:"A maturity before exit forces a refinance at whatever rates are then.",q:"Send the senior term sheet and the refinance plan with dates.",t:"Year ten: a forced refinance at the worst rate of the decade."},
+{l:3,d:"Rates float and are not hedged.",a:"Floating debt without a hedge passes every rate rise straight to you.",q:"Send the hedge confirmation, or the rate at which coverage fails.",t:"Year ten: every rate rise paid from your return, none from theirs."}
+];
+var SAMPLE="Indicative terms. Project Harbour.\nTotal raise: $40,000,000.\nSenior: $22,000,000 floating, SOFR + 325 bps, matures 2030.\nMezzanine: $8,000,000, 12% coupon with PIK toggle. Springing lien on a missed coverage test.\nPreferred: $8,000,000, 9% target return.\nSponsor equity: $2,000,000.";
+var EX={c:2000000,r:40000000,m:7,t:[1,6,7,8],F:2,S:1,P:10,Pr:15,d0:150000,d1:45000,cn:"",ts:SAMPLE};
+var NUM=['c','r','m','F','S','P','Pr','d0','d1'];
+function $(id){return document.getElementById(id)}
+function m(v){var a=Math.abs(v),s;if(a>=1e6)s=(a/1e6).toFixed(2).replace(/\.?0+$/,'')+'m';else if(a>=1e3)s=Math.round(a/1e3)+'k';else s=String(Math.round(a));return (v<0?'-':'')+'$'+s}
+function esc(x){return String(x).replace(/[&<>"]/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]})}
+
+var h='';
+L.forEach(function(n,li){
+ h+='<fieldset><legend>Layer '+(li+1)+' · '+n+(li===0?' (bottom, first in)':li===3?' (top)':'')+'</legend>';
+ D.forEach(function(x,i){if(x.l===li)h+='<label class="item"><input type="checkbox" id="t'+i+'"><span>'+x.d+' <span class="flag" id="f'+i+'"></span></span></label>'});
+ h+='</fieldset>';
+});
+$('stack').innerHTML=h;
+
+// assumption inputs live in the result column; created once
+var out=$('out');
+out.innerHTML='<div id="res"></div>'+
+'<div class="panel" id="asm"><h3>Your figures for the fee table</h3><div class="assume">'+
+'<div><label for="F">Placement fee, %</label><input type="number" id="F" step="0.1" min="0"></div>'+
+'<div><label for="S">Share-path fee, %</label><input type="number" id="S" step="0.1" min="0"></div>'+
+'<div><label for="P">Share of sponsor promote, %</label><input type="number" id="P" step="1" min="0"></div>'+
+'<div><label for="Pr">Sponsor promote at plan, % of raise</label><input type="number" id="Pr" step="0.5" min="0"></div>'+
+'<div><label for="d0">Diligence spend, analyst first read, $</label><input type="number" id="d0" step="5000" min="0"></div>'+
+'<div><label for="d1">Diligence spend, machine first read, $</label><input type="number" id="d1" step="5000" min="0"></div>'+
+'<div><label for="cn">Counsel who signs the summary</label><input type="text" id="cn" placeholder="Counsel name"></div>'+
+'</div><p class="small">Fee levels and whether promote sharing is allowed depend on local rules and your licence. These are your inputs, not a recommendation.</p></div>';
+
+function get(){
+ var s={};NUM.forEach(function(k){var v=parseFloat($(k).value);s[k]=isFinite(v)?v:0});
+ s.cn=$('cn').value;s.ts=$('ts').value;s.t=[];
+ D.forEach(function(x,i){if($('t'+i).checked)s.t.push(i)});return s;
+}
+function load(s){
+ NUM.forEach(function(k){$(k).value=(s[k]===undefined||s[k]===null)?'':s[k]});
+ $('cn').value=s.cn||'';$('ts').value=s.ts||'';
+ D.forEach(function(x,i){$('t'+i).checked=(s.t||[]).indexOf(i)>-1});
+ update();
+}
+function save(s){try{localStorage.setItem('whos-in-first',JSON.stringify(s))}catch(e){}}
+
+function scan(txt){
+ var f={},has=txt.trim().length>0;
+ if(has){
+  if(!/gp commitment|general partner commitment|sponsor commitment/i.test(txt))f[0]='No GP commitment clause found';
+  if(/springing/i.test(txt))f[6]='Springing lien found';
+  if(/\bPIK\b|payment[\s-]in[\s-]kind/i.test(txt))f[7]='PIK toggle found';
+  if(!/key[\s-]?(person|man)/i.test(txt))f[8]='No key-person clause found';
+ }
+ var n=0;D.forEach(function(x,i){$('f'+i).textContent=f[i]?'Flag: '+f[i]:'';if(f[i])n++});
+ $('scanout').textContent=has?n+' flag'+(n===1?'':'s')+' from 4 clauses checked. Read each flag against the source page before you tick.':'No term sheet entered. No flags.';
+}
+
+function tapW(c,mo){return c*mo}
+function tapV(w){
+ if(w>=12)return '<span class="dull">Dull. The deal is the problem.</span>';
+ if(w>=4)return 'Unclear. Tap again after the sponsor answers.';
+ if(w>=1)return 'Clear enough. Ask, then move on.';
+ return 'Nothing tapped yet.';
+}
+
+function update(){
+ var s=get();scan(s.ts);save(s);
+ var res=$('res'),asm=$('asm');
+ if(!(s.c>0)){res.innerHTML='<p class="stop">No sponsor money in the deal</p>';asm.style.display='none';return}
+ asm.style.display='';
+ var r=s.r,mo=s.m,H='';
+
+ // tap test
+ var cnt=[0,0,0,0];s.t.forEach(function(i){cnt[D[i].l]++});
+ var loud=0;cnt.forEach(function(c,i){if(c>cnt[loud])loud=i});
+ var K=cnt[loud];
+ var cs=[{k:'Bad',c:K,mo:mo+6,why:'No answers. Six more months open.'},{k:'Base',c:K,mo:mo,why:'As ticked, months as entered.'},{k:'Good',c:Math.floor(K/2),mo:mo,why:'Sponsor answers half of them this month.'}];
+ var pct=r>0?(s.c/r*100):0;
+ H+='<div class="panel"><h2>Tap test</h2>';
+ H+='<p class="mono">Sponsor in first: '+m(s.c)+(r>0?', '+pct.toFixed(1)+'% of a '+m(r)+' raise.':'. Enter the raise size.')+'</p>';
+ H+='<p class="verdict">'+tapV(tapW(K,mo))+'</p>';
+ H+='<div class="bars">';
+ for(var li=0;li<4;li++){var b='';for(var j=0;j<3;j++)b+=j<cnt[li]?'■':'□';H+=b+' '+L[li]+(K>0&&li===loud?' : loudest, '+K+' × '+mo+' months = '+(K*mo):'')+'<br>'}
+ H+='</div>';
+ H+='<table><tr><th></th>'+cs.map(function(x){return '<th>'+x.k+'<span class="why">'+x.why+'</span></th>'}).join('')+'</tr>';
+ H+='<tr><td>Doubts on '+L[loud]+'</td>'+cs.map(function(x){return '<td class="n">'+x.c+'</td>'}).join('')+'</tr>';
+ H+='<tr><td>Months open</td>'+cs.map(function(x){return '<td class="n">'+x.mo+'</td>'}).join('')+'</tr>';
+ H+='<tr><td>Weight</td>'+cs.map(function(x){return '<td class="n">'+tapW(x.c,x.mo)+'</td>'}).join('')+'</tr></table>';
+ if(K===0){H+='<p>Tick the doubts you hold to tap the deal.</p>'}
+ else{
+  var wb=tapW(K,mo+6);
+  if(wb<12){var bm=Math.ceil(12/K);H+='<p>Survives the bad case: weight '+wb+' after six more months. It turns dull at '+bm+' months open with these doubts unanswered.</p>'}
+  else{var cmax=Math.floor(11/(mo+6)),need=Math.max(0,K-cmax);H+='<p>Does not survive the bad case. Safer setting: get written answers to '+need+' of the '+K+' doubts on '+L[loud]+' before the next meeting. The same layer ringing dull for months means the deal, not your nerves.</p>'}
+ }
+ H+='<p class="formula">Weight = doubts on the loudest layer × months open. 12 or more: dull. 4 to 11: unclear. 1 to 3: clear enough.</p></div>';
+
+ // answers
+ H+='<div class="panel"><h2>Your doubts, answered</h2>';
+ if(!s.t.length)H+='<p>No doubts ticked.</p>';
+ s.t.forEach(function(i){var x=D[i];H+='<div class="ans"><h3>'+L[x.l]+' · '+x.d+'</h3><p>'+x.a+'</p><p><b>Ask the sponsor:</b> '+x.q+'</p><p class="ten">'+x.t+'</p></div>'});
+ H+='<div class="btns noprint"><button id="cp">Copy a link to this ticked state</button><button id="pr" class="alt">Print the questions</button></div><input type="text" id="link" class="noprint" readonly aria-label="Link to this ticked state"></div>';
+
+ // fee vs share
+ var F=s.F/100,S=s.S/100,P=s.P/100,Pr=s.Pr/100;
+ var fc=[{k:'Bad',v:.5,p:0,why:'Raise halves. Rates double, promote 0% of plan.'},{k:'Base',v:1,p:1,why:'Raise as entered. Promote at plan.'},{k:'Good',v:1.2,p:1.2,why:'Raise 20% over. Rates ease, promote 120% of plan.'}];
+ fc.forEach(function(x){x.R=r*x.v;x.fee=F*x.R;x.sh=S*x.R+P*Pr*x.R*x.p});
+ var bad=fc[0],base=fc[1];
+ var ps=P*Pr>0?(F-S)/(P*Pr):(S>=F?-1:Infinity);
+ var surv=bad.sh>=bad.fee;
+ var half={fee:F*r*.5,sh:S*r*.5+P*Pr*r*.5};
+ H+='<div class="panel"><h2>Fee path or share path</h2><p class="small">Same raise, two ways to be paid. The fee path is the usual one. The share path takes a lower fee plus a share of the sponsor\'s promote.</p>';
+ H+='<table><tr><th></th>'+fc.map(function(x){return '<th>'+x.k+'<span class="why">'+x.why+'</span></th>'}).join('')+'</tr>';
+ H+='<tr><td>Raise</td>'+fc.map(function(x){return '<td class="n">'+m(x.R)+'</td>'}).join('')+'</tr>';
+ H+='<tr><td>Fee path (usual)</td>'+fc.map(function(x){return '<td class="n">'+m(x.fee)+'</td>'}).join('')+'</tr>';
+ H+='<tr><td>Share path (shortcut)</td>'+fc.map(function(x){return '<td class="n">'+m(x.sh)+'</td>'}).join('')+'</tr>';
+ H+='<tr><td>Share minus fee</td>'+fc.map(function(x){var d=x.sh-x.fee;return '<td class="n'+(d<0?' dull':'')+'">'+m(d)+'</td>'}).join('')+'</tr></table>';
+ H+='<p class="gain">Upside at plan: '+m(base.sh)+' against '+m(base.fee)+'.</p>';
+ H+='<p class="'+(surv?'gain':'loss')+'">'+(surv?'Holds if rates double: ':'Loses if rates double: ')+m(bad.sh)+' against '+m(bad.fee)+'.</p>';
+ var brk=ps<=0?'The share path pays at least as much at any promote.':ps===Infinity?'The share path never catches the fee path with these figures.':'The share path breaks when the promote falls below '+Math.round(ps*100)+'% of plan, at any raise size.';
+ if(surv)H+='<p>The share path survives the bad case. '+brk+'</p>';
+ else H+='<p>Safer setting: the fee path at '+s.F+'%, '+m(bad.fee)+' in the bad case. The share path does not survive the bad case. '+brk+'</p>';
+ if(half.sh>=half.fee&&r>0)H+='<p>Volume alone does not break it: at half the raise with promote at plan, share '+m(half.sh)+' against fee '+m(half.fee)+'.</p>';
+ H+='<h3>Dead deal: slips six months, then dies</h3><table><tr><th></th><th>Fee path</th><th>Share path</th></tr>';
+ H+='<tr><td>Fee earned</td><td class="n">$0</td><td class="n">$0</td></tr>';
+ H+='<tr><td>Diligence written off, analyst first read</td><td class="n">'+m(s.d0)+'</td><td class="n">'+m(s.d0)+'</td></tr>';
+ H+='<tr><td>Diligence written off, machine first read</td><td class="n">'+m(s.d1)+'</td><td class="n">'+m(s.d1)+'</td></tr></table>';
+ H+='<p class="formula">Fee path = placement fee % × raise.<br>Share path = share-path fee % × raise + share of promote % × promote % × raise × promote case.<br>Break point = (fee % - share-path fee %) ÷ (share of promote % × promote %).</p></div>';
+
+ // AI
+ var ac=[{k:'Bad',why:'Deal dies at six months. You write it off.',f:1,who:'You'},{k:'Base',why:'Deal closes on plan. Paid from the fee.',f:1,who:'The fee'},{k:'Good',why:'Closes two months early. Less rework.',f:.8,who:'The fee'}];
+ H+='<div class="panel"><h2>First read of the data room</h2>';
+ H+='<p class="mono">First read: ~20 min vs 30 analyst hours. Reviewed and signed by: '+(s.cn.trim()?esc(s.cn):'[counsel name]')+'.</p>';
+ H+='<table><tr><th></th>'+ac.map(function(x){return '<th>'+x.k+'<span class="why">'+x.why+'</span></th>'}).join('')+'</tr>';
+ H+='<tr><td>Without machine</td>'+ac.map(function(x){return '<td class="n">'+m(s.d0*x.f)+'</td>'}).join('')+'</tr>';
+ H+='<tr><td>With machine, counsel signs</td>'+ac.map(function(x){return '<td class="n">'+m(s.d1*x.f)+'</td>'}).join('')+'</tr>';
+ H+='<tr><td>Saving</td>'+ac.map(function(x){return '<td class="n">'+m((s.d0-s.d1)*x.f)+'</td>'}).join('')+'</tr>';
+ H+='<tr><td>Who pays</td>'+ac.map(function(x){return '<td>'+x.who+'</td>'}).join('')+'</tr></table>';
+ H+='<p><b>A person still:</b> ticks every box; checks each flag against the source page; reads and signs the counsel summary; confirms the sponsor\'s wire with the bank.</p>';
+ H+='<p class="formula">Spend in each case = diligence spend × case factor (bad 1.0, base 1.0, good 0.8).</p></div>';
+
+ res.innerHTML=H;
+ $('cp').onclick=function(){
+  var u=location.href.split('#')[0]+'#c='+s.c+'&r='+s.r+'&m='+s.m+'&t='+s.t.join(',');
+  var li=$('link');li.value=u;li.select();
+  try{if(navigator.clipboard)navigator.clipboard.writeText(u).catch(function(){});else document.execCommand('copy')}catch(e){}
+ };
+ $('pr').onclick=function(){window.print()};
+}
+
+document.addEventListener('input',function(e){if(e.target.id!=='link')update()});
+document.addEventListener('change',function(e){if(e.target.type==='checkbox')update()});
+$('tsf').addEventListener('change',function(e){
+ var f=e.target.files&&e.target.files[0];if(!f)return;
+ var rd=new FileReader();rd.onload=function(){$('ts').value=String(rd.result);update()};rd.readAsText(f);
+});
+$('ex').onclick=function(){load(EX)};
+$('clr').onclick=function(){var s=get();load({c:0,r:0,m:0,t:[],F:s.F,S:s.S,P:s.P,Pr:s.Pr,d0:s.d0,d1:s.d1,cn:'',ts:''})};
+
+var st=JSON.parse(JSON.stringify(EX));
+try{var v=localStorage.getItem('whos-in-first');if(v){var o=JSON.parse(v);for(var k in o)st[k]=o[k]}}catch(e){}
+if(location.hash.length>1){
+ try{var p=new URLSearchParams(location.hash.slice(1));['c','r','m'].forEach(function(k){if(p.has(k))st[k]=+p.get(k)});
+ if(p.has('t'))st.t=p.get('t').split(',').filter(function(x){return x!==''}).map(Number)}catch(e){}
+}
+load(st);
+})();
+</script>
+</body>
+</html>
