@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-11-02: Who's In First
+### 2026-11-03: One Call, One Year
 
-<a href="days/2026-11-02/"><img src="days/2026-11-02/team.png" alt="Team for 2026-11-02: Glassblower · Tailor · Merchant banker · Time" width="100%"></a>
+<a href="days/2026-11-03/"><img src="days/2026-11-03/team.png" alt="Team for 2026-11-03: Choreographer · Front-end engineer · Clinic owner · Phoenix" width="100%"></a>
 
-**Task:** Objection sorter: the buyer ticks the doubts they have and gets a plain answer and one question to ask any provider for each.
+**Task:** One-pager builder: a few fields about the buyer's opportunity give a clean printable one-page summary they can send on.
 
-**Decision:** The page lets a merchant banker tick the doubts they hold about a deal, sorted onto the capital stack.
+**Decision:** The page asks one number, the calls missed before 10 a.m.
 
-<a href="days/2026-11-02/"><img src="days/2026-11-02/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-11-03/"><img src="days/2026-11-03/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-11-02/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-11-03/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,15 +37,15 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-11-03](days/2026-11-03/) | <a href="days/2026-11-03/"><img src="days/2026-11-03/artifact-1.png" alt="One Call, One Year" width="160"></a> | One Call, One Year | Choreographer · Front-end engineer · Clinic owner · Phoenix |
 | [2026-11-02](days/2026-11-02/) | <a href="days/2026-11-02/"><img src="days/2026-11-02/artifact-1.png" alt="Who's In First" width="160"></a> | Who's In First | Glassblower · Tailor · Merchant banker · Time |
 | [2026-11-01](days/2026-11-01/) | <a href="days/2026-11-01/"><img src="days/2026-11-01/artifact-1.png" alt="Drop-Off Ledger" width="160"></a> | Drop-Off Ledger | Clockmaker · Florist · Investment banker · Repair technician from 2140 |
 | [2026-10-31](days/2026-10-31/) | <a href="days/2026-10-31/"><img src="days/2026-10-31/artifact-1.png" alt="Use-By Date" width="160"></a> | Use-By Date | Packaging designer · Beekeeper · Accounting firm partner · Mary Anning |
 | [2026-10-30](days/2026-10-30/) | <a href="days/2026-10-30/"><img src="days/2026-10-30/artifact-1.png" alt="Priced Leak" width="160"></a> | Priced Leak | Chef · Taxidermist · Home services owner · Archivist from 2300 |
 | [2026-10-29](days/2026-10-29/) | <a href="days/2026-10-29/"><img src="days/2026-10-29/artifact-1.png" alt="Three-Cell Pipeline Sheet" width="160"></a> | Three-Cell Pipeline Sheet | Perfumer · Locksmith · Roll-up operator · Settler on Mars in 2090 |
 | [2026-10-28](days/2026-10-28/) | <a href="days/2026-10-28/"><img src="days/2026-10-28/artifact-1.png" alt="Setup Sheet" width="160"></a> | Setup Sheet | Luthier · Upholsterer · Multi-family office adviser · Entropy |
-| [2026-10-27](days/2026-10-27/) | <a href="days/2026-10-27/"><img src="days/2026-10-27/artifact-1.png" alt="The Close-By Line" width="160"></a> | The Close-By Line | Exhibition designer · Creative coder · Real estate developer · Ibn al-Haytham |
 
-[All 30 days](ARCHIVE.md)
+[All 31 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works

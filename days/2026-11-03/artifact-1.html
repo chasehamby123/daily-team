@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One Call, One Year: missed-call sheet for clinics</title>
+<style>
+:root{
+  --ink:#1d1f22;--soft:#55595e;--paper:#ffffff;--desk:#ebe9e3;
+  --grey:#a3a7ab;--line:#d9d6cf;--accent:#1f6f5c;--warn:#9a3b2a;--tint:#f3f6f4;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--desk);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.ask{max-width:210mm;margin:0 auto;padding:24px 16px 16px}
+.ask .kicker{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);margin:0 0 6px}
+.ask h2{font-size:22px;line-height:1.3;margin:0 0 10px;font-weight:600}
+.ask label{display:block;font-size:20px;line-height:1.6}
+.ask input{font:inherit;font-size:26px;width:3.6em;padding:2px 6px;margin:0 4px;border:0;border-bottom:3px solid var(--accent);background:transparent;color:var(--ink);text-align:center}
+.ask input:focus{outline:2px solid var(--accent);outline-offset:3px}
+.ask .help{font-size:14px;color:var(--soft);margin:8px 0 0}
+.sheet{background:var(--paper);max-width:210mm;margin:0 auto 32px;padding:18mm;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.top{display:flex;justify-content:space-between;gap:12px;font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--ink);padding-bottom:4px}
+h1.ash{font-size:28pt;line-height:1.15;font-weight:700;margin:14px 0 12px;letter-spacing:-.01em}
+.ladder{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);margin:0 0 14px}
+.ladder div{padding:6px 8px;border-left:1px solid var(--line)}
+.ladder div:first-child{border-left:0}
+.ladder b{display:block;font-size:18px}
+.ladder span{font-size:11px;color:var(--soft)}
+.figs{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:10px;align-items:end;margin:0 0 6px}
+.figs .lab{font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.05em}
+.low .num{font-size:36pt;font-weight:700;line-height:1;color:var(--accent)}
+.high .num{font-size:18pt;font-weight:600;line-height:1.1}
+.figs .sub{font-size:12px;color:var(--soft)}
+.strip{display:grid;grid-template-columns:repeat(52,1fr);gap:2px;margin:12px 0 4px}
+.strip i{display:block;aspect-ratio:1/1;background:var(--grey)}
+.strip i.off{background:#fff;outline:1px solid var(--grey);outline-offset:-1px}
+.cap{font-size:11px;color:var(--soft);margin:0 0 12px}
+h3{font-size:13px;text-transform:uppercase;letter-spacing:.05em;margin:16px 0 4px;border-bottom:1px solid var(--line);padding-bottom:2px}
+.wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:right;padding:3px 6px;border-bottom:1px solid var(--line);vertical-align:top;white-space:nowrap}
+th:first-child,td:first-child{text-align:left;white-space:normal}
+thead th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--soft);font-weight:600}
+thead th small{display:block;text-transform:none;letter-spacing:0;font-weight:400}
+td.badc,th.badc{background:var(--tint)}
+tr.sum td{font-weight:700}
+.neg{color:var(--warn)}
+.verdict{border-left:4px solid var(--accent);padding:6px 10px;margin:10px 0;font-size:14px;background:var(--tint)}
+.verdict.fail{border-color:var(--warn)}
+.verdict p{margin:2px 0}
+ul.people{margin:4px 0 0;padding-left:18px;font-size:13px}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12px;background:#f6f5f2;padding:6px 8px;margin:6px 0;white-space:pre-wrap}
+.pen{font-size:14px;margin:14px 0 4px}
+.pen span{display:inline-block;min-width:160px;border-bottom:1px solid var(--ink)}
+.note{font-size:11px;color:var(--soft);margin:4px 0}
+.foot{margin-top:12px;border-top:1px solid var(--ink);padding-top:4px}
+.foot .ai{font-size:8pt;margin:0 0 3px}
+.foot .credits,.foot .pub{font-size:8pt;color:var(--soft);margin:0 0 2px}
+@media (max-width:640px){
+  .sheet{padding:18px 14px}
+  h1.ash{font-size:24pt}
+  .ladder{grid-template-columns:repeat(2,1fr)}
+  .ladder div:nth-child(3){border-left:0}
+  .ladder div:nth-child(n+3){border-top:1px solid var(--line)}
+  .figs{grid-template-columns:1fr 1fr}
+  .figs .low{grid-column:1/-1}
+  .strip{gap:1px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .strip i{transition:background-color .2s}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none;animation:none}
+}
+@media print{
+  @page{size:A4;margin:18mm}
+  body{background:#fff;font-size:8.5pt}
+  .ask,.screen-only{display:none}
+  .sheet{max-width:none;margin:0;padding:0;box-shadow:none}
+  h1.ash{margin:8pt 0 6pt}
+  table{font-size:8pt}
+  th,td{padding:1.5pt 4pt}
+  h3{font-size:8pt;margin:8pt 0 2pt}
+  .verdict{font-size:8.5pt;margin:6pt 0;padding:3pt 6pt}
+  ul.people{font-size:8pt}
+  .formula{font-size:7.5pt;padding:3pt 5pt;margin:3pt 0}
+  .ladder b{font-size:11pt}
+  .ladder span,.cap,.note,.figs .sub,.figs .lab{font-size:7pt}
+  .pen{font-size:9pt;margin:8pt 0 2pt}
+  .strip{margin:6pt 0 2pt}
+  td.badc,th.badc,.verdict,.formula,.strip i{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+
+<section class="ask" aria-label="Your one number">
+  <p class="kicker">One Call, One Year</p>
+  <h2>One number from your front desk turns into a year on one page.</h2>
+  <label for="monday">Last Monday, before 10 a.m., we missed
+    <input id="monday" type="number" inputmode="numeric" min="0" max="500" step="1" value="9">
+    calls.</label>
+  <p class="help">A rough count is enough. The sheet below updates as you type. Print it with Ctrl+P, or Cmd+P on a Mac. On a phone, use Share, then Print. No sign-up. Nothing leaves this page.</p>
+</section>
+
+<main class="sheet" id="sheet">
+  <div class="top"><span>One Call, One Year · Missed-call sheet</span><span id="today"></span></div>
+
+  <h1 class="ash" id="ash" aria-live="polite">Last Monday, 9 patients called and nobody answered.</h1>
+
+  <div class="ladder" aria-label="The same problem at four sizes">
+    <div><span>10× smaller · one call</span><b>40 sec</b><span>on hold, then gone</span></div>
+    <div><span>One Monday</span><b id="lMon">9</b><span>calls before 10 a.m.</span></div>
+    <div><span>10× larger · one week</span><b id="lWeek">27</b><span>calls (Monday × 3)</span></div>
+    <div><span>One year · 48 open weeks</span><b id="lYear">1,296</b><span>calls missed</span></div>
+  </div>
+
+  <div class="figs">
+    <div class="low"><div class="lab">Bad case · fees from patients not booked in a year</div><div class="num" id="fBad">$15,552</div><div class="sub" id="fBadSub">130 patients</div></div>
+    <div class="high"><div class="lab">Base case</div><div class="num" id="fBase">$62,208</div><div class="sub" id="fBaseSub">518 patients</div></div>
+    <div class="high"><div class="lab">Good case</div><div class="num" id="fGood">$103,680</div><div class="sub" id="fGoodSub">864 patients</div></div>
+  </div>
+
+  <div class="strip" id="strip" aria-hidden="true"></div>
+  <p class="cap" id="stripCap">Each square is one week. Grey: about 27 missed calls (base). White: 4 weeks closed. This runs every open week until the phones change.</p>
+
+  <h3>Three cases, same Monday count</h3>
+  <div class="wrap"><table>
+    <thead><tr><th></th><th class="badc">Bad<small>calls × 1.5, 20% book</small></th><th>Base<small>calls × 3, 40% book</small></th><th>Good<small>calls × 4, 50% book</small></th></tr></thead>
+    <tbody id="caseBody"></tbody>
+  </table></div>
+
+  <div class="verdict" id="verdict"></div>
+
+  <h3>Two ways to answer, same numbers, per month</h3>
+  <div class="wrap"><table>
+    <thead><tr><th></th><th class="badc">Bad</th><th>Base</th><th>Good</th></tr></thead>
+    <tbody id="wayBody"></tbody>
+  </table></div>
+  <p class="note">Usual path: a part-time cover receptionist for the morning rush. Shortcut: AI answers the first call in the clinic's name and the front desk confirms. Both are assumed to win back the same bookings. Service costs are assumed market figures, not a quote. Check real quotes and your local wage rules.</p>
+
+  <h3>What a person still does</h3>
+  <ul class="people">
+    <li>The front desk reviews and confirms every booking by 11 a.m.</li>
+    <li>Any clinical question goes to a clinician. The first answer gives no advice about symptoms.</li>
+    <li>Cancellations, complaints and anyone who asks for a person get a call back from staff.</li>
+  </ul>
+
+  <h3>Formula and assumptions</h3>
+  <div class="formula" id="formula"></div>
+  <div class="wrap"><table>
+    <thead><tr><th>Assumption</th><th>Used here</th><th>Your figure</th></tr></thead>
+    <tbody>
+      <tr><td>Calls a week from the Monday count (bad / base / good)</td><td>× 1.5 / × 3 / × 4</td><td>______</td></tr>
+      <tr><td>Missed calls that would have booked</td><td>20% / 40% / 50%</td><td>______</td></tr>
+      <tr><td>Fee per visit (depends on your fees and local insurance rules)</td><td>$120</td><td>______</td></tr>
+      <tr><td>Open weeks a year</td><td>48</td><td>______</td></tr>
+      <tr><td>Cover receptionist (local wage rules apply)</td><td>$22/h × 20 h a week</td><td>______</td></tr>
+      <tr><td>AI first answer, flat or per booking (assumed)</td><td>$400 a month / $6</td><td>______</td></tr>
+      <tr><td>Front-desk time per callback</td><td>4 min</td><td>______</td></tr>
+    </tbody>
+  </table></div>
+
+  <p class="pen">Like this since <span>&nbsp;</span></p>
+  <p class="note">A sum about phone calls and bookings. Not medical, legal or financial advice.</p>
+
+  <div class="foot">
+    <p class="ai">First call answered by AI in the clinic's name. Every booking confirmed by your front desk.</p>
+    <p class="credits">Credits. Choreographer: the scale from one call to one year and the 52-week strip. Front-end engineer: the A4 sheet built first, one file, print with Ctrl+P, the AI line in this footer. Clinic owner: the Monday count as the only field, patients in place of leads, front-desk hours, low case first. Phoenix: the one sentence at the top.</p>
+    <p class="pub">Published by VoxxyAI. Free to use and send on.</p>
+  </div>
+</main>
+
+<script>
+(function(){
+  var A={visit:120,weeks:48,flat:400,perBook:6,wage:22,coverHrs:20,cbMin:4,mf:52/12};
+  var CASES=[{k:'Bad',m:1.5,r:0.20,cls:'badc'},{k:'Base',m:3,r:0.40,cls:''},{k:'Good',m:4,r:0.50,cls:''}];
+  var KEY='oneCallOneYear.monday';
+  var input=document.getElementById('monday');
+  function $(id){return document.getElementById(id);}
+  function money(x){var r=Math.round(x);var s='$'+Math.abs(r).toLocaleString('en-US');return r<0?'\u2212'+s:s;}
+  function num(x){var r=Math.round(x*10)/10;return (r%1===0?r.toLocaleString('en-US'):r.toFixed(1));}
+  function cell(v,cls,neg){return '<td class="'+(cls||'')+(neg?' neg':'')+'">'+v+'</td>';}
+
+  var strip=$('strip');
+  for(var i=0;i<52;i++){var sq=document.createElement('i');if(i>=48)sq.className='off';strip.appendChild(sq);}
+
+  try{$('today').textContent=new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});}catch(e){}
+
+  function read(){
+    var v=parseFloat(input.value);
+    if(!isFinite(v)||v<0)v=0;
+    return Math.round(v);
+  }
+
+  function render(){
+    var M=read();
+    var R=CASES.map(function(c){
+      var calls=M*c.m,book=calls*c.r,feeW=book*A.visit,feeM=feeW*A.mf;
+      var cover=A.wage*A.coverHrs*A.mf,pb=book*A.perBook*A.mf;
+      return {c:c,calls:calls,book:book,feeW:feeW,feeY:feeW*A.weeks,pY:book*A.weeks,feeM:feeM,
+        cover:cover,coverNet:feeM-cover,flatNet:feeM-A.flat,pb:pb,pbNet:feeM-pb,hrs:calls*A.cbMin/60};
+    });
+    var bad=R[0],base=R[1],good=R[2];
+
+    $('ash').textContent = M===0 ? 'Last Monday, every patient who called got an answer.'
+      : 'Last Monday, '+M+(M===1?' patient':' patients')+' called and nobody answered.';
+    $('lMon').textContent=M;
+    $('lWeek').textContent=num(base.calls);
+    $('lYear').textContent=num(base.calls*A.weeks);
+    $('fBad').textContent=money(bad.feeY);   $('fBadSub').textContent=num(bad.pY)+' patients · '+money(bad.feeM)+' a month';
+    $('fBase').textContent=money(base.feeY); $('fBaseSub').textContent=num(base.pY)+' patients';
+    $('fGood').textContent=money(good.feeY); $('fGoodSub').textContent=num(good.pY)+' patients';
+    $('stripCap').textContent='Each square is one week. Grey: about '+num(base.calls)+' missed calls (base). White: 4 weeks closed. This runs every open week until the phones change.';
+
+    var rows=[
+      ['Calls missed a week',function(r){return num(r.calls);}],
+      ['Would have booked',function(r){return num(r.book)+' a week';}],
+      ['Fees a week',function(r){return money(r.feeW);}],
+      ['Fees a month (week × 52 ÷ 12)',function(r){return money(r.feeM);}],
+      ['Patients a year (48 weeks)',function(r){return num(r.pY);}],
+      ['Fees a year (48 weeks)',function(r){return money(r.feeY);},'sum']
+    ];
+    $('caseBody').innerHTML=rows.map(function(row){
+      return '<tr class="'+(row[2]||'')+'"><td>'+row[0]+'</td>'+R.map(function(r){return cell(row[1](r),r.c.cls);}).join('')+'</tr>';
+    }).join('');
+
+    var ways=[
+      ['<b>Without AI.</b> Cover receptionist, $22/h × 20 h, cost',function(r){return [money(r.cover)];}],
+      ['Left after cost',function(r){return [money(r.coverNet),r.coverNet<0];},'sum'],
+      ['<b>With AI, flat.</b> Cost',function(r){return [money(A.flat)];}],
+      ['Left after cost',function(r){return [money(r.flatNet),r.flatNet<0];},'sum'],
+      ['<b>With AI, per booking.</b> $6 × bookings, cost',function(r){return [money(r.pb)];}],
+      ['Left after cost',function(r){return [money(r.pbNet),r.pbNet<0];},'sum'],
+      ['Front-desk hours back a week (calls × 4 min, AI path)',function(r){return [num(r.hrs)+' h'];}]
+    ];
+    $('wayBody').innerHTML=ways.map(function(w){
+      return '<tr class="'+(w[2]||'')+'"><td>'+w[0]+'</td>'+R.map(function(r){var o=w[1](r);return cell(o[0],r.c.cls,o[1]);}).join('')+'</tr>';
+    }).join('');
+
+    var perUnit=CASES[0].m*CASES[0].r*A.visit*A.mf;
+    var mFlat=Math.ceil(A.flat/perUnit), mCover=Math.ceil(bad.cover/perUnit);
+    var v=$('verdict');
+    if(M>0 && bad.feeM>=A.flat){
+      var rBE=A.flat/(bad.calls*A.visit*A.mf)*100;
+      v.className='verdict';
+      v.innerHTML='<p><b>The plan holds in the bad case.</b> '+money(bad.feeM)+' a month comes back against '+money(A.flat)+' flat.</p>'+
+        '<p>How far it can fall: flat stays covered down to a Monday count of '+mFlat+', or down to a '+Math.ceil(rBE)+'% booking rate at '+num(bad.calls)+' calls a week. Per booking costs $0 when nothing books.</p>'+
+        '<p>A cover receptionist at '+money(bad.cover)+' a month is covered in the bad case only from a Monday count of '+mCover+'.</p>';
+    } else {
+      v.className='verdict fail';
+      v.innerHTML='<p><b>Safer setting first: per booking.</b> In the bad case it costs '+money(bad.pb)+' a month, and $0 if nothing books.</p>'+
+        '<p><b>The flat plan does not hold in the bad case.</b> '+money(bad.feeM)+' a month comes back against '+money(A.flat)+'. Flat is covered from a Monday count of '+mFlat+'.</p>';
+    }
+
+    $('formula').textContent=
+      'Calls a week   = Monday count × 3          '+M+' × 3 = '+num(base.calls)+'\n'+
+      'Bookings       = calls × 40%               '+num(base.calls)+' × 40% = '+num(base.book)+'\n'+
+      'Fees a year    = bookings × $120 × 48      '+num(base.book)+' × $120 × 48 = '+money(base.feeY)+'\n'+
+      'Month          = week × 52 ÷ 12            '+money(base.feeW)+' × 4.33 = '+money(base.feeM)+'\n'+
+      'Left after cost = fees a month − cost      bad case uses × 1.5 and 20%';
+
+    try{localStorage.setItem(KEY,String(M));}catch(e){}
+  }
+
+  try{
+    var saved=localStorage.getItem(KEY);
+    if(saved!==null && /^\d+$/.test(saved))input.value=saved;
+  }catch(e){}
+
+  input.addEventListener('input',render);
+  render();
+})();
+</script>
+</body>
+</html>
