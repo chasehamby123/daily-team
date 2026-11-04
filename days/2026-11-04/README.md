@@ -1,0 +1,124 @@
+# 2026-11-04: Setup Card
+
+[Today](../../README.md) · [Archive](../../ARCHIVE.md)
+
+<img src="team.png" alt="Team for 2026-11-04: Game designer · Stand-up comedian · Private credit fund manager · Captain Ahab" width="100%">
+
+**Task:** Meeting prep sheet: the buyer's goal and limits give a one-page agenda and a list of numbers to bring.
+
+**Constraint:** Built for people over 70.
+
+**Season:** 2026-10-07
+
+**Decision:** The page takes an owner's loan goal and limits and prints one 18-point letter page: a three-turn agenda that opens on repayment, then collateral, then purpose, followed by the numbers to bring, with every missing number shown as a large ...
+
+## Asset
+
+<a href="artifact-1.html"><img src="artifact-1.png" alt="Screenshot of artifact-1.html" width="100%"></a>
+
+[artifact-1.html](artifact-1.html), led by Game designer. Model: claude-opus-5-5.
+
+## The session
+
+### Pitch
+
+**1 · Game designer: Setup Card**\
+I pulled six board game setup cards last night, then shut the box and drew from memory.\
+What stayed with me: you place first the piece that everything else rests on.\
+So the sheet works as a setup card. Turn one is how the loan gets repaid. Turn two is what backs it. Turn three is what the money is for.\
+The owner types a goal and their limits. One page comes out in 18-point type, three turns, with a tick box beside each number for when it's in the folder.\
+It prints on letter paper. No scrolling, no tabs.\
+If it won't fit one sheet at 18 point, we cut words. We never cut type size.
+
+**2 · Stand-up comedian: The Blank Boxes**\
+I built the empty state first. Say the owner leaves last year's cash flow blank. What then?\
+Most forms go red and scold. Mine prints the gap, big, with the exact sentence the lender will say across the table: "What did the business clear last year after wages?"\
+Under it goes who has the answer: "Ask your accountant. Page 1 of the business return."\
+The result is the gaps themselves, ranked by how fast each one sinks the meeting.\
+People over 70 have been made to feel stupid by forms for decades. This one tells you the punchline before the room does.
+
+**Private credit fund manager (buyer; outerhaven): Repayment First**\
+I'll be plain. My problem sits before any agenda. I've had about forty first meetings this year, and most owners brought a brochure.\
+In half of them, nobody had thought about how I get paid back. A sale, a refinance, cash flow. Pick one.\
+So the page asks that first. Then collateral. Then the downside, like what happens if sales drop 30%. Growth goes last.\
+I want two questions up front: loan size, and how many months they've been looking for money.\
+If a sheet comes back with those filled, I take the call. That's worth my two minutes.
+
+**4 · Captain Ahab: The Cost Log**\
+I have kept a count. Every blank number is a week the lender's people sit idle and bill.\
+This sheet has one quarry. The meeting ends in a term sheet, or it ends with nothing.\
+Beside each number goes the price of arriving without it. No cash flow costs three weeks. No appraisal costs six.\
+It reaches them by post and by the hand that helps them. Two copies print: one for the owner's folder, one for the son or daughter who drives them there.\
+A link drowns in an inbox. Paper they can fold and carry.
+
+### Clash
+
+**2 · Stand-up comedian:** Game designer, your setup card assumes every piece is in the box. Most of these owners will walk in with three numbers out of nine. Lead with the blanks.
+
+**1 · Game designer:** Stand-up comedian, the turn order is the idea and it stays. Your blanks go inside each turn, grayed, with your accountant line. Repayment still opens the page.
+
+**2 · Stand-up comedian:** Fine, inside the turns. But the gray box gets the biggest type on the sheet. If repayment is blank, that blank is the headline, bigger than the title.
+
+**3 · Private credit fund manager:** Ahab, weeks are soft. Give me dollars. My diligence firm bills $60,000 before I know if the deal is real. That's what I lose when an owner shows up empty.
+
+**3 · Private credit fund manager:** Game designer, agreed on the turns. Two additions. First, the accountant uploads the last return and AI pulls the nine numbers in two minutes. My analyst checks them and signs. First-pass diligence drops from $60,000 to about $15,000. Second, show the shortcut beside the usual loan: a 1% fee plus 3% of sale proceeds, against a flat 3% fee.
+
+**4 · Captain Ahab:** Fund manager, I held my tongue until the count was done. Take your case: a $3,000,000 loan at 12% is $360,000 a year. The owner clears $900,000, so coverage is 2.5 times. Sales halve to $450,000 and the rate climbs to 14%, which is $420,000. Coverage is 1.07 times. Thin, but it floats. The building appraises at $4,500,000. Cut 30% for a forced sale and you get $3,150,000 against $3,000,000 owed. It holds.
+
+**4 · Captain Ahab:** Now the slip. Say the deal slips six months and dies. On the usual path you have paid $60,000. With the machine's first pass you have paid $15,000. On the share path, if no sale comes, you collect $30,000 in fees instead of $90,000, and the loan is still repaid from cash flow. If the business sells for $8,000,000, your 3% is $240,000. Print both columns.
+
+**3 · Private credit fund manager:** Fine, print both. I'll only send the share version to owners who say they're selling within five years.
+
+**2 · Stand-up comedian:** Then you hide the less expected option from the people it would surprise most. Send both to everyone. At over 70, a sale is closer than they'll tell you.
+
+**1 · Game designer:** Stand-up comedian, both columns stay on the page. Who he mails it to is his call, and I'm not settling that today.
+
+### Decision
+
+The page takes an owner's loan goal and limits and prints one 18-point letter page: a three-turn agenda that opens on repayment, then collateral, then purpose, followed by the numbers to bring, with every missing number shown as a large gray box naming who holds it and what its absence costs.
+
+Concept: Setup Card
+
+Game designer: the three-turn order, the one-page rule at 18 point, and the tick box beside each number.
+Stand-up comedian: the gray blank boxes, the lender's exact question in each, the "ask your accountant, page 1" line, and the rule that a blank repayment line prints as the headline.
+Private credit fund manager: repayment-first order, the two qualifying questions (loan size, months spent looking), the accountant upload with AI extraction signed by a named analyst, and the fee-versus-share columns.
+Captain Ahab: the cost line beside each blank, printed in dollars with weeks in smaller type, the two-copy print, and the bad-case numbers in both columns.
+The comedian lost the argument to lead the page with blanks, because the fund manager opens up only when repayment comes first. Ahab lost weeks as the main unit to the fund manager's dollars, because dollars are what the fund pays. The question of who receives the share column is still open.
+Bad case: sales halved and the rate raised to 14% leave coverage at 1.07 times. The building at a 30% haircut covers the loan by $150,000. A six-month slip that kills the deal costs $15,000 with AI against $60,000 without. On the share path with no sale, fees fall from $90,000 to $30,000 and the loan is still repaid. The page holds.
+
+### Build notes
+
+1. Build `setup-card.html` as one file with `@media print` set to letter size, 18pt minimum type, 1.5 line height, a black-on-white palette, and a hard check that hides the print button until the content fits one page.
+2. Add the input form with 9 number fields plus the 2 qualifying questions at the top. Each empty field renders as a gray box at 28pt with three lines: the lender's question, who holds the answer, and the dollar cost of missing it.
+3. Add an upload field labelled "For your accountant" that sends the return to the extraction step and shows each pulled number as "Draft, not yet checked by [analyst name]." Below the agenda, print the fee-versus-share table with the same inputs and the halved-sales row filled in for both columns.
+
+**Guest:** Captain Ahab (literary; Herman Melville, died 1891). The method is drawn from public-domain history, myth, or literature, or invented. The guest speaks in character in original words, never quoting the source, and nothing here is endorsed by anyone.
+
+## Team
+
+```text
+Team for 2026-11-04
+Season: 2026-10-07
+
+1. Game designer
+   Method: Collect references, then put them away and work from memory.
+   Stance: Guards execution quality.
+   Temperament: Defends the first idea in the room.
+2. Stand-up comedian
+   Method: Design the error and empty states first.
+   Stance: Pushes for a less expected result.
+   Temperament: Concedes small points to win the big one.
+3. Private credit fund manager (buyer; outerhaven) [buyer] [new]
+   Method: Pain: Sees borrowers who are not ready for diligence. Walks when: Nobody has thought about how the loan gets repaid. Opens up when: The downside and collateral come first and the upside second.
+   Stance: Questions the brief.
+   Temperament: Agrees fast, then quietly does it their own way.
+4. Captain Ahab (literary; Herman Melville, died 1891) [guest]
+   Method: Chase one goal and count what it costs.
+   Stance: Plans how it reaches people.
+   Temperament: Hoards evidence before saying anything.
+
+Constraint: Built for people over 70.
+Task: Meeting prep sheet: the buyer's goal and limits give a one-page agenda and a list of numbers to bring.
+```
+
+Provider: claude. Model: claude-opus-5-5.

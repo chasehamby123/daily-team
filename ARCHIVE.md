@@ -1,11 +1,12 @@
 # Archive
 
-Every daily team and the asset it made, newest first. 31 days recorded.
+Every daily team and the asset it made, newest first. 32 days recorded.
 
 [Today](README.md)
 
 | Date | Task | Team | Constraint | Asset |
 |---|---|---|---|---|
+| [2026-11-04](days/2026-11-04/) | Setup Card | Game designer · Stand-up comedian · Private credit fund manager · Captain Ahab | Built for people over 70. | [asset](days/2026-11-04/artifact-1.html) |
 | [2026-11-03](days/2026-11-03/) | One Call, One Year | Choreographer · Front-end engineer · Clinic owner · Phoenix | The user does exactly one thing on the page. | [asset](days/2026-11-03/artifact-1.html) |
 | [2026-11-02](days/2026-11-02/) | Who's In First | Glassblower · Tailor · Merchant banker · Time | Three colors at most. | [asset](days/2026-11-02/artifact-1.html) |
 | [2026-11-01](days/2026-11-01/) | Drop-Off Ledger | Clockmaker · Florist · Investment banker · Repair technician from 2140 | Under 100 words of fixed text on the page. | [asset](days/2026-11-01/artifact-1.html) |

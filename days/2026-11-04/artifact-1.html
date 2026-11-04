@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Setup Card: one-page prep for a first meeting with a lender</title>
+<style>
+:root{--ink:#000;--paper:#fff;--gap:#e4e4e4;--soft:#4a4a4a}
+*{box-sizing:border-box}
+html{font-size:24px}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.5}
+main{max-width:46rem;margin:0 auto;padding:1rem 1rem 3rem}
+h1{font-size:2.4rem;line-height:1.1;margin:.4rem 0 .5rem;letter-spacing:-.01em}
+h2{font-size:1.5rem;line-height:1.2;margin:2.4rem 0 .6rem;padding-top:.6rem;border-top:4px solid var(--ink)}
+h3{font-size:1.15rem;margin:.2rem 0 .4rem}
+p{margin:.4rem 0 .8rem}
+.kicker{font-weight:700;margin:0}
+.lede{font-size:1.05rem}
+.turnlist{list-style:none;padding:0;margin:.6rem 0 1rem;display:grid;gap:.4rem}
+.turnlist li{display:flex;gap:.6rem;align-items:center;font-weight:700}
+.tn{display:inline-flex;flex:none;width:1.6em;height:1.6em;border-radius:50%;background:var(--ink);color:#fff;justify-content:center;align-items:center;line-height:1;font-weight:800}
+fieldset{border:3px solid var(--ink);border-radius:14px;padding:.6rem 1rem 1rem;margin:0 0 1.2rem}
+legend{font-weight:800;font-size:1.15rem;padding:0 .4rem;display:flex;gap:.5rem;align-items:center}
+.f{margin:.8rem 0 1rem}
+.f label{display:block;font-weight:700;margin-bottom:.2rem}
+.inrow{display:flex;align-items:center;gap:.4rem}
+.u{font-weight:700;font-size:1.1rem}
+input[type=text],select{font:inherit;font-size:1.15rem;min-height:2.6rem;padding:.2rem .6rem;border:3px solid var(--ink);border-radius:10px;background:#fff;color:var(--ink);width:100%;max-width:20rem}
+input.wide{max-width:100%}
+input:focus,select:focus,button:focus,input[type=file]:focus{outline:4px solid var(--ink);outline-offset:3px}
+.help{color:var(--soft);margin:.3rem 0 0;font-size:.95rem}
+.draft{margin:.3rem 0 0;font-weight:700;background:var(--gap);border-left:6px solid var(--ink);padding:.2rem .5rem;font-size:.95rem}
+.btns{display:flex;flex-wrap:wrap;gap:.6rem;margin:.8rem 0}
+button{font:inherit;font-weight:700;min-height:2.7rem;padding:.3rem 1.1rem;border-radius:12px;border:3px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer}
+button.alt{background:#fff;color:var(--ink)}
+.msg{font-weight:700;border:3px solid var(--ink);border-radius:12px;padding:.5rem .8rem;background:var(--gap)}
+.msg.ok{background:#fff}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.8rem;margin:.6rem 0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(17rem,1fr));gap:.8rem;margin:.6rem 0}
+.box{border:3px solid var(--ink);border-radius:14px;padding:.7rem .9rem}
+.box.grayb{background:var(--gap)}
+.box dl{margin:.4rem 0;display:grid;grid-template-columns:1fr auto;gap:.15rem .6rem}
+.box dt{color:var(--soft)}
+.box dd{margin:0;font-weight:700;text-align:right}
+.drv{font-size:.95rem;border-bottom:2px solid var(--ink);padding-bottom:.4rem}
+.verdict{border:4px solid var(--ink);border-radius:14px;padding:.8rem 1rem;margin:1rem 0;font-size:1.05rem}
+.verdict.fail{background:var(--gap)}
+.verdict strong.big{font-size:1.3rem;display:block;margin-bottom:.3rem}
+.formula{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.9rem;background:#f2f2f2;border:2px solid var(--ink);border-radius:10px;padding:.5rem .7rem;overflow-x:auto;white-space:pre-wrap}
+details{border:3px solid var(--ink);border-radius:14px;padding:.4rem .9rem;margin:.8rem 0}
+summary{font-weight:700;cursor:pointer;min-height:2.4rem;display:flex;align-items:center}
+.gaplist{padding-left:1.4rem}
+.gaplist li{margin:.5rem 0}
+.gaplist .q{font-weight:800;font-size:1.1rem}
+.smallnote{color:var(--soft);font-size:.95rem}
+footer{border-top:4px solid var(--ink);margin-top:2.4rem;padding-top:.8rem;font-size:.95rem}
+.check{display:flex;gap:.6rem;align-items:center;font-weight:700}
+.check input{width:1.4rem;height:1.4rem}
+input[type=file]{font:inherit;font-size:1rem;max-width:100%}
+
+/* The card. Sized in points so screen, measure, and print match. */
+.card{background:#fff;color:#000;border:3px solid #000;border-radius:12pt;padding:10pt 14pt;font-size:18pt;line-height:1.5;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ctitle{font-size:26pt;font-weight:800;line-height:1.2}
+.cturn{margin-top:4pt}
+.cth{font-weight:800;display:flex;align-items:center;gap:8pt}
+.cth .tn{width:1.25em;height:1.25em;font-size:18pt}
+.crow{display:flex;align-items:baseline;gap:8pt}
+.crow .lab{flex:1 1 auto;min-width:0}
+.crow .val{font-weight:700;white-space:nowrap}
+.tick{display:inline-block;flex:none;width:.75em;height:.75em;border:2px solid #000;transform:translateY(.08em)}
+.cres{padding-left:calc(.75em + 8pt)}
+.cgap{background:#e4e4e4;border:2px solid #000;border-radius:8pt;padding:4pt 10pt;margin:4pt 0}
+.cgap .gq{font-size:28pt;font-weight:800;line-height:1.2}
+.cgap.head .gq{font-size:32pt}
+.cgap .gc b{font-size:20pt}
+.cfee{width:100%;border-collapse:collapse;margin-top:6pt}
+.cfee th,.cfee td{border:2px solid #000;padding:0 6pt;text-align:left;font-size:18pt;line-height:1.5}
+.copylab{border-top:2px dashed #000;margin-top:6pt}
+#cardShow .card{max-width:7.5in}
+#measure{position:absolute;left:-10000px;top:0;width:7.5in;visibility:hidden}
+#printArea{display:none}
+
+@media print{
+  @page{size:letter;margin:.5in}
+  html{font-size:18pt}
+  body>*{display:none!important}
+  #printArea{display:block!important}
+  .copy{break-after:page;page-break-after:always}
+  .copy:last-child{break-after:auto;page-break-after:auto}
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <p class="kicker">Free meeting prep sheet. No sign-up. Works offline. Nothing leaves this device.</p>
+  <h1>Setup Card</h1>
+  <p class="lede">One printed page for your first meeting with a lender. Three turns, in this order. Place the piece the others rest on first.</p>
+  <ol class="turnlist">
+    <li><span class="tn">1</span>How the loan gets repaid</li>
+    <li><span class="tn">2</span>What backs it</li>
+    <li><span class="tn">3</span>What the money is for</li>
+  </ol>
+  <p>A worked example is filled in below. Change any number, or press Clear all and start with your own. A blank prints as a gray box with the lender's question and who has the answer.</p>
+</header>
+
+<section aria-labelledby="h-ask">
+  <h2 id="h-ask">Two questions first</h2>
+  <div id="askFields"></div>
+  <div class="f"><label for="goal">What the money is for</label>
+    <input type="text" id="goal" data-k="goal" class="wide" autocomplete="off"></div>
+  <div class="f"><label for="route">How the loan gets repaid</label>
+    <select id="route" data-k="route">
+      <option value="">Not decided yet</option>
+      <option value="cash flow">From cash flow</option>
+      <option value="a sale">From a sale of the business</option>
+      <option value="a refinance">From a refinance</option>
+    </select>
+    <p class="help">Pick one. Lenders ask this before anything else.</p></div>
+  <div id="limitField"></div>
+</section>
+
+<section aria-labelledby="h-card">
+  <h2 id="h-card">Your card</h2>
+  <p id="fitMsg" class="msg ok" role="status"></p>
+  <div class="btns">
+    <button type="button" id="printBtn">Print two copies</button>
+    <button type="button" class="alt" id="exBtn">Reset to example</button>
+    <button type="button" class="alt" id="clearBtn">Clear all</button>
+  </div>
+  <div id="cardShow"></div>
+  <p class="smallnote">Prints on one letter page at 18 point. Copy 1 goes in your folder. Copy 2 is for the person who drives you. If it will not fit one page, we cut words. We never cut type size.</p>
+</section>
+
+<section aria-labelledby="h-nums">
+  <h2 id="h-nums">The nine numbers to bring</h2>
+  <p>Tick each one on the printed card when the paper is in your folder. Leave a box empty if you do not know it yet.</p>
+  <div id="numForm"></div>
+  <fieldset>
+    <legend>For your accountant</legend>
+    <p>Your accountant can load a file of the numbers here. This page reads .txt or .csv files on this device, one number per line, such as <b>Sales last year, 6000000</b>. A tax return PDF needs a reading tool on the analyst's side.</p>
+    <input type="file" id="upload" accept=".txt,.csv,text/plain,text/csv" aria-describedby="upMsg">
+    <p id="upMsg" role="status"></p>
+    <div id="aiNameField"></div>
+    <label class="check"><input type="checkbox" id="checked" data-k="checked"> The analyst named above has checked each drafted number against the return</label>
+  </fieldset>
+</section>
+
+<section aria-labelledby="h-gaps">
+  <h2 id="h-gaps">Gaps, worst first</h2>
+  <div id="gaps"></div>
+</section>
+
+<section aria-labelledby="h-cases">
+  <h2 id="h-cases">Bad, base, and good</h2>
+  <p>The same loan under three sets of conditions. The plan holds when cash covers the loan payments and the building, sold in a hurry, covers what is owed.</p>
+  <div id="verdict"></div>
+  <div id="cases" class="grid3"></div>
+  <details><summary>Change the case settings</summary><div id="caseSet"></div></details>
+</section>
+
+<section aria-labelledby="h-ai">
+  <h2 id="h-ai">Where a machine reads the return</h2>
+  <p>A machine can read the tax return and draft the nine numbers in about two minutes. A named analyst then checks each one. Who pays for this review depends on the lender's terms. Ask.</p>
+  <div id="ai" class="grid2"></div>
+  <div class="box">
+    <h3>Who does what</h3>
+    <p><b>The machine:</b> reads the return, drafts the nine numbers, marks each one Draft.</p>
+    <p><b>A person still reviews:</b> the analyst checks each number against the return and signs with their name. Your accountant confirms it is the return that was filed. You read the card and tick each number into your folder.</p>
+  </div>
+  <details><summary>Change the review costs</summary><div id="aiSet"></div></details>
+</section>
+
+<section aria-labelledby="h-share">
+  <h2 id="h-share">Flat fee, or a share of the sale</h2>
+  <p>A loan that runs for years can be a deal the lender shares in. The usual path is a flat fee at signing. The shortcut is a smaller fee plus a share of the price if you sell during the loan. Same inputs, both paths, three cases.</p>
+  <div id="share" class="grid2"></div>
+  <p id="shareNote"></p>
+  <details><summary>Change the fee terms</summary><div id="feeSet"></div></details>
+</section>
+
+<section aria-labelledby="h-form">
+  <h2 id="h-form">How the numbers are worked out</h2>
+  <div class="formula">Interest a year      = loan x rate
+All payments a year  = interest a year + other loan payments a year
+Coverage             = cash cleared after wages / all payments a year
+Building after cut   = appraised value x (1 - forced-sale cut)
+Room left            = building after cut - (loan + already owed)
+Plan holds when      coverage >= break line AND room left >= 0
+
+Push before it breaks:
+  Cash can fall by   = 1 - break line x (loan x bad rate + other) / cash
+  Rate can reach     = (bad-case cash / break line - other) / loan
+  Cut can reach      = 1 - (loan + already owed) / appraised value
+Safer loan size      = the smaller of
+  (bad-case cash / break line - other) / bad rate
+  appraised value x (1 - bad cut) - already owed
+
+Flat fee path        = loan x flat fee
+Share path           = loan x small fee + sale price x share, if you sell within the loan term
+Machine review       = first pass + cost of each blank (a machine cannot read a missing number)</div>
+  <p class="smallnote">Interest is counted as interest only. Many loans also repay principal each year, which lowers coverage. Enter the payments your lender quotes.</p>
+</section>
+
+<footer>
+  <p>This sheet does not give legal, tax, or investment advice. Rates, fees, appraisal rules, and forced-sale cuts depend on the lender and on local rules. Enter the figures that apply to you. The dollar cost of each blank is an estimate drawn from a $60,000 first-pass review budget.</p>
+  <p><b>Made by:</b> Game designer, the three-turn order, the one-page rule at 18 point, and the tick boxes. Stand-up comedian, the gray blank boxes with the lender's exact question and who holds the answer. Private credit fund manager, repayment first, the two questions, the accountant upload checked by a named analyst, and the fee and share columns. Captain Ahab, the cost of each blank in dollars and weeks, the two printed copies, and the bad-case counts.</p>
+  <p>Published by OuterHaven Advisory.</p>
+</footer>
+</main>
+
+<div id="measure" aria-hidden="true"></div>
+<div id="printArea"></div>
+
+<script>
+(function(){
+var KEY='setupcard-v1';
+var $=function(id){return document.getElementById(id)};
+var NUMS=[
+ {id:'cash',t:1,label:'Cash the business cleared last year after wages',cl:'Cash cleared after wages',u:'$',q:'What did the business clear last year after wages?',who:'Ask your accountant. Page 1 of the business return.',cost:15000,wk:3},
+ {id:'sales',t:1,label:'Sales last year',cl:'Sales last year',u:'$',q:'What were total sales last year?',who:'Ask your accountant. Page 1 of the business return.',cost:5000,wk:1},
+ {id:'other',t:1,label:'Other loan payments per year',cl:'Other loan payments a year',u:'$',q:'What do you already pay other lenders each year?',who:'Your bank statements, or your bookkeeper.',cost:4000,wk:1},
+ {id:'rate',t:1,label:'Interest rate quoted',cl:'Rate quoted',u:'%',q:'What rate have you been quoted?',who:'The letter or email from the lender.',cost:2000,wk:1},
+ {id:'appr',t:2,label:'Building appraised value',cl:'Building appraisal',u:'$',q:'What is the building worth on paper, and when was it valued?',who:'Your last appraisal report. Ask the appraiser for a copy.',cost:20000,wk:6},
+ {id:'owed',t:2,label:'Already owed against the building',cl:'Already owed on building',u:'$',q:'Who else has a claim on the building, and for how much?',who:'Your mortgage statement, or the title company.',cost:5000,wk:2},
+ {id:'proj',t:3,label:'Cost of what the money buys',cl:'Cost of what money buys',u:'$',q:'What exactly does the money pay for, and what does it cost?',who:'Quotes from the seller or the builder.',cost:4000,wk:1},
+ {id:'price',t:3,label:'Price you expect if you sell the business',cl:'Expected sale price',u:'$',q:'If you sold, what would a buyer pay?',who:'A broker letter, or your accountant\u2019s estimate.',cost:3000,wk:1},
+ {id:'years',t:3,label:'Years until you plan to sell',cl:'Years until sale',u:'years',q:'When do you plan to step back or sell?',who:'You. Talk it over with your family first.',cost:2000,wk:0.5}
+];
+var TURNS={1:'How the loan gets repaid',2:'What backs it',3:'What the money is for'};
+var ASK=[['q_loan','1. How much do you want to borrow?','$','The loan size.'],['q_months','2. How many months have you been looking for this money?','months','The longer it has run, the more each blank costs.']];
+var LIMIT=[['limit','Highest rate you will accept','%','Your limit. The bad case checks against it.']];
+var CASESET=[['s_badDrop','Bad case: cash cleared falls by','%'],['s_badRate','Bad case: rate rises by','points'],['s_badCut','Bad case: forced-sale cut on the building','%'],['s_baseCut','Base case: cut on the building','%'],['s_goodRise','Good case: cash cleared rises by','%'],['s_goodRate','Good case: rate falls by','points'],['s_goodCut','Good case: cut on the building','%'],['s_minCov','Break line for coverage','times','Lenders often ask for 1.25 or more. 1.00 means cash just covers the payments.']];
+var FEESET=[['s_term','Loan term','years'],['s_feeUsual','Usual path: flat fee','%'],['s_feeShare','Share path: fee at signing','%'],['s_sharePct','Share path: share of the sale price','%'],['s_goodPrice','Good case: sale price above your estimate by','%']];
+var AISET=[['s_dilUsual','First-pass review, read by people','$'],['s_dilAI','First-pass review, machine draft plus analyst check','$']];
+var EX={q_loan:'3,000,000',q_months:'7',goal:'Buy the building next door and add a second line',route:'cash flow',limit:'14',
+ cash:'900,000',sales:'6,000,000',other:'0',rate:'12',appr:'4,500,000',owed:'0',proj:'3,200,000',price:'8,000,000',years:'5',
+ s_badDrop:'50',s_badRate:'2',s_badCut:'30',s_baseCut:'20',s_goodRise:'20',s_goodRate:'1',s_goodCut:'10',s_minCov:'1.00',
+ s_term:'5',s_feeUsual:'3',s_feeShare:'1',s_sharePct:'3',s_goodPrice:'25',s_dilUsual:'60,000',s_dilAI:'15,000',analyst:'',checked:false};
+var CLEARABLE=['q_loan','q_months','goal','route','limit','cash','sales','other','rate','appr','owed','proj','price','years'];
+var draft={};
+
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function field(id,label,u,help){
+ return '<div class="f"><label for="'+id+'">'+esc(label)+'</label><div class="inrow">'+(u==='$'?'<span class="u">$</span>':'')+
+ '<input type="text" inputmode="decimal" autocomplete="off" id="'+id+'" data-k="'+id+'">'+(u&&u!=='$'?'<span class="u">'+esc(u)+'</span>':'')+'</div>'+
+ (help?'<p class="help">'+esc(help)+'</p>':'')+'<p class="draft" id="d_'+id+'" hidden></p></div>';
+}
+function many(list){return list.map(function(a){return field(a[0],a[1],a[2],a[3])}).join('')}
+$('askFields').innerHTML=many(ASK);
+$('limitField').innerHTML=many(LIMIT);
+$('caseSet').innerHTML=many(CASESET);
+$('feeSet').innerHTML=many(FEESET);
+$('aiSet').innerHTML=many(AISET);
+$('aiNameField').innerHTML='<div class="f"><label for="analyst">Analyst who checks the numbers</label><input type="text" id="analyst" data-k="analyst" autocomplete="off" placeholder="Full name"></div>';
+var nf='';
+[1,2,3].forEach(function(t){
+ nf+='<fieldset><legend><span class="tn">'+t+'</span>'+TURNS[t]+'</legend>';
+ NUMS.forEach(function(n){if(n.t===t)nf+=field(n.id,n.label,n.u,'Who has it: '+n.who)});
+ nf+='</fieldset>';
+});
+$('numForm').innerHTML=nf;
+
+function all(){return Array.prototype.slice.call(document.querySelectorAll('[data-k]'))}
+function setVals(o){all().forEach(function(el){var k=el.dataset.k;if(!(k in o))return;if(el.type==='checkbox')el.checked=!!o[k];else el.value=o[k]})}
+function getVals(){var o={};all().forEach(function(el){o[el.dataset.k]=el.type==='checkbox'?el.checked:el.value});return o}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({v:getVals(),d:draft}))}catch(e){}}
+function load(){try{var s=JSON.parse(localStorage.getItem(KEY)||'null');if(s&&s.v){setVals(EX);setVals(s.v);draft=s.d||{};return}}catch(e){}setVals(EX)}
+
+function num(s){if(s==null)return null;s=String(s).replace(/[$,\s%]/g,'');if(s==='')return null;var n=parseFloat(s);return isFinite(n)?n:null}
+function g(id){return num($(id).value)}
+function money(x){if(x==null||!isFinite(x))return '\u2014';return (x<0?'-':'')+'$'+Math.round(Math.abs(x)).toLocaleString('en-US')}
+function pct(x){if(x==null||!isFinite(x))return '\u2014';return (Math.round(x*10)/10)+'%'}
+function times(x){if(x==null||!isFinite(x))return '\u2014';return x.toFixed(2)+' times'}
+function fmt(n,u){var v=g(n);if(v==null)return null;if(u==='$')return money(v);if(u==='%')return pct(v);return v+' '+(v===1?'year':'years')}
+function wk(w){return 'about '+w+(w===1?' week':' weeks')}
+
+function compute(){
+ var V={};NUMS.forEach(function(n){V[n.id]=g(n.id)});
+ var S={};getKeys().forEach(function(k){S[k]=g(k)});
+ var loan=g('q_loan'),minCov=S.s_minCov==null?1:S.s_minCov;
+ function one(key,name,mult,rateAdj,cut,lab){
+  var c={key:key,name:name,lab:lab,cut:cut==null?0:cut};
+  c.cash=V.cash!=null?V.cash*mult:null;
+  c.rate=V.rate!=null?V.rate+rateAdj:null;
+  c.int=(loan!=null&&c.rate!=null)?loan*c.rate/100:null;
+  c.svc=(c.int!=null&&V.other!=null)?c.int+V.other:null;
+  c.cov=(c.cash!=null&&c.svc)?c.cash/c.svc:null;
+  c.coll=V.appr!=null?V.appr*(1-c.cut/100):null;
+  c.claims=(loan!=null&&V.owed!=null)?loan+V.owed:null;
+  c.room=(c.coll!=null&&c.claims!=null)?c.coll-c.claims:null;
+  c.ok=(c.cov!=null&&c.room!=null)?(c.cov>=minCov&&c.room>=0):null;
+  return c;
+ }
+ var bd=S.s_badDrop||0,gr=S.s_goodRise||0;
+ var C=[one('bad','Bad case',1-bd/100,S.s_badRate||0,S.s_badCut,'down '+bd+'%'),
+        one('base','Base case',1,0,S.s_baseCut,'as entered'),
+        one('good','Good case',1+gr/100,-(S.s_goodRate||0),S.s_goodCut,'up '+gr+'%')];
+ return {V:V,S:S,loan:loan,minCov:minCov,C:C};
+}
+function getKeys(){return CASESET.concat(FEESET,AISET).map(function(a){return a[0]})}
+
+function blanks(V){return NUMS.filter(function(n){return V[n.id]==null}).sort(function(a,b){return b.cost-a.cost})}
+var ROUTEQ={q:'How do I get paid back: cash flow, a sale, or a refinance?',who:'You. Pick one before the meeting.'};
+
+function gapBox(n,head){
+ var cost=n.cost!=null?'<div class="gc"><b>Missing costs '+money(n.cost)+'</b> '+wk(n.wk)+'</div>':'<div class="gc"><b>Many first meetings end here.</b></div>';
+ return '<div class="cgap'+(head?' head':'')+'"><div class="gq">'+(head?'Blank: ':'')+'\u201c'+esc(n.q)+'\u201d</div><div class="gw">Who has it: '+esc(n.who)+'</div>'+cost+'</div>';
+}
+
+function shareCalc(R){
+ var S=R.S,V=R.V,loan=R.loan;
+ var usual=loan!=null?loan*(S.s_feeUsual||0)/100:null;
+ var fee=loan!=null?loan*(S.s_feeShare||0)/100:null;
+ var within=V.years!=null&&S.s_term!=null&&V.years<=S.s_term;
+ var sp=(S.s_sharePct||0)/100;
+ var basePrice=V.price,goodPrice=V.price!=null?V.price*(1+(S.s_goodPrice||0)/100):null;
+ function sh(p){if(fee==null)return null;if(!within)return fee;if(p==null)return null;return fee+p*sp}
+ return {usual:usual,fee:fee,within:within,basePrice:basePrice,goodPrice:goodPrice,bad:fee,base:sh(basePrice),good:sh(goodPrice)};
+}
+
+function cardHTML(R,opt,copyLab){
+ var V=R.V,loan=R.loan,route=$('route').value,months=g('q_months'),limit=g('limit'),goal=$('goal').value.trim();
+ var h='<div class="card">';
+ if(V.cash==null)h+=gapBox(NUMS[0],true);
+ if(!route)h+=gapBox(ROUTEQ,true);
+ h+='<div class="ctitle">Setup Card: '+(loan!=null?money(loan)+' loan':'loan size not filled')+'</div>';
+ var meta=[];
+ meta.push(months!=null?'Looking for '+months+(months===1?' month.':' months.'):'Months looking: blank.');
+ if(route)meta.push('Repay from '+route+'.');
+ if(limit!=null)meta.push('Top rate '+pct(limit)+'.');
+ h+='<div>'+esc(meta.join(' '))+'</div>';
+ if(goal)h+='<div>For: '+esc(goal)+'</div>';
+ var bad=R.C[0],base=R.C[1];
+ [1,2,3].forEach(function(t){
+  h+='<div class="cturn"><div class="cth"><span class="tn">'+t+'</span>'+TURNS[t]+'</div>';
+  NUMS.forEach(function(n){
+   if(n.t!==t)return;
+   if(n.id==='cash'&&V.cash==null){h+='<div class="crow cres">Cash cleared: see the box at the top.</div>';return}
+   var f=fmt(n.id,n.u);
+   if(f==null){h+=gapBox(n,false);return}
+   var dr=draft[n.id]&&!isChecked()?' (draft)':'';
+   h+='<div class="crow"><span class="tick"></span><span class="lab">'+esc(n.cl)+'</span><span class="val">'+f+dr+'</span></div>';
+  });
+  if(opt.res){
+   if(t===1&&base.cov!=null&&bad.cov!=null)h+='<div class="cres">Coverage: '+base.cov.toFixed(2)+'x now, '+bad.cov.toFixed(2)+'x bad case.</div>';
+   if(t===2&&bad.coll!=null&&bad.claims!=null)h+='<div class="cres">Bad case, '+bad.cut+'% cut: '+money(bad.coll)+' vs '+money(bad.claims)+' owed.</div>';
+   if(t===3&&V.proj&&loan!=null)h+='<div class="cres">Loan covers '+Math.round(loan/V.proj*100)+'% of the cost.</div>';
+  }
+  h+='</div>';
+ });
+ if(opt.fee){
+  var s=shareCalc(R);
+  if(s.usual!=null){
+   var S=R.S;
+   h+='<table class="cfee"><tr><th>Fee path</th><th>No sale</th><th>Sells '+(s.within&&s.basePrice!=null?'at '+money(s.basePrice):'')+'</th></tr>'+
+    '<tr><td>Flat '+pct(S.s_feeUsual)+'</td><td>'+money(s.usual)+'</td><td>'+money(s.usual)+'</td></tr>'+
+    '<tr><td>'+pct(S.s_feeShare)+' + '+pct(S.s_sharePct)+' of sale</td><td>'+money(s.bad)+'</td><td>'+money(s.base)+'</td></tr></table>';
+  }
+ }
+ h+='<div class="copylab">'+esc(copyLab)+'</div></div>';
+ return h;
+}
+function isChecked(){return $('checked').checked&&$('analyst').value.trim()!==''}
+
+var PAGE_H=10*96-2;
+var fitState={ok:true,opt:{fee:true,res:true}};
+function fit(R){
+ var tries=[{fee:true,res:true,note:''},{fee:false,res:true,note:'To fit one page, the fee table was left off the card. It is below on screen.'},{fee:false,res:false,note:'To fit one page, the fee table and the result lines were left off the card. They are below on screen.'}];
+ var m=$('measure');
+ for(var i=0;i<tries.length;i++){
+  m.innerHTML=cardHTML(R,tries[i],'Copy 2 of 2: for the person who drives you.');
+  if(m.firstChild.offsetHeight<=PAGE_H){m.innerHTML='';return {ok:true,opt:tries[i]}}
+ }
+ m.innerHTML='';return {ok:false,opt:tries[0]};
+}
+
+function renderCases(R){
+ var C=R.C,bad=C[0],loan=R.loan,V=R.V,S=R.S,minCov=R.minCov;
+ $('cases').innerHTML=C.map(function(c){
+  return '<div class="box'+(c.ok===false?' grayb':'')+'"><h3>'+c.name+'</h3><p class="drv">Inputs that drive it:<br>Cash cleared '+money(c.cash)+', '+c.lab+'<br>Rate '+pct(c.rate)+'<br>Forced-sale cut '+c.cut+'%</p><dl>'+
+  '<dt>Interest a year</dt><dd>'+money(c.int)+'</dd><dt>All payments a year</dt><dd>'+money(c.svc)+'</dd><dt>Coverage</dt><dd>'+times(c.cov)+'</dd>'+
+  '<dt>Building after cut</dt><dd>'+money(c.coll)+'</dd><dt>Owed in total</dt><dd>'+money(c.claims)+'</dd><dt>Room left</dt><dd>'+money(c.room)+'</dd></dl>'+
+  '<p><b>'+(c.ok===null?'Not enough numbers yet.':c.ok?'Holds.':'Breaks.')+'</b></p></div>';
+ }).join('');
+ var v=$('verdict'),h='';
+ var need=[];if(loan==null)need.push('loan size');['cash','rate','other','appr','owed'].forEach(function(k){if(V[k]==null)need.push(NUMS.filter(function(n){return n.id===k})[0].cl.toLowerCase())});
+ var limit=g('limit'),rl='';
+ if(limit!=null&&bad.rate!=null)rl=bad.rate>limit?' The bad-case rate of '+pct(bad.rate)+' is above your top rate of '+pct(limit)+'.':' The bad-case rate of '+pct(bad.rate)+' stays within your top rate of '+pct(limit)+'.';
+ if(bad.ok===null){v.className='verdict fail';h='<strong class="big">Cannot tell yet.</strong>Fill in: '+esc(need.join(', '))+'.';}
+ else if(bad.ok){
+  var drop=(1-minCov*(loan*bad.rate/100+V.other)/V.cash)*100;
+  var rmax=((bad.cash/minCov-V.other)/loan)*100;
+  var cmax=(1-bad.claims/V.appr)*100;
+  v.className='verdict';
+  h='<strong class="big">The plan survives the bad case.</strong>Coverage stays at '+times(bad.cov)+' and the building covers what is owed with '+money(bad.room)+' to spare.'+rl+
+   '<p style="margin-top:.6rem"><b>How far you could push before it breaks:</b></p><ul>'+
+   '<li>Cash cleared could fall by up to '+pct(Math.max(0,drop))+' from '+money(V.cash)+', at the bad-case rate. The bad case uses '+(S.s_badDrop||0)+'%.</li>'+
+   '<li>The rate could reach '+pct(rmax)+' with cash at the bad-case level of '+money(bad.cash)+'.</li>'+
+   '<li>A forced sale could cut the building by up to '+pct(Math.max(0,cmax))+'. The bad case uses '+bad.cut+'%.</li></ul>';
+ } else {
+  var a=(bad.cash/minCov-V.other)/(bad.rate/100),b=V.appr*(1-bad.cut/100)-V.owed;
+  var safe=Math.floor(Math.min(a,b)/10000)*10000;
+  v.className='verdict fail';
+  var why=[];if(bad.cov<minCov)why.push('coverage falls to '+times(bad.cov)+', under the break line of '+times(minCov));if(bad.room<0)why.push('the building after a '+bad.cut+'% cut falls '+money(-bad.room)+' short of what is owed');
+  h=(safe>0?'<strong class="big">Safer setting first: borrow '+money(safe)+' or less.</strong>At that size the bad case holds.':'<strong class="big">No loan size holds in this bad case.</strong>Lower the other loan payments or bring more collateral first.')+
+   '<p style="margin-top:.6rem">At '+money(loan)+' the plan does not survive the bad case: '+esc(why.join(', and '))+'.'+rl+'</p>';
+ }
+ v.innerHTML=h;
+}
+
+function renderGaps(R){
+ var b=blanks(R.V),route=$('route').value,items=[];
+ if(!route)items.push('<li><span class="q">\u201c'+ROUTEQ.q+'\u201d</span><br>Who has it: '+ROUTEQ.who+'<br><b>Many first meetings end here.</b></li>');
+ b.forEach(function(n){items.push('<li><span class="q">\u201c'+esc(n.q)+'\u201d</span><br>Who has it: '+esc(n.who)+'<br><b>Missing costs '+money(n.cost)+'</b>, '+wk(n.wk)+'.</li>')});
+ if(!items.length){$('gaps').innerHTML='<p><b>No gaps.</b> Every number on the card is filled. Put the paper for each one in your folder and tick it.</p>';return}
+ var tc=0,tw=0;b.forEach(function(n){tc+=n.cost;tw+=n.wk});
+ var m=g('q_months');
+ $('gaps').innerHTML='<p>Ranked by how fast each one stops the meeting. '+(b.length?'If all stay blank: '+money(tc)+' of review time, '+wk(tw)+'.':'')+(m!=null?' You have been looking for '+m+(m===1?' month':' months')+'. These are what keep it running.':'')+'</p><ol class="gaplist">'+items.join('')+'</ol>';
+}
+
+function renderAI(R){
+ var S=R.S,b=blanks(R.V),bc=0;b.forEach(function(n){bc+=n.cost});
+ var u=S.s_dilUsual,a=S.s_dilAI;
+ function card(t,x,sub){return '<div class="box"><h3>'+t+'</h3><dl><dt>Base case: deal goes ahead</dt><dd>'+money(x)+'</dd><dt>Bad case: slips six months and dies, all of it lost</dt><dd>'+money(x==null?null:x+bc)+'</dd></dl><p class="smallnote">'+sub+'</p></div>'}
+ $('ai').innerHTML=card('Usual path: people read the return',u,'First pass plus '+money(bc)+' to chase your blanks in the bad case.')+
+  card('Shortcut: machine draft, analyst checks',a,'Same blanks cost the same. A machine cannot read a number that is not there.');
+ if(u!=null&&a!=null){$('ai').insertAdjacentHTML('beforeend','<p class="box"><b>Saved with the machine draft: '+money(u-a)+'</b> in the base case and in the bad case.'+(bc?' Filling your blanks saves another '+money(bc)+' on either path.':'')+'</p>')}
+}
+
+function renderShare(R){
+ var s=shareCalc(R),S=R.S,bad=R.C[0];
+ var repaid=bad.cov==null?'not known yet':(bad.cov>=R.minCov?'yes, coverage '+times(bad.cov):'no, coverage '+times(bad.cov));
+ function card(t,b,ba,go,sub){return '<div class="box"><h3>'+t+'</h3><dl><dt>Bad case: no sale</dt><dd>'+money(b)+'</dd><dt>Base case: sells at '+money(s.basePrice)+'</dt><dd>'+money(ba)+'</dd><dt>Good case: sells at '+money(s.goodPrice)+'</dt><dd>'+money(go)+'</dd></dl><p class="smallnote">'+sub+'</p></div>'}
+ $('share').innerHTML=card('Usual path: flat '+pct(S.s_feeUsual)+' fee',s.usual,s.usual,s.usual,'Paid at signing. Loan repaid from cash flow in the bad case: '+repaid+'.')+
+  card('Shortcut: '+pct(S.s_feeShare)+' fee plus '+pct(S.s_sharePct)+' of the sale',s.bad,s.base,s.good,'Share paid only if you sell within '+(S.s_term||0)+' years. Loan repaid from cash flow in the bad case: '+repaid+'.');
+ var n='';
+ if(s.usual!=null&&s.bad!=null){
+  n='What you pay the lender. Bad case: the shortcut costs '+money(s.usual-s.bad)+' less. ';
+  if(s.base!=null)n+=(s.base>=s.usual?'Base case: it costs '+money(s.base-s.usual)+' more, paid only when you sell.':'Base case: it costs '+money(s.usual-s.base)+' less.');
+  if(!s.within)n+=' Your planned sale is after the loan ends, or not entered, so no share is counted.';
+  n+=' Fees are not in the coverage figure. Fee terms are set by each lender. Enter what you are offered.';
+ }
+ $('shareNote').textContent=n;
+}
+
+function renderDrafts(){
+ var who=$('analyst').value.trim();
+ NUMS.forEach(function(n){
+  var d=$('d_'+n.id);
+  if(draft[n.id]){d.hidden=false;d.textContent=isChecked()?'Checked by '+who+'.':'Draft, not yet checked by '+(who||'a named analyst')+'.'}
+  else d.hidden=true;
+ });
+}
+
+function render(){
+ var R=compute();
+ var f=fit(R);fitState=f;
+ $('cardShow').innerHTML=cardHTML(R,f.opt,'Prints as Copy 1 for your folder and Copy 2 for the person who drives you.');
+ var m=$('fitMsg'),pb=$('printBtn');
+ if(f.ok){m.className='msg ok';m.textContent='Fits one letter page at 18 point. '+(f.opt.note||'');pb.hidden=false}
+ else{m.className='msg';m.textContent='Too long for one page. Fill a gray box or shorten what the money is for. We cut words, never type size. Printing is off until it fits.';pb.hidden=true}
+ $('printArea').innerHTML='<div class="copy">'+cardHTML(R,f.opt,'Copy 1 of 2: for your folder.')+'</div><div class="copy">'+cardHTML(R,f.opt,'Copy 2 of 2: for the person who drives you.')+'</div>';
+ renderGaps(R);renderCases(R);renderAI(R);renderShare(R);renderDrafts();
+}
+
+document.addEventListener('input',function(e){
+ var k=e.target&&e.target.dataset&&e.target.dataset.k;if(!k)return;
+ if(draft[k]){delete draft[k]}
+ save();render();
+});
+document.addEventListener('change',function(e){if(e.target&&e.target.dataset&&e.target.dataset.k){save();render()}});
+$('printBtn').addEventListener('click',function(){render();if(fitState.ok)window.print()});
+$('exBtn').addEventListener('click',function(){setVals(EX);draft={};save();render()});
+$('clearBtn').addEventListener('click',function(){CLEARABLE.forEach(function(k){$(k).value=''});draft={};save();render();$('q_loan').focus()});
+
+var MAP=[['price',/sale price|expected sale|valuation|sell/i],['cash',/clear|after wages|net income|cash flow|ebitda/i],['sales',/sales|revenue|receipts/i],['other',/other loan|loan payment|debt service/i],['rate',/rate/i],['appr',/apprais/i],['owed',/owed|mortgage|balance/i],['proj',/project|cost|buys/i],['years',/years/i]];
+$('upload').addEventListener('change',function(){
+ var f=this.files&&this.files[0],msg=$('upMsg');if(!f)return;
+ if(/\.pdf$/i.test(f.name)||/pdf/i.test(f.type)){msg.textContent='This page reads .txt or .csv files only. A PDF return needs a reading tool on the analyst\u2019s side.';return}
+ var r=new FileReader();
+ r.onload=function(){
+  var got={},count=0;
+  String(r.result).split(/\r?\n/).forEach(function(line){
+   var m=line.match(/^\s*"?([^,:\t"]+)"?\s*[,:\t]\s*"?([$\d][\d,.$%\s]*)"?\s*$/);if(!m)return;
+   var val=num(m[2]);if(val==null)return;
+   for(var i=0;i<MAP.length;i++){var id=MAP[i][0];if(!got[id]&&MAP[i][1].test(m[1])){got[id]=1;$(id).value=String(val);draft[id]=1;count++;break}}
+  });
+  msg.textContent=count?'Pulled '+count+(count===1?' number':' numbers')+'. Each stays marked Draft until the named analyst checks it.':'No numbers found. Use one line per number, such as: Sales last year, 6000000';
+  save();render();
+ };
+ r.onerror=function(){msg.textContent='The file could not be read on this device.'};
+ r.readAsText(f);
+});
+
+load();render();
+})();
+</script>
+</body>
+</html>
