@@ -1,11 +1,12 @@
 # Archive
 
-Every daily team and the asset it made, newest first. 32 days recorded.
+Every daily team and the asset it made, newest first. 33 days recorded.
 
 [Today](README.md)
 
 | Date | Task | Team | Constraint | Asset |
 |---|---|---|---|---|
+| [2026-11-05](days/2026-11-05/) | Kiln Log | Ceramicist · Animator · Founder raising a growth round · Clockwork beetle | Prints clearly on a black-and-white printer. | [asset](days/2026-11-05/artifact-1.html) |
 | [2026-11-04](days/2026-11-04/) | Setup Card | Game designer · Stand-up comedian · Private credit fund manager · Captain Ahab | Built for people over 70. | [asset](days/2026-11-04/artifact-1.html) |
 | [2026-11-03](days/2026-11-03/) | One Call, One Year | Choreographer · Front-end engineer · Clinic owner · Phoenix | The user does exactly one thing on the page. | [asset](days/2026-11-03/artifact-1.html) |
 | [2026-11-02](days/2026-11-02/) | Who's In First | Glassblower · Tailor · Merchant banker · Time | Three colors at most. | [asset](days/2026-11-02/artifact-1.html) |

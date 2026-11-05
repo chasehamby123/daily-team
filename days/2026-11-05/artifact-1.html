@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiln Log: what each investor costs your round</title>
+<style>
+:root{color-scheme:light}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#fff;color:#000;font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+main{max-width:54rem;margin:0 auto;padding:1.25rem 1rem 3rem}
+header{border-bottom:8pt solid #000;padding-bottom:1rem}
+h1{font:700 2.5rem/1.05 Georgia,"Times New Roman",serif;margin:0 0 .3rem}
+h2{font:700 1.25rem/1.25 Georgia,"Times New Roman",serif;margin:0 0 .6rem;padding-bottom:.3rem;border-bottom:1pt solid #000}
+h3{font:700 1rem/1.3 Georgia,"Times New Roman",serif;margin:1.2rem 0 .4rem}
+p{margin:.5rem 0}
+.sub{font-size:1.1rem;margin:0 0 .8rem}
+section{padding:1.3rem 0;border-bottom:4pt solid #000}
+.key{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;font-size:.9rem;margin:.6rem 0}
+.key span{display:inline-flex;align-items:center;gap:.4rem}
+.key i{display:inline-block;width:3rem;border-top-style:solid;border-top-color:#000}
+#headline{font:700 1.15rem/1.35 Georgia,"Times New Roman",serif;border-top:8pt solid #000;padding-top:.5rem;margin-top:.8rem}
+.btns{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:.4rem .4rem;vertical-align:top;border-bottom:1pt solid #000}
+thead th{font-weight:700;font-size:.85rem;border-bottom:1pt solid #000}
+.num{text-align:right}
+input,select{font:inherit;color:#000;background:#fff;border:1pt solid #000;border-radius:0;padding:.2rem .3rem;width:5.5rem;max-width:100%}
+input.wide{width:9rem}
+select{width:4.5rem}
+label{font-weight:600}
+.q{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem 1rem;margin:.5rem 0}
+.q label{min-width:15rem}
+.q input{width:7rem;font-size:1.1rem}
+.row{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;align-items:center;margin:.5rem 0}
+.row label{font-weight:400}
+button{font:inherit;background:#fff;color:#000;border:1pt solid #000;border-radius:0;padding:.35rem .75rem;cursor:pointer}
+button:hover{border-width:2pt;padding:calc(.35rem - 1pt) calc(.75rem - 1pt)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2pt solid #000;outline-offset:2px}
+.help{font-size:.9rem}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.82rem;border-left:4pt solid #000;padding:.3rem .7rem;white-space:pre-wrap;margin:.7rem 0}
+.scroll{overflow-x:auto}
+.tag{display:block;font-size:.8rem;font-weight:700}
+tr.fit td:first-child{border-left:4pt solid #000}
+.cases th[scope=row]{font-weight:400;font-size:.92rem}
+.cases .bad{border-left:4pt solid #000;border-right:4pt solid #000}
+.cases thead .bad{border-top:4pt solid #000}
+.cases input{width:4.5rem}
+.cases tr.sep th,.cases tr.sep td{border-bottom:4pt solid #000}
+.box{border:4pt solid #000;padding:.6rem .8rem;margin:.9rem 0}
+.box strong{font-family:Georgia,"Times New Roman",serif}
+ol#reel{margin:.3rem 0;padding-left:1.4rem}
+ol#reel li{display:flex;justify-content:space-between;gap:1rem;border-bottom:1pt solid #000;padding:.2rem 0;font-variant-numeric:tabular-nums}
+.bars .case{margin:.8rem 0}
+.bars .lbl{font-size:.9rem;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.track{border-bottom:1pt solid #000;margin:.15rem 0 .35rem;height:9pt;position:relative}
+.bar{height:0;border-top-style:solid;border-top-color:#000;position:absolute;left:0;bottom:0}
+.signoff{border-top:1pt solid #000;padding-top:.5rem;font-weight:600}
+footer{padding-top:1.2rem;font-size:.85rem}
+footer p{margin:.4rem 0}
+@media (max-width:600px){
+  h1{font-size:2rem}
+  .q label{min-width:0;width:100%}
+  th,td{padding:.35rem .25rem}
+  .cases input{width:3.8rem}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+}
+@media print{
+  @page{margin:14mm}
+  body{font-size:10.5pt}
+  main{max-width:none;padding:0}
+  button,.x,.noprint{display:none!important}
+  input,select{border:0;padding:0;width:auto;min-width:3.5rem;-webkit-appearance:none;appearance:none;background:none}
+  .q input{font-size:inherit}
+  .scroll{overflow:visible}
+  section,.box,.case,table{break-inside:avoid}
+  a{color:#000;text-decoration:none}
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>Kiln Log</h1>
+  <p class="sub">What each investor costs your round, read by the weight of a line.</p>
+  <p>Six steps per investor. The heavier the rule under a step, the more that step costs you. The example figures are already filled in. Change any of them.</p>
+  <div class="key" aria-label="Line weight key">
+    <span><i style="border-top-width:1pt"></i>1pt: under $1,000</span>
+    <span><i style="border-top-width:4pt"></i>4pt: $1,000 to $2,999</span>
+    <span><i style="border-top-width:8pt"></i>8pt: $3,000 or more, and the most expensive step</span>
+  </div>
+  <p id="headline"></p>
+  <div class="btns noprint">
+    <button type="button" id="reset">Reload example</button>
+    <button type="button" id="clear">Clear all</button>
+    <button type="button" id="print">Print</button>
+  </div>
+</header>
+
+<section aria-labelledby="s0">
+  <h2 id="s0">Two questions</h2>
+  <div class="q"><label for="round">Round size ($M)</label><input id="round" type="number" step="any" min="0" inputmode="decimal"></div>
+  <div class="q"><label for="months">Months fundraising so far</label><input id="months" type="number" step="any" min="0" inputmode="decimal"></div>
+  <p class="help">That is all this page asks. Nothing is sent anywhere. Your inputs stay in this browser.</p>
+</section>
+
+<section aria-labelledby="s1">
+  <h2 id="s1">1. Which funds fit, and why</h2>
+  <p class="help">An AI screen can fill these columns from each fund's last 30 deals: check size, stage, and whether it led. This page does not call an AI service. It applies the rule below to what you enter. A person reads every reason before any outreach. Example funds are made up.</p>
+  <div class="row">
+    <label>Lead check, share of round (%) <input id="leadShare" type="number" step="any" min="0" max="100"></label>
+    <label>Deals at your stage needed, of last 30 <input id="minDeals" type="number" step="1" min="0" max="30"></label>
+  </div>
+  <div class="scroll">
+  <table id="funds">
+    <thead><tr><th>Fund</th><th class="num">Smallest check ($M)</th><th class="num">Largest check ($M)</th><th class="num">Deals at your stage, of 30</th><th>Leads</th><th>Result and reason</th><th class="x"><span class="noprint">Edit</span></th></tr></thead>
+    <tbody id="fundsBody"></tbody>
+  </table>
+  </div>
+  <div class="btns noprint"><button type="button" id="addFund">Add fund</button></div>
+  <p id="fitSummary"></p>
+  <p class="formula">Lead check = round size × lead share
+Fits = leads rounds AND smallest check ≤ lead check ≤ largest check
+       AND deals at your stage ≥ minimum</p>
+</section>
+
+<section aria-labelledby="s2">
+  <h2 id="s2">2. Six steps, one investor</h2>
+  <div class="row">
+    <label>Your hour is worth ($) <input id="rate" type="number" step="any" min="0"></label>
+    <span class="help">Sets every row. Edit a row to change one.</span>
+  </div>
+  <div class="scroll">
+  <table id="steps">
+    <thead><tr><th>Step</th><th class="num">Hours</th><th class="num">$ per hour</th><th class="num">Cost</th></tr></thead>
+    <tbody id="stepsBody"></tbody>
+  </table>
+  </div>
+  <p id="stepTotal"></p>
+  <p class="formula">Step cost = hours × $ per hour
+Cost per investor pursued = sum of the six step costs</p>
+
+  <h3>Run it backwards: a fund that passed at diligence</h3>
+  <p class="help">Start at the last frame and count back. Every frame of this reel was spent on a fund that said no.</p>
+  <ol id="reel" reversed></ol>
+  <p id="reelTotal"></p>
+</section>
+
+<section aria-labelledby="s3">
+  <h2 id="s3">3. Funds that never fit: usual path and AI screen</h2>
+  <div class="row">
+    <label>Fitting funds you need <input id="target" type="number" step="1" min="1"></label>
+    <label>AI screen, hours per fund <input id="screenH" type="number" step="any" min="0"></label>
+  </div>
+  <div class="scroll">
+  <table class="cases">
+    <thead><tr><th></th><th class="num bad">Bad</th><th class="num">Base</th><th class="num">Good</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Fit rate (%)</th><td class="num bad"><input id="fitB" type="number" step="any" min="0" max="100" aria-label="Bad case fit rate"></td><td class="num"><input id="fitM" type="number" step="any" min="0" max="100" aria-label="Base case fit rate"></td><td class="num"><input id="fitG" type="number" step="any" min="0" max="100" aria-label="Good case fit rate"></td></tr>
+      <tr><th scope="row">Screen drops non-fits (%)</th><td class="num bad"><input id="catB" type="number" step="any" min="0" max="100" aria-label="Bad case catch rate"></td><td class="num"><input id="catM" type="number" step="any" min="0" max="100" aria-label="Base case catch rate"></td><td class="num"><input id="catG" type="number" step="any" min="0" max="100" aria-label="Good case catch rate"></td></tr>
+      <tr class="sep"><th scope="row">Months added to your answer</th><td class="num bad"><input id="slipB" type="number" step="any" aria-label="Bad case months added"></td><td class="num">0</td><td class="num"><input id="slipG" type="number" step="any" aria-label="Good case months added"></td></tr>
+    </tbody>
+    <tbody id="casesOut"></tbody>
+  </table>
+  </div>
+  <div class="box" id="survive" role="status"></div>
+  <h3>The AI step, with and without</h3>
+  <p id="aiLine"></p>
+  <p><strong>A person still does:</strong> read each fit reason before outreach, the first call, follow-up materials, partner prep, diligence, and every fee term.</p>
+  <p class="formula">Funds pursued = fitting funds needed ÷ fit rate, rounded up
+Non-fits = funds pursued − fitting funds needed
+Usual path = non-fits × cost per investor pursued
+Dropped by screen = non-fits × screen rate, rounded
+With screen = dropped × screen hours × your hourly value
+            + missed × cost per investor pursued
+Assumes each non-fit runs the full pass, as if it passed at
+diligence. A non-fit the screen misses is also costed at the
+full pass. Both lean high on purpose.</p>
+</section>
+
+<section aria-labelledby="s4">
+  <h2 id="s4">4. Two ways to pay for help</h2>
+  <p class="help">Enter the terms you have been offered. Example terms are filled in. Rules on who may charge for investor introductions, and how, vary by country and state. Check yours.</p>
+  <div class="row">
+    <label>Retainer, paid up front ($) <input id="feeR" type="number" step="any" min="0"></label>
+    <label>Success fee with retainer (%) <input id="feeP1" type="number" step="any" min="0"></label>
+    <label>Success-only fee (%) <input id="feeP2" type="number" step="any" min="0"></label>
+  </div>
+  <div class="scroll">
+  <table class="cases">
+    <thead><tr><th></th><th class="num bad">Bad</th><th class="num">Base</th><th class="num">Good</th></tr></thead>
+    <tbody>
+      <tr class="sep"><th scope="row">Raised, share of round (%)</th><td class="num bad"><input id="rB" type="number" step="any" min="0" aria-label="Bad case share raised"></td><td class="num"><input id="rM" type="number" step="any" min="0" aria-label="Base case share raised"></td><td class="num"><input id="rG" type="number" step="any" min="0" aria-label="Good case share raised"></td></tr>
+    </tbody>
+    <tbody id="feesOut"></tbody>
+  </table>
+  </div>
+  <p id="feeNote"></p>
+  <p class="formula">Retainer path = retainer + success fee % × amount raised
+Success-only  = success-only fee % × amount raised
+Amount raised = round size × share raised</p>
+  <p class="signoff">Fee terms and any term sheet are reviewed and signed off by your CFO or counsel before you commit.</p>
+</section>
+
+<section aria-labelledby="s5">
+  <h2 id="s5">5. One wind: months spent on funds that never fit</h2>
+  <p class="help">8pt bar: usual path. 4pt bar: with the AI screen. Bars share one scale.</p>
+  <div class="bars" id="bars"></div>
+  <p class="formula">Months on non-fits = months fundraising × non-fit hours
+                    ÷ (non-fit hours + fitting-fund hours)</p>
+</section>
+
+<footer>
+  <p><strong>Credits.</strong> Ceramicist: line weight as the only signal, six steps, no fills. Animator: the backwards reel and the AI step priced as a line item. Founder raising a growth round: fit list first, two questions, every default editable, both fee columns printed. Clockwork beetle: one required input and the heavy bar of months on non-fits.</p>
+  <p>This is a cost model. It is not investment, legal, or tax advice.</p>
+  <p>Published by OuterHaven Advisory.</p>
+</footer>
+</main>
+
+<script>
+(function(){
+"use strict";
+var $=function(id){return document.getElementById(id);};
+var STEPS=["Research","Intro chase","First call","Follow-up materials","Partner prep","Diligence"];
+var DEF={round:20,months:8,rate:150,h0:2,h1:1.5,h2:1,h3:3,h4:6,h5:20,r0:150,r1:150,r2:150,r3:150,r4:150,r5:150,
+  leadShare:40,minDeals:3,target:10,screenH:0.5,fitB:12.5,fitM:25,fitG:40,catB:70,catM:70,catG:70,slipB:6,slipG:-2,
+  feeR:25000,feeP1:2,feeP2:4,rB:0,rM:80,rG:100};
+var DEF_FUNDS=[
+  {name:"Fund A",min:5,max:15,deals:9,lead:"yes"},
+  {name:"Fund B",min:1,max:4,deals:12,lead:"yes"},
+  {name:"Fund C",min:10,max:25,deals:2,lead:"yes"},
+  {name:"Fund D",min:6,max:12,deals:7,lead:"no"},
+  {name:"Fund E",min:4,max:10,deals:5,lead:"yes"},
+  {name:"Fund F",min:20,max:50,deals:6,lead:"yes"}];
+var KEY="kilnlog-v1";
+var funds=[];
+
+function ok(x){return typeof x==="number"&&isFinite(x);}
+function num(s){s=String(s==null?"":s).trim();if(s==="")return NaN;var x=Number(s);return isFinite(x)?x:NaN;}
+function v(id){var e=$(id);return e?num(e.value):NaN;}
+function money(x){if(!ok(x))return "—";var r=Math.round(Math.abs(x));return (x<0&&r>0?"−$":"$")+r.toLocaleString("en-US");}
+function hrs(x){return ok(x)?(Math.round(x*10)/10).toLocaleString("en-US")+" h":"—";}
+function pct(x){return ok(x)?(Math.round(x*1000)/10)+"%":"—";}
+function mo(x){return ok(x)?(Math.round(x*10)/10)+" mo":"—";}
+function int(x){return ok(x)?Math.round(x).toLocaleString("en-US"):"—";}
+function M(x){return "$"+(Math.round(x*10)/10)+"M";}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+
+var sb=$("stepsBody");
+STEPS.forEach(function(s,i){
+  var tr=document.createElement("tr");tr.id="st"+i;
+  tr.innerHTML='<td>'+s+'</td><td class="num"><input id="h'+i+'" type="number" step="any" min="0" aria-label="'+s+' hours"></td><td class="num"><input id="r'+i+'" type="number" step="any" min="0" aria-label="'+s+' dollars per hour"></td><td class="num"><span id="c'+i+'"></span><span class="tag" id="t'+i+'"></span></td>';
+  sb.appendChild(tr);
+});
+
+function renderFunds(){
+  var tb=$("fundsBody");tb.innerHTML="";
+  funds.forEach(function(f,i){
+    var tr=document.createElement("tr");tr.id="fr"+i;
+    tr.innerHTML='<td><input class="fn wide" data-i="'+i+'" data-k="name" value="'+esc(f.name)+'" aria-label="Fund name"></td>'+
+      '<td class="num"><input class="fn" type="number" step="any" min="0" data-i="'+i+'" data-k="min" value="'+esc(f.min)+'" aria-label="Smallest check in millions"></td>'+
+      '<td class="num"><input class="fn" type="number" step="any" min="0" data-i="'+i+'" data-k="max" value="'+esc(f.max)+'" aria-label="Largest check in millions"></td>'+
+      '<td class="num"><input class="fn" type="number" step="1" min="0" max="30" data-i="'+i+'" data-k="deals" value="'+esc(f.deals)+'" aria-label="Deals at your stage of last 30"></td>'+
+      '<td><select class="fn" data-i="'+i+'" data-k="lead" aria-label="Leads rounds"><option value="yes">Yes</option><option value="no">No</option></select></td>'+
+      '<td id="res'+i+'"></td>'+
+      '<td class="x"><button type="button" data-rm="'+i+'">Remove</button></td>';
+    tb.appendChild(tr);
+    tr.querySelector("select").value=f.lead==="no"?"no":"yes";
+  });
+}
+
+function setInputs(obj){Object.keys(DEF).forEach(function(k){var e=$(k);if(e)e.value=(obj[k]==null?"":obj[k]);});}
+
+function save(){
+  try{
+    var o={};Object.keys(DEF).forEach(function(k){o[k]=$(k).value;});
+    localStorage.setItem(KEY,JSON.stringify({v:o,f:funds}));
+  }catch(e){}
+}
+function load(){
+  try{
+    var s=localStorage.getItem(KEY);if(!s)return false;
+    var d=JSON.parse(s);if(!d||!d.v||!Array.isArray(d.f))return false;
+    setInputs(d.v);funds=d.f;return true;
+  }catch(e){return false;}
+}
+function loadExample(){setInputs(DEF);funds=DEF_FUNDS.map(function(f){return {name:f.name,min:f.min,max:f.max,deals:f.deals,lead:f.lead};});}
+
+function outRows(tbodyId,rows,cases){
+  var tb=$(tbodyId);tb.innerHTML="";
+  rows.forEach(function(r){
+    var tr=document.createElement("tr");
+    var h='<th scope="row">'+r[0]+'</th>';
+    cases.forEach(function(c,j){h+='<td class="num'+(j===0?' bad':'')+'">'+r[1](c)+'</td>';});
+    tr.innerHTML=h;tb.appendChild(tr);
+  });
+}
+
+function compute(){
+  // steps
+  var hs=[],rs=[],cs=[],H=0,F=0,i;
+  for(i=0;i<6;i++){hs[i]=v("h"+i);rs[i]=v("r"+i);cs[i]=hs[i]*rs[i];H+=hs[i];F+=cs[i];}
+  var mi=-1,mx=-Infinity;
+  cs.forEach(function(c,j){if(ok(c)&&c>mx){mx=c;mi=j;}});
+  for(i=0;i<6;i++){
+    var c=cs[i],w=!ok(c)?1:(c>=3000?8:(c>=1000?4:1));
+    if(i===mi)w=8;
+    var tds=$("st"+i).children;
+    for(var k=0;k<tds.length;k++)tds[k].style.borderBottom=w+"pt solid #000";
+    $("c"+i).textContent=money(c);
+    $("t"+i).textContent=(i===mi)?"Most expensive step":"";
+  }
+  $("stepTotal").innerHTML=ok(F)?"<strong>Cost per investor pursued: "+money(F)+"</strong> for a full pass of "+hrs(H)+".":"Fill every hours and $ per hour cell to get the cost per investor.";
+  $("headline").textContent=(ok(F)&&mi>=0&&F>0)?"Most expensive step: "+STEPS[mi]+", "+money(cs[mi])+" of "+money(F)+" per investor pursued ("+pct(cs[mi]/F)+").":"Enter hours and rates to find the heaviest step.";
+
+  // reel
+  var run=0,html="";
+  for(i=5;i>=0;i--){run+=hs[i];html+="<li><span>"+STEPS[i]+"</span><span>"+hrs(hs[i])+" · running "+hrs(run)+"</span></li>";}
+  $("reel").innerHTML=html;
+  var backH=hs[2]+hs[3]+hs[4]+hs[5],backC=cs[2]+cs[3]+cs[4]+cs[5];
+  $("reelTotal").textContent="Back to the first call: "+hrs(backH)+", "+money(backC)+". Back to the first research: "+hrs(H)+", "+money(F)+". All of it goes in the waste column.";
+
+  // funds
+  var round=v("round"),ls=v("leadShare"),md=v("minDeals"),lc=round*ls/100;
+  var fitN=0,counted=0,names=[];
+  funds.forEach(function(f,j){
+    var cell=$("res"+j),tr=$("fr"+j);if(!cell)return;
+    var mn=num(f.min),mxx=num(f.max),d=num(f.deals);
+    tr.className="";
+    if(!ok(mn)||!ok(mxx)||!ok(d)||!ok(lc)||!ok(md)){cell.innerHTML="<strong>—</strong> Enter checks, deals, and round size.";return;}
+    counted++;
+    var why=[];
+    if(f.lead!=="yes")why.push("does not lead rounds");
+    if(mxx<lc)why.push("largest check "+M(mxx)+" is under your "+M(lc)+" lead check");
+    if(mn>lc)why.push("smallest check "+M(mn)+" is over your "+M(lc)+" lead check");
+    if(d<md)why.push(d+" of last 30 deals at your stage, under "+md);
+    if(why.length){var t=why.join("; ");cell.innerHTML="<strong>No fit.</strong> "+esc(t.charAt(0).toUpperCase()+t.slice(1))+".";}
+    else{fitN++;names.push(f.name||("Row "+(j+1)));tr.className="fit";
+      cell.innerHTML="<strong>Fits.</strong> Writes "+M(mn)+" to "+M(mxx)+" against your "+M(lc)+" lead check; "+d+" of last 30 deals at your stage; leads rounds.";}
+  });
+  $("fitSummary").innerHTML=counted?("<strong>"+fitN+" of "+counted+" funds fit ("+pct(fitN/counted)+").</strong> "+(names.length?"Fit: "+esc(names.join(", "))+". ":"")+"Fit rows carry a 4pt rule on the left. Use your list's rate to set the base-case fit rate below."):"Add funds to see which fit.";
+
+  // cases
+  var T=v("target"),Sh=v("screenH"),rate=v("rate"),Sc=Sh*rate,months=v("months");
+  var R=v("feeR"),p1=v("feeP1"),p2=v("feeP2");
+  function calc(f,c,m,rp){
+    var N=(f>0)?Math.ceil(T/(f/100)-1e-9):NaN;
+    var nf=ok(N)?Math.max(0,N-T):NaN;
+    var caught=Math.round(nf*c/100),missed=nf-caught;
+    var usual=nf*F,ai=caught*Sc+missed*F;
+    var uH=nf*H,aH=caught*Sh+missed*H,fH=T*H;
+    var mU=m*uH/(uH+fH),mA=m*aH/(aH+fH);
+    var raised=round*1e6*rp/100;
+    return {f:f,c:c,m:m,N:N,nf:nf,caught:caught,missed:missed,usual:usual,ai:ai,uH:uH,aH:aH,mU:mU,mA:mA,raised:raised,ret:R+p1/100*raised,so:p2/100*raised};
+  }
+  var mB=months+v("slipB"),mG=Math.max(0,months+v("slipG"));
+  var bad=calc(v("fitB"),v("catB"),mB,v("rB")),base=calc(v("fitM"),v("catM"),months,v("rM")),good=calc(v("fitG"),v("catG"),mG,v("rG"));
+  var C=[bad,base,good];
+  outRows("casesOut",[
+    ["Months fundraising",function(c){return mo(c.m);}],
+    ["Funds pursued",function(c){return int(c.N);}],
+    ["Funds that never fit",function(c){return int(c.nf);}],
+    ["<strong>Usual path:</strong> cost of non-fits",function(c){return "<strong>"+money(c.usual)+"</strong><br>"+hrs(c.uH);}],
+    ["<strong>With AI screen:</strong> cost of non-fits",function(c){return "<strong>"+money(c.ai)+"</strong><br>"+hrs(c.aH);}],
+    ["Dropped by screen / missed",function(c){return int(c.caught)+" / "+int(c.missed);}],
+    ["Saved by the screen",function(c){return money(c.usual-c.ai);}]
+  ],C);
+
+  // survival
+  var sv=$("survive");
+  if(!ok(bad.ai)||!ok(base.usual)){sv.innerHTML="Fill the inputs above to test the bad case.";}
+  else{
+    var survives=bad.ai<=base.usual;
+    var cb=bad.c/100,perAI=cb*Sc+(1-cb)*F;
+    var nfMax=perAI>0?base.usual/perAI:Infinity,fMin=T/(nfMax+T);
+    var per=bad.nf>0?base.usual/bad.nf:Infinity,cMin=(F-Sc)>0?(F-per)/(F-Sc):NaN;
+    cMin=Math.max(0,cMin);
+    if(survives){
+      sv.innerHTML="<strong>Survives the bad case.</strong> With the screen, bad-case cost of non-fits is "+money(bad.ai)+". That is under the "+money(base.usual)+" the base case costs without it, and down from "+money(bad.usual)+" on the usual path. "+
+        "It holds until the fit rate drops below "+pct(fMin)+", or the screen drops fewer than "+pct(cMin)+" of non-fits at the bad-case fit rate.";
+    }else{
+      var safer=(ok(cMin)&&cMin<=1)?"set the screen to drop at least "+pct(cMin)+" of non-fits, or ":"";
+      sv.innerHTML="<strong>Safer setting first:</strong> "+safer+"cut the list until the bad-case fit rate is at least "+pct(fMin)+". "+
+        "<br>At current settings the plan does not survive the bad case: "+money(bad.ai)+" with the screen, against "+money(base.usual)+" in the base case without it.";
+    }
+  }
+
+  // AI line
+  var handH=hs[0]+hs[1],handC=cs[0]+cs[1];
+  function aiPart(c,label){return label+", "+int(c.N)+" funds: "+hrs(handH*c.N)+" ("+money(handC*c.N)+") by hand, "+hrs(Sh*c.N)+" ("+money(Sc*c.N)+") with the screen. "+hrs((handH-Sh)*c.N)+" and "+money((handC-Sc)*c.N)+" less.";}
+  $("aiLine").textContent="Research and intro chase by hand: "+hrs(handH)+" per fund. With the AI screen: "+hrs(Sh)+". "+aiPart(base,"Base case")+" "+aiPart(bad,"Bad case");
+
+  // fees
+  outRows("feesOut",[
+    ["Amount raised",function(c){return money(c.raised);}],
+    ["<strong>Retainer + success fee</strong>",function(c){return "<strong>"+money(c.ret)+"</strong>";}],
+    ["<strong>Success-only</strong>",function(c){return "<strong>"+money(c.so)+"</strong>";}],
+    ["Success-only minus retainer path",function(c){return money(c.so-c.ret);}]
+  ],C);
+  $("feeNote").textContent="Bad case ("+pct(bad.raised/(round*1e6))+" raised): the retainer path costs "+money(bad.ret)+", success-only "+money(bad.so)+". "+
+    "Base case: success-only costs "+money(base.so-base.ret)+" more. Good case: "+money(good.so-good.ret)+" more. Same inputs in both columns. This page does not pick one.";
+
+  // bars
+  var mmax=Math.max.apply(null,C.map(function(c){return ok(c.m)?c.m:0;}))||1;
+  var labels=["Bad","Base","Good"],bh="";
+  C.forEach(function(c,j){
+    var wu=ok(c.mU)?Math.max(0,Math.min(100,c.mU/mmax*100)):0,wa=ok(c.mA)?Math.max(0,Math.min(100,c.mA/mmax*100)):0;
+    bh+='<div class="case"><div class="lbl"><strong>'+labels[j]+'</strong><span>Of '+mo(c.m)+', about '+mo(c.mU)+' on non-fits. With the screen: '+mo(c.mA)+'.</span></div>'+
+      '<div class="track" aria-hidden="true"><div class="bar" style="width:'+wu+'%;border-top-width:8pt"></div></div>'+
+      '<div class="track" aria-hidden="true"><div class="bar" style="width:'+wa+'%;border-top-width:4pt"></div></div></div>';
+  });
+  $("bars").innerHTML=bh;
+}
+
+function onInput(e){
+  var t=e.target;
+  if(t.classList&&t.classList.contains("fn")){
+    var i=+t.getAttribute("data-i"),k=t.getAttribute("data-k");
+    if(funds[i])funds[i][k]=t.value;
+  }else if(t.id==="rate"){
+    for(var j=0;j<6;j++)$("r"+j).value=t.value;
+  }
+  compute();save();
+}
+document.addEventListener("input",onInput);
+document.addEventListener("change",function(e){if(e.target.tagName==="SELECT")onInput(e);});
+document.addEventListener("click",function(e){
+  var rm=e.target.getAttribute&&e.target.getAttribute("data-rm");
+  if(rm!==null&&rm!==undefined){funds.splice(+rm,1);renderFunds();compute();save();}
+});
+$("addFund").addEventListener("click",function(){funds.push({name:"",min:"",max:"",deals:"",lead:"yes"});renderFunds();compute();save();});
+$("reset").addEventListener("click",function(){loadExample();renderFunds();compute();save();});
+$("clear").addEventListener("click",function(){var o={};Object.keys(DEF).forEach(function(k){o[k]="";});setInputs(o);funds=[{name:"",min:"",max:"",deals:"",lead:"yes"}];renderFunds();compute();save();});
+$("print").addEventListener("click",function(){window.print();});
+
+if(!load())loadExample();
+renderFunds();compute();
+})();
+</script>
+</body>
+</html>
