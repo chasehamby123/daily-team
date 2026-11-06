@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-11-05: Kiln Log
+### 2026-11-06: The Signed Gathering
 
-<a href="days/2026-11-05/"><img src="days/2026-11-05/team.png" alt="Team for 2026-11-05: Ceramicist · Animator · Founder raising a growth round · Clockwork beetle" width="100%"></a>
+<a href="days/2026-11-06/"><img src="days/2026-11-06/team.png" alt="Team for 2026-11-06: Bookbinder · Comic artist · Family office CIO · The Null" width="100%"></a>
 
-**Task:** Process cost breakdown: each step of a workflow with time and wage gives the cost per case and the most expensive step.
+**Task:** Risk register: risks with likelihood and impact give a ranked table and a three-by-three heat grid.
 
-**Decision:** The page takes six fundraising steps with hours and hourly value, gives the founder's cost per investor pursued, prints the most expensive step as the heaviest rule, shows an AI fit screen of named funds with reasons before any fee appea...
+**Decision:** The page shows a family office one deal checked against its own four-test mandate, then a ranked risk table and a three-by-three heat grid, with the co-invest path beside the direct path and the bad case for each.
 
-<a href="days/2026-11-05/"><img src="days/2026-11-05/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-11-06/"><img src="days/2026-11-06/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-11-05/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-11-06/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,15 +37,15 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-11-06](days/2026-11-06/) | <a href="days/2026-11-06/"><img src="days/2026-11-06/artifact-1.png" alt="The Signed Gathering" width="160"></a> | The Signed Gathering | Bookbinder · Comic artist · Family office CIO · The Null |
 | [2026-11-05](days/2026-11-05/) | <a href="days/2026-11-05/"><img src="days/2026-11-05/artifact-1.png" alt="Kiln Log" width="160"></a> | Kiln Log | Ceramicist · Animator · Founder raising a growth round · Clockwork beetle |
 | [2026-11-04](days/2026-11-04/) | <a href="days/2026-11-04/"><img src="days/2026-11-04/artifact-1.png" alt="Setup Card" width="160"></a> | Setup Card | Game designer · Stand-up comedian · Private credit fund manager · Captain Ahab |
 | [2026-11-03](days/2026-11-03/) | <a href="days/2026-11-03/"><img src="days/2026-11-03/artifact-1.png" alt="One Call, One Year" width="160"></a> | One Call, One Year | Choreographer · Front-end engineer · Clinic owner · Phoenix |
 | [2026-11-02](days/2026-11-02/) | <a href="days/2026-11-02/"><img src="days/2026-11-02/artifact-1.png" alt="Who's In First" width="160"></a> | Who's In First | Glassblower · Tailor · Merchant banker · Time |
 | [2026-11-01](days/2026-11-01/) | <a href="days/2026-11-01/"><img src="days/2026-11-01/artifact-1.png" alt="Drop-Off Ledger" width="160"></a> | Drop-Off Ledger | Clockmaker · Florist · Investment banker · Repair technician from 2140 |
 | [2026-10-31](days/2026-10-31/) | <a href="days/2026-10-31/"><img src="days/2026-10-31/artifact-1.png" alt="Use-By Date" width="160"></a> | Use-By Date | Packaging designer · Beekeeper · Accounting firm partner · Mary Anning |
-| [2026-10-30](days/2026-10-30/) | <a href="days/2026-10-30/"><img src="days/2026-10-30/artifact-1.png" alt="Priced Leak" width="160"></a> | Priced Leak | Chef · Taxidermist · Home services owner · Archivist from 2300 |
 
-[All 33 days](ARCHIVE.md)
+[All 34 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works

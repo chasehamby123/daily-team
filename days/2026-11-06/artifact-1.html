@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Signed Gathering: one deal checked against your mandate</title>
+<style>
+:root{
+  --paper:#f3eee3;
+  --sheet:#fbf8f1;
+  --ink:#1e1c19;
+  --ink2:#4a463f;
+  --rule:#1e1c19;
+  --thread:#8a2a1e;
+  --grey:#c9c4b9;
+  --greyink:#5d5951;
+  --gut:12px;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink)}
+body{font:16px/1.5 var(--sans)}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+*{transition:none;animation:none}
+.wrap{max-width:1080px;margin:0 auto;padding:24px 16px 40px}
+header{border-bottom:3px double var(--rule);padding-bottom:16px;margin-bottom:24px}
+.kicker{font:600 12px/1.2 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+h1{font:600 34px/1.15 var(--serif);margin:6px 0 10px}
+h2{font:600 22px/1.2 var(--serif);margin:0 0 4px}
+h3{font:600 16px/1.3 var(--serif);margin:16px 0 6px}
+p{margin:6px 0}
+.lede{font:18px/1.45 var(--serif);max-width:46em}
+.sig{display:inline-block;font:600 11px/1 var(--mono);border:1px solid var(--rule);padding:3px 6px;margin-right:8px;vertical-align:2px;background:var(--sheet)}
+section.sheet{background:var(--sheet);border:1px solid var(--rule);padding:18px 16px;margin:0 0 var(--gut)}
+.sheet-head{display:flex;gap:12px;align-items:baseline;border-bottom:1px solid var(--rule);padding-bottom:8px;margin-bottom:12px;flex-wrap:wrap}
+.note{font-size:14px;color:var(--ink2)}
+.small{font-size:13px;color:var(--ink2)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border:1px solid var(--rule);padding:6px 8px;text-align:left;vertical-align:top}
+th{font:600 12px/1.3 var(--sans);text-transform:uppercase;letter-spacing:.05em;background:var(--paper)}
+td.num,th.num{text-align:right;font-family:var(--mono)}
+.scroll{overflow-x:auto}
+input,select,button{font:inherit;color:var(--ink)}
+input[type=text],input[type=number],input[type=date],select{border:1px solid var(--ink2);background:#fff;padding:4px 6px;width:100%;min-width:0;border-radius:0}
+input[type=number]{font-family:var(--mono)}
+input:focus,select:focus,button:focus{outline:2px solid var(--thread);outline-offset:1px}
+select:disabled{background:var(--grey);color:var(--greyink)}
+button{border:1px solid var(--rule);background:var(--paper);padding:6px 12px;cursor:pointer;border-radius:0}
+button.x{padding:2px 8px}
+.q{display:grid;grid-template-columns:1fr 1fr;gap:var(--gut)}
+.q label{display:block;border:1px solid var(--rule);padding:10px;background:#fff}
+.q .lab{display:block;font:600 14px/1.3 var(--serif);margin-bottom:6px}
+.result{border-left:4px solid var(--ink);padding:8px 12px;margin:12px 0 0;background:var(--paper);font:16px/1.45 var(--serif)}
+.assume{counter-reset:a;list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.assume li{counter-increment:a;border:1px solid var(--rule);padding:8px 10px 8px 44px;position:relative;background:#fff}
+.assume li::before{content:counter(a);position:absolute;left:0;top:0;bottom:0;width:32px;border-right:1px solid var(--rule);display:flex;align-items:center;justify-content:center;font:600 14px var(--mono)}
+.assume b{font-family:var(--serif)}
+.chk{font:600 12px var(--mono);border:1px solid var(--rule);padding:1px 5px;margin-left:6px}
+.defs{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--gut)}
+.defs div{border:1px solid var(--rule);padding:10px;background:#fff;font-size:14px}
+.defs dt{font:600 15px var(--serif)}
+.defs dd{margin:0 0 4px}
+.pass{font:600 13px var(--mono)}
+.miss{font:600 13px var(--mono);color:var(--thread)}
+.breaks{border:2px solid var(--thread);padding:10px 12px;margin-bottom:var(--gut);background:transparent}
+.breaks h3{margin:0 0 6px;color:var(--thread)}
+.breaks ul{margin:0;padding-left:18px}
+.gridwrap{display:grid;grid-template-columns:1fr 220px;gap:var(--gut)}
+.heat{display:grid;grid-template-columns:120px repeat(3,1fr);gap:var(--gut)}
+.ylab,.xlab{border:1px solid var(--rule);padding:6px;font-size:12px;line-height:1.3;background:var(--paper)}
+.ylab b,.xlab b{display:block;font:600 13px var(--serif)}
+.xlab{text-align:center}
+.panel{border:1px solid var(--rule);background:#fff;min-height:118px;padding:6px 8px;position:relative}
+.panel .tag{display:flex;justify-content:space-between;font:600 11px var(--mono);border-bottom:1px solid var(--rule);margin:-6px -8px 6px;padding:3px 8px}
+.panel ul{list-style:none;margin:0;padding:0;font-size:13px;line-height:1.3}
+.panel li{margin:0 0 4px}
+.panel.s9 .tag,.panel.s6 .tag{background:var(--ink);color:var(--sheet)}
+.panel.s4 .tag,.panel.s3 .tag{background:var(--ink2);color:var(--sheet)}
+.panel .empty{color:var(--greyink);font-size:12px}
+.greystrip{background:var(--grey);border:1px solid var(--rule);padding:10px}
+.greystrip h3{margin-top:0}
+.greystrip ul{padding-left:18px;margin:6px 0;font-size:14px}
+tr.unproven td{background:var(--grey);color:var(--greyink)}
+.cases th.c,.cases td.c{text-align:right;font-family:var(--mono);width:22%}
+.cases td.c input{text-align:right}
+.verdict{border:2px solid var(--ink);padding:12px;margin-top:var(--gut);font:16px/1.45 var(--serif);background:#fff}
+.verdict.fail{border-color:var(--thread)}
+.verdict h3{margin:0 0 6px}
+.formula{font:13px/1.55 var(--mono);background:var(--paper);border:1px dashed var(--ink2);padding:8px 10px;margin-top:10px;white-space:pre-wrap;overflow-x:auto}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:var(--gut)}
+.signoff{display:grid;grid-template-columns:1fr 1fr;gap:var(--gut);margin-top:var(--gut)}
+.signoff label{border-bottom:1px solid var(--rule);padding-bottom:4px;font-size:13px}
+.signoff input{border:0;border-bottom:1px solid var(--ink2);background:transparent;font:16px var(--serif)}
+.deal{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.deal label{font-size:13px;display:block}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+footer{border-top:3px double var(--rule);margin-top:24px;padding-top:12px;font-size:13px;color:var(--ink2)}
+footer p{margin:4px 0}
+@media (max-width:760px){
+  h1{font-size:27px}
+  .q,.two,.signoff,.defs{grid-template-columns:1fr}
+  .deal{grid-template-columns:1fr 1fr}
+  .gridwrap{grid-template-columns:1fr}
+  .heat{grid-template-columns:72px repeat(3,1fr);gap:6px}
+  .panel{min-height:90px;padding:4px 5px}
+  .panel ul{font-size:11.5px}
+  .ylab,.xlab{font-size:10.5px;padding:4px}
+}
+@media print{
+  body{background:#fff;font-size:11pt}
+  .wrap{max-width:none;padding:0}
+  section.sheet{break-inside:avoid;page-break-inside:avoid;border-color:#000}
+  .tools,button.x,#addRisk{display:none}
+  input,select{border:0!important;background:transparent!important;padding:0;-webkit-appearance:none;appearance:none}
+  .panel.s9 .tag,.panel.s6 .tag,.panel.s4 .tag,.panel.s3 .tag{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .greystrip,tr.unproven td{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">Risk register for one deal</div>
+  <h1>The Signed Gathering: one deal, checked against your mandate</h1>
+  <p class="lede">A gathering is a set of folded sheets sewn as one unit. Each sheet below is one checked assumption. Every row carries the name of the person who checked it and the date.</p>
+  <p class="small">Order of sheets: 1 the brief's assumptions, 2 two questions, 3 mandate tests, 4 definitions, 5 register, 6 heat grid and ranked table, 7 three cases, 8 AI review cost, 9 co-invest beside direct, 10 sign-off. The worked example is an industrial services carve-out with a $15M ticket.</p>
+</header>
+
+<section class="sheet" id="s1">
+  <div class="sheet-head"><span class="sig">SHEET 1</span><h2>Assumptions in the brief, checked</h2></div>
+  <ol class="assume">
+    <li><b>The reader wants a risk register.</b> <span class="chk">CHECKED</span><br>They want one deal read against their mandate. The register follows the mandate tests.</li>
+    <li><b>"Likelihood" means the same thing to everyone.</b> <span class="chk">FALSE</span><br>It does not. Sheet 4 defines it as the chance the risk lands inside the hold period.</li>
+    <li><b>"Impact" means the same thing to everyone.</b> <span class="chk">FALSE</span><br>Sheet 4 defines it as loss on your ticket, in percent and in dollars.</li>
+    <li><b>A coloured cell is a judgment.</b> <span class="chk">FALSE</span><br>A likelihood stays empty until a document is attached. A risk with no document sits in the grey strip, outside the grid.</li>
+    <li><b>Fit can be partial.</b> <span class="chk">FALSE</span><br>Fit means four of four mandate tests pass. Three of four is a miss.</li>
+    <li><b>Direct is the only path.</b> <span class="chk">FALSE</span><br>Co-invest beside a lead sponsor runs on the same inputs. Sheet 9 shows both.</li>
+  </ol>
+</section>
+
+<section class="sheet" id="s2">
+  <div class="sheet-head"><span class="sig">SHEET 2</span><h2>Two questions</h2><span class="note">These are the only two. Everything else is the deal.</span></div>
+  <div class="q">
+    <label><span class="lab">1. Ticket size for this deal</span>
+      <select data-k="ticket">
+        <option value="5">$5M</option><option value="10">$10M</option><option value="15">$15M</option><option value="20">$20M</option><option value="25">$25M</option><option value="30">$30M</option><option value="35">$35M</option><option value="40">$40M</option><option value="45">$45M</option><option value="50">$50M</option>
+      </select>
+    </label>
+    <label><span class="lab">2. Decks last quarter that missed your mandate</span>
+      <input type="number" min="0" step="1" data-k="misses">
+    </label>
+  </div>
+  <div class="result" id="screenOut"></div>
+  <div class="formula">Screening hours = missed decks × 3 hours
+Analyst-months per quarter = hours ÷ 160
+Analyst-months per year = quarterly figure × 4</div>
+</section>
+
+<section class="sheet" id="s3">
+  <div class="sheet-head"><span class="sig">SHEET 3</span><h2>Mandate tests</h2><span class="note">Binary. Each test passes or misses.</span></div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Test</th><th>Your mandate</th><th>This deal</th><th>Result</th><th>Checked by</th><th>Date</th></tr></thead>
+    <tbody>
+      <tr><td>Ticket size</td>
+        <td><div style="display:flex;gap:4px;align-items:center">$<input type="number" step="1" data-k="mandate.min" aria-label="Mandate minimum ticket $M">to $<input type="number" step="1" data-k="mandate.max" aria-label="Mandate maximum ticket $M">M</div></td>
+        <td id="mTicket"></td><td id="rTicket"></td>
+        <td><input type="text" data-k="checks.0.by" aria-label="Checked by"></td><td><input type="date" data-k="checks.0.date" aria-label="Date"></td></tr>
+      <tr><td>Hold period</td>
+        <td><div style="display:flex;gap:4px;align-items:center">up to <input type="number" step="0.5" data-k="mandate.hold" aria-label="Mandate maximum hold years"> yrs</div></td>
+        <td><div style="display:flex;gap:4px;align-items:center"><input type="number" step="0.5" data-k="deal.hold" aria-label="Deal hold years"> yrs</div></td>
+        <td id="rHold"></td>
+        <td><input type="text" data-k="checks.1.by" aria-label="Checked by"></td><td><input type="date" data-k="checks.1.date" aria-label="Date"></td></tr>
+      <tr><td>Sector</td>
+        <td><input type="text" data-k="mandate.sectors" aria-label="Mandate sectors, comma separated"></td>
+        <td><input type="text" data-k="deal.sector" aria-label="Deal sector"></td>
+        <td id="rSector"></td>
+        <td><input type="text" data-k="checks.2.by" aria-label="Checked by"></td><td><input type="date" data-k="checks.2.date" aria-label="Date"></td></tr>
+      <tr><td>Control rights</td>
+        <td><select data-k="mandate.control" aria-label="Required control rights"><option value="0">None required</option><option value="1">Board observer</option><option value="2">Board seat</option><option value="3">Majority</option></select></td>
+        <td><select data-k="deal.control" aria-label="Offered control rights"><option value="0">None offered</option><option value="1">Board observer</option><option value="2">Board seat</option><option value="3">Majority</option></select></td>
+        <td id="rControl"></td>
+        <td><input type="text" data-k="checks.3.by" aria-label="Checked by"></td><td><input type="date" data-k="checks.3.date" aria-label="Date"></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="result" id="fitOut"></div>
+  <p class="small">Sector test: the deal sector must match one entry in your comma-separated list. A blank field counts as a miss.</p>
+</section>
+
+<section class="sheet" id="s4">
+  <div class="sheet-head"><span class="sig">SHEET 4</span><h2>Definitions</h2><span class="note">Read these before the grid.</span></div>
+  <dl class="defs">
+    <div><dt>Likelihood</dt><dd>Chance the risk lands inside the hold period.</dd><dd><b>Low</b> under 20%</dd><dd><b>Medium</b> 20% to 50%</dd><dd><b>High</b> over 50%</dd><dd><b>Empty</b> no document attached yet</dd></div>
+    <div><dt>Impact</dt><dd>Loss on your ticket.</dd><dd id="dImpL"></dd><dd id="dImpM"></dd><dd id="dImpH"></dd></div>
+    <div><dt>Fit and score</dt><dd><b>Fit</b> all four mandate tests pass. Three of four is a miss.</dd><dd><b>Score</b> likelihood band × impact band, each 1 to 3. Ties rank by impact.</dd></div>
+  </dl>
+</section>
+
+<section class="sheet" id="s5">
+  <div class="sheet-head"><span class="sig">SHEET 5</span><h2>Risk register</h2><span class="note">Likelihood can be set only after a document is attached.</span></div>
+  <div class="scroll">
+  <table id="reg">
+    <thead><tr><th>Risk</th><th>Document attached</th><th>Likelihood</th><th>Impact</th><th>Checked by</th><th>Date</th><th></th></tr></thead>
+    <tbody id="regBody"></tbody>
+  </table>
+  </div>
+  <div class="tools"><button type="button" id="addRisk">Add a risk row</button></div>
+</section>
+
+<section class="sheet" id="s6">
+  <div class="sheet-head"><span class="sig">SHEET 6</span><h2>Heat grid: nine panels</h2><span class="note">Read from panel 1, top right. End at panel 9, bottom left.</span></div>
+  <div class="breaks" id="breaks"></div>
+  <div class="gridwrap">
+    <div class="heat" id="heat" role="table" aria-label="Three by three heat grid"></div>
+    <aside class="greystrip" id="grey"></aside>
+  </div>
+  <p class="small">Open item: where unproven risks sit. They stay in the grey strip. Their count prints in the High impact row label.</p>
+  <h3>Ranked table</h3>
+  <div class="scroll">
+  <table>
+    <thead><tr><th class="num">Rank</th><th>Risk</th><th>Likelihood</th><th>Impact</th><th class="num">Score</th><th>Panel</th><th>Document</th><th>Checked by</th><th>Date</th></tr></thead>
+    <tbody id="rankBody"></tbody>
+  </table>
+  </div>
+</section>
+
+<section class="sheet" id="s7">
+  <div class="sheet-head"><span class="sig">SHEET 7</span><h2>Three cases: bad, base, good</h2><span class="note">Deal figures are for the whole equity cheque, $M. Your share = ticket ÷ entry equity.</span></div>
+  <div class="deal">
+    <label>Entry equity, $M<input type="number" step="1" data-k="deal.equity"></label>
+    <label>Entry debt, $M<input type="number" step="1" data-k="deal.debt"></label>
+    <label>Plan exit EBITDA, $M<input type="number" step="0.5" data-k="deal.ebitda"></label>
+    <label>Exit multiple, x<input type="number" step="0.5" data-k="deal.mult"></label>
+    <label>Debt paid down by exit, $M<input type="number" step="1" data-k="deal.paydown"></label>
+    <label>Carry per month of slip, $M<input type="number" step="0.1" data-k="deal.carry"></label>
+    <label>Floor MOIC, x<input type="number" step="0.05" data-k="floor"></label>
+    <label>Entry transfer tax, % of ticket<input type="number" step="0.1" data-k="tax"></label>
+  </div>
+  <p class="small">Transfer tax and stamp duty depend on local rules. Enter your own rate. The example uses 0%.</p>
+  <div class="scroll" style="margin-top:10px">
+  <table class="cases">
+    <thead><tr><th>Input or result</th><th class="c">Bad</th><th class="c">Base</th><th class="c">Good</th></tr></thead>
+    <tbody>
+      <tr><td>Exit slips, months</td><td class="c"><input type="number" step="1" data-k="cases.bad.slip"></td><td class="c"><input type="number" step="1" data-k="cases.base.slip"></td><td class="c"><input type="number" step="1" data-k="cases.good.slip"></td></tr>
+      <tr><td>EBITDA against plan, %</td><td class="c"><input type="number" step="1" data-k="cases.bad.ebitda"></td><td class="c"><input type="number" step="1" data-k="cases.base.ebitda"></td><td class="c"><input type="number" step="1" data-k="cases.good.ebitda"></td></tr>
+      <tr><td>Rate change, bps</td><td class="c"><input type="number" step="25" data-k="cases.bad.rate"></td><td class="c"><input type="number" step="25" data-k="cases.base.rate"></td><td class="c"><input type="number" step="25" data-k="cases.good.rate"></td></tr>
+      <tr><td>AI pass redone by people, %</td><td class="c"><input type="number" step="5" data-k="cases.bad.rework"></td><td class="c"><input type="number" step="5" data-k="cases.base.rework"></td><td class="c"><input type="number" step="5" data-k="cases.good.rework"></td></tr>
+    </tbody>
+    <tbody id="caseOut"></tbody>
+  </table>
+  </div>
+  <div class="verdict" id="verdict"></div>
+  <div class="formula">Exit equity = Plan EBITDA × (1 + EBITDA vs plan) × Exit multiple
+            − (Entry debt − Paydown)
+            − Entry debt × Rate change × (Hold + Slip ÷ 12)
+            − Carry × Slip
+MOIC = Exit equity ÷ Entry equity
+Your proceeds = Ticket × MOIC
+Net to you = Your proceeds − Diligence spend − Ticket × Transfer tax</div>
+</section>
+
+<section class="sheet" id="s8">
+  <div class="sheet-head"><span class="sig">SHEET 8</span><h2>Diligence cost with and without the AI pass</h2><span class="note">Direct path. Figures in $k.</span></div>
+  <div class="deal">
+    <label>Full direct diligence, $k<input type="number" step="10" data-k="ai.dd"></label>
+    <label>First-pass document review, $k<input type="number" step="10" data-k="ai.review"></label>
+    <label>AI data-room pass, $k<input type="number" step="5" data-k="ai.aiCost"></label>
+    <label>Co-invest broken-deal cost, $k<input type="number" step="5" data-k="ai.coinv"></label>
+  </div>
+  <div class="scroll" style="margin-top:10px">
+  <table>
+    <thead><tr><th>Path</th><th class="num">Base case</th><th class="num">Bad case</th></tr></thead>
+    <tbody id="aiOut"></tbody>
+  </table>
+  </div>
+  <div class="two" style="margin-top:10px">
+    <div><h3>The AI pass does</h3>
+      <ul class="small">
+        <li>Indexes the data room.</li>
+        <li>Extracts terms from customer and supplier contracts.</li>
+        <li>Flags change-of-control, assignment, and indemnity clauses.</li>
+        <li>Drafts first-pass summaries for each folder.</li>
+      </ul></div>
+    <div><h3>A person still reviews</h3>
+      <ul class="small">
+        <li>Named counsel reads every flagged clause and signs the legal red-flag list.</li>
+        <li>The CFO reviews quality of earnings and the debt terms.</li>
+        <li>A person attaches each document to its risk row before a likelihood is set.</li>
+        <li>The redo share in Sheet 7 covers the parts people must repeat.</li>
+      </ul></div>
+  </div>
+  <div class="formula">Without AI = Full diligence
+With AI    = Full diligence − First-pass review + AI pass + Redo share × First-pass review</div>
+</section>
+
+<section class="sheet" id="s9">
+  <div class="sheet-head"><span class="sig">SHEET 9</span><h2>Co-invest beside direct</h2><span class="note">Same ticket. Same three cases. Co-invest shown first.</span></div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Line</th><th class="num">Co-invest beside lead sponsor</th><th class="num">Direct, with AI pass</th></tr></thead>
+    <tbody id="pathOut"></tbody>
+  </table>
+  </div>
+  <div class="result" id="pathNote"></div>
+  <p class="small">Fees and carried interest on the co-invest are set to zero here. Many co-invests carry no fee. Where yours does, net proceeds fall by that amount.</p>
+</section>
+
+<section class="sheet" id="s10">
+  <div class="sheet-head"><span class="sig">SHEET 10</span><h2>Sign-off</h2><span class="note">The gathering is sewn when both names are entered.</span></div>
+  <div class="signoff">
+    <label>Reviewing counsel<input type="text" data-k="signoff.counsel"></label>
+    <label>CFO<input type="text" data-k="signoff.cfo"></label>
+  </div>
+  <p class="result" id="signOut"></p>
+  <div class="tools">
+    <button type="button" id="reset">Reload worked example</button>
+    <button type="button" id="clear">Clear all fields</button>
+    <button type="button" onclick="window.print()">Print</button>
+  </div>
+</section>
+
+<footer>
+  <p>This page is a calculator. It is not investment, legal, or tax advice. Figures depend on your inputs. Local rules set tax and legal terms.</p>
+  <p>Credits. Bookbinder (lead): the assumptions sheet, defined scales, the four-of-four fit rule, and a checker and date on every row. Comic artist: nine bordered panels read from the top right, ranges printed in the border, and the red-outline mandate row. Family office CIO: mandate tests first, one deal, two questions, and the bad case run on both paths. The Null: empty likelihoods until a document is attached, the grey strip, the AI pass costing, and the co-invest comparison.</p>
+  <p>Published by OuterHaven Advisory.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+var KEY="signed-gathering-v1";
+var DEF={
+  ticket:"15", misses:93,
+  mandate:{min:5,max:25,hold:7,sectors:"Industrial services, Healthcare services",control:"2"},
+  deal:{hold:5,sector:"Industrial services",control:"2",equity:100,debt:200,ebitda:42.5,mult:10,paydown:15,carry:0.5},
+  checks:[{by:"M. Okafor",date:"2026-10-27"},{by:"M. Okafor",date:"2026-10-27"},{by:"J. Lindqvist",date:"2026-10-28"},{by:"J. Lindqvist",date:"2026-10-29"}],
+  floor:1.0, tax:0,
+  cases:{bad:{slip:6,ebitda:-20,rate:200,rework:40},base:{slip:0,ebitda:0,rate:0,rework:0},good:{slip:0,ebitda:10,rate:-100,rework:0}},
+  ai:{dd:420,review:150,aiCost:20,coinv:60},
+  signoff:{counsel:"",cfo:""},
+  risks:[
+    {name:"Top customer is 34% of revenue",doc:"DR 3.2 customer ledger FY23-25",l:"H",i:"H",by:"M. Okafor",date:"2026-10-28"},
+    {name:"Founder CEO has no named successor",doc:"Management interviews, 21 Oct",l:"M",i:"H",by:"J. Lindqvist",date:"2026-10-22"},
+    {name:"Carve-out IT separation runs over budget",doc:"TSA draft v2.1",l:"H",i:"M",by:"R. Chen",date:"2026-10-30"},
+    {name:"Refinancing in year 3 at a higher rate",doc:"Term sheet v4",l:"M",i:"M",by:"M. Okafor",date:"2026-10-29"},
+    {name:"Union contract renewal in 2027",doc:"CBA 2024-2027",l:"L",i:"M",by:"R. Chen",date:"2026-10-31"},
+    {name:"FX on Canadian sales",doc:"FY25 audit, note 14",l:"M",i:"L",by:"R. Chen",date:"2026-10-31"},
+    {name:"Soil contamination at Site B",doc:"",l:"",i:"H",by:"",date:""},
+    {name:"Change-of-control clauses in supplier contracts",doc:"",l:"",i:"M",by:"",date:""}
+  ]
+};
+var S;
+function clone(o){return JSON.parse(JSON.stringify(o));}
+function load(){
+  try{var t=localStorage.getItem(KEY); if(t){S=JSON.parse(t); if(S&&S.risks&&S.cases) return;}}catch(e){}
+  S=clone(DEF);
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function getP(o,p){return p.split(".").reduce(function(a,k){return a==null?undefined:a[k];},o);}
+function setP(o,p,v){var ks=p.split("."),a=o;for(var i=0;i<ks.length-1;i++){if(a[ks[i]]==null)a[ks[i]]={};a=a[ks[i]];}a[ks[ks.length-1]]=v;}
+function n(v){if(v===""||v==null)return NaN;var x=parseFloat(v);return isFinite(x)?x:NaN;}
+function ok(){for(var i=0;i<arguments.length;i++){if(!isFinite(arguments[i]))return false;}return true;}
+function f(x,d){return isFinite(x)?x.toFixed(d==null?2:d):"—";}
+function fM(x){return isFinite(x)?(x<0?"−$":"$")+Math.abs(x).toFixed(2)+"M":"—";}
+function fK(x){return isFinite(x)?"$"+Math.round(x)+"k":"—";}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+var $=function(id){return document.getElementById(id);};
+var LV={L:1,M:2,H:3}, LN={L:"Low",M:"Medium",H:"High"};
+var CTRL=["None","Board observer","Board seat","Majority"];
+
+function fillInputs(){
+  var els=document.querySelectorAll("[data-k]");
+  for(var i=0;i<els.length;i++){var v=getP(S,els[i].getAttribute("data-k"));els[i].value=(v==null?"":v);}
+}
+function bindInputs(){
+  var els=document.querySelectorAll("[data-k]");
+  for(var i=0;i<els.length;i++){
+    els[i].addEventListener("input",function(e){setP(S,e.target.getAttribute("data-k"),e.target.value);save();calc();});
+    els[i].addEventListener("change",function(e){setP(S,e.target.getAttribute("data-k"),e.target.value);save();calc();});
+  }
+}
+
+function renderRisks(){
+  var b=$("regBody"),h="";
+  S.risks.forEach(function(r,i){
+    var hasDoc=String(r.doc||"").trim()!=="";
+    h+='<tr class="'+(hasDoc?"":"unproven")+'">'+
+      '<td><input type="text" data-r="'+i+'.name" value="'+esc(r.name)+'" aria-label="Risk"></td>'+
+      '<td><input type="text" data-r="'+i+'.doc" value="'+esc(r.doc)+'" placeholder="none attached" aria-label="Document"></td>'+
+      '<td><select data-r="'+i+'.l" '+(hasDoc?"":"disabled")+' aria-label="Likelihood">'+
+        '<option value="">Empty</option><option value="L"'+(r.l==="L"?" selected":"")+'>Low</option><option value="M"'+(r.l==="M"?" selected":"")+'>Medium</option><option value="H"'+(r.l==="H"?" selected":"")+'>High</option></select></td>'+
+      '<td><select data-r="'+i+'.i" aria-label="Impact"><option value="">Empty</option><option value="L"'+(r.i==="L"?" selected":"")+'>Low</option><option value="M"'+(r.i==="M"?" selected":"")+'>Medium</option><option value="H"'+(r.i==="H"?" selected":"")+'>High</option></select></td>'+
+      '<td><input type="text" data-r="'+i+'.by" value="'+esc(r.by)+'" aria-label="Checked by"></td>'+
+      '<td><input type="date" data-r="'+i+'.date" value="'+esc(r.date)+'" aria-label="Date"></td>'+
+      '<td><button type="button" class="x" data-del="'+i+'" aria-label="Remove row">Remove</button></td></tr>';
+  });
+  b.innerHTML=h;
+  var ins=b.querySelectorAll("[data-r]");
+  for(var j=0;j<ins.length;j++){
+    ins[j].addEventListener("input",onRisk);
+    ins[j].addEventListener("change",onRisk);
+  }
+  var dels=b.querySelectorAll("[data-del]");
+  for(var k=0;k<dels.length;k++){dels[k].addEventListener("click",function(e){S.risks.splice(+e.target.getAttribute("data-del"),1);save();renderRisks();calc();});}
+}
+function onRisk(e){
+  var p=e.target.getAttribute("data-r").split("."),i=+p[0],k=p[1];
+  var r=S.risks[i]; if(!r) return;
+  r[k]=e.target.value;
+  if(k==="doc"){
+    var hasDoc=r.doc.trim()!=="";
+    var row=e.target.closest("tr"); var sel=row.querySelector('[data-r="'+i+'.l"]');
+    if(!hasDoc){r.l="";sel.value="";}
+    sel.disabled=!hasDoc;
+    row.className=hasDoc?"":"unproven";
+  }
+  save();calc();
+}
+
+function model(c){
+  var d=S.deal,E=n(d.equity),D=n(d.debt),B=n(d.ebitda),M=n(d.mult),P=n(d.paydown),H=n(d.hold),C=n(d.carry);
+  var s=n(c.slip),v=n(c.ebitda)/100,r=n(c.rate)/10000;
+  if(!ok(E,D,B,M,P,H,C,s,v,r)||E<=0) return {eq:NaN,moic:NaN};
+  var yrs=H+s/12;
+  var eq=B*(1+v)*M-(D-P)-D*r*yrs-C*s;
+  return {eq:eq,moic:eq/E,yrs:yrs};
+}
+function dili(c){
+  var a=S.ai,dd=n(a.dd),rv=n(a.review),ac=n(a.aiCost),rw=n(c.rework)/100;
+  return {without:dd,with:dd-rv+ac+rw*rv};
+}
+
+function calc(){
+  var T=n(S.ticket);
+  // Sheet 2
+  var m=n(S.misses);
+  if(ok(m)){
+    var hrs=m*3,mo=hrs/160;
+    $("screenOut").textContent="Last quarter "+m+" decks missed your mandate. At 3 analyst hours each, that is "+f(hrs,0)+" hours. That is "+f(mo,1)+" analyst-months each quarter and "+f(mo*4,1)+" analyst-months over a year. The cost repeats every quarter the screening continues.";
+  } else $("screenOut").textContent="Enter the number of decks that missed your mandate last quarter.";
+
+  // Sheet 3
+  var mm=S.mandate,dl=S.deal;
+  var mn=n(mm.min),mx=n(mm.max);
+  $("mTicket").textContent=ok(T)?"$"+T+"M":"—";
+  var t1=ok(T,mn,mx)&&T>=mn&&T<=mx;
+  var hh=n(mm.hold),dh=n(dl.hold);
+  var t2=ok(hh,dh)&&dh<=hh;
+  var secs=String(mm.sectors||"").split(",").map(function(s){return s.trim().toLowerCase();}).filter(Boolean);
+  var ds=String(dl.sector||"").trim().toLowerCase();
+  var t3=ds!==""&&secs.indexOf(ds)>=0;
+  var t4=n(dl.control)>=n(mm.control);
+  var tests=[["Ticket size",t1,ok(T,mn,mx)?"$"+T+"M against $"+mn+"M to $"+mx+"M":"range or ticket missing"],
+             ["Hold period",t2,ok(hh,dh)?dh+" yrs against up to "+hh+" yrs":"hold missing"],
+             ["Sector",t3,ds?"\""+dl.sector+"\" not on the mandate list":"sector missing"],
+             ["Control rights",t4,(CTRL[+dl.control]||"—")+" offered, "+(CTRL[+mm.control]||"—")+" required"]];
+  ["rTicket","rHold","rSector","rControl"].forEach(function(id,i){
+    $(id).innerHTML=tests[i][1]?'<span class="pass">PASS</span>':'<span class="miss">MISS</span>';
+  });
+  var passed=tests.filter(function(t){return t[1];}).length, fit=passed===4;
+  var bm=model(S.cases.bad);
+  var holdNote=(ok(bm.yrs,hh))?(" In the bad case the hold runs "+f(bm.yrs,1)+" yrs"+(bm.yrs<=hh?", inside your limit.":", past your limit of "+hh+" yrs.")):"";
+  $("fitOut").textContent=fit?("Fit: 4 of 4 tests pass."+holdNote):("Fit: miss. "+passed+" of 4 tests pass. Three of four is a miss.");
+
+  // Sheet 4
+  if(ok(T)){
+    $("dImpL").innerHTML="<b>Low</b> under 5% ($"+f(T*.05)+"M)";
+    $("dImpM").innerHTML="<b>Medium</b> 5% to 25% ($"+f(T*.05)+"M to $"+f(T*.25)+"M)";
+    $("dImpH").innerHTML="<b>High</b> over 25% ($"+f(T*.25)+"M)";
+  } else {$("dImpL").innerHTML="<b>Low</b> under 5%";$("dImpM").innerHTML="<b>Medium</b> 5% to 25%";$("dImpH").innerHTML="<b>High</b> over 25%";}
+
+  // Sheet 6
+  var br=$("breaks"),fails=tests.filter(function(t){return !t[1];});
+  br.innerHTML='<h3>Mandate breaks</h3>'+(fails.length?'<ul>'+fails.map(function(t){return "<li><b>"+t[0]+"</b>: "+esc(t[2])+"</li>";}).join("")+'</ul>':'<p>No mandate breaks. 4 of 4 tests pass. These tests sit outside the likelihood scale because each one is binary.</p>');
+
+  var scored=[],grey=[];
+  S.risks.forEach(function(r){
+    var hasDoc=String(r.doc||"").trim()!=="";
+    if(hasDoc&&LV[r.l]&&LV[r.i]) scored.push(r); else grey.push(r);
+  });
+  scored.forEach(function(r){r._s=LV[r.l]*LV[r.i];r._p=(3-LV[r.i])*3+(3-LV[r.l])+1;});
+  scored.sort(function(a,b){return b._s-a._s||LV[b.i]-LV[a.i]||a._p-b._p;});
+
+  var h="",ylab={3:"High impact",2:"Medium impact",1:"Low impact"};
+  var yr={3:"over 25%",2:"5% to 25%",1:"under 5%"};
+  for(var imp=3;imp>=1;imp--){
+    var extra=(imp===3&&grey.length)?"<br>Unproven, not scored: "+grey.length:"";
+    h+='<div class="ylab" role="rowheader"><b>'+ylab[imp]+'</b>'+yr[imp]+' of ticket'+extra+'</div>';
+    for(var lik=1;lik<=3;lik++){
+      var sc=imp*lik,ord=(3-imp)*3+(3-lik)+1;
+      var items=scored.filter(function(r){return LV[r.i]===imp&&LV[r.l]===lik;});
+      h+='<div class="panel s'+sc+'" role="cell"><div class="tag"><span>Panel '+ord+'</span><span>score '+sc+'</span></div>'+
+        (items.length?'<ul>'+items.map(function(r){return "<li>"+esc(r.name)+"</li>";}).join("")+'</ul>':'<div class="empty">No risks</div>')+'</div>';
+    }
+  }
+  h+='<div></div><div class="xlab"><b>Low likelihood</b>under 20% in hold</div><div class="xlab"><b>Medium likelihood</b>20% to 50% in hold</div><div class="xlab"><b>High likelihood</b>over 50% in hold</div>';
+  $("heat").innerHTML=h;
+
+  $("grey").innerHTML='<h3>Grey strip: unproven</h3><p class="small">No document attached. Likelihood stays empty. These risks are not on the grid.</p>'+
+    (grey.length?'<ul>'+grey.map(function(r){return "<li>"+esc(r.name||"Unnamed risk")+(LN[r.i]?" (impact "+LN[r.i]+")":"")+"</li>";}).join("")+'</ul>':'<p>None. Every risk has a document.</p>');
+
+  var rb="";
+  scored.forEach(function(r,i){
+    rb+="<tr><td class='num'>"+(i+1)+"</td><td>"+esc(r.name)+"</td><td>"+LN[r.l]+"</td><td>"+LN[r.i]+"</td><td class='num'>"+r._s+"</td><td>"+r._p+"</td><td>"+esc(r.doc)+"</td><td>"+esc(r.by||"unsigned")+"</td><td>"+esc(r.date||"undated")+"</td></tr>";
+  });
+  grey.forEach(function(r){
+    rb+="<tr class='unproven'><td class='num'>—</td><td>"+esc(r.name)+"</td><td>Empty</td><td>"+(LN[r.i]||"Empty")+"</td><td class='num'>—</td><td>Grey strip</td><td>none attached</td><td>"+esc(r.by||"unsigned")+"</td><td>"+esc(r.date||"undated")+"</td></tr>";
+  });
+  $("rankBody").innerHTML=rb||"<tr><td colspan='9'>No risks entered.</td></tr>";
+
+  // Sheet 7
+  var share=ok(T,n(S.deal.equity))?T/n(S.deal.equity):NaN;
+  var tax=n(S.tax)/100; if(!isFinite(tax)) tax=0;
+  var C={bad:S.cases.bad,base:S.cases.base,good:S.cases.good},R={},order=["bad","base","good"];
+  order.forEach(function(k){
+    var mo=model(C[k]),dg=dili(C[k]);
+    var proceeds=T*mo.moic;
+    R[k]={eq:mo.eq,moic:mo.moic,proc:proceeds,dWith:dg.with,dWithout:dg.without,
+      netDirect:proceeds-dg.with/1000-T*tax,netCo:proceeds-n(S.ai.coinv)/1000-T*tax};
+  });
+  function row(lbl,fn){return "<tr><td>"+lbl+"</td>"+order.map(function(k){return "<td class='c'>"+fn(R[k])+"</td>";}).join("")+"</tr>";}
+  $("caseOut").innerHTML=
+    row("<b>Exit equity, whole deal</b>",function(r){return fM(r.eq);})+
+    row("<b>MOIC</b>",function(r){return f(r.moic)+"x";})+
+    row("Your proceeds"+(isFinite(share)?" ("+f(share*100,1)+"% share)":""),function(r){return fM(r.proc);})+
+    row("Direct diligence, with AI pass",function(r){return fK(r.dWith);})+
+    row("Net to you, direct",function(r){return fM(r.netDirect);})+
+    row("Net to you, co-invest",function(r){return fM(r.netCo);});
+
+  var F=n(S.floor),v=$("verdict"),b=S.cases.bad,d=S.deal;
+  var E=n(d.equity),D=n(d.debt),B=n(d.ebitda),M=n(d.mult),P=n(d.paydown),H=n(d.hold),Cc=n(d.carry);
+  var s=n(b.slip),vv=n(b.ebitda)/100,rr=n(b.rate)/10000;
+  if(!ok(F,E,D,B,M,P,H,Cc,s,vv,rr,R.bad.moic)){
+    v.className="verdict";v.innerHTML="<h3>Bad case</h3><p>Fill every deal and bad-case field to test the floor.</p>";
+  } else {
+    var ND=D-P,yrs=H+s/12,target=F*E;
+    var vStar=(target+ND+D*rr*yrs+Cc*s)/(B*M)-1;
+    var A=B*(1+vv)*M-ND;
+    var rStar=(A-Cc*s-target)/(D*yrs);
+    var den=D*rr/12+Cc, sStar=den>0?(A-D*rr*H-target)/den:Infinity;
+    var dStar=(B*(1+vv)*M+P-Cc*s-target)/(1+rr*yrs);
+    var survives=R.bad.moic>=F;
+    var lines=[];
+    if(!fit) lines.push("<p><b>Mandate first.</b> The deal misses "+(4-passed)+" of 4 mandate tests. A miss stands regardless of returns.</p>");
+    if(survives){
+      v.className="verdict"+(fit?"":" fail");
+      v.innerHTML="<h3>The plan holds in the bad case.</h3><p>Bad-case MOIC is "+f(R.bad.moic)+"x against a floor of "+f(F)+"x. Base is "+f(R.base.moic)+"x. Good is "+f(R.good.moic)+"x.</p>"+
+        "<p>Headroom, holding the other bad-case inputs:</p><ul>"+
+        "<li>EBITDA can fall to "+f(vStar*100,1)+"% against plan before MOIC hits "+f(F)+"x. The bad case uses "+f(vv*100,0)+"%.</li>"+
+        "<li>Rates can rise "+f(rStar*10000,0)+" bps. The bad case uses "+f(rr*10000,0)+" bps.</li>"+
+        "<li>Exit can slip "+(isFinite(sStar)?f(sStar,0)+" months":"without limit in this model")+". The bad case uses "+f(s,0)+" months.</li>"+
+        "<li>Entry debt can reach "+fM(dStar)+". The deal uses "+fM(D)+".</li></ul>"+lines.join("");
+    } else {
+      v.className="verdict fail";
+      v.innerHTML="<h3>The plan does not hold in the bad case.</h3>"+
+        "<p><b>Safer setting first:</b> entry debt at or below "+fM(dStar)+" instead of "+fM(D)+", with equity unchanged. That brings bad-case MOIC to "+f(F)+"x. Co-invest also cuts the loss if the deal breaks to "+fK(n(S.ai.coinv))+".</p>"+
+        "<p>Bad-case MOIC is "+f(R.bad.moic)+"x against a floor of "+f(F)+"x. Base is "+f(R.base.moic)+"x. Good is "+f(R.good.moic)+"x.</p>"+
+        "<p>At current debt the bad case needs EBITDA no lower than "+f(vStar*100,1)+"% against plan, or a rate rise no larger than "+f(rStar*10000,0)+" bps.</p>"+lines.join("");
+    }
+  }
+
+  // Sheet 8
+  var a=S.ai;
+  $("aiOut").innerHTML=
+    "<tr><td>Without AI pass</td><td class='num'>"+fK(R.base.dWithout)+"</td><td class='num'>"+fK(R.bad.dWithout)+"</td></tr>"+
+    "<tr><td>With AI pass (redo share "+f(n(S.cases.base.rework),0)+"% base, "+f(n(S.cases.bad.rework),0)+"% bad)</td><td class='num'>"+fK(R.base.dWith)+"</td><td class='num'>"+fK(R.bad.dWith)+"</td></tr>"+
+    "<tr><td><b>Saving</b></td><td class='num'>"+fK(R.base.dWithout-R.base.dWith)+"</td><td class='num'>"+fK(R.bad.dWithout-R.bad.dWith)+"</td></tr>";
+
+  // Sheet 9
+  var co=n(a.coinv);
+  function pr(lbl,c1,c2){return "<tr><td>"+lbl+"</td><td class='num'>"+c1+"</td><td class='num'>"+c2+"</td></tr>";}
+  $("pathOut").innerHTML=
+    pr("Ticket",ok(T)?"$"+T+"M":"—",ok(T)?"$"+T+"M":"—")+
+    pr("Diligence cost without AI","Lead sponsor runs it",fK(R.base.dWithout))+
+    pr("AI review saving, base","None needed",fK(R.base.dWithout-R.base.dWith))+
+    pr("Broken-deal loss, base",fK(co),fK(R.base.dWith))+
+    pr("Broken-deal loss, bad",fK(co),fK(R.bad.dWith))+
+    pr("MOIC, base",f(R.base.moic)+"x",f(R.base.moic)+"x")+
+    pr("MOIC, bad",f(R.bad.moic)+"x",f(R.bad.moic)+"x")+
+    pr("Net to you, base",fM(R.base.netCo),fM(R.base.netDirect))+
+    pr("Net to you, bad",fM(R.bad.netCo),fM(R.bad.netDirect));
+  if(ok(co,R.bad.dWith,R.bad.netCo,R.bad.netDirect)){
+    $("pathNote").textContent="Both paths share the deal MOIC: "+f(R.base.moic)+"x base and "+f(R.bad.moic)+"x bad. If the deal breaks, co-invest loses "+fK(co)+" and direct loses "+fK(R.bad.dWith)+" in the bad case. Co-invest gives up control and the right to set terms. Direct requires a board seat or more to pass your control test.";
+  } else $("pathNote").textContent="Fill the ticket, deal, and diligence fields to compare paths.";
+
+  // Sheet 10
+  var cn=String(S.signoff.counsel||"").trim(),cf=String(S.signoff.cfo||"").trim();
+  var unsigned=S.risks.filter(function(r){return String(r.doc||"").trim()!==""&&!String(r.by||"").trim();}).length;
+  $("signOut").textContent=(cn&&cf)?("Signed by "+cn+" (counsel) and "+cf+" (CFO). "+(unsigned?unsigned+" scored rows still lack a checker name.":"Every scored row carries a checker name.")+" "+grey.length+" risks remain unproven."):
+    ("Not yet sewn. "+(cn?"":"Counsel name missing. ")+(cf?"":"CFO name missing. ")+grey.length+" risks remain unproven.");
+}
+
+load();
+fillInputs();
+bindInputs();
+renderRisks();
+calc();
+
+$("addRisk").addEventListener("click",function(){S.risks.push({name:"",doc:"",l:"",i:"",by:"",date:""});save();renderRisks();calc();});
+$("reset").addEventListener("click",function(){S=clone(DEF);save();fillInputs();renderRisks();calc();});
+$("clear").addEventListener("click",function(){
+  S={ticket:"",misses:"",mandate:{min:"",max:"",hold:"",sectors:"",control:"0"},
+     deal:{hold:"",sector:"",control:"0",equity:"",debt:"",ebitda:"",mult:"",paydown:"",carry:""},
+     checks:[{by:"",date:""},{by:"",date:""},{by:"",date:""},{by:"",date:""}],
+     floor:"",tax:"",cases:{bad:{slip:"",ebitda:"",rate:"",rework:""},base:{slip:"",ebitda:"",rate:"",rework:""},good:{slip:"",ebitda:"",rate:"",rework:""}},
+     ai:{dd:"",review:"",aiCost:"",coinv:""},signoff:{counsel:"",cfo:""},risks:[]};
+  save();fillInputs();renderRisks();calc();
+});
+})();
+</script>
+</body>
+</html>
