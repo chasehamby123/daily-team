@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Exclusivity Rack: signed deals, days left, equity at risk</title>
+<style>
+:root{--muslin:#f4efe3;--paper:#fbf8f1;--ink:#1d2640;--chalk:#6f6a5d;--manila:#ecdcb4;--red:#a8231b;--redbg:#f5ddd6;--rail:#4f483c;--grey:#8d8a82;--line:#d6ccb8;--ok:#2f5d3a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background-color:var(--muslin);background-image:linear-gradient(rgba(29,38,64,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(29,38,64,.05) 1px,transparent 1px);background-size:24px 24px}
+.wrap{max-width:1080px;margin:0 auto;padding:24px 16px 48px}
+.serif,h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:normal}
+h1{font-size:2.4rem;line-height:1.1;margin:0 0 8px}
+h2{font-size:1.5rem;margin:40px 0 6px;border-bottom:1px dashed var(--chalk);padding-bottom:4px}
+h3{font-size:1.15rem;margin:0 0 6px}
+.sub{font-size:1.1rem;color:var(--chalk);margin:0 0 20px;max-width:46em}
+.num{font-variant-numeric:tabular-nums}
+.label{background:var(--paper);border-left:8px solid var(--red);padding:16px 20px;margin:0 0 8px}
+.label .big{font-family:Georgia,"Times New Roman",serif;font-size:1.6rem;line-height:1.25;margin:0 0 10px}
+.label .totals{margin:0;color:var(--ink)}
+.grey{color:var(--grey)}
+.next{margin:10px 0 0;padding:8px 10px;background:#fff;border:1px solid var(--line);font-weight:600}
+.next::before{content:"Next step: ";color:var(--red)}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.82rem;color:var(--chalk);background:var(--paper);border:1px dashed var(--line);padding:8px 10px;margin:8px 0 0;white-space:pre-wrap}
+.controls{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:end;margin:14px 0}
+.controls label{display:flex;flex-direction:column;font-size:.8rem;color:var(--chalk)}
+input,select,button{font:inherit;color:var(--ink)}
+input,select{border:1px solid var(--line);background:#fff;padding:4px 6px;border-radius:2px}
+input[type=number]{width:6.5em}
+button{background:var(--ink);color:#fff;border:0;padding:7px 12px;border-radius:2px;cursor:pointer}
+button.light{background:#fff;color:var(--ink);border:1px solid var(--ink)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.toggle{display:flex;align-items:center;gap:8px;font-weight:600;padding:6px 10px;background:var(--paper);border:1px solid var(--line)}
+.rail{border-top:7px solid var(--rail);border-radius:4px;margin-top:22px;padding:0 4px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:0 18px}
+.hanger{position:relative;padding-top:26px;margin-bottom:18px}
+.hanger::before{content:"";position:absolute;left:50%;top:0;width:2px;height:30px;background:var(--rail)}
+.tag{position:relative;background:var(--manila);padding:24px 16px 14px;clip-path:polygon(16px 0,calc(100% - 16px) 0,100% 16px,100% 100%,0 100%,0 16px);transform-origin:50% 0;transition:transform .25s ease}
+.hanger:hover .tag{transform:rotate(-.6deg)}
+.tag .hole{position:absolute;left:calc(50% - 6px);top:6px;width:12px;height:12px;border-radius:50%;background:var(--muslin);border:2px solid var(--rail)}
+.tag.red{background:var(--redbg);box-shadow:inset 0 6px 0 var(--red)}
+.flag{display:inline-block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;padding:1px 6px;border:1px solid currentColor;margin-bottom:4px}
+.red .flag{color:var(--red)}
+.tag .flag{color:var(--chalk)}
+.tag dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:8px 0;font-size:.92rem}
+.tag dt{color:var(--chalk)}
+.tag dd{margin:0;font-variant-numeric:tabular-nums}
+.ledger{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rail);margin-top:8px;font-size:.85rem}
+.ledger div{padding:6px 4px 0}
+.ledger div+div{border-left:1px solid var(--line)}
+.ledger b{display:block;font-size:1rem;font-variant-numeric:tabular-nums}
+.ledger small{display:block;color:var(--chalk)}
+.paths{width:100%;border-collapse:collapse;margin-top:10px;font-size:.84rem;background:#fff}
+.paths th,.paths td{border:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top}
+.paths th{background:var(--paper);font-weight:600}
+.scroll{overflow-x:auto;background:var(--paper);border:1px solid var(--line)}
+table.in{border-collapse:collapse;min-width:980px;width:100%;font-size:.88rem}
+table.in th,table.in td{border-bottom:1px solid var(--line);padding:6px 6px;text-align:left}
+table.in th{font-weight:600;color:var(--chalk);font-size:.78rem}
+table.in input[type=text]{width:12em}
+table.in input[type=number]{width:5.5em}
+.cases{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.case{background:var(--paper);border:1px solid var(--line);padding:12px}
+.case.bad{border-top:6px solid var(--red)}
+.case.base{border-top:6px solid var(--ink)}
+.case.good{border-top:6px solid var(--ok)}
+.case .controls{margin:6px 0 10px}
+.case dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:0;font-size:.9rem}
+.case dt{color:var(--chalk)}
+.case dd{margin:0;font-variant-numeric:tabular-nums;text-align:right}
+.verdict{background:#fff;border:1px solid var(--line);border-left:6px solid var(--ok);padding:10px 14px;margin-top:12px}
+.verdict.fail{border-left-color:var(--red)}
+.verdict p{margin:4px 0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.box{background:var(--paper);border:1px solid var(--line);padding:12px}
+.box ul{margin:6px 0 0;padding-left:20px}
+.credits{margin-top:40px;font-size:.82rem;color:var(--chalk);border-top:1px dashed var(--chalk);padding-top:10px}
+footer{font-size:.82rem;color:var(--chalk);margin-top:8px}
+@media (max-width:760px){h1{font-size:1.9rem}.label .big{font-size:1.3rem}.cases,.two{grid-template-columns:1fr}.rail{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.hanger:hover .tag{transform:none}}
+@media print{body{background:#fff;font-size:11pt}.noprint,button{display:none!important}.hanger,.case,.box,.verdict,.label{break-inside:avoid}.tag{clip-path:none;border:1px solid var(--rail)}.scroll{overflow:visible}table.in{min-width:0;font-size:8pt}input,select{border:0;padding:0;background:transparent}h2{break-after:avoid}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+<h1>The Exclusivity Rack</h1>
+<p class="sub">Your signed deals, how long each has waited for equity, and what you lose if it never comes.</p>
+</header>
+
+<section aria-labelledby="lbl">
+<h2 id="lbl" class="noprint" style="margin-top:0;border:0;font-size:1rem;color:var(--chalk)">Wall label</h2>
+<div class="label" id="label" aria-live="polite"></div>
+</section>
+
+<div class="controls noprint">
+<label>As of<input type="date" data-s="asOf" id="asOf"></label>
+<button type="button" class="light" id="today">Use today</button>
+<span class="toggle"><input type="checkbox" id="stress" data-s="stress"><label for="stress" style="color:var(--ink);font-size:.95rem">Slip 6 months / EBITDA −20%</label></span>
+</div>
+
+<section aria-labelledby="rackh">
+<h2 id="rackh">The rack</h2>
+<p class="grey" style="margin:0">LOI and later only. Red tag: equity still short and less than half the exclusivity window left.</p>
+<div class="rail" id="rack"></div>
+<div class="formula" id="rackFormula"></div>
+</section>
+
+<section aria-labelledby="edith">
+<h2 id="edith">Edit the rack</h2>
+<p class="grey" style="margin:0 0 8px">One row per signed deal. The worked example is a lower-middle-market sponsor with four LOIs. Change any figure or clear the rack.</p>
+<div class="scroll"><table class="in" id="dealTable"></table></div>
+<div class="controls noprint">
+<button type="button" id="add">Add a deal</button>
+<button type="button" class="light" id="clear">Clear the rack</button>
+<button type="button" class="light" id="reset">Load the worked example</button>
+<button type="button" class="light" id="print">Print</button>
+</div>
+<div class="controls">
+<label>Closing fee, % of EV<input type="number" step="0.1" data-s="fee"></label>
+<label>Pref, % a year<input type="number" step="0.5" data-s="pref"></label>
+<label>Coverage floor, x<input type="number" step="0.1" data-s="minCov"></label>
+<label>Promote, %<input type="number" step="1" data-s="promote"></label>
+<label>Low-case MOIC, x<input type="number" step="0.1" data-s="moic"></label>
+<label>Equity, % of EV<input type="number" step="1" data-s="eqPct"></label>
+</div>
+<p class="grey" style="font-size:.85rem;margin:0">Fees, pref terms, promote splits and exclusivity rules vary by deal, lender and jurisdiction. Enter your own. This page does arithmetic only. It is not investment, legal or tax advice.</p>
+</section>
+
+<section aria-labelledby="caseh">
+<h2 id="caseh">Bad, base, good: the structured path</h2>
+<div class="controls">
+<label>Deal<select id="caseDeal"></select></label>
+</div>
+<div class="cases">
+<div class="case bad"><h3>Bad</h3>
+<div class="controls"><label>Weeks until equity is in<input type="number" data-c="bad" data-ck="w"></label><label>EBITDA change, %<input type="number" data-c="bad" data-ck="e"></label></div>
+<div id="c_bad"></div></div>
+<div class="case base"><h3>Base</h3>
+<div class="controls"><label>Weeks until equity is in<input type="number" data-c="base" data-ck="w"></label><label>EBITDA change, %<input type="number" data-c="base" data-ck="e"></label></div>
+<div id="c_base"></div></div>
+<div class="case good"><h3>Good</h3>
+<div class="controls"><label>Weeks until equity is in<input type="number" data-c="good" data-ck="w"></label><label>EBITDA change, %<input type="number" data-c="good" data-ck="e"></label></div>
+<div id="c_good"></div></div>
+</div>
+<div id="verdict"></div>
+<div class="formula">EBITDA = entered EBITDA × (1 + change %)
+Pref per year = pref % × equity gap
+Coverage = EBITDA ÷ pref per year, rounded down to 0.1x
+Control fee = closing fee % × EV, paid once
+Lost if it dies = spent + burn per week × weeks until equity (same on both paths)
+Room before it breaks = 1 − (coverage floor × pref) ÷ base EBITDA</div>
+</section>
+
+<section aria-labelledby="aih">
+<h2 id="aih">Pre-read before the QoE</h2>
+<p class="grey" style="margin:0 0 8px">Usual path: engage accountants at signing and let them clean the trailing twelve months. Shortcut: AI reads the LOI for the exclusivity date and break terms and puts the trailing twelve months in order first. Accountants start only if the deal passes.</p>
+<div class="controls">
+<label>QoE fee, $<input type="number" step="1000" data-ai="qoe"></label>
+<label>Accountant cleanup, usual, $<input type="number" step="500" data-ai="cleanNo"></label>
+<label>Accountant review, after AI, $<input type="number" step="500" data-ai="cleanAI"></label>
+<label>AI tool cost, $<input type="number" step="50" data-ai="tool"></label>
+<label>Your review hours<input type="number" step="1" data-ai="hours"></label>
+<label>Your hour, $<input type="number" step="10" data-ai="rate"></label>
+<label>Share billed before a week-3 kill, %<input type="number" step="5" data-ai="billed"></label>
+</div>
+<div id="aiOut"></div>
+<div class="formula">Usual, deal proceeds = QoE + cleanup
+Shortcut, deal proceeds = AI tool + hours × your hour + accountant review + QoE
+Usual, dies in week 3 = (QoE + cleanup) × share billed
+Shortcut, dies in week 3 = AI tool + hours × your hour (accountants never engaged)</div>
+</section>
+
+<section aria-labelledby="qh">
+<h2 id="qh">Two questions</h2>
+<div class="controls">
+<label>EV of your largest deal under LOI, $M<input type="number" step="0.5" data-q="ev"></label>
+<label>Months you have been raising equity for it<input type="number" step="1" data-q="months"></label>
+</div>
+<div id="qOut" class="box"></div>
+</section>
+
+<p class="credits">Costume designer: the rack, one tag per deal, the copy written before the layout, the two questions, and the AI pre-read before the QoE. Museum curator: the one-sentence wall label with the dollar figure and dates, and a literal action on every tag. Independent sponsor: the real stages, age as exclusivity days left, the red tag at half the window, and the $24M bad case. Ebenezer Scrooge: the three-column ledger of spent, weekly cost and forfeited, and the control fund against structured minority rows. The promote stays out of the totals. Scrooge still disagrees.</p>
+<footer>Published by OuterHaven Advisory. Works offline. Figures stay in this browser if storage is allowed.</footer>
+</div>
+
+<script>
+(function(){
+var KEY="exclusivity-rack-v1";
+var STAGES=["LOI signed","QoE running","Legal","Equity committed"];
+var EX={
+ deals:[
+  {name:"Harbor Valve Co.",stage:"QoE running",ev:24,ebitda:4.0,gap:9,signed:"2026-09-08",end:"2026-12-07",spent:120,burn:6},
+  {name:"Meridian Dental Labs",stage:"Legal",ev:14,ebitda:2.6,gap:3.5,signed:"2026-08-25",end:"2026-12-23",spent:210,burn:9},
+  {name:"Pine Ridge HVAC",stage:"LOI signed",ev:9,ebitda:1.8,gap:2,signed:"2026-10-20",end:"2027-01-18",spent:15,burn:2.5},
+  {name:"Coastal Freight Brokerage",stage:"Equity committed",ev:18,ebitda:3.0,gap:0,signed:"2026-07-15",end:"2026-11-30",spent:340,burn:4}
+ ],
+ s:{asOf:"2026-11-07",fee:1.5,pref:12,minCov:1.5,promote:20,moic:1.5,eqPct:45,stress:false},
+ cases:{bad:{w:30,e:-20},base:{w:4,e:0},good:{w:2,e:10}},
+ caseIdx:0,
+ ai:{qoe:40000,cleanNo:8000,cleanAI:2500,tool:300,hours:6,rate:150,billed:100},
+ q:{ev:24,months:4}
+};
+function clone(o){return JSON.parse(JSON.stringify(o));}
+var S=clone(EX);
+try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&p.deals&&p.s&&p.cases&&p.ai&&p.q)S=p;}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+
+var $=function(id){return document.getElementById(id);};
+function esc(t){return String(t).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function n(v){var x=parseFloat(v);return isFinite(x)?x:0;}
+function money(v){var a=Math.abs(v),s=v<0?"−$":"$";if(a>=1e6)return s+(a/1e6).toFixed(a>=1e8?0:2).replace(/\.?0+$/,"").replace(/(\.\d)$/,"$10")+"M";return s+Math.round(a).toLocaleString("en-US");}
+function moneyM(v){var a=Math.abs(v);if(a>=1e6)return "$"+(v/1e6).toFixed(1)+"M";return money(v);}
+function cov(x){if(!isFinite(x))return "n/a";return (Math.floor(x*10)/10).toFixed(1)+"x";}
+var MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+var DAY=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+function ms(str){if(!str)return NaN;var p=str.split("-");if(p.length!==3)return NaN;return Date.UTC(+p[0],+p[1]-1,+p[2]);}
+function asOfMs(){var m=ms(S.s.asOf);return isNaN(m)?Date.UTC(2026,10,7):m;}
+function fd(m,withYear){if(isNaN(m))return "no date";var d=new Date(m);var y=new Date(asOfMs()).getUTCFullYear();return d.getUTCDate()+" "+MON[d.getUTCMonth()]+((withYear||d.getUTCFullYear()!==y)?" "+d.getUTCFullYear():"");}
+function friday(){var a=new Date(asOfMs());var dow=a.getUTCDay();var add=((5-dow+7)%7)||7;var m=asOfMs()+add*864e5;return "Friday "+fd(m);}
+
+function calc(d){
+ var end=ms(d.end),sig=ms(d.signed),now=asOfMs();
+ var left=Math.round((end-now)/864e5),win=Math.round((end-sig)/864e5);
+ var half=isNaN(sig)||isNaN(end)?NaN:sig+Math.floor(win/2)*864e5;
+ var gap=n(d.gap)*1e6,ev=n(d.ev)*1e6;
+ var red=gap>0&&!isNaN(left)&&!isNaN(win)&&(left<win/2);
+ return {left:left,win:win,half:half,end:end,gap:gap,ev:ev,ebitda:n(d.ebitda)*1e6,spent:n(d.spent)*1e3,burn:n(d.burn)*1e3,red:red,
+  fee:n(S.s.fee)/100*ev,
+  promo:n(S.s.promote)/100*Math.max(0,n(S.s.moic)-1)*n(S.s.eqPct)/100*ev};
+}
+function nextStep(d,x){
+ var fri=friday();
+ if(x.gap<=0)return "Confirm the closing date with counsel and the seller by "+fri+".";
+ if(!isNaN(x.left)&&x.left<0)return "Exclusivity has ended. Ask the seller in writing to re-sign exclusivity before you spend another dollar.";
+ if(x.red&&x.gap>5e6)return "Send the one-page equity summary to two structured partners by "+fri+".";
+ if(x.red)return "Send the one-page equity summary to one structured partner by "+fri+".";
+ if(d.stage==="LOI signed")return "Run the LOI and trailing twelve months through an AI pre-read before engaging accountants. Your accountant signs off.";
+ return "Line up equity before "+fd(x.half)+", the half-window date.";
+}
+
+function buildTable(){
+ var h='<thead><tr><th>Deal</th><th>Stage</th><th>EV $M</th><th>EBITDA $M</th><th>Equity gap $M</th><th>LOI signed</th><th>Exclusivity ends</th><th>Spent $K</th><th>Burn / week $K</th><th class="noprint"></th></tr></thead><tbody>';
+ S.deals.forEach(function(d,i){
+  var opts=STAGES.map(function(s){return '<option'+(s===d.stage?' selected':'')+'>'+s+'</option>';}).join("");
+  h+='<tr><td><input type="text" aria-label="Deal name" data-i="'+i+'" data-k="name" value="'+esc(d.name)+'"></td>'+
+  '<td><select aria-label="Stage" data-i="'+i+'" data-k="stage">'+opts+'</select></td>'+
+  ['ev','ebitda','gap'].map(function(k){return '<td><input type="number" step="0.1" aria-label="'+k+'" data-i="'+i+'" data-k="'+k+'" value="'+esc(d[k])+'"></td>';}).join("")+
+  '<td><input type="date" aria-label="LOI signed" data-i="'+i+'" data-k="signed" value="'+esc(d.signed)+'"></td>'+
+  '<td><input type="date" aria-label="Exclusivity ends" data-i="'+i+'" data-k="end" value="'+esc(d.end)+'"></td>'+
+  '<td><input type="number" step="5" aria-label="Spent" data-i="'+i+'" data-k="spent" value="'+esc(d.spent)+'"></td>'+
+  '<td><input type="number" step="0.5" aria-label="Burn per week" data-i="'+i+'" data-k="burn" value="'+esc(d.burn)+'"></td>'+
+  '<td class="noprint"><button type="button" class="light" data-del="'+i+'" aria-label="Remove '+esc(d.name)+'">Remove</button></td></tr>';
+ });
+ if(!S.deals.length)h+='<tr><td colspan="10" class="grey">The rack is empty. Add a deal or load the worked example.</td></tr>';
+ $("dealTable").innerHTML=h+"</tbody>";
+}
+function fillStatic(){
+ document.querySelectorAll("[data-s]").forEach(function(el){var k=el.getAttribute("data-s");if(el.type==="checkbox")el.checked=!!S.s[k];else el.value=S.s[k];});
+ document.querySelectorAll("[data-c]").forEach(function(el){el.value=S.cases[el.getAttribute("data-c")][el.getAttribute("data-ck")];});
+ document.querySelectorAll("[data-ai]").forEach(function(el){el.value=S.ai[el.getAttribute("data-ai")];});
+ document.querySelectorAll("[data-q]").forEach(function(el){el.value=S.q[el.getAttribute("data-q")];});
+}
+
+function render(){
+ var fri=friday();
+ var rows=S.deals.map(function(d,i){return {d:d,x:calc(d),i:i};});
+ var red=rows.filter(function(r){return r.x.red;});
+ red.sort(function(a,b){return a.x.left-b.x.left;});
+ // wall label
+ var L="";
+ if(red.length){
+  var ev=0,sp=0,bu=0,fe=0,pr=0;
+  red.forEach(function(r){ev+=r.x.ev;sp+=r.x.spent;bu+=r.x.burn;fe+=r.x.fee;pr+=r.x.promo;});
+  var dates=red.map(function(r){return fd(r.x.end);});
+  var dt=dates.length>1?dates.slice(0,-1).join(", ")+" and "+dates[dates.length-1]:dates[0];
+  L+='<p class="big">You have <span class="num">'+moneyM(ev)+'</span> of signed deals that die if equity is not in by '+dt+'.</p>';
+  L+='<p class="totals num">Already spent on them: <b>'+money(sp)+'</b>. Each week of waiting: <b>'+money(bu)+'</b>. Closing fees forfeited if they die: <b>'+money(fe)+'</b>. <span class="grey">Promote, lower bound, kept out of every total: '+money(pr)+'.</span></p>';
+  L+='<p class="next">'+esc(red[0].d.name)+': '+nextStep(red[0].d,red[0].x)+'</p>';
+ }else if(rows.length){
+  L+='<p class="big">No deal on the rack is stalled as of '+fd(asOfMs(),true)+'.</p><p class="totals">A tag turns red when equity is short and less than half the exclusivity window remains.</p>';
+  L+='<p class="next">Put each half-window date from the tags below in your calendar today.</p>';
+ }else{
+  L+='<p class="big">The rack is empty.</p><p class="next">Add your largest signed LOI in the table below.</p>';
+ }
+ $("label").innerHTML=L;
+
+ // rack
+ var order=rows.slice().sort(function(a,b){if(a.x.red!==b.x.red)return a.x.red?-1:1;return (a.x.left||0)-(b.x.left||0);});
+ var stress=!!S.s.stress;
+ var R="";
+ order.forEach(function(r){
+  var d=r.d,x=r.x;
+  var leftTxt=isNaN(x.left)?"enter dates":(x.left<0?"ended "+(-x.left)+" days ago":x.left+" of "+x.win+" days left");
+  var flag=x.red?"Red tag":(x.gap<=0?"Equity in":"On time");
+  R+='<div class="hanger"><article class="tag'+(x.red?' red':'')+'"><span class="hole" aria-hidden="true"></span>';
+  R+='<span class="flag">'+flag+'</span><h3>'+esc(d.name||"Unnamed deal")+'</h3>';
+  R+='<dl><dt>Stage</dt><dd>'+esc(d.stage)+'</dd><dt>Exclusivity</dt><dd>'+leftTxt+'</dd><dt>Ends</dt><dd>'+fd(x.end)+' <span class="grey">(half: '+fd(x.half)+')</span></dd><dt>EV</dt><dd>'+moneyM(x.ev)+'</dd><dt>Equity gap</dt><dd>'+moneyM(x.gap)+'</dd></dl>';
+  R+='<div class="ledger"><div>Spent<b>'+money(x.spent)+'</b><small>gone either way</small></div><div>Each week<b>'+money(x.burn)+'</b><small>cost of waiting</small></div><div>Forfeited<b>'+money(x.fee)+'</b><small class="grey">promote ≥ '+money(x.promo)+', not totalled</small></div></div>';
+  if(x.red){
+   var eb=x.ebitda*(stress?0.8:1),pref=n(S.s.pref)/100*x.gap,c=pref>0?eb/pref:Infinity,dead=x.spent+(stress?26*x.burn:0);
+   R+='<table class="paths"><caption class="grey" style="text-align:left;font-size:.8rem;padding:4px 0">'+(stress?'Stressed: 6 months late, EBITDA '+moneyM(eb):'As entered: EBITDA '+moneyM(eb))+'</caption>';
+   R+='<tr><th>Path</th><th>You get</th><th>Board seat</th><th>If it dies</th></tr>';
+   R+='<tr><td>Control fund writes all the equity</td><td>'+money(x.fee)+' once</td><td>Fund</td><td>'+money(dead)+' lost</td></tr>';
+   R+='<tr><td>Structured minority fills the '+moneyM(x.gap)+' gap</td><td>Stake kept. Pref '+money(pref)+'/yr, covered '+cov(c)+'<br><span class="grey">promote ≥ '+money(x.promo)+'</span></td><td>Yours</td><td>'+money(dead)+' lost</td></tr></table>';
+  }
+  R+='<p class="next">'+esc(nextStep(d,x))+'</p></article></div>';
+ });
+ $("rack").innerHTML=R;
+ $("rackFormula").textContent="Days left = exclusivity end − as-of date ("+fd(asOfMs(),true)+")\nWindow = exclusivity end − LOI signed\nRed tag = equity gap > 0 and days left < window ÷ 2\nValue at risk = sum of EV on red tags\nForfeited = closing fee "+S.s.fee+"% × EV\nPromote lower bound = "+S.s.promote+"% × ("+S.s.moic+" − 1) × "+S.s.eqPct+"% × EV, grey, outside every total\nStress toggle: EBITDA × 0.8; lost if it dies = spent + 26 weeks × burn";
+
+ // cases
+ var sel=$("caseDeal"),cand=rows.filter(function(r){return r.x.gap>0;});
+ if(!cand.some(function(r){return r.i===S.caseIdx;})&&cand.length){
+  var big=cand.slice().sort(function(a,b){return (b.x.red-a.x.red)||(b.x.ev-a.x.ev);})[0];S.caseIdx=big.i;}
+ sel.innerHTML=cand.map(function(r){return '<option value="'+r.i+'"'+(r.i===S.caseIdx?' selected':'')+'>'+esc(r.d.name||"Unnamed deal")+' ('+moneyM(r.x.ev)+')</option>';}).join("")||'<option>No deal with an equity gap</option>';
+ var V="";
+ if(cand.length){
+  var r=rows[S.caseIdx],x=r.x,d=r.d,pref=n(S.s.pref)/100*x.gap,out={};
+  ["bad","base","good"].forEach(function(k){
+   var c=S.cases[k],eb=x.ebitda*(1+n(c.e)/100),cv=pref>0?eb/pref:Infinity,dead=x.spent+x.burn*n(c.w),inw=!isNaN(x.left)&&n(c.w)*7<=x.left;
+   out[k]={eb:eb,cv:cv};
+   $("c_"+k).innerHTML='<dl><dt>EBITDA</dt><dd>'+moneyM(eb)+'</dd><dt>Equity gap</dt><dd>'+moneyM(x.gap)+'</dd><dt>Pref per year</dt><dd>'+money(pref)+'</dd><dt>Coverage</dt><dd><b>'+cov(cv)+'</b></dd><dt>Control fee, once</dt><dd>'+money(x.fee)+'</dd><dt>Lost if it dies</dt><dd>'+money(dead)+'</dd><dt>Before exclusivity ends</dt><dd>'+(inw?'Yes':'<span style="color:var(--red)">No</span>')+'</dd><dt class="grey">Promote, lower bound</dt><dd class="grey">'+money(x.promo)+'</dd></dl>';
+  });
+  var floor=n(S.s.minCov),ok=out.bad.cv>=floor,rate=n(S.s.pref)/100;
+  if(ok){
+   var drop=out.base.eb>0?(1-floor*pref/out.base.eb)*100:0,maxRate=x.gap>0?out.bad.eb/(floor*x.gap)*100:0;
+   V+='<div class="verdict"><p><b>The structured path survives the bad case.</b> Coverage is '+cov(out.bad.cv)+' against a '+floor+'x floor on '+esc(d.name)+'.</p>';
+   V+='<p>Room before it breaks: base EBITDA could fall '+Math.max(0,drop).toFixed(0)+'% before coverage drops below '+floor+'x. In the bad case the pref could rise to '+maxRate.toFixed(1)+'% before it breaks.</p>';
+   V+='<p>The control path pays '+money(x.fee)+' once in every case. If the deal dies, the money spent is lost on both paths.</p>';
+   if(n(S.cases.bad.w)*7>x.left)V+='<p class="grey">In the bad case equity lands after exclusivity ends. The seller is free to walk. The coverage figures assume the seller stays.</p>';
+   V+='<p class="next">Send the one-page equity summary, bad-case column included, to two structured partners by '+fri+'.</p></div>';
+  }else{
+   var safeGap=rate>0?out.bad.eb/(floor*rate):0,safeRate=x.gap>0?out.bad.eb/(floor*x.gap)*100:0;
+   V+='<div class="verdict fail"><p><b>Safer setting first:</b> cap the structured piece at '+moneyM(safeGap)+', or cut the pref to '+safeRate.toFixed(1)+'%. Either holds coverage at '+floor+'x on bad-case EBITDA of '+moneyM(out.bad.eb)+'.</p>';
+   V+='<p>As entered, the structured path does not survive the bad case. Coverage falls to '+cov(out.bad.cv)+' against a '+floor+'x floor. The control path still pays '+money(x.fee)+' once.</p>';
+   V+='<p class="next">Cut the structured ask to '+moneyM(safeGap)+' and send the revised summary to two partners by '+fri+'.</p></div>';
+  }
+ }else{
+  ["bad","base","good"].forEach(function(k){$("c_"+k).innerHTML='<p class="grey">No deal with an equity gap.</p>';});
+  V='<div class="verdict"><p>No deal on the rack has an equity gap.</p><p class="next">Enter the equity gap on your largest LOI in the table above.</p></div>';
+ }
+ $("verdict").innerHTML=V;
+
+ // AI
+ var a=S.ai,qoe=n(a.qoe),cn=n(a.cleanNo),ca=n(a.cleanAI),tool=n(a.tool),you=n(a.hours)*n(a.rate);
+ var uB=qoe+cn,sB=tool+you+ca+qoe,uX=(qoe+cn)*n(a.billed)/100,sX=tool+you;
+ var pine=rows.filter(function(r){return r.d.stage==="LOI signed"&&r.x.gap>0;})[0];
+ var A='<div class="two"><div class="box"><h3>Usual path: accountants first</h3><p class="num">Base, deal proceeds: <b>'+money(uB)+'</b><br>Bad, dies in week 3: <b>'+money(uX)+'</b></p></div>';
+ A+='<div class="box"><h3>Shortcut: AI pre-read first</h3><p class="num">Base, deal proceeds: <b>'+money(sB)+'</b><br>Bad, dies in week 3: <b>'+money(sX)+'</b></p></div></div>';
+ A+='<div class="box" style="margin-top:12px"><p class="num" style="margin:0">Difference: '+money(uB-sB)+' in the base case, '+money(uX-sX)+' in the bad case.</p>';
+ A+='<p style="margin:8px 0 0"><b>A person still reviews:</b></p><ul><li>You check the AI-read exclusivity date and break terms against the signed LOI.</li><li>Your counsel confirms those terms. Rules differ by jurisdiction.</li><li>Your accountant reviews the cleaned trailing twelve months and signs off on the QoE numbers.</li></ul>';
+ A+='<p class="next">'+(pine?esc(pine.d.name)+': run the LOI and trailing twelve months through an AI pre-read before engaging accountants. Your accountant signs off.':'On your next LOI, run the LOI and trailing twelve months through an AI pre-read before engaging accountants. Your accountant signs off.')+'</p></div>';
+ $("aiOut").innerHTML=A;
+
+ // questions
+ var qev=n(S.q.ev)*1e6,mo=n(S.q.months),wk=mo*4.33,fee=n(S.s.fee)/100*qev;
+ var Q='<p class="num" style="margin:0">'+mo+' months raising is about '+Math.round(wk)+' weeks. A 90-day exclusivity window is about 13 weeks.'+(mo*30.4>90?' This raise has already outrun one full window.':'')+'</p>';
+ Q+='<p class="num">On a '+moneyM(qev)+' deal, the control path pays '+money(fee)+' once. The structured path keeps your seat and your stake.</p>';
+ Q+='<p class="next">Put the gap, the EV and the exclusivity end date on one page and send it to two structured partners by '+fri+'.</p>';
+ $("qOut").innerHTML=Q;
+ save();
+}
+
+// events
+$("dealTable").addEventListener("input",function(e){var t=e.target,i=t.getAttribute("data-i");if(i===null)return;var k=t.getAttribute("data-k");S.deals[+i][k]=(t.type==="number")?(t.value===""?"":n(t.value)):t.value;render();});
+$("dealTable").addEventListener("change",function(e){var t=e.target;if(t.tagName==="SELECT"){S.deals[+t.getAttribute("data-i")].stage=t.value;render();}});
+$("dealTable").addEventListener("click",function(e){var i=e.target.getAttribute("data-del");if(i===null)return;S.deals.splice(+i,1);if(S.caseIdx>=S.deals.length)S.caseIdx=0;buildTable();render();});
+document.querySelectorAll("[data-s]").forEach(function(el){el.addEventListener(el.type==="checkbox"?"change":"input",function(){var k=el.getAttribute("data-s");S.s[k]=el.type==="checkbox"?el.checked:(el.type==="date"?el.value:n(el.value));render();});});
+document.querySelectorAll("[data-c]").forEach(function(el){el.addEventListener("input",function(){S.cases[el.getAttribute("data-c")][el.getAttribute("data-ck")]=n(el.value);render();});});
+document.querySelectorAll("[data-ai]").forEach(function(el){el.addEventListener("input",function(){S.ai[el.getAttribute("data-ai")]=n(el.value);render();});});
+document.querySelectorAll("[data-q]").forEach(function(el){el.addEventListener("input",function(){S.q[el.getAttribute("data-q")]=n(el.value);render();});});
+$("caseDeal").addEventListener("change",function(){var v=parseInt(this.value,10);if(!isNaN(v))S.caseIdx=v;render();});
+$("add").addEventListener("click",function(){var a=asOfMs();function iso(m){return new Date(m).toISOString().slice(0,10);}S.deals.push({name:"New deal",stage:"LOI signed",ev:10,ebitda:2,gap:3,signed:iso(a),end:iso(a+90*864e5),spent:0,burn:3});buildTable();render();});
+$("clear").addEventListener("click",function(){S.deals=[];S.caseIdx=0;buildTable();render();});
+$("reset").addEventListener("click",function(){S=clone(EX);fillStatic();buildTable();render();});
+$("today").addEventListener("click",function(){var d=new Date();S.s.asOf=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");$("asOf").value=S.s.asOf;render();});
+$("print").addEventListener("click",function(){window.print();});
+
+fillStatic();buildTable();render();
+})();
+</script>
+</body>
+</html>

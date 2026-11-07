@@ -1,11 +1,12 @@
 # Archive
 
-Every daily team and the asset it made, newest first. 34 days recorded.
+Every daily team and the asset it made, newest first. 35 days recorded.
 
 [Today](README.md)
 
 | Date | Task | Team | Constraint | Asset |
 |---|---|---|---|---|
+| [2026-11-07](days/2026-11-07/) | The Exclusivity Rack | Costume designer · Museum curator · Independent sponsor · Ebenezer Scrooge | Every result names one next step the user can take. | [asset](days/2026-11-07/artifact-1.html) |
 | [2026-11-06](days/2026-11-06/) | The Signed Gathering | Bookbinder · Comic artist · Family office CIO · The Null | No animation. | [asset](days/2026-11-06/artifact-1.html) |
 | [2026-11-05](days/2026-11-05/) | Kiln Log | Ceramicist · Animator · Founder raising a growth round · Clockwork beetle | Prints clearly on a black-and-white printer. | [asset](days/2026-11-05/artifact-1.html) |
 | [2026-11-04](days/2026-11-04/) | Setup Card | Game designer · Stand-up comedian · Private credit fund manager · Captain Ahab | Built for people over 70. | [asset](days/2026-11-04/artifact-1.html) |
