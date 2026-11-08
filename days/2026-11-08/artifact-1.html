@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Denial Cue Sheet: follow-ups counted back from the appeal deadline</title>
+<style>
+:root{
+  --stage:#16151a;--panel:#211f26;--paper:#f4efe2;--paper2:#ebe4d2;--ink:#1d1b17;
+  --muted:#6b6455;--rule:#c9bfa6;--amber:#e3a21a;--gel:#f6d27a;--go:#2f7a46;--stop:#b0362a;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--stage);color:var(--paper);font:15px/1.45 var(--sans)}
+.wrap{max-width:1200px;margin:0 auto;padding:20px 16px 40px}
+header h1{margin:0;font-size:30px;letter-spacing:.02em;font-weight:700}
+header h1 .q{font-family:var(--mono);color:var(--amber);font-size:.7em;vertical-align:middle;border:2px solid var(--amber);padding:1px 7px;margin-right:10px;border-radius:3px}
+.sentence{font-size:17px;max-width:900px;margin:10px 0 4px;color:var(--gel)}
+.brief{font-size:13px;color:#b9b2a2;margin:0 0 18px;max-width:900px}
+.grid{display:grid;grid-template-columns:330px 1fr;gap:18px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:1fr}}
+.controls{background:var(--panel);border-top:3px solid var(--amber);padding:14px;border-radius:4px}
+.controls h2{font-size:13px;text-transform:uppercase;letter-spacing:.12em;color:var(--amber);margin:12px 0 8px}
+.controls h2:first-child{margin-top:0}
+label{display:block;font-size:13px;color:#d8d1c0;margin:8px 0 3px}
+.help{display:block;font-size:12px;color:#9c9584;margin-top:2px}
+input,select{width:100%;font:15px var(--sans);padding:7px 8px;border:1px solid #4a4652;border-radius:3px;background:var(--paper);color:var(--ink)}
+input:focus,select:focus,button:focus{outline:3px solid var(--amber);outline-offset:1px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+button{font:600 14px var(--sans);padding:9px 12px;border-radius:3px;border:2px solid var(--amber);background:var(--amber);color:var(--ink);cursor:pointer}
+button.ghost{background:transparent;color:var(--amber)}
+.sheet{background:var(--paper);color:var(--ink);border-radius:3px;padding:18px;margin-bottom:18px}
+.sheet h2{font-size:14px;text-transform:uppercase;letter-spacing:.12em;margin:0 0 10px;border-bottom:2px solid var(--ink);padding-bottom:6px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.sheet h2 small{font:500 12px var(--mono);letter-spacing:0;text-transform:none;color:var(--muted)}
+.sheet h3{font-size:14px;margin:16px 0 6px}
+.meta{font:13px var(--mono);color:var(--muted);margin-bottom:10px}
+.wol{border-top:3px dashed var(--amber);border-bottom:3px dashed var(--amber);background:#fbf3d9;padding:8px 10px;margin:0 0 12px;font-size:14px}
+.wol b{font-family:var(--mono)}
+.wol.stop{border-color:var(--stop);background:#f7e1dc}
+.cues{border:2px solid var(--ink)}
+.cue{display:grid;grid-template-columns:54px 128px 1fr 1fr 104px;border-top:1px solid var(--rule)}
+.cue>div{padding:8px;border-left:1px solid var(--rule)}
+.cue>div:first-child{border-left:0}
+.cue.head{border-top:0;background:var(--ink);color:var(--paper);font:600 11px var(--sans);text-transform:uppercase;letter-spacing:.1em}
+.qn{font:700 24px var(--mono);text-align:center}
+.date{font:600 14px var(--mono)}
+.date small{display:block;font-weight:400;color:var(--muted)}
+.act b{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.str{font-size:13px;margin:0 0 5px}
+.str span{font:700 11px var(--mono);padding:1px 4px;border-radius:2px;margin-right:4px}
+.str .y{background:var(--go);color:#fff}
+.str .n{background:var(--ink);color:#fff}
+.sign{font-size:11px;color:var(--muted)}
+.sign .box{border:1.5px solid var(--ink);height:34px;margin:3px 0}
+.cue.deadline{background:var(--paper2);border-top:3px solid var(--ink)}
+.cue.passed{background:#f7e1dc}
+.cue.passed .act b{color:var(--stop)}
+.tag{display:inline-block;font:700 11px var(--mono);padding:1px 5px;border-radius:2px;background:var(--stop);color:#fff;margin-left:4px}
+@media (max-width:700px){
+  .cue{grid-template-columns:48px 1fr}
+  .cue.head{display:none}
+  .cue>div{border-left:0}
+  .cue .qn{grid-row:span 4;border-right:1px solid var(--rule)}
+}
+.verdict{padding:10px 12px;border-left:6px solid var(--go);background:#e3efe5;margin-bottom:12px}
+.verdict.no{border-color:var(--stop);background:#f7e1dc}
+.verdict p{margin:4px 0}
+.cases{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.case{border:1.5px solid var(--ink);padding:10px;background:#fff9ec}
+.case h4{margin:0 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.1em}
+.case.bad h4{color:var(--stop)}.case.good h4{color:var(--go)}
+.kv{display:flex;justify-content:space-between;gap:8px;font-size:13px;border-bottom:1px dotted var(--rule);padding:2px 0}
+.kv b{font-family:var(--mono)}
+.kv.in{color:var(--muted)}
+.case .v{margin-top:6px;font-weight:700;font-size:13px}
+@media (max-width:700px){.cases{grid-template-columns:1fr}}
+table.cmp{width:100%;border-collapse:collapse;font-size:13px}
+table.cmp th,table.cmp td{border:1px solid var(--rule);padding:6px;text-align:left;vertical-align:top}
+table.cmp th{background:var(--paper2)}
+table.cmp td.n{font-family:var(--mono);text-align:right;white-space:nowrap}
+.formula{font:12px/1.6 var(--mono);background:var(--paper2);padding:8px 10px;border-radius:2px;white-space:pre-wrap;margin:8px 0}
+.note{font-size:12px;color:var(--muted)}
+.big{font:700 20px var(--mono)}
+footer{font-size:12px;color:#aaa392;margin-top:10px;line-height:1.6}
+footer p{margin:6px 0}
+.print-only{display:none}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media print{
+  @page{size:A4;margin:12mm}
+  body{background:#fff;color:#000;font-size:11px}
+  .wrap{padding:0;max-width:none}
+  .controls,.screen-only{display:none!important}
+  .print-only{display:block}
+  .grid{display:block}
+  header h1{font-size:20px;color:#000}
+  header h1 .q{color:#000;border-color:#000}
+  .sentence{color:#000;font-size:12px}
+  .brief{display:none}
+  .sheet{padding:0;margin:0 0 10px;background:#fff}
+  .cue{grid-template-columns:40px 96px 1fr 1fr 90px}
+  .cue.head{display:grid;background:#000;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .cue .qn{grid-row:auto;border-right:0;font-size:18px}
+  .cases{grid-template-columns:repeat(3,1fr)}
+  .case,.wol,.verdict,.cue.passed,.cue.deadline{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body[data-copy="clerk"] .mgr{display:none!important}
+  body[data-copy="manager"] .mgr{break-inside:avoid}
+  footer{color:#000}
+}
+</style>
+</head>
+<body data-copy="manager">
+<div class="wrap">
+<header>
+  <h1><span class="q">Q1</span>Denial Cue Sheet</h1>
+  <p class="sentence" id="sentence">Enter a denial reason and a claim amount, and the page prints four dated payer follow-ups counted back from the appeal deadline, each with a fallback, plus a line that marks when the claim costs more to work than it returns.</p>
+  <p class="brief">The brief here is "do not miss the appeal deadline". Touches are not spaced every 7 days. Cue 1 is the deadline, and every other cue is counted back from it.</p>
+</header>
+
+<div class="grid">
+<form class="controls" id="f" autocomplete="off" onsubmit="return false">
+  <h2>From the denial log</h2>
+  <label for="reason">Denial reason code</label>
+  <select id="reason"></select>
+  <label for="amount">Claim amount ($)</label>
+  <input id="amount" type="number" min="0" step="1" inputmode="decimal">
+  <div class="row2">
+    <div><label for="claim">Claim ref</label><input id="claim" type="text"></div>
+    <div><label for="payer">Payer</label><input id="payer" type="text"></div>
+  </div>
+  <label for="ddate">Denial received</label>
+  <input id="ddate" type="date">
+  <label for="window">Appeal window (days)</label>
+  <input id="window" type="number" min="5" max="365" step="1">
+  <span class="help">Set by the payer, plan, or local rules. Check the denial letter and enter it.</span>
+  <label for="esc">Escalate passed dates to</label>
+  <input id="esc" type="text">
+
+  <h2>Your rates</h2>
+  <div class="row2">
+    <div><label for="overturn">Overturn rate (%)</label><input id="overturn" type="number" min="0" max="100" step="1"></div>
+    <div><label for="resp">Payer reply (days)</label><input id="resp" type="number" min="1" max="365" step="1"></div>
+  </div>
+  <span class="help">Use your own rate for this code and payer if you track it.</span>
+  <div class="row2">
+    <div><label for="touches">Touches</label><input id="touches" type="number" min="1" max="12" step="1"></div>
+    <div><label for="minutes">Minutes each</label><input id="minutes" type="number" min="1" max="240" step="1"></div>
+  </div>
+  <div class="row2">
+    <div><label for="rate">Staff cost ($/hr)</label><input id="rate" type="number" min="0" step="0.5"></div>
+    <div><label for="share">Partner share (%)</label><input id="share" type="number" min="0" max="100" step="1"></div>
+  </div>
+
+  <h2>Two questions</h2>
+  <label for="perMonth">Denials per month</label>
+  <input id="perMonth" type="number" min="0" step="1">
+  <label for="months">Months the backlog has run</label>
+  <input id="months" type="number" min="0" step="1">
+
+  <div class="btns">
+    <button type="button" id="pClerk">Print clerk's copy</button>
+    <button type="button" id="pMgr" class="ghost">Print manager's copy</button>
+    <button type="button" id="reset" class="ghost">Load example</button>
+    <button type="button" id="clear" class="ghost">Clear</button>
+  </div>
+  <p class="help">Inputs stay in this browser only, if storage is allowed. Nothing is sent anywhere.</p>
+</form>
+
+<main id="out" aria-live="polite"></main>
+</div>
+
+<footer>
+  <p>Planning aid only. Appeal windows, filing limits, and payer contract terms vary by payer, plan, and jurisdiction. Enter your own. Overturn rates shown are starting estimates, not payer data. This is not legal, billing-compliance, or financial advice.</p>
+  <p>Credits. Lighting designer: cues counted back from the deadline, the one-page cue-sheet layout, the write-off line across the top. Puppeteer: a fallback string beside every cue, a coder sign-off box on every drafted letter. Revenue cycle manager: the two inputs from the denial log, the write-off verdict, escalate-today routing to the supervisor, the two questions. Robinson Crusoe: no input the clerk does not already hold, the bad-case run, the clerk's copy sized to pin beside the phone.</p>
+  <p>Published by VoxxyAI.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+var REASONS={
+ "CO-197":{name:"Prior authorization absent",ov:50,
+  c4:"Pull the auth record or the retro-auth request. Send a reconsideration with the auth number.",
+  c2:"Formal appeal letter with auth evidence and clinical notes."},
+ "CO-16":{name:"Claim lacks information",ov:70,
+  c4:"Correct the missing field. Resubmit as a corrected claim.",
+  c2:"Appeal letter citing the corrected field, if the resubmission was rejected."},
+ "CO-50":{name:"Not medically necessary",ov:40,
+  c4:"Request peer-to-peer or a reconsideration with clinical notes.",
+  c2:"Appeal letter with medical-necessity documentation."},
+ "CO-4":{name:"Modifier inconsistent with procedure",ov:65,
+  c4:"Fix the modifier. Resubmit as a corrected claim.",
+  c2:"Appeal letter with the coding rationale."},
+ "CO-29":{name:"Timely filing limit expired",ov:15,
+  c4:"Find proof of timely filing, such as the clearinghouse acceptance report. Send a reconsideration.",
+  c2:"Appeal letter with the filing proof attached."},
+ "CO-18":{name:"Duplicate claim",ov:30,
+  c4:"Check the original claim. Call the payer to confirm which claim is live.",
+  c2:"Appeal letter only if the original claim was not paid."}
+};
+var KEY="denialCueSheet.v1";
+var ids=["reason","amount","claim","payer","ddate","window","esc","overturn","resp","touches","minutes","rate","share","perMonth","months"];
+var el={};ids.forEach(function(i){el[i]=document.getElementById(i)});
+Object.keys(REASONS).forEach(function(k){
+  var o=document.createElement("option");o.value=k;o.textContent=k+" "+REASONS[k].name;el.reason.appendChild(o);
+});
+function today(){var d=new Date();d.setHours(0,0,0,0);return d}
+function iso(d){var m=d.getMonth()+1,dd=d.getDate();return d.getFullYear()+"-"+(m<10?"0":"")+m+"-"+(dd<10?"0":"")+dd}
+function addDays(d,n){var x=new Date(d.getTime());x.setDate(x.getDate()+n);return x}
+function parseISO(s){if(!s)return null;var p=s.split("-");if(p.length!==3)return null;var d=new Date(+p[0],+p[1]-1,+p[2]);return isNaN(d)?null:d}
+var DN=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],MN=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function fmt(d){return DN[d.getDay()]+" "+d.getDate()+" "+MN[d.getMonth()]+" "+d.getFullYear()}
+function money(n){if(!isFinite(n))return "–";var s=Math.round(Math.abs(n)).toLocaleString("en-US");return (n<0?"-$":"$")+s}
+function pct(n){return (Math.round(n*1000)/10)+"%"}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+
+function example(){
+  return {reason:"CO-197",amount:"1800",claim:"CLM-20418",payer:"Commercial payer A",ddate:iso(addDays(today(),-9)),
+    window:"60",esc:"Revenue cycle supervisor",overturn:"50",resp:"38",touches:"4",minutes:"25",rate:"32",share:"25",perMonth:"240",months:"7"};
+}
+function fill(v){ids.forEach(function(i){if(v[i]!==undefined)el[i].value=v[i]})}
+function save(){try{var v={};ids.forEach(function(i){v[i]=el[i].value});localStorage.setItem(KEY,JSON.stringify(v))}catch(e){}}
+function load(){try{var s=localStorage.getItem(KEY);if(s){return JSON.parse(s)}}catch(e){}return null}
+
+function num(id){var v=parseFloat(el[id].value);return isFinite(v)?v:NaN}
+
+function render(){
+  var out=document.getElementById("out");
+  var R=REASONS[el.reason.value]||REASONS["CO-197"];
+  var A=num("amount"),W=Math.round(num("window")),ov=num("overturn")/100,resp=Math.round(num("resp")),
+      T=Math.round(num("touches")),M=num("minutes"),rate=num("rate"),share=num("share")/100,
+      perMonth=num("perMonth"),months=num("months");
+  var dd=parseISO(el.ddate.value);
+  var escTo=el.esc.value.trim()||"the supervisor";
+  var claim=el.claim.value.trim()||"(claim ref)",payer=el.payer.value.trim()||"(payer)";
+  var missing=[];
+  if(!(A>0))missing.push("claim amount");
+  if(!dd)missing.push("denial date");
+  if(!(W>0))missing.push("appeal window");
+  if(!(ov>=0&&ov<=1))missing.push("overturn rate");
+  if(!(resp>0))missing.push("payer reply days");
+  if(!(T>0))missing.push("touches");
+  if(!(M>0))missing.push("minutes each");
+  if(!(rate>=0))missing.push("staff cost");
+  if(missing.length){
+    out.innerHTML='<section class="sheet"><h2>Cue sheet</h2><p>Enter: '+missing.join(", ")+'. The cues and the write-off line appear when these are filled.</p></section>';
+    return;
+  }
+  if(!(share>=0&&share<=1))share=0.25;
+  var now=today();
+  var deadline=addDays(dd,W);
+  var perTouch=M*rate/60;
+  function cost(t){return t*perTouch}
+
+  // cases
+  var cases=[
+    {k:"bad",name:"Bad",p:ov/2,resp:resp+45,t:T,why:"Overturn rate halved, payer 45 days slower"},
+    {k:"base",name:"Base",p:ov,resp:resp,t:T,why:"Your inputs"},
+    {k:"good",name:"Good",p:Math.min(ov*1.3,0.95),resp:Math.max(5,resp-10),t:Math.max(1,T-1),why:"Overturn rate ×1.3, payer 10 days faster, one touch fewer"}
+  ];
+  var offs=[Math.round(W*0.70),Math.round(W*0.35),Math.round(W*0.12),0];
+  var c4d=addDays(deadline,-offs[0]),c3d=addDays(deadline,-offs[1]),c2d=addDays(deadline,-offs[2]),c1d=deadline;
+  cases.forEach(function(c){
+    c.cost=cost(c.t);c.rec=A*c.p;c.net=c.rec-c.cost;c.decision=addDays(c2d,c.resp);c.ok=c.net>=0;
+  });
+  var bad=cases[0],base=cases[1],good=cases[2];
+  var threshold=bad.p>0?bad.cost/bad.p:Infinity;
+  var survives=bad.ok;
+
+  // cues
+  var cues=[
+    {n:4,d:c4d,off:offs[0],title:"Reconsideration",act:R.c4,letter:true,
+     y:"Reply received: log the reference number. Next: cue 3.",
+     no:"No reply by "+fmt(c3d)+": call the provider line and ask for the reference number."},
+    {n:3,d:c3d,off:offs[1],title:"Status call",act:"Call the payer. Ask for claim status and a reference number. Write both on this sheet.",letter:false,
+     y:"Overturned: stop the sheet and post the payment. Upheld: go to cue 2 now.",
+     no:"No answer after two tries: send the cue 2 letter on "+fmt(c2d)+" anyway."},
+    {n:2,d:c2d,off:offs[2],title:"Appeal letter",act:R.c2,letter:true,
+     y:"Acknowledged: note the date. Next: cue 1 check.",
+     no:"No acknowledgment by "+fmt(addDays(c1d,-3))+": resend by portal or fax and keep the confirmation."},
+    {n:1,d:c1d,off:0,title:"Deadline",act:"Appeal window closes. Confirm the appeal is on file with proof of receipt.",letter:false,
+     y:"On file: done. Payer decision expected about "+fmt(base.decision)+".",
+     no:"Not on file: escalate to "+escTo+" today."}
+  ];
+  var letters=cues.filter(function(c){return c.letter}).length;
+
+  var h="";
+  // CUE SHEET
+  h+='<section class="sheet" id="cueSheet"><h2>Cue sheet <small>'+esc(claim)+' · '+esc(payer)+' · '+esc(el.reason.value)+' '+esc(R.name)+'</small></h2>';
+  h+='<div class="meta">Claim '+money(A)+' · denial received '+fmt(dd)+' · window '+W+' days · deadline '+fmt(deadline)+' · printed '+fmt(now)+'</div>';
+  if(survives){
+    h+='<div class="wol">Write-off line: <b>'+money(threshold)+'</b> (bad case). This claim is <b>'+money(A)+'</b>. Work it.</div>';
+  }else{
+    h+='<div class="wol stop">Write-off line: <b>'+money(threshold)+'</b> (bad case). This claim is <b>'+money(A)+'</b>, below the line. Do not start the cues until '+esc(escTo)+' confirms: work, write off, or refer.</div>';
+  }
+  h+='<div class="cues"><div class="cue head"><div>Cue</div><div>Date</div><div>Action</div><div>Go: two strings</div><div>Sign-off</div></div>';
+  cues.forEach(function(c){
+    var passed=c.d<now, isToday=c.d.getTime()===now.getTime();
+    var cls="cue"+(c.n===1?" deadline":"")+(passed?" passed":"");
+    var after=Math.round((c.d-dd)/864e5);
+    h+='<div class="'+cls+'"><div class="qn">'+c.n+'</div>';
+    h+='<div class="date">'+fmt(c.d)+'<small>D−'+c.off+' · day '+after+'</small>'+(passed?'<span class="tag">PASSED</span>':isToday?'<span class="tag" style="background:var(--go)">TODAY</span>':'')+'</div>';
+    if(passed){
+      h+='<div class="act"><b>Date passed</b>Escalate to '+esc(escTo)+' today. The flag goes to the supervisor, not back to the queue. Planned action was: '+esc(c.act)+'</div>';
+    }else{
+      h+='<div class="act"><b>'+c.title+'</b>'+esc(c.act)+'</div>';
+    }
+    h+='<div><p class="str"><span class="y">REPLY</span>'+esc(c.y)+'</p><p class="str"><span class="n">NO</span>'+esc(c.no)+'</p></div>';
+    h+='<div class="sign">'+(c.letter?'Coder reads and signs before send<div class="box"></div>Name':'Clerk initials<div class="box"></div>')+'</div></div>';
+  });
+  h+='</div><p class="note">Cue offsets: 70%, 35%, 12%, and 0% of the appeal window, counted back from the deadline. Letter cues may be drafted by AI. None goes out without a named coder\'s sign-off.</p></section>';
+
+  // VERDICT + CASES
+  h+='<section class="sheet mgr"><h2>Is this claim worth working <small>bad · base · good</small></h2>';
+  var maxT=perTouch>0?Math.floor(bad.rec/perTouch):Infinity;
+  var beP=A>0?base.cost/A:0;
+  if(survives){
+    h+='<div class="verdict"><p><b>The plan survives the bad case.</b> At a '+pct(bad.p)+' overturn rate and a '+bad.resp+'-day payer reply, the claim returns '+money(bad.rec)+' against '+money(bad.cost)+' of staff time.</p>';
+    h+='<p>Room before it breaks: the overturn rate can fall to '+pct(beP)+' with '+T+' touches. At the bad-case rate, up to '+(isFinite(maxT)?maxT:"any number of")+' touches of '+M+' minutes still pay. Any claim under '+money(threshold)+' does not hold in-house at the bad-case rate.</p></div>';
+  }else{
+    h+='<div class="verdict no"><p><b>Safer setting first: do not work this claim in-house at these numbers.</b> Write it off, or see the partner comparison below.</p>';
+    h+='<p>The plan does not survive the bad case. At a '+pct(bad.p)+' overturn rate it returns '+money(bad.rec)+' against '+money(bad.cost)+' of staff time. '+(maxT>0?'At most '+maxT+' touch'+(maxT===1?'':'es')+' of '+M+' minutes pay at that rate.':'Not one touch of '+M+' minutes pays at that rate.')+' Claims from '+money(threshold)+' up hold with these settings.</p></div>';
+  }
+  h+='<div class="cases">';
+  cases.forEach(function(c){
+    h+='<div class="case '+c.k+'"><h4>'+c.name+'</h4><div class="note" style="margin-bottom:6px">'+c.why+'</div>';
+    h+='<div class="kv in"><span>Overturn rate</span><b>'+pct(c.p)+'</b></div>';
+    h+='<div class="kv in"><span>Payer reply</span><b>'+c.resp+' days</b></div>';
+    h+='<div class="kv in"><span>Touches × minutes</span><b>'+c.t+' × '+M+'</b></div>';
+    h+='<div class="kv"><span>Work cost</span><b>'+money(c.cost)+'</b></div>';
+    h+='<div class="kv"><span>Expected recovery</span><b>'+money(c.rec)+'</b></div>';
+    h+='<div class="kv"><span>Net</span><b>'+money(c.net)+'</b></div>';
+    h+='<div class="kv"><span>Decision about</span><b>'+fmt(c.decision).slice(4)+'</b></div>';
+    h+='<div class="v" style="color:'+(c.ok?'var(--go)':'var(--stop)')+'">'+(c.ok?'Pays for the work':'Costs more than it returns')+'</div></div>';
+  });
+  h+='</div>';
+  h+='<div class="formula">Work cost         = touches × minutes × staff cost ÷ 60\nExpected recovery = claim amount × overturn rate\nNet               = expected recovery − work cost\nWrite-off line    = bad-case work cost ÷ bad-case overturn rate\nDecision date     = cue 2 date + payer reply days</div>';
+  h+='</section>';
+
+  // MONTHS FRAME
+  if(perMonth>=0&&months>=0&&isFinite(perMonth)&&isFinite(months)){
+    var hrsClaim=T*M/60,hrsMonth=perMonth*hrsClaim,hrsTotal=hrsMonth*months;
+    h+='<section class="sheet mgr"><h2>The size of the backlog <small>from your two answers</small></h2>';
+    h+='<p>At <b>'+perMonth+'</b> denials a month, rework uses about <span class="big">'+Math.round(hrsMonth).toLocaleString("en-US")+'</span> staff hours a month ('+money(hrsMonth*rate)+'). Over <b>'+months+'</b> months, that is about <b>'+Math.round(hrsTotal).toLocaleString("en-US")+'</b> hours ('+money(hrsTotal*rate)+'). This runs every month until the denial reasons change.</p>';
+    h+='<div class="formula">Monthly rework hours = denials per month × touches × minutes ÷ 60\nHours so far         = monthly rework hours × months running</div></section>';
+  }
+
+  // AI
+  var sBase=Math.min(15,M),sBad=Math.min(5,M);
+  var aiRows=[
+    {n:"Base",without:base.cost,with:(T*M-letters*sBase)*rate/60,note:"Draft takes 5 min to read and sign instead of 20 to write"},
+    {n:"Bad",without:bad.cost,with:(T*M-letters*sBad)*rate/60,note:"Coder rewrites half the drafts; saving falls to 5 min a letter"}
+  ];
+  h+='<section class="sheet mgr"><h2>Letter drafting with AI <small>'+letters+' letter cues per claim</small></h2>';
+  h+='<table class="cmp"><tr><th>Case</th><th>Without AI, per claim</th><th>With AI, per claim</th><th>Per month at '+(isFinite(perMonth)?perMonth:0)+' denials</th><th>Assumption</th></tr>';
+  aiRows.forEach(function(r){
+    h+='<tr><td>'+r.n+'</td><td class="n">'+money(r.without)+'</td><td class="n">'+money(r.with)+'</td><td class="n">'+money((r.without-r.with)*(isFinite(perMonth)?perMonth:0))+' saved</td><td>'+r.note+'</td></tr>';
+  });
+  h+='</table><p class="note">A person still does: the coder reads and signs every letter, the clerk makes every payer call, '+esc(escTo)+' owns every passed date, and the manager makes every write-off decision. AI drafts the letter text from the reason code only.</p>';
+  h+='<div class="formula">With AI = (touches × minutes − letter cues × minutes saved) × staff cost ÷ 60\nMinutes saved: base 15 (20 to write − 5 to review), bad 5</div></section>';
+
+  // PARTNER COMPARISON
+  var inBase=base.net,inBad=bad.net,ptBase=A*base.p*(1-share),ptBad=A*bad.p*(1-share);
+  h+='<section class="sheet mgr"><h2>In-house or recovery partner <small>a comparison, not a recommendation</small></h2>';
+  h+=(survives?'<p class="note">This claim is above the write-off line. The comparison is shown for reference.</p>':'<p><b>This claim is below the write-off line.</b> Same inputs, two paths:</p>');
+  h+='<table class="cmp"><tr><th>Path</th><th>Base net</th><th>Bad net</th><th>On a lost claim</th></tr>';
+  h+='<tr><td>In-house, '+T+' touches</td><td class="n">'+money(inBase)+'</td><td class="n">'+money(inBad)+'</td><td>Staff time spent: '+money(base.cost)+'</td></tr>';
+  h+='<tr><td>Partner at '+Math.round(share*100)+'% share</td><td class="n">'+money(ptBase)+'</td><td class="n">'+money(ptBad)+'</td><td>No fee, no staff time</td></tr>';
+  h+='<tr><td>Write off</td><td class="n">$0</td><td class="n">$0</td><td>Nothing spent</td></tr></table>';
+  h+='<p class="note">Check what counts as a recovered claim in any contract. Some contingency terms take a share of claims that would have paid on a simple resubmission. Referral hand-off time is not counted here. Kept off the clerk\'s copy.</p>';
+  h+='<div class="formula">In-house net = claim × overturn rate − work cost\nPartner net  = claim × overturn rate × (1 − partner share)</div></section>';
+
+  out.innerHTML=h;
+}
+
+function onInput(e){
+  if(e&&e.target===el.reason){var r=REASONS[el.reason.value];if(r)el.overturn.value=r.ov}
+  save();render();
+}
+ids.forEach(function(i){el[i].addEventListener("input",onInput);el[i].addEventListener("change",onInput)});
+document.getElementById("reset").addEventListener("click",function(){fill(example());save();render()});
+document.getElementById("clear").addEventListener("click",function(){ids.forEach(function(i){if(i!=="reason")el[i].value=""});save();render()});
+function doPrint(mode){document.body.setAttribute("data-copy",mode);window.print()}
+document.getElementById("pClerk").addEventListener("click",function(){doPrint("clerk")});
+document.getElementById("pMgr").addEventListener("click",function(){doPrint("manager")});
+window.addEventListener("afterprint",function(){document.body.setAttribute("data-copy","manager")});
+
+var stored=load();
+fill(example());
+if(stored)fill(stored);
+render();
+})();
+</script>
+</body>
+</html>

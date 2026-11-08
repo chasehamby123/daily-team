@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-11-07: The Exclusivity Rack
+### 2026-11-08: The Deadline Cue Sheet
 
-<a href="days/2026-11-07/"><img src="days/2026-11-07/team.png" alt="Team for 2026-11-07: Costume designer · Museum curator · Independent sponsor · Ebenezer Scrooge" width="100%"></a>
+<a href="days/2026-11-08/"><img src="days/2026-11-08/team.png" alt="Team for 2026-11-08: Lighting designer · Puppeteer · Revenue cycle manager · Robinson Crusoe" width="100%"></a>
 
-**Task:** Pipeline health check: deals by stage and age give a list of stalled deals and the total value at risk.
+**Task:** Follow-up cadence planner: a lead source and deal size give a dated sequence of follow-up touches, printable.
 
-**Decision:** The page takes a sponsor's signed deals, flags each one stalled by days left on exclusivity against its equity gap, totals the EV at risk and the money already spent, and shows a control path and a sponsor-held path side by side, each wi...
+**Decision:** The page takes a denial reason and a claim amount and prints a dated sequence of payer follow-ups counted back from the appeal deadline, each with a fallback, and a line marking where the claim costs more to work than it returns.
 
-<a href="days/2026-11-07/"><img src="days/2026-11-07/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-11-08/"><img src="days/2026-11-08/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-11-07/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-11-08/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,15 +37,15 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-11-08](days/2026-11-08/) | <a href="days/2026-11-08/"><img src="days/2026-11-08/artifact-1.png" alt="The Deadline Cue Sheet" width="160"></a> | The Deadline Cue Sheet | Lighting designer · Puppeteer · Revenue cycle manager · Robinson Crusoe |
 | [2026-11-07](days/2026-11-07/) | <a href="days/2026-11-07/"><img src="days/2026-11-07/artifact-1.png" alt="The Exclusivity Rack" width="160"></a> | The Exclusivity Rack | Costume designer · Museum curator · Independent sponsor · Ebenezer Scrooge |
 | [2026-11-06](days/2026-11-06/) | <a href="days/2026-11-06/"><img src="days/2026-11-06/artifact-1.png" alt="The Signed Gathering" width="160"></a> | The Signed Gathering | Bookbinder · Comic artist · Family office CIO · The Null |
 | [2026-11-05](days/2026-11-05/) | <a href="days/2026-11-05/"><img src="days/2026-11-05/artifact-1.png" alt="Kiln Log" width="160"></a> | Kiln Log | Ceramicist · Animator · Founder raising a growth round · Clockwork beetle |
 | [2026-11-04](days/2026-11-04/) | <a href="days/2026-11-04/"><img src="days/2026-11-04/artifact-1.png" alt="Setup Card" width="160"></a> | Setup Card | Game designer · Stand-up comedian · Private credit fund manager · Captain Ahab |
 | [2026-11-03](days/2026-11-03/) | <a href="days/2026-11-03/"><img src="days/2026-11-03/artifact-1.png" alt="One Call, One Year" width="160"></a> | One Call, One Year | Choreographer · Front-end engineer · Clinic owner · Phoenix |
 | [2026-11-02](days/2026-11-02/) | <a href="days/2026-11-02/"><img src="days/2026-11-02/artifact-1.png" alt="Who's In First" width="160"></a> | Who's In First | Glassblower · Tailor · Merchant banker · Time |
-| [2026-11-01](days/2026-11-01/) | <a href="days/2026-11-01/"><img src="days/2026-11-01/artifact-1.png" alt="Drop-Off Ledger" width="160"></a> | Drop-Off Ledger | Clockmaker · Florist · Investment banker · Repair technician from 2140 |
 
-[All 35 days](ARCHIVE.md)
+[All 36 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works
