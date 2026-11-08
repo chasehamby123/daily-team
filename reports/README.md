@@ -4,6 +4,7 @@ One report per week, written each Sunday from the repository and the day records
 
 | Week | Days | Pages | Changes | Summary |
 |---|---|---|---|---|
+| [2026-11-09](2026-11-09.md) | 0 | 0 | 0 | ok |
 | [2026-11-02](2026-11-02.md) | 0 | 0 | 0 | ok |
 | [2026-10-26](2026-10-26.md) | 0 | 0 | 0 | ok |
 | [2026-10-19](2026-10-19.md) | 0 | 0 | 0 | ok |
