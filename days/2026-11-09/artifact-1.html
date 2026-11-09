@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 100 Inbox: response time after you merge support queues</title>
+<style>
+:root{--paper:#f5f1e8;--card:#fffdf8;--ink:#1d1b18;--soft:#625c52;--line:#d6cdbb;--wash:#e7dfcd;--seal:#b3261e}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+.serif{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif}
+main{max-width:480px;margin:0 auto;padding:14px 14px 132px}
+header{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--ink);padding-bottom:6px;margin-bottom:14px}
+header h1{font-size:24px;margin:0;font-weight:700;letter-spacing:.2px}
+header .step{font-size:13px;color:var(--soft)}
+h2{font-size:20px;margin:0 0 6px}
+h3{font-size:16px;margin:22px 0 6px;border-bottom:1px solid var(--line);padding-bottom:4px}
+p{margin:6px 0}
+.soft{color:var(--soft);font-size:14px}
+.small{font-size:13px}
+.num{font-variant-numeric:tabular-nums}
+section.screen{display:none}
+section.screen.on{display:block}
+.stroke.on{display:flex;flex-direction:column;min-height:calc(100vh - 210px);min-height:calc(100svh - 210px)}
+.stroke .q{flex:1}
+.stroke .lab{font-size:13px;letter-spacing:.6px;text-transform:uppercase;color:var(--soft)}
+.stroke .ask{font-size:24px;line-height:1.25;margin:8px 0 10px}
+.rule{font-size:12px;color:var(--soft);border-left:3px solid var(--ink);padding-left:8px;margin-top:14px}
+.stepper{display:grid;grid-template-columns:76px 1fr 76px;gap:8px;align-items:stretch;margin:12px 0 6px}
+.stepper button{min-height:76px;font-size:34px;line-height:1}
+.stepper input,.stepper .val{min-height:76px;width:100%;border:2px solid var(--ink);background:var(--card);font:700 40px/1 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;text-align:center;color:var(--ink);border-radius:6px;padding:0 4px;display:flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
+.stepper .val{font-size:22px}
+.unit{text-align:center;font-size:14px;color:var(--soft)}
+button{font:inherit;color:var(--ink);background:var(--card);border:2px solid var(--ink);border-radius:6px;min-height:56px;padding:0 14px;cursor:pointer;touch-action:manipulation}
+button.ink{background:var(--ink);color:var(--paper)}
+button.text{border:none;background:none;text-decoration:underline;min-height:48px;padding:0 6px;color:var(--soft)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--seal);outline-offset:2px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--paper);border-top:2px solid var(--ink);padding:10px 14px calc(10px + env(safe-area-inset-bottom))}
+.bar .in{max-width:480px;margin:0 auto;display:grid;grid-template-columns:1fr 1.4fr;gap:10px}
+.bar button{min-height:60px;font-size:17px;font-weight:600}
+.counter{background:var(--card);border:2px solid var(--ink);border-radius:6px;padding:12px;margin:12px 0}
+.counter .big{font:700 60px/1 "Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;color:var(--seal);font-variant-numeric:tabular-nums;margin:6px 0}
+.verdict{border-left:4px solid var(--ink);padding:6px 0 6px 10px;margin:12px 0}
+.verdict.fail{border-color:var(--seal)}
+.safer{font-weight:700;color:var(--seal)}
+.break{font-size:12px;color:var(--soft);border:1px dashed var(--soft);padding:6px 8px;margin:10px 0;border-radius:4px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.ch{font-size:12px;line-height:1.3;padding:4px 2px}
+.ch b{font-size:15px;display:block}
+.ch.bad b{color:var(--seal)}
+.path{grid-column:1/-1;font-size:14px;font-weight:700;margin-top:8px}
+.path span{font-weight:400;color:var(--soft);font-size:12px;display:block}
+.cell{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:6px 6px 7px}
+.cell.bad{border-top:3px solid var(--seal)}
+.br{margin:0 0 6px}
+.bl{display:flex;justify-content:space-between;font-size:12px}
+.bl b{font-variant-numeric:tabular-nums}
+.bl b.miss{color:var(--seal)}
+.tr{position:relative;height:9px;background:var(--wash);border-radius:2px}
+.fi{position:absolute;left:0;top:0;bottom:0;background:var(--ink);border-radius:2px}
+.fi.miss{background:var(--seal)}
+.tk{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--ink);box-shadow:0 0 0 1px var(--card)}
+.cost{font-size:11px;line-height:1.3;border-top:1px solid var(--line);padding-top:4px;margin-top:2px}
+.cost .gap{color:var(--seal);font-weight:700}
+.ai{font-size:11px;color:var(--soft);margin-bottom:4px}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{border-bottom:1px solid var(--line);padding:6px 4px;text-align:right;vertical-align:top}
+th:first-child,td:first-child{text-align:left}
+th{font-size:12px;color:var(--soft);font-weight:600}
+ul{padding-left:18px;margin:6px 0}
+li{margin:4px 0}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.mini{display:grid;grid-template-columns:64px 1fr 64px;gap:8px;align-items:center}
+.mini button{min-height:60px;font-size:28px}
+.mini .val{text-align:center;font:700 26px/1 "Iowan Old Style",Georgia,serif}
+.formula{font-size:13px;background:var(--card);border:1px solid var(--line);padding:8px 10px;border-radius:4px}
+.formula code{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:12.5px;display:block;margin:3px 0 8px;white-space:pre-wrap}
+.field{display:flex;gap:8px;align-items:center;margin:8px 0}
+.field input{width:90px;min-height:52px;font-size:20px;text-align:center;border:2px solid var(--ink);border-radius:6px;background:var(--card)}
+#shareout{width:100%;min-height:48px;font-size:13px;border:1px solid var(--line);border-radius:4px;padding:6px;margin-top:6px;display:none;background:var(--card)}
+.datepick{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--soft);margin-top:6px}
+.datepick input{min-height:48px;font-size:16px;border:1px solid var(--line);border-radius:4px;background:var(--card);padding:0 6px}
+footer{margin-top:26px;border-top:2px solid var(--ink);padding-top:8px;font-size:12px;color:var(--soft)}
+.row2{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+@media (min-width:420px){.ch{font-size:13px}.bl{font-size:13px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media print{
+ body{background:#fff}
+ .bar,.stroke,.noprint,#shareout{display:none!important}
+ #s4{display:block!important}
+ main{padding:0;max-width:none}
+ .cell,.counter,.formula{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<main>
+<header><h1 class="serif">Day 100 Inbox</h1><span class="step" id="stepl">Result</span></header>
+
+<section class="screen stroke" id="s0">
+ <div class="q">
+  <div class="lab">1 of 4 · Merge date</div>
+  <div class="ask serif">On what date do their customers' emails start landing in your queue?</div>
+  <p class="soft">Usually the close date. The buttons move one week.</p>
+  <p class="soft" id="d100"></p>
+  <div class="rule">One number on this screen.</div>
+ </div>
+ <div class="stepper"><button data-k="d" data-d="-7" aria-label="One week earlier">−</button><div class="val num" id="dval"></div><button data-k="d" data-d="7" aria-label="One week later">+</button></div>
+ <div class="datepick"><label for="dpick">Or pick a date</label><input type="date" id="dpick"></div>
+</section>
+
+<section class="screen stroke" id="s1">
+ <div class="q">
+  <div class="lab">2 of 4 · Enquiries per hour</div>
+  <div class="ask serif">How many emails, chats, and calls do their customers send in a working hour?</div>
+  <p class="soft">Use a normal week from their helpdesk report. The bad case doubles it for you.</p>
+  <div class="rule">One number on this screen.</div>
+ </div>
+ <div class="stepper"><button data-k="e" data-d="-5" aria-label="Five fewer">−</button><input id="in_e" data-in="e" inputmode="decimal" aria-label="Enquiries per hour"><button data-k="e" data-d="5" aria-label="Five more">+</button></div>
+ <div class="unit">enquiries an hour · steps of 5 · <button class="text" data-clear="e">Clear</button></div>
+</section>
+
+<section class="screen stroke" id="s2">
+ <div class="q">
+  <div class="lab">3 of 4 · People answering</div>
+  <div class="ask serif">How many people will answer their customers on a shift?</div>
+  <p class="soft">Count people on shift at the same time. The bad case takes away 2 for attrition.</p>
+  <div class="rule">One number on this screen.</div>
+ </div>
+ <div class="stepper"><button data-k="s" data-d="-1" aria-label="One fewer">−</button><input id="in_s" data-in="s" inputmode="numeric" aria-label="People answering"><button data-k="s" data-d="1" aria-label="One more">+</button></div>
+ <div class="unit">people on shift · <button class="text" data-clear="s">Clear</button></div>
+</section>
+
+<section class="screen stroke" id="s3">
+ <div class="q">
+  <div class="lab">4 of 4 · Minutes per reply</div>
+  <div class="ask serif">How many minutes does one reply take, from opening it to sending?</div>
+  <p class="soft">Average across easy and hard ones. The good case takes 1 minute off.</p>
+  <div class="rule">One number on this screen.</div>
+ </div>
+ <div class="stepper"><button data-k="m" data-d="-0.5" aria-label="Half a minute less">−</button><input id="in_m" data-in="m" inputmode="decimal" aria-label="Minutes per reply"><button data-k="m" data-d="0.5" aria-label="Half a minute more">+</button></div>
+ <div class="unit">minutes per reply · steps of 0.5 · <button class="text" data-clear="m">Clear</button></div>
+</section>
+
+<section class="screen" id="s4">
+ <h2 class="serif">Their customers, after you take over their inbox</h2>
+ <p class="soft num" id="summary"></p>
+ <div id="out"></div>
+
+ <h3>Two questions</h3>
+ <p class="small"><b>Deal size</b>, in the deal currency. Kept in the shared link for your integration lead.</p>
+ <div class="seg" id="deal"></div>
+ <p class="small" style="margin-top:14px"><b>Months until the queues merge</b>, or how long you expect the overload to run.</p>
+ <div class="mini"><button data-mo="-1" aria-label="One month fewer">−</button><div class="val num" id="moval"></div><button data-mo="1" aria-label="One month more">+</button></div>
+
+ <div class="row2 noprint">
+  <button class="text" id="reset">Reset to the worked example</button>
+  <button class="text" id="clear">Clear all inputs</button>
+ </div>
+ <input id="shareout" readonly aria-label="Link to this result">
+ <p class="small" id="sharemsg" aria-live="polite"></p>
+
+ <h3>Formula</h3>
+ <div class="formula" id="formula">
+  <p>λ = enquiries an hour. c = people on shift. h = minutes per reply. μ = 60 ÷ h replies an hour per person. a = λ ÷ μ.</p>
+  <code>load ρ = λ × h ÷ (60 × c)</code>
+  <p>When ρ is below 100%, Erlang C:</p>
+  <code>P(wait) = C(c, a)
+share within t = 1 − P(wait) × e^(−(cμ − λ) × t)</code>
+  <p>When ρ is 100% or higher, a backlog that grows across an 8-hour day, starting empty:</p>
+  <code>share within a day = cμ ÷ λ
+share within t = min(cμ ÷ λ, t × cμ ÷ ((λ − cμ) × 8))
+waiting over a day, per day = λ × 8 × (1 − share within a day)</code>
+  <p>Shortcut path. AI closes 40% of enquiries at once. People get the rest from AI drafts, a third faster:</p>
+  <code>λ people = λ × 0.6,  h people = h × 2/3
+share = 0.4 + 0.6 × share answered by people</code>
+  <p>Targets: 80% within 5 minutes, 95% within 1 hour, 100% within 1 day. The 1-day target counts as met at 99.5%.</p>
+  <code>staff hours a week = people on shift × 40 open hours
+review hours a week = λ × 0.4 × 1 min ÷ 60 × 40
+FTE = staff hours ÷ contract hours</code>
+  <p>One day means 8 working hours. Each day starts with an empty queue. A queue that starts the day behind does worse than shown.</p>
+  <div class="field"><input id="hrs" inputmode="decimal" aria-label="Contract hours per person per week"><label for="hrs" class="small">Contract hours per person per week. This depends on local employment rules and contracts. Enter your own.</label></div>
+ </div>
+
+ <footer>
+  <p>Credits. Calligrapher: one number per screen, and the one noted break where two paths share the result. Teacher: the target ticks at 80%, 95%, and 100%, the Erlang C maths, and the staff-hours cost line. Corporate development head: the merge date as the first question, the acquired business's customers as the subject, and the deal size and months questions. The Outsider: the climbing counter and the two paths side by side.</p>
+  <p>This page gives estimates from a queue model. It is not legal, employment, or investment advice. Rules on automated replies to customers vary by country; check yours.</p>
+  <p>Published by OuterHaven Advisory.</p>
+ </footer>
+</section>
+</main>
+
+<div class="bar"><div class="in"><button id="back">Edit inputs</button><button class="ink" id="next">Share result</button></div></div>
+
+<script>
+(function(){
+var AIS=0.4,HF=2/3,REV=1,DAY=8,OPEN=40,WDM=21;
+var T=[5/60,1,DAY],TG=[0.8,0.95,0.995],LAB=['5 min','1 hour','1 day'];
+var EX={d:'2027-01-11',e:40,s:6,m:6,deal:1,mo:6,h:40};
+var DEALS=['Under 10m','10m to 50m','50m to 250m','Over 250m'];
+var KEYS=['d','e','s','m','deal','mo','h'];
+var st={},cur=4,raf=0,lastCount=null;
+
+function $(id){return document.getElementById(id)}
+function copyEx(){var o={};KEYS.forEach(function(k){o[k]=EX[k]});return o}
+function load(){
+ var o=copyEx(),saved=null;
+ try{saved=JSON.parse(localStorage.getItem('day100inbox')||'null')}catch(e){saved=null}
+ if(saved&&typeof saved==='object')KEYS.forEach(function(k){if(k in saved)o[k]=saved[k]});
+ try{var q=new URLSearchParams(location.search);KEYS.forEach(function(k){if(q.has(k)){var v=q.get(k);if(k==='d')o.d=v;else{var n=parseFloat(v);o[k]=isFinite(n)?n:null}}})}catch(e){}
+ if(!pd(o.d))o.d=EX.d;
+ if(!(o.deal>=0&&o.deal<=3))o.deal=EX.deal;
+ if(!(o.mo>=1))o.mo=EX.mo;
+ if(!(o.h>0))o.h=EX.h;
+ return o;
+}
+function save(){try{localStorage.setItem('day100inbox',JSON.stringify(st))}catch(e){}}
+
+function pd(s){var m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(s||'');if(!m)return null;var d=new Date(Date.UTC(+m[1],m[2]-1,+m[3]));return isNaN(d)?null:d}
+function iso(d){return d.toISOString().slice(0,10)}
+var WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fdt(d){return WD[d.getUTCDay()]+' '+d.getUTCDate()+' '+MO[d.getUTCMonth()]+' '+d.getUTCFullYear()}
+function addD(d,n){return new Date(d.getTime()+n*86400000)}
+
+function erlangC(c,a){if(a>=c)return 1;var B=1;for(var k=1;k<=c;k++)B=a*B/(k+a*B);return c*B/(c-a*(1-B))}
+function within(lam,c,m,t){
+ if(lam<=0)return 1;
+ var mu=60/m,cap=c*mu;
+ if(lam<cap)return Math.max(0,Math.min(1,1-erlangC(c,lam/mu)*Math.exp(-(cap-lam)*t)));
+ var fd=cap/lam;if(t>=DAY)return fd;var g=lam-cap;if(g<=0)return fd;
+ return Math.min(fd,t*cap/(g*DAY));
+}
+function run(e,c,m,ai){
+ var lam=ai?e*(1-AIS):e,mm=ai?m*HF:m;
+ var h=T.map(function(t){return within(lam,c,mm,t)});
+ var sh=ai?h.map(function(x){return AIS+(1-AIS)*x}):h;
+ return {lam:lam,mm:mm,h:h,sh:sh,load:lam*mm/60/c,over:lam*DAY*(1-h[2])};
+}
+function meets(r){return r.load<1&&r.sh[0]>=TG[0]&&r.sh[1]>=TG[1]&&r.sh[2]>=TG[2]}
+function need(e,m,ai){
+ if(e<=0)return 0;
+ var lam=ai?e*(1-AIS):e,mm=ai?m*HF:m,c0=Math.max(1,Math.floor(lam*mm/60));
+ for(var c=c0;c<c0+400;c++)if(meets(run(e,c,m,ai)))return c;
+ return null;
+}
+function reviewH(e){return e*AIS*REV/60*OPEN}
+
+function pct(p){if(p>=0.995)return '100%';if(p<0.005)return '<1%';return Math.min(99,Math.round(p*100))+'%'}
+function fN(n){return Math.round(n).toLocaleString('en-GB')}
+function f1(x){return (Math.round(x*10)/10).toLocaleString('en-GB')}
+
+function valid(){return st.e!=null&&st.e>=0&&st.s!=null&&st.s>=1&&st.m!=null&&st.m>0}
+function cases(){
+ return [
+  {k:'bad',n:'Bad',note:'Announcement week: enquiries ×2, 2 people leave',e:st.e*2,s:Math.max(1,st.s-2),m:st.m},
+  {k:'base',n:'Base',note:'Your inputs',e:st.e,s:st.s,m:st.m},
+  {k:'good',n:'Good',note:'Quiet month: enquiries ×0.75, replies 1 min faster',e:st.e*0.75,s:st.s,m:Math.max(st.m*0.5,st.m-1)}
+ ];
+}
+
+function bars(r){
+ return T.map(function(t,i){
+  var p=r.sh[i],ok=p>=TG[i]&&r.load<1,tl=TG[i]>=0.995?'calc(100% - 2px)':(TG[i]*100)+'%';
+  return '<div class="br"><div class="bl"><span>'+LAB[i]+'</span><b'+(ok?'':' class="miss"')+'>'+pct(p)+'</b></div><div class="tr"><i class="fi'+(ok?'':' miss')+'" style="width:'+(p*100).toFixed(1)+'%"></i><i class="tk" style="left:'+tl+'"></i></div></div>';
+ }).join('');
+}
+function costLine(n,s,ai,e){
+ if(n==null)return '<div class="cost gap">No staff count holds.</div>';
+ var t='Needs '+n+' on shift<br>'+fN(n*OPEN)+' h/wk';
+ if(ai)t+=' + '+f1(reviewH(e))+' h review';
+ t+='<br>'+(n>s?'<span class="gap">Gap: +'+fN((n-s)*OPEN)+' h/wk</span>':'No gap');
+ return '<div class="cost">'+t+'</div>';
+}
+
+function render(){
+ $('dval').textContent=fdt(pd(st.d));
+ $('dpick').value=st.d;
+ $('d100').textContent='Day 100 after the merge falls on '+fdt(addD(pd(st.d),100))+'.';
+ ['e','s','m'].forEach(function(k){var el=$('in_'+k);if(document.activeElement!==el)el.value=st[k]==null?'':st[k]});
+ $('moval').textContent=st.mo+(st.mo===1?' month':' months');
+ $('hrs').value=st.h==null?'':st.h;
+ $('deal').innerHTML=DEALS.map(function(d,i){return '<button data-deal="'+i+'" aria-pressed="'+(st.deal===i)+'">'+d+'</button>'}).join('');
+
+ var out=$('out');
+ if(!valid()){
+  $('summary').textContent='Merge '+fdt(pd(st.d))+'.';
+  out.innerHTML='<div class="verdict fail"><p>Enter enquiries per hour, people on shift, and minutes per reply to see the result.</p></div>';
+  lastCount=null;return;
+ }
+ $('summary').textContent='Merge '+fdt(pd(st.d))+' · '+f1(st.e)+' enquiries an hour · '+st.s+' on shift · '+f1(st.m)+' min per reply';
+
+ var C=cases(),R=C.map(function(c){return {u:run(c.e,c.s,c.m,false),a:run(c.e,c.s,c.m,true),nu:need(c.e,c.m,false),na:need(c.e,c.m,true)}});
+ var B=C[0],RB=R[0],RS=R[1],H=st.h>0?st.h:40;
+ var h='';
+
+ h+='<div class="counter"><div class="small"><b>Their customers waiting over a day</b>, per working day. Merged queue, bad case.</div><div class="big" id="cnt">0</div>';
+ h+='<div class="small">Shortcut, same bad case: <b class="num">'+fN(RB.a.over)+'</b> a day.</div>';
+ h+='<div class="small">If the bad case runs '+st.mo+(st.mo===1?' month':' months')+': <b class="num">'+fN(RB.u.over*WDM*st.mo)+'</b> merged, <b class="num">'+fN(RB.a.over*WDM*st.mo)+'</b> shortcut.</div></div>';
+
+ var surv=meets(RB.a);
+ h+='<div class="verdict'+(surv?'':' fail')+'">';
+ if(surv){
+  var maxE=B.e,cap=Math.max(B.e*20,2000);
+  while(maxE<cap&&meets(run(maxE+1,B.s,B.m,true)))maxE++;
+  var ratio=st.e>0?f1(maxE/st.e):'–';
+  h+='<p><b>The plan survives the bad case.</b> With their queue kept apart and AI first replies, '+pct(RB.a.sh[0])+' get an answer within 5 minutes at '+f1(B.e)+' an hour with '+B.s+' on shift.</p>';
+  h+='<p>It holds up to <b class="num">'+(maxE>=cap?'over '+fN(cap):fN(maxE))+'</b> enquiries an hour with those '+B.s+' people, '+ratio+'× your base volume. At '+f1(B.e)+' an hour it needs at least <b>'+RB.na+'</b> on shift.</p>';
+ }else{
+  h+='<p class="safer">Safer setting: '+(RB.na==null?'no staff count holds at this volume. Lower the volume or cut the minutes per reply.':RB.na+' people on their queue in the bad case, '+(RB.na-B.s)+' more than the '+B.s+' left after attrition.')+'</p>';
+  h+='<p><b>The plan does not survive the bad case as entered.</b> The shortcut answers '+pct(RB.a.sh[0])+' within 5 minutes and '+pct(RB.a.sh[1])+' within an hour at load '+Math.round(RB.a.load*100)+'%.</p>';
+ }
+ var uOk=meets(RB.u);
+ h+='<p>Merging the queues at close '+(uOk?'also holds':'fails')+' in the bad case: '+pct(RB.u.sh[2])+' of their customers answered within a day, '+pct(RB.u.sh[0])+' within 5 minutes, load '+Math.round(RB.u.load*100)+'%.'+(uOk?'':' To hold, the merged queue needs '+(RB.nu==null?'more people than this model checks':RB.nu+' on shift')+'.')+'</p></div>';
+
+ h+='<div class="break">Rule: one number per screen. It breaks here. Comparing two paths needs both on one screen, so this screen shows two. The same inputs feed both.</div>';
+
+ h+='<div class="grid">';
+ C.forEach(function(c){h+='<div class="ch '+c.k+'"><b>'+c.n+'</b><span class="num">'+f1(c.e)+'/h · '+c.s+' staff · '+f1(c.m)+' min</span><br><span class="soft">'+c.note+'</span></div>'});
+ h+='<div class="path">Usual path: merge queues at close<span>Their customers join your queue on day one.</span></div>';
+ C.forEach(function(c,i){h+='<div class="cell '+c.k+'">'+bars(R[i].u)+costLine(R[i].nu,c.s,false,c.e)+'</div>'});
+ h+='<div class="path">Shortcut: keep their queue, AI drafts first replies<span>Their queue stays apart for '+st.mo+(st.mo===1?' month':' months')+'. AI closes 40%, including routine questions such as "does my contract change".</span></div>';
+ C.forEach(function(c,i){var r=R[i].a;h+='<div class="cell '+c.k+'"><div class="ai num">'+f1(r.lam)+'/h reach people · '+f1(r.mm)+' min</div>'+bars(r)+costLine(R[i].na,c.s,true,c.e)+'</div>'});
+ h+='</div>';
+ h+='<p class="small soft">Bar: share answered. Black tick: target. Red: misses the target.</p>';
+
+ h+='<h3>Customers waiting over a day, by month</h3>';
+ h+='<table><tr><th>Path</th><th>Base, per month</th><th>Bad, per month</th><th>Base, '+st.mo+' mo</th></tr>';
+ h+='<tr><td>Merge at close</td><td>'+fN(RS.u.over*WDM)+'</td><td>'+fN(RB.u.over*WDM)+'</td><td>'+fN(RS.u.over*WDM*st.mo)+'</td></tr>';
+ h+='<tr><td>Shortcut</td><td>'+fN(RS.a.over*WDM)+'</td><td>'+fN(RB.a.over*WDM)+'</td><td>'+fN(RS.a.over*WDM*st.mo)+'</td></tr></table>';
+ h+='<p class="small soft">A month is 21 working days. This page counts customers. It does not turn them into pounds, because a guessed contract value is easy to dispute. You know your contract values.</p>';
+
+ h+='<h3>Staff hours a week to hit all three targets</h3>';
+ function row(lbl,c,r){
+  var nu=r.nu,na=r.na;
+  var a=nu==null?'–':fN(nu*OPEN)+' h<br><span class="soft small">'+f1(nu*OPEN/H)+' FTE</span>';
+  var bH=na==null?null:na*OPEN+reviewH(c.e);
+  var b=bH==null?'–':fN(bH)+' h<br><span class="soft small">'+f1(bH/H)+' FTE, incl. '+f1(reviewH(c.e))+' h review</span>';
+  var d=(nu==null||bH==null)?'–':fN(nu*OPEN-bH)+' h';
+  return '<tr><td>'+lbl+'<br><span class="soft small">'+f1(c.e)+'/h, '+f1(c.m)+' min</span></td><td>'+a+'</td><td>'+b+'</td><td>'+d+'</td></tr>';
+ }
+ h+='<table><tr><th>Case</th><th>Without AI</th><th>With AI</th><th>Saved</th></tr>'+row('Base',C[1],R[1])+row('Bad',C[0],R[0])+'</table>';
+ h+='<p class="small soft">FTE uses '+f1(H)+' contract hours a week. AI tool fees are not included. Add your vendor\'s figure.</p>';
+
+ h+='<h3>What a person still reviews</h3><ul class="small">';
+ h+='<li>A named support lead signs off every AI reply that touches contract terms before it sends. Counted at 1 minute each.</li>';
+ h+='<li>People answer the 60% the AI does not close, starting from its draft.</li>';
+ h+='<li>People handle complaints, cancellations, and billing or legal disputes.</li>';
+ h+='<li>A person checks a sample of AI-closed replies each week. Not counted in the hours above.</li></ul>';
+
+ out.innerHTML=h;
+ var to=RB.u.over;
+ if(cur===4)count($('cnt'),to);else $('cnt').textContent=fN(to);
+ lastCount=to;
+}
+
+function count(el,to){
+ cancelAnimationFrame(raf);
+ var rm=false;try{rm=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+ if(rm||!to){el.textContent=fN(to);return}
+ var t0=null,D=1800;
+ function f(ts){if(t0===null)t0=ts;var p=Math.min(1,(ts-t0)/D);el.textContent=fN(to*p);if(p<1)raf=requestAnimationFrame(f)}
+ raf=requestAnimationFrame(f);
+}
+
+function show(i){
+ cur=i;
+ for(var k=0;k<5;k++)$('s'+k).classList.toggle('on',k===i);
+ $('stepl').textContent=i<4?'Step '+(i+1)+' of 4':'Result';
+ $('back').textContent=i===4?'Edit inputs':(i===0?'Result':'Back');
+ $('next').textContent=i===4?'Share result':(i===3?'Show result':'Next');
+ render();
+ window.scrollTo(0,0);
+}
+
+function link(){
+ return location.href.split(/[?#]/)[0]+'?'+KEYS.map(function(k){return k+'='+encodeURIComponent(st[k]==null?'':st[k])}).join('&');
+}
+function share(){
+ var u=link(),box=$('shareout'),msg=$('sharemsg');
+ box.value=u;box.style.display='block';
+ function fall(){msg.textContent='Copy the link above and send it to your integration lead.';try{box.select()}catch(e){}}
+ try{
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(function(){msg.textContent='Link copied. It holds your inputs and nothing else.'},fall)}else fall();
+ }catch(e){fall()}
+ box.scrollIntoView({block:'center'});
+}
+
+document.addEventListener('click',function(ev){
+ var b=ev.target.closest('button');if(!b)return;
+ if(b.dataset.k){
+  var k=b.dataset.k,d=parseFloat(b.dataset.d);
+  if(k==='d'){st.d=iso(addD(pd(st.d),d))}
+  else{
+   var v=(st[k]==null?EX[k]:st[k])+d;
+   if(k==='e')v=Math.max(0,Math.round(v));
+   if(k==='s')v=Math.max(1,Math.round(v));
+   if(k==='m')v=Math.max(0.5,Math.round(v*2)/2);
+   st[k]=v;
+  }
+  save();render();return;
+ }
+ if(b.dataset.clear){st[b.dataset.clear]=null;save();render();$('in_'+b.dataset.clear).focus();return}
+ if(b.dataset.deal){st.deal=+b.dataset.deal;save();render();return}
+ if(b.dataset.mo){st.mo=Math.min(36,Math.max(1,st.mo+(+b.dataset.mo)));save();render();return}
+ if(b.id==='back'){show(cur===4?0:(cur===0?4:cur-1));return}
+ if(b.id==='next'){if(cur===4)share();else show(cur+1);return}
+ if(b.id==='reset'){st=copyEx();save();render();count($('cnt'),lastCount||0);return}
+ if(b.id==='clear'){st.e=null;st.s=null;st.m=null;save();show(1);return}
+});
+document.addEventListener('input',function(ev){
+ var el=ev.target;
+ if(el.dataset&&el.dataset.in){
+  var k=el.dataset.in,v=parseFloat(String(el.value).replace(',','.'));
+  if(!isFinite(v))st[k]=null;
+  else{if(k==='s')v=Math.max(1,Math.round(v));if(k==='e')v=Math.max(0,v);if(k==='m')v=v>0?v:null;st[k]=v}
+  save();render();return;
+ }
+ if(el.id==='dpick'&&pd(el.value)){st.d=el.value;save();render();return}
+ if(el.id==='hrs'){var h=parseFloat(String(el.value).replace(',','.'));st.h=isFinite(h)&&h>0?h:null;save();render()}
+});
+window.addEventListener('beforeprint',function(){cancelAnimationFrame(raf);var c=$('cnt');if(c&&lastCount!=null)c.textContent=fN(lastCount)});
+
+st=load();
+show(4);
+})();
+</script>
+</body>
+</html>

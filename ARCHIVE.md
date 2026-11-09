@@ -1,11 +1,12 @@
 # Archive
 
-Every daily team and the asset it made, newest first. 36 days recorded.
+Every daily team and the asset it made, newest first. 37 days recorded.
 
 [Today](README.md)
 
 | Date | Task | Team | Constraint | Asset |
 |---|---|---|---|---|
+| [2026-11-09](days/2026-11-09/) | Day 100 Inbox | Calligrapher · Teacher · Corporate development head · The Outsider | Usable with one thumb on a phone. | [asset](days/2026-11-09/artifact-1.html) |
 | [2026-11-08](days/2026-11-08/) | The Deadline Cue Sheet | Lighting designer · Puppeteer · Revenue cycle manager · Robinson Crusoe | Explainable in one sentence at the top of the page. | [asset](days/2026-11-08/artifact-1.html) |
 | [2026-11-07](days/2026-11-07/) | The Exclusivity Rack | Costume designer · Museum curator · Independent sponsor · Ebenezer Scrooge | Every result names one next step the user can take. | [asset](days/2026-11-07/artifact-1.html) |
 | [2026-11-06](days/2026-11-06/) | The Signed Gathering | Bookbinder · Comic artist · Family office CIO · The Null | No animation. | [asset](days/2026-11-06/artifact-1.html) |
