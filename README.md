@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-11-09: Day 100 Inbox
+### 2026-11-10: Lender's Eye
 
-<a href="days/2026-11-09/"><img src="days/2026-11-09/team.png" alt="Team for 2026-11-09: Calligrapher · Teacher · Corporate development head · The Outsider" width="100%"></a>
+<a href="days/2026-11-10/"><img src="days/2026-11-10/team.png" alt="Team for 2026-11-10: Packaging designer · Glassblower · Search fund entrepreneur · Glass fox" width="100%"></a>
 
-**Task:** Response time simulator: enquiries per hour and reply delays give the share answered within five minutes, one hour, and one day.
+**Task:** Self-audit checklist: a grouped checklist with notes per item gives a printable summary of gaps, saved in the browser.
 
-**Decision:** The page takes a target's enquiries per hour, the staff answering them, and minutes per reply, and shows on a phone what share of the target's customers get an answer within five minutes, one hour, and one day under two integration paths.
+**Decision:** The page asks for committed equity and months searched, sizes the deals the searcher can close, takes one target through 25 grouped checklist items with notes, and prints a one-page gap summary for investors that includes the minus-25% E...
 
-<a href="days/2026-11-09/"><img src="days/2026-11-09/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-11-10/"><img src="days/2026-11-10/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-11-09/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-11-10/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,15 +37,15 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-11-10](days/2026-11-10/) | <a href="days/2026-11-10/"><img src="days/2026-11-10/artifact-1.png" alt="Lender's Eye" width="160"></a> | Lender's Eye | Packaging designer · Glassblower · Search fund entrepreneur · Glass fox |
 | [2026-11-09](days/2026-11-09/) | <a href="days/2026-11-09/"><img src="days/2026-11-09/artifact-1.png" alt="Day 100 Inbox" width="160"></a> | Day 100 Inbox | Calligrapher · Teacher · Corporate development head · The Outsider |
 | [2026-11-08](days/2026-11-08/) | <a href="days/2026-11-08/"><img src="days/2026-11-08/artifact-1.png" alt="The Deadline Cue Sheet" width="160"></a> | The Deadline Cue Sheet | Lighting designer · Puppeteer · Revenue cycle manager · Robinson Crusoe |
 | [2026-11-07](days/2026-11-07/) | <a href="days/2026-11-07/"><img src="days/2026-11-07/artifact-1.png" alt="The Exclusivity Rack" width="160"></a> | The Exclusivity Rack | Costume designer · Museum curator · Independent sponsor · Ebenezer Scrooge |
 | [2026-11-06](days/2026-11-06/) | <a href="days/2026-11-06/"><img src="days/2026-11-06/artifact-1.png" alt="The Signed Gathering" width="160"></a> | The Signed Gathering | Bookbinder · Comic artist · Family office CIO · The Null |
 | [2026-11-05](days/2026-11-05/) | <a href="days/2026-11-05/"><img src="days/2026-11-05/artifact-1.png" alt="Kiln Log" width="160"></a> | Kiln Log | Ceramicist · Animator · Founder raising a growth round · Clockwork beetle |
 | [2026-11-04](days/2026-11-04/) | <a href="days/2026-11-04/"><img src="days/2026-11-04/artifact-1.png" alt="Setup Card" width="160"></a> | Setup Card | Game designer · Stand-up comedian · Private credit fund manager · Captain Ahab |
-| [2026-11-03](days/2026-11-03/) | <a href="days/2026-11-03/"><img src="days/2026-11-03/artifact-1.png" alt="One Call, One Year" width="160"></a> | One Call, One Year | Choreographer · Front-end engineer · Clinic owner · Phoenix |
 
-[All 37 days](ARCHIVE.md)
+[All 38 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works

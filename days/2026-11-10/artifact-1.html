@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lender's Eye: search fund self-audit</title>
+<style>
+:root{
+  --ink:#14161a;--paper:#f4f2eb;--card:#ffffff;--line:#c9c4b5;--soft:#e9e6dc;
+  --red:#c0182b;--glass:#0d5c60;--met:#1c6a39;--unk:#5b6068;
+  --item:clamp(20px,2.5vw,32px);
+  --body:clamp(17px,1.65vw,22px);
+  --small:clamp(15px,1.25vw,18px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;font-size:var(--body);line-height:1.4}
+.num,dd,.cov,.big,td{font-variant-numeric:tabular-nums}
+.wrap{max-width:1280px;margin:0 auto;padding:0 clamp(16px,3vw,40px)}
+.top{background:var(--ink);color:#fff;padding:clamp(20px,3vw,40px) 0 clamp(18px,2.5vw,32px)}
+.kicker{margin:0;font-size:var(--small);letter-spacing:.12em;text-transform:uppercase;color:#cfd8d8}
+h1{margin:4px 0 8px;font-size:clamp(44px,7vw,92px);line-height:1;letter-spacing:-.02em}
+.lede{margin:0;max-width:52ch;font-size:var(--body);color:#e8e8e2}
+section{padding:clamp(24px,3vw,44px) 0;border-bottom:3px solid var(--ink)}
+h2{display:flex;align-items:center;gap:14px;margin:0 0 18px;font-size:clamp(26px,3.2vw,42px);line-height:1.1}
+h2 .n{display:inline-flex;align-items:center;justify-content:center;min-width:1.5em;height:1.5em;background:var(--ink);color:#fff;font-size:.8em}
+.help{margin:0 0 16px;color:#3e434a;max-width:70ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px 24px;margin-bottom:20px}
+.q2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px 24px;margin-bottom:20px}
+label{display:flex;flex-direction:column;gap:6px;font-weight:650}
+label .u{font-weight:400;color:#4a4e55}
+label.wide{grid-column:1/-1}
+input,textarea{font:inherit;color:var(--ink);background:#fff;border:2px solid var(--ink);border-radius:0;padding:8px 12px;min-height:52px;width:100%}
+.q2 input{font-size:clamp(26px,3vw,40px);font-weight:750;min-height:68px}
+input:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:4px solid var(--glass);outline-offset:2px}
+.big{margin:0 0 6px;font-size:clamp(34px,5vw,66px);font-weight:800;line-height:1.05;letter-spacing:-.01em}
+.out p{margin:0 0 10px}
+.line{margin:8px 0;padding:10px 14px;background:var(--card);border-left:8px solid var(--ink)}
+.line.oor{border-left-color:var(--unk);color:#33373d}
+.verdict{margin:18px 0 12px;padding:14px 18px;font-size:var(--item);font-weight:750;line-height:1.2;color:#fff}
+.verdict.fail{background:var(--red)}
+.verdict.pass{background:var(--glass)}
+.safer{margin:0 0 16px;padding:14px 18px;background:var(--card);border:3px solid var(--glass)}
+.safer b{display:block;margin-bottom:6px}
+.stack{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:0 0 8px}
+.fig{background:var(--card);padding:12px 14px;border-top:4px solid var(--ink)}
+.fig span{display:block;font-size:var(--small);color:#4a4e55}
+.fig b{font-size:clamp(24px,2.8vw,36px)}
+.cases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:12px 0 14px}
+.card{background:var(--card);border:2px solid var(--ink);border-top-width:12px;padding:14px 16px}
+.card.bad{border-top-color:var(--red)}
+.card.base{border-top-color:var(--ink)}
+.card.good{border-top-color:var(--glass)}
+.card h3{margin:0 0 10px;font-size:var(--small);letter-spacing:.08em;text-transform:uppercase}
+.card dl{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin:0 0 8px;font-size:var(--small)}
+.card dt{color:#4a4e55}
+.card dd{margin:0;text-align:right;font-weight:700}
+.card .cov{margin:4px 0 2px;font-size:clamp(30px,3.8vw,52px);font-weight:800;line-height:1}
+.card .cv{margin:0;font-weight:700}
+.card .cv.no{color:var(--red)}
+.card .cv.yes{color:var(--met)}
+.formula{margin:10px 0 0;padding:12px 14px;background:var(--soft);border-left:5px solid var(--glass);font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-size:var(--small);white-space:pre-wrap;overflow-x:auto}
+.paths{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:0 0 16px}
+.path{background:var(--card);border:2px solid var(--ink);padding:14px 16px}
+.path h3{margin:0 0 8px;font-size:var(--item);line-height:1.15}
+.path ol{margin:0;padding-left:1.3em}
+.path .tot{margin:10px 0 0;font-weight:750}
+.tblw{overflow-x:auto}
+table.tbl{border-collapse:collapse;width:100%;background:var(--card);font-size:var(--body)}
+.tbl th,.tbl td{border:2px solid var(--ink);padding:10px 12px;text-align:left;vertical-align:top}
+.tbl thead th{background:var(--ink);color:#fff}
+.tbl th.bad{border-top:10px solid var(--red)}
+.tbl th.good{border-top:10px solid var(--glass)}
+.tbl small{display:block;font-size:var(--small);font-weight:400;color:inherit;opacity:.85}
+.who{margin:14px 0 0;padding:12px 16px;background:var(--card);border-left:8px solid var(--glass)}
+.who ul{margin:6px 0 0;padding-left:1.2em}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+.tab{min-height:52px;padding:0 16px;border:2px solid var(--ink);background:#fff;color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--ink);color:#fff}
+.tab .tc{font-weight:400}
+.item{display:grid;grid-template-columns:1fr auto;gap:12px 20px;align-items:center;margin-top:12px;padding:18px 16px 18px 20px;background:var(--card);border-left:14px solid var(--unk)}
+.item.st-open{border-left-color:var(--red)}
+.item.st-met{border-left-color:var(--met)}
+.item .txt{font-size:var(--item);line-height:1.2;font-weight:650}
+.ctl{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex}
+.seg button,.nbtn{min-height:48px;min-width:48px;padding:0 14px;border:2px solid var(--ink);background:#fff;color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
+.seg button+button{margin-left:-2px}
+.seg button[aria-pressed="true"][data-s="met"]{background:var(--met);color:#fff;border-color:var(--met)}
+.seg button[aria-pressed="true"][data-s="open"]{background:var(--red);color:#fff;border-color:var(--red)}
+.seg button[aria-pressed="true"][data-s="unknown"]{background:var(--unk);color:#fff;border-color:var(--unk)}
+.badge{display:inline-flex;align-items:center;min-height:48px;padding:0 14px;font-weight:700;color:#fff}
+.badge.met{background:var(--met)}.badge.open{background:var(--red)}.badge.unknown{background:var(--unk)}
+.note{grid-column:1/-1}
+.note textarea{min-height:100px;font-size:var(--body)}
+.note .cc{display:block;text-align:right;font-size:var(--small);color:#4a4e55}
+.autonote{grid-column:1/-1;margin:0;color:#33373d}
+.gnav{display:flex;justify-content:space-between;gap:12px;margin-top:16px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:56px;padding:0 22px;border:2px solid var(--ink);background:var(--ink);color:#fff;font:inherit;font-weight:750;text-decoration:none;cursor:pointer}
+.btn.alt{background:#fff;color:var(--ink)}
+.btn[disabled]{opacity:.35;cursor:default}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:14px 0}
+.counts{font-size:var(--item);font-weight:750;margin:0 0 12px}
+.counts .o{color:var(--red)}.counts .k{color:var(--unk)}.counts .m{color:var(--met)}
+.status{font-size:var(--small);color:#3e434a;margin:6px 0 0}
+.credits{padding:24px 0 8px;font-size:var(--small);color:#33373d}
+.credits p{margin:0 0 6px}
+footer{padding:8px 0 40px;font-size:var(--small);color:#33373d}
+#sheet{display:none}
+@media (max-width:760px){
+  .cases,.paths{grid-template-columns:1fr}
+  .item{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:no-preference){
+  .btn,.tab,.seg button{transition:background-color .12s,color .12s}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+}
+@media print{
+  @page{size:A4;margin:12mm}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{background:#fff;color:#000;font-size:14pt}
+  .app{display:none!important}
+  #sheet{display:block;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;font-size:14pt;line-height:1.3}
+  .sh-top{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2pt solid #000;padding-bottom:2mm;margin-bottom:3mm}
+  .sh-top b{font-size:18pt}
+  #sheet h1{font-size:16pt;margin:0 0 1.5mm;color:#000;letter-spacing:0}
+  #sheet h2{font-size:14pt;margin:4mm 0 1.5mm;display:block}
+  #sheet p{margin:0 0 1.5mm}
+  .gaps{list-style:none;margin:0;padding:0}
+  .gaps li{border-left:6mm solid #c0182b;padding:1mm 0 1mm 3.5mm;margin:0 0 1.8mm;break-inside:avoid}
+  .gaps li.unk{border-left-color:#5b6068}
+  .gaps .st{font-weight:800;font-size:11pt;letter-spacing:.05em}
+  .gaps .gp{font-size:11pt}
+  .gaps .nt{font-size:11pt;color:#222}
+  #sheet table{border-collapse:collapse;width:100%;font-size:12pt}
+  #sheet th,#sheet td{border:.6pt solid #000;padding:1mm 2mm;text-align:left}
+  #sheet .fn{font-size:10pt;color:#222;margin-top:3mm}
+  #sheet.compact,#sheet.compact .gaps li{font-size:12pt}
+  #sheet.compact .gaps .nt{font-size:10pt}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="wrap">
+    <p class="kicker">Search fund self-audit</p>
+    <h1>Lender's Eye</h1>
+    <p class="lede">One target. 25 checks in five groups. Read the way your lender and investors will read it. Saved in this browser. Prints on one A4 sheet.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section id="s1" aria-labelledby="h1q">
+  <h2 id="h1q"><span class="n">1</span>Two questions</h2>
+  <div class="q2">
+    <label>Equity your investors committed <span class="u">in $M</span>
+      <input data-k="equity" type="number" step="0.05" min="0" inputmode="decimal"></label>
+    <label>Months searched so far
+      <input data-k="months" type="number" step="1" min="0" inputmode="numeric"></label>
+  </div>
+  <div id="sizeOut" class="out" aria-live="polite"></div>
+  <div class="grid" style="margin-top:18px">
+    <label class="wide">Listings you are looking at <span class="u">asking price in $M, comma separated. Only the ones you can close are shown.</span>
+      <input data-k="listings" type="text" inputmode="decimal"></label>
+  </div>
+  <div id="listOut"></div>
+</section>
+
+<section id="s2" aria-labelledby="h2d">
+  <h2 id="h2d"><span class="n">2</span>The target and the debt test</h2>
+  <p class="help">Rate, term and minimum coverage come from your lender's quote. They vary by lender and by country. Enter your own.</p>
+  <div class="grid">
+    <label class="wide">Target <span class="u">what you are buying</span>
+      <input data-k="target" type="text"></label>
+    <label>EBITDA, trailing twelve months <span class="u">$M</span>
+      <input data-k="ebitda" type="number" step="0.05" min="0" inputmode="decimal"></label>
+    <label>Purchase multiple <span class="u">x EBITDA</span>
+      <input data-k="mult" type="number" step="0.25" min="0" inputmode="decimal"></label>
+    <label>Senior debt <span class="u">x EBITDA</span>
+      <input data-k="senior" type="number" step="0.25" min="0" inputmode="decimal"></label>
+    <label>Seller note <span class="u">x EBITDA</span>
+      <input data-k="note" type="number" step="0.25" min="0" inputmode="decimal"></label>
+    <label>Senior rate <span class="u">% a year, from the quote</span>
+      <input data-k="rate" type="number" step="0.25" min="0" inputmode="decimal"></label>
+    <label>Senior term <span class="u">years</span>
+      <input data-k="term" type="number" step="1" min="1" inputmode="numeric"></label>
+    <label>Lender minimum coverage <span class="u">x, from the quote</span>
+      <input data-k="mincov" type="number" step="0.05" min="0" inputmode="decimal"></label>
+    <label>Bad case <span class="u">EBITDA drop, %</span>
+      <input data-k="drop" type="number" step="5" min="0" max="100" inputmode="decimal"></label>
+    <label>Good case <span class="u">EBITDA rise, %</span>
+      <input data-k="rise" type="number" step="5" min="0" inputmode="decimal"></label>
+  </div>
+  <div id="debtOut" aria-live="polite"></div>
+</section>
+
+<section id="s3" aria-labelledby="h3p">
+  <h2 id="h3p"><span class="n">3</span>Diligence order: usual path and screen-first</h2>
+  <p class="help">Same deal, same fees. The screen-first path spends a small amount on an AI read of the seller's P&amp;L and three years of tax returns before the full spend.</p>
+  <div class="grid">
+    <label>AI read of P&amp;L and tax returns <span class="u">$ per deal</span>
+      <input data-k="ai" type="number" step="50" min="0" inputmode="numeric"></label>
+    <label>Quality of earnings <span class="u">$ per deal</span>
+      <input data-k="qoe" type="number" step="1000" min="0" inputmode="numeric"></label>
+    <label>Legal <span class="u">$ per deal</span>
+      <input data-k="legal" type="number" step="1000" min="0" inputmode="numeric"></label>
+    <label>Deals that died at the lender so far
+      <input data-k="dead" type="number" step="1" min="0" inputmode="numeric"></label>
+  </div>
+  <div id="pathOut" aria-live="polite"></div>
+</section>
+
+<section id="s4" aria-labelledby="h4c">
+  <h2 id="h4c"><span class="n">4</span>The checklist</h2>
+  <p class="help">One group per screen. Mark each line met, open or unknown. Unknown prints too. Notes save as you type.</p>
+  <div class="tabs" id="tabs" role="tablist" aria-label="Checklist groups"></div>
+  <div id="panel" role="tabpanel"></div>
+  <div class="gnav" id="gnav"></div>
+</section>
+
+<section id="s5" aria-labelledby="h5s">
+  <h2 id="h5s"><span class="n">5</span>Send it to your investors</h2>
+  <p class="counts" id="counts"></p>
+  <div class="grid">
+    <label>Lead investor email <span class="u">optional, stays in this browser</span>
+      <input id="lead" type="email" inputmode="email" autocomplete="off"></label>
+  </div>
+  <div class="row">
+    <button class="btn" id="printBtn" type="button">Print gap summary</button>
+    <a class="btn" id="mailBtn" href="mailto:">Email to lead investor</a>
+    <button class="btn alt" id="copyBtn" type="button">Copy summary text</button>
+  </div>
+  <div class="row">
+    <button class="btn alt" id="exBtn" type="button">Load worked example</button>
+    <button class="btn alt" id="clrBtn" type="button">Clear all</button>
+  </div>
+  <p class="status" id="status" role="status"></p>
+</section>
+
+<div class="credits">
+  <p><b>Packaging designer:</b> term-sheet wording on all 25 lines, the two opening questions, the A4 sheet with red gap bars, both diligence paths side by side.</p>
+  <p><b>Glassblower:</b> 32px lines, 48px controls, one group per screen, notes inline, save on every keystroke, the minus-25% case, the 2-metre laptop check.</p>
+  <p><b>Search fund entrepreneur:</b> deal size from committed equity before any checklist line, out-of-range listings cut to one count line, the email to your lead investor.</p>
+  <p><b>Glass fox:</b> met, open and unknown states with unknowns printed, the $300 AI screen before the $65k spend, CPA sign-off on the QoE.</p>
+</div>
+<footer>
+  <p>Published by OuterHaven Advisory. This page is a self-audit tool. It is not investment, legal or tax advice. Lender terms, seller note rules and non-compete limits vary by lender and by state or country. All figures stay in this browser.</p>
+</footer>
+</main>
+</div>
+
+<div id="sheet" aria-hidden="true"></div>
+
+<script>
+(function(){
+"use strict";
+var KEY="lendersEye.v1";
+var G=[
+ {n:"Financing fit",it:[
+  ["f1",null],["f2",null],["f3",null],
+  ["f4","Lender term sheet in hand with rate, term and coverage covenant in writing."],
+  ["f5","Seller note subordinated to the senior lender, with standby terms agreed."]]},
+ {n:"Earnings quality",it:[
+  ["e1","Adjusted EBITDA ties to three years of filed tax returns within 5%."],
+  ["e2","Each add-back backed by an invoice, payroll record or bank statement."],
+  ["e3","Owner pay replaced at market salary for a general manager."],
+  ["e4","Revenue booked in the period earned, not when cash arrived."],
+  ["e5","Working capital peg set on a twelve-month average."]]},
+ {n:"Customer concentration",it:[
+  ["c1","No single customer above 15% of trailing twelve-month revenue."],
+  ["c2","Top five customers below 40% of revenue."],
+  ["c3","Top customer contracts assignable on change of control."],
+  ["c4","Customer retention above 85% a year for three years."],
+  ["c5","No customer relationship held only by the owner."]]},
+ {n:"Owner transition",it:[
+  ["o1","Seller stays for a paid transition of at least six months."],
+  ["o2","A second-in-command runs daily operations today."],
+  ["o3","Key employees named, with retention terms drafted before close."],
+  ["o4","Supplier and banking contacts introduced before close."],
+  ["o5","Seller non-compete covers the trade area for five years."]]},
+ {n:"Legal and lease",it:[
+  ["l1","Premises lease runs ten years with renewals, or is assignable."],
+  ["l2","Landlord consent to assignment in writing."],
+  ["l3","Licences and permits transfer to the buyer or can be reissued."],
+  ["l4","No pending claims above $50k, or they stay with the seller."],
+  ["l5","Asset or share purchase decided with tax counsel."]]}
+];
+var EX_IN={equity:"2.25",months:"19",listings:"6.2, 5.9, 9.5, 8.15",
+ target:"Commercial HVAC service company, 38 staff, Columbus OH. TTM revenue $9.2M.",
+ ebitda:"1.5",mult:"4.5",senior:"3",note:"0",rate:"10",term:"7",mincov:"1.25",drop:"25",rise:"10",
+ ai:"300",qoe:"40000",legal:"25000",dead:"3"};
+var EX_IT={
+ f4:["unknown","Two lenders quoting. The rate entered is the higher quote."],
+ f5:["open","Seller wants note payments from month one. Lender asks for 24 months on standby."],
+ e1:["open","2023 return shows $1.38M against $1.50M adjusted. The gap is a $120k roof repair add-back."],
+ e2:["unknown","Roof repair invoice requested 14 Oct. Not received."],
+ e3:["met","Owner takes $95k. GM market rate $140k. Difference already deducted."],
+ e4:["met","Accrual basis. Confirmed with the seller's bookkeeper."],
+ e5:["met","Peg $610k, twelve-month average."],
+ c1:["open","Hospital system at 22% of TTM revenue."],
+ c2:["met","Top five at 38%."],
+ c3:["unknown","Hospital service contract not yet reviewed."],
+ c4:["met","91%, 88%, 90%."],
+ c5:["open","Owner is the only contact at the hospital system."],
+ o1:["met","Nine months at $8k a month."],
+ o2:["met","Operations manager, 11 years at the company."],
+ o3:["open","Two senior technicians not yet approached."],
+ o4:["met",""],
+ o5:["met","Five years, three counties. Enforceability depends on state law. Counsel to confirm."],
+ l1:["met","12 years left plus two 5-year renewals."],
+ l2:["met","Consent letter signed 3 Nov."],
+ l3:["met","State mechanical licence held by the operations manager."],
+ l4:["met","No claims on file."],
+ l5:["met","Asset purchase. Tax counsel confirmed."]
+};
+var ALL=[];G.forEach(function(g,gi){g.it.forEach(function(x){ALL.push({id:x[0],t:x[1],g:gi});});});
+
+function example(){
+ var s={inputs:{},items:{},group:0,lead:""};
+ for(var k in EX_IN)s.inputs[k]=EX_IN[k];
+ ALL.forEach(function(x){var e=EX_IT[x.id];s.items[x.id]={state:e?e[0]:"unknown",note:e?e[1]:""};});
+ return s;
+}
+function blank(){
+ var s={inputs:{},items:{},group:0,lead:S?S.lead:""};
+ for(var k in EX_IN)s.inputs[k]="";
+ ALL.forEach(function(x){s.items[x.id]={state:"unknown",note:""};});
+ return s;
+}
+var S=null,R=null,openNotes={},storageOK=true;
+
+function load(){
+ try{
+  var raw=localStorage.getItem(KEY);if(!raw)return null;
+  var o=JSON.parse(raw),s=example();
+  if(o.inputs)for(var k in EX_IN){if(typeof o.inputs[k]==="string")s.inputs[k]=o.inputs[k];}
+  if(Array.isArray(o.items))o.items.forEach(function(it){if(it&&s.items[it.id]){s.items[it.id]={state:["met","open","unknown"].indexOf(it.state)>-1?it.state:"unknown",note:String(it.note||"").slice(0,400)};}});
+  if(typeof o.group==="number"&&o.group>=0&&o.group<G.length)s.group=o.group;
+  if(typeof o.lead==="string")s.lead=o.lead;
+  return s;
+ }catch(e){storageOK=false;return null;}
+}
+function save(){
+ var out={v:1,inputs:S.inputs,group:S.group,lead:S.lead,items:ALL.map(function(x){return{id:x.id,state:S.items[x.id].state,note:S.items[x.id].note};})};
+ try{localStorage.setItem(KEY,JSON.stringify(out));storageOK=true;
+  var d=new Date();status("Saved in this browser at "+pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds())+".");
+ }catch(e){storageOK=false;status("Storage is blocked in this browser. The page still works. Changes last until you close the tab.");}
+}
+function pad(n){return(n<10?"0":"")+n;}
+function status(t){document.getElementById("status").textContent=t;}
+
+function N(k){var v=parseFloat(S.inputs[k]);return isFinite(v)?v:0;}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function fm(v){
+ if(!isFinite(v))return "n/a";
+ var a=Math.abs(v),sg=v<0?"-":"";
+ if(a>=1e6){var s=(a/1e6).toFixed(3);if(s.charAt(s.length-1)==="0")s=(a/1e6).toFixed(2);return sg+"$"+s+"M";}
+ if(a>=1e4)return sg+"$"+Math.round(a/1e3)+"k";
+ return sg+"$"+Math.round(a).toLocaleString("en-US");
+}
+function fd(v){return isFinite(v)?"$"+Math.round(v).toLocaleString("en-US"):"n/a";}
+function fx(v){return isFinite(v)?v.toFixed(2)+"x":"n/a";}
+function pc(v){return(v*100).toFixed(1)+"%";}
+function pmt(P,r,n){if(!(n>0)||!(P>0))return 0;if(r===0)return P/n;return P*r/(1-Math.pow(1+r,-n));}
+
+function calc(){
+ var r={};
+ r.eq=N("equity")*1e6;r.months=N("months");r.eb=N("ebitda")*1e6;r.m=N("mult");r.sx=N("senior");r.nx=N("note");
+ r.r=N("rate")/100;r.n=N("term");r.mc=N("mincov")||1.25;r.d=Math.min(N("drop"),100)/100;r.g=N("rise")/100;
+ r.price=r.eb*r.m;r.sen=r.eb*r.sx;r.nt=r.eb*r.nx;r.need=r.price-r.sen-r.nt;
+ r.pay=pmt(r.sen,r.r,r.n);
+ r.ok=r.eb>0&&r.m>0&&r.sx>0&&r.n>0&&r.pay>0;
+ r.share=r.m>0?(r.m-r.sx-r.nx)/r.m:0;
+ r.maxP=r.share>0?r.eq/r.share:NaN;
+ r.cases=[{k:"bad",e:r.eb*(1-r.d)},{k:"base",e:r.eb},{k:"good",e:r.eb*(1+r.g)}];
+ r.cases.forEach(function(c){c.cov=r.pay>0?c.e/r.pay:NaN;});
+ r.surv=r.ok&&r.cases[0].cov>=r.mc-1e-9;
+ r.safe=null;
+ if(r.ok&&!r.surv){
+  var s=Math.floor(r.sx*4+1e-9)/4;if(s>=r.sx-1e-9)s-=0.25;
+  while(s>0.001){if(r.cases[0].e/pmt(r.eb*s,r.r,r.n)>=r.mc-1e-9)break;s-=0.25;}
+  if(s>0.001){var p=pmt(r.eb*s,r.r,r.n);r.safe={s:s,sen:r.eb*s,pay:p,cov:r.cases[0].e/p,add:r.eb*(r.sx-s),nx:r.nx+(r.sx-s)};}
+ }
+ if(r.surv){
+  r.maxDrop=1-r.mc*r.pay/r.eb;
+  var t=r.sx,cap=r.m-r.nx;
+  while(t+0.25<=cap+1e-9&&r.cases[0].e/pmt(r.eb*(t+0.25),r.r,r.n)>=r.mc-1e-9)t+=0.25;
+  r.maxS=t;
+ }
+ r.sz=[r.m+0.5,r.m,Math.max(r.m-0.5,0)].map(function(mm){
+  var sh=mm>0?(mm-r.sx-r.nx)/mm:0;
+  return{mm:mm,share:sh,maxP:sh>0?r.eq/sh:NaN,price:r.eb*mm,need:r.eb*(mm-r.sx-r.nx),ok:r.eb*(mm-r.sx-r.nx)<=r.eq+1};
+ });
+ r.maxMult=r.eb>0?r.eq/r.eb+r.sx+r.nx:NaN;
+ r.list=String(S.inputs.listings||"").split(/[,;\s]+/).map(parseFloat).filter(function(v){return isFinite(v)&&v>0;}).map(function(v){return v*1e6;});
+ r.inR=[];r.out=[];
+ r.list.forEach(function(p){if(isFinite(r.maxP)&&p<=r.maxP+1)r.inR.push(p);else r.out.push(p);});
+ r.gaps=r.out.map(function(p){return p*r.share-r.eq;}).sort(function(a,b){return a-b;});
+ r.ai=N("ai");r.full=N("qoe")+N("legal");r.dead=N("dead");r.qoe=N("qoe");r.legal=N("legal");
+ return r;
+}
+
+function card(cls,title,rows,big,verd,good){
+ return '<div class="card '+cls+'"><h3>'+title+'</h3><dl>'+rows.map(function(x){return"<dt>"+x[0]+"</dt><dd>"+x[1]+"</dd>";}).join("")+'</dl><p class="cov">'+big+'</p><p class="cv '+(good?"yes":"no")+'">'+verd+"</p></div>";
+}
+
+function renderSize(){
+ var o=document.getElementById("sizeOut"),h="";
+ if(!(R.eq>0)||!(R.m>0)){o.innerHTML='<p class="line">Enter committed equity above and the purchase multiple and debt stack in step 2. The page then sizes the deals you can close.</p>';document.getElementById("listOut").innerHTML="";return;}
+ if(!(R.share>0)){o.innerHTML='<p class="line">On these settings debt covers the whole price. Check the senior debt and seller note multiples in step 2.</p>';document.getElementById("listOut").innerHTML="";return;}
+ h+='<p class="big">You can close up to '+fm(R.maxP)+'</p>';
+ h+="<p>That is EBITDA up to "+fm(R.maxP/R.m)+" at "+fx(R.m)+", on the stack in step 2: senior "+fx(R.sx)+", seller note "+fx(R.nx)+", equity "+pc(R.share)+" of the price.</p>";
+ if(R.eb>0){
+  var b=R.sz[0];
+  if(!b.ok){
+   h+='<div class="safer"><b>The seller pushes to '+fx(b.mm)+' and you are '+fm(b.need-R.eq)+' short.</b>Safer: hold this target at '+fx(Math.min(R.maxMult,R.m))+' or below, or ask the seller to carry the extra 0.50x ('+fm(R.eb*0.5)+') as note.</div>';
+  }
+  h+='<div class="cases">';
+  var lab=["Bad: price up 0.5x","Base: price as entered","Good: price down 0.5x"],cl=["bad","base","good"];
+  R.sz.forEach(function(c,i){
+   h+=card(cl[i],lab[i],[["Purchase multiple",fx(c.mm)],["Target price",fm(c.price)],["Equity needed",fm(c.need)],["Equity committed",fm(R.eq)]],"up to "+fm(c.maxP),c.ok?"Equity covers it":"Short "+fm(c.need-R.eq),c.ok);
+  });
+  h+="</div>";
+  if(b.ok)h+="<p>The plan survives the bad case. You could pay up to "+fx(R.maxMult)+" for this target before your equity runs out.</p>";
+  else h+="<p>The plan does not survive the bad case. The most you can pay for this target on this stack is "+fx(R.maxMult)+".</p>";
+ }
+ h+='<p class="formula">Equity share = 1 - (senior '+fx(R.sx)+' + seller note '+fx(R.nx)+') / purchase '+fx(R.m)+' = '+pc(R.share)+'\nMax price = equity committed / equity share = '+fm(R.eq)+' / '+pc(R.share)+' = '+fm(R.maxP)+'\nMost you can pay = equity / EBITDA + senior x + note x</p>';
+ o.innerHTML=h;
+ var l="";
+ if(R.inR.length)l+='<p class="line">In range: '+R.inR.length+" listing"+(R.inR.length>1?"s":"")+", "+R.inR.map(fm).join(", ")+".</p>";
+ if(R.out.length){
+  var g=R.gaps.length>1?fm(R.gaps[0])+" to "+fm(R.gaps[R.gaps.length-1]):fm(R.gaps[0]);
+  l+='<p class="line oor">Out of range: '+R.out.length+" listing"+(R.out.length>1?"s":"")+", equity gap "+g+".</p>";
+ }
+ document.getElementById("listOut").innerHTML=l;
+}
+function oorText(){
+ if(!R.out.length)return"";
+ var g=R.gaps.length>1?fm(R.gaps[0])+" to "+fm(R.gaps[R.gaps.length-1]):fm(R.gaps[0]);
+ return"Out of range: "+R.out.length+" listing"+(R.out.length>1?"s":"")+", equity gap "+g+".";
+}
+
+function renderDebt(){
+ var o=document.getElementById("debtOut"),h="";
+ if(!R.ok){o.innerHTML='<p class="line">Enter EBITDA, purchase multiple, senior debt, rate and term to run the test.</p>';return;}
+ h+='<div class="stack">';
+ h+='<div class="fig"><span>Price</span><b>'+fm(R.price)+'</b></div>';
+ h+='<div class="fig"><span>Senior debt</span><b>'+fm(R.sen)+'</b></div>';
+ h+='<div class="fig"><span>Seller note</span><b>'+fm(R.nt)+'</b></div>';
+ h+='<div class="fig"><span>Equity needed (committed '+fm(R.eq)+')</span><b>'+fm(R.need)+'</b></div>';
+ h+="</div>";
+ if(R.need>R.eq+1)h+='<p class="line">Equity short by '+fm(R.need-R.eq)+" on this target.</p>";
+ var bad=R.cases[0];
+ if(!R.surv){
+  h+='<p class="verdict fail">Fails the bad case. Coverage drops to '+fx(bad.cov)+" with EBITDA down "+Math.round(R.d*100)+"%. Lender minimum is "+fx(R.mc)+".</p>";
+  if(R.safe){
+   h+='<div class="safer"><b>Safer setting: senior debt '+fx(R.safe.s)+" ("+fm(R.safe.sen)+"), annual payment "+fm(R.safe.pay)+", bad-case coverage "+fx(R.safe.cov)+".</b>A seller note carries the "+fm(R.safe.add)+' difference, so the price and your equity stay the same.<div class="row"><button class="btn" type="button" id="applySafe">Apply '+fx(R.safe.s)+" senior and "+fx(R.safe.nx)+" seller note</button></div></div>";
+  }else h+='<div class="safer"><b>No senior debt level holds in the bad case on these terms.</b>Check the rate, term or EBITDA.</div>';
+ }else{
+  h+='<p class="verdict pass">Survives the bad case. Coverage holds at '+fx(bad.cov)+" with EBITDA down "+Math.round(R.d*100)+"%.</p>";
+ }
+ h+='<div class="cases">';
+ var lab=["Bad: EBITDA down "+Math.round(R.d*100)+"%","Base: EBITDA as entered","Good: EBITDA up "+Math.round(R.g*100)+"%"],cl=["bad","base","good"];
+ R.cases.forEach(function(c,i){
+  h+=card(cl[i],lab[i],[["EBITDA",fm(c.e)],["Senior debt",fm(R.sen)],["Rate, term",(R.r*100).toFixed(1)+"%, "+R.n+" yrs"],["Annual payment",fm(R.pay)]],fx(c.cov),c.cov>=R.mc-1e-9?"Holds at "+fx(R.mc):"Below "+fx(R.mc),c.cov>=R.mc-1e-9);
+ });
+ h+="</div>";
+ if(R.surv){
+  h+="<p>How far it can go: EBITDA could fall "+pc(R.maxDrop)+" before coverage drops below "+fx(R.mc)+". ";
+  h+=(R.maxS>R.sx+1e-9?"Senior debt could go to "+fx(R.maxS)+" ("+fm(R.eb*R.maxS)+") before the bad case breaks.":"Senior debt is at the most this deal carries in the bad case, in 0.25x steps.")+"</p>";
+ }
+ h+='<p class="formula">Annual payment = senior x r / (1 - (1 + r)^-n)\n  = '+fm(R.sen)+" x "+R.r.toFixed(3)+" / (1 - "+(1+R.r).toFixed(3)+"^-"+R.n+") = "+fm(R.pay)+"\nCoverage = EBITDA / annual payment\n  Bad  "+fm(bad.e)+" / "+fm(R.pay)+" = "+fx(bad.cov)+"\n  Base "+fm(R.eb)+" / "+fm(R.pay)+" = "+fx(R.cases[1].cov)+"\nMax EBITDA drop = 1 - minimum coverage x payment / EBITDA\nSafer setting: senior debt stepped down 0.25x at a time until bad-case coverage holds.\nSenior coverage only. The seller note is assumed on standby. If it pays from month one, add its payment to the annual payment.</p>";
+ o.innerHTML=h;
+ var a=document.getElementById("applySafe");
+ if(a)a.addEventListener("click",function(){
+  S.inputs.senior=String(Math.round(R.safe.s*100)/100);
+  S.inputs.note=String(Math.round(R.safe.nx*100)/100);
+  syncInputs();save();update();
+ });
+}
+
+function renderPath(){
+ var o=document.getElementById("pathOut"),h="",ai=R.ai,f=R.full;
+ h+='<div class="paths">';
+ h+='<div class="path"><h3>Usual path, no AI</h3><ol><li>Sign the LOI.</li><li>Quality of earnings '+fd(R.qoe)+" and legal "+fd(R.legal)+".</li><li>The lender decides.</li></ol><p class=\"tot\">Spent before the lender answers: "+fd(f)+"</p></div>";
+ h+='<div class="path"><h3>Screen-first, with AI</h3><ol><li>AI reads the P&amp;L and three years of tax returns and flags add-backs that do not tie: '+fd(ai)+".</li><li>You rerun the debt test in step 2 on adjusted EBITDA.</li><li>QoE and legal only if it passes: "+fd(f)+".</li></ol><p class=\"tot\">Spent before the lender answers: "+fd(ai)+"</p></div>";
+ h+="</div>";
+ h+='<div class="tblw"><table class="tbl"><thead><tr><th>Same deal</th><th class="bad">Bad<small>AI read misses a problem the QoE finds</small></th><th>Base<small>Deal passes and closes</small></th><th class="good">Good<small>Deal fails the debt test at screening</small></th></tr></thead><tbody>';
+ h+="<tr><th>Usual path, no AI</th><td>"+fd(f)+" lost</td><td>"+fd(f)+" spent</td><td>"+fd(f)+" lost</td></tr>";
+ h+="<tr><th>Screen-first, with AI</th><td>"+fd(ai+f)+" lost</td><td>"+fd(ai+f)+" spent</td><td>"+fd(ai)+" lost</td></tr>";
+ h+="</tbody></table></div>";
+ h+="<p>The shortcut survives its bad case. When the AI read misses a problem, it costs "+fd(ai)+" more than the usual path"+(f>0?", "+(ai/f*100).toFixed(1)+"% of the full spend":"")+". ";
+ if(ai>0&&f>0)h+="The screen pays for itself if it stops one deal in "+Math.max(1,Math.floor(f/ai))+" before the full spend.";
+ h+="</p>";
+ if(R.dead>0){
+  h+='<p class="line"><b>'+(R.months>0?"Month "+R.months+". ":"")+R.dead+" deal"+(R.dead>1?"s":"")+" died at the lender.</b> Usual path: "+fd(R.dead*f)+(R.months>0?" ("+fm(R.dead*f/R.months)+" for each month searched)":"")+". Screen-first: "+fd(R.dead*ai)+".</p>";
+ }
+ h+='<div class="who"><b>A person still reviews:</b><ul><li>You check each flagged add-back against the returns.</li><li>Your CPA performs and signs the quality of earnings.</li><li>Your lawyer runs legal diligence.</li><li>The lender makes the credit decision.</li></ul></div>';
+ h+='<p class="formula">Usual path loss when the lender says no = QoE + legal = '+fd(R.qoe)+" + "+fd(R.legal)+" = "+fd(f)+"\nScreen-first loss when caught at screening = AI read = "+fd(ai)+"\nScreen-first loss when caught after = AI read + QoE + legal = "+fd(ai+f)+"\nBreak-even = (QoE + legal) / AI read = one deal in "+(ai>0?Math.floor(f/ai):"n/a")+"</p>";
+ o.innerHTML=h;
+}
+
+function itemText(x){
+ if(x.id==="f1")return"Senior debt coverage at "+fx(R.mc)+" or above on trailing twelve months.";
+ if(x.id==="f2")return"Coverage stays at "+fx(R.mc)+" or above with EBITDA down "+Math.round(R.d*100)+"%.";
+ if(x.id==="f3")return"Committed equity covers the full equity check.";
+ return x.t;
+}
+function isAuto(id){return id==="f1"||id==="f2"||id==="f3";}
+function autoState(id){
+ if(!R.ok)return"unknown";
+ if(id==="f1")return R.cases[1].cov>=R.mc-1e-9?"met":"open";
+ if(id==="f2")return R.surv?"met":"open";
+ if(id==="f3")return R.eq>=R.need-1?"met":"open";
+}
+function autoNote(id){
+ if(!R.ok)return"Run the debt test in step 2.";
+ if(id==="f1")return"Base coverage "+fx(R.cases[1].cov)+" at senior "+fx(R.sx)+".";
+ if(id==="f2")return"Bad-case coverage "+fx(R.cases[0].cov)+"."+(R.safe?" Safer: senior "+fx(R.safe.s)+" gives "+fx(R.safe.cov)+".":"");
+ if(id==="f3")return"Needed "+fm(R.need)+", committed "+fm(R.eq)+".";
+}
+function stOf(id){return isAuto(id)?autoState(id):S.items[id].state;}
+function noteOf(id){return isAuto(id)?autoNote(id):S.items[id].note;}
+var LBL={met:"Met",open:"Open",unknown:"Unknown"};
+
+function renderList(){
+ var tabs="";
+ G.forEach(function(g,i){
+  var op=0,uk=0;g.it.forEach(function(x){var s=stOf(x[0]);if(s==="open")op++;else if(s==="unknown")uk++;});
+  tabs+='<button class="tab" role="tab" type="button" data-g="'+i+'" aria-selected="'+(i===S.group)+'">'+esc(g.n)+' <span class="tc">'+op+" open"+(uk?", "+uk+" unknown":"")+"</span></button>";
+ });
+ document.getElementById("tabs").innerHTML=tabs;
+ var h="";
+ ALL.filter(function(x){return x.g===S.group;}).forEach(function(x){
+  var st=stOf(x.id);
+  h+='<div class="item st-'+st+'" data-id="'+x.id+'"><div class="txt">'+esc(itemText(x))+'</div><div class="ctl">';
+  if(isAuto(x.id)){
+   h+='<span class="badge '+st+'">'+LBL[st]+'</span></div><p class="autonote">Set by the debt test. '+esc(autoNote(x.id))+"</p>";
+  }else{
+   var nt=S.items[x.id].note,op=openNotes[x.id]||nt.length>0;
+   h+='<div class="seg" role="group" aria-label="State">';
+   ["met","open","unknown"].forEach(function(s){h+='<button type="button" data-s="'+s+'" aria-pressed="'+(st===s)+'">'+LBL[s]+"</button>";});
+   h+='</div><button type="button" class="nbtn" aria-expanded="'+op+'">Note</button></div>';
+   h+='<div class="note"'+(op?"":" hidden")+'><textarea maxlength="400" aria-label="Note">'+esc(nt)+'</textarea><span class="cc">'+nt.length+"/400</span></div>";
+  }
+  h+="</div>";
+ });
+ document.getElementById("panel").innerHTML=h;
+ var gn="";
+ gn+='<button class="btn alt" type="button" data-step="-1"'+(S.group===0?" disabled":"")+">Back"+(S.group>0?": "+esc(G[S.group-1].n):"")+"</button>";
+ gn+='<button class="btn" type="button" data-step="1"'+(S.group===G.length-1?" disabled":"")+">Next"+(S.group<G.length-1?": "+esc(G[S.group+1].n):"")+"</button>";
+ document.getElementById("gnav").innerHTML=gn;
+}
+
+function gather(){
+ var op=[],uk=[],mt=0;
+ ALL.forEach(function(x){var s=stOf(x.id),o={g:G[x.g].n,t:itemText(x),n:noteOf(x.id)||""};if(s==="open")op.push(o);else if(s==="unknown")uk.push(o);else mt++;});
+ return{op:op,uk:uk,mt:mt};
+}
+function textSummary(maxNote){
+ var c=gather(),L=[];
+ L.push("Lender's Eye gap summary");
+ if(S.inputs.target)L.push("Target: "+S.inputs.target);
+ L.push((R.months>0?"Month "+R.months+" of search. ":"")+"Equity committed "+fm(R.eq)+". Can close up to "+fm(R.maxP)+".");
+ var oo=oorText();if(oo)L.push(oo);
+ L.push("Checklist: "+c.op.length+" open, "+c.uk.length+" unknown, "+c.mt+" met of 25.");
+ function add(title,arr){if(!arr.length)return;L.push("");L.push(title);arr.forEach(function(o){var n=o.n?(" | "+(maxNote&&o.n.length>maxNote?o.n.slice(0,maxNote)+"...":o.n)):"";L.push("- ["+o.g+"] "+o.t+n);});}
+ add("OPEN",c.op);add("UNKNOWN",c.uk);
+ if(R.ok){
+  L.push("");L.push("Debt test: senior "+fx(R.sx)+" ("+fm(R.sen)+"), "+(R.r*100).toFixed(1)+"%, "+R.n+" yrs, payment "+fm(R.pay)+" a year.");
+  L.push("Bad: EBITDA "+fm(R.cases[0].e)+", coverage "+fx(R.cases[0].cov)+". Base: "+fm(R.eb)+", "+fx(R.cases[1].cov)+". Good: "+fm(R.cases[2].e)+", "+fx(R.cases[2].cov)+".");
+  L.push(R.surv?"Survives the bad case. EBITDA could fall "+pc(R.maxDrop)+" before coverage breaks "+fx(R.mc)+".":"Fails the bad case."+(R.safe?" Safer: senior "+fx(R.safe.s)+" with "+fm(R.safe.add)+" seller note, bad-case coverage "+fx(R.safe.cov)+".":""));
+ }
+ L.push("");L.push("Diligence order: usual path spends "+fd(R.full)+" before the lender answers. Screen-first spends "+fd(R.ai)+" on an AI read first, then "+fd(R.full)+" only after the debt test passes. CPA signs the QoE.");
+ return L.join("\n");
+}
+function buildSheet(){
+ var c=gather(),h="",n=c.op.length+c.uk.length;
+ var sh=document.getElementById("sheet");
+ sh.className=n>11?"compact":"";
+ var cut=n>11?90:160;
+ h+='<div class="sh-top"><b>Lender\'s Eye: gap summary</b><span>Months searched: '+(R.months||"n/a")+"</span></div>";
+ h+="<h1>"+esc(S.inputs.target||"Target not named")+"</h1>";
+ h+="<p>Equity committed "+fm(R.eq)+". Can close up to "+fm(R.maxP)+". "+esc(oorText())+"</p>";
+ h+="<p><b>"+c.op.length+" open, "+c.uk.length+" unknown, "+c.mt+" met of 25.</b></p>";
+ h+='<ul class="gaps">';
+ c.op.forEach(function(o){h+='<li><span class="st">OPEN</span> <span class="gp">'+esc(o.g)+"</span><br>"+esc(o.t)+(o.n?'<div class="nt">'+esc(o.n.length>cut?o.n.slice(0,cut)+"...":o.n)+"</div>":"")+"</li>";});
+ c.uk.forEach(function(o){h+='<li class="unk"><span class="st">UNKNOWN</span> <span class="gp">'+esc(o.g)+"</span><br>"+esc(o.t)+(o.n?'<div class="nt">'+esc(o.n.length>cut?o.n.slice(0,cut)+"...":o.n)+"</div>":"")+"</li>";});
+ h+="</ul>";
+ if(R.ok){
+  h+="<h2>Debt test: senior "+fx(R.sx)+" ("+fm(R.sen)+"), "+(R.r*100).toFixed(1)+"%, "+R.n+" yrs, "+fm(R.pay)+" a year</h2>";
+  h+="<table><tr><th></th><th>Bad: EBITDA -"+Math.round(R.d*100)+"%</th><th>Base</th><th>Good: +"+Math.round(R.g*100)+"%</th></tr>";
+  h+="<tr><td>EBITDA</td>"+R.cases.map(function(x){return"<td>"+fm(x.e)+"</td>";}).join("")+"</tr>";
+  h+="<tr><td>Coverage</td>"+R.cases.map(function(x){return"<td><b>"+fx(x.cov)+"</b></td>";}).join("")+"</tr></table>";
+  h+="<p>"+(R.surv?"Survives the bad case. EBITDA could fall "+pc(R.maxDrop)+" before coverage drops below "+fx(R.mc)+".":"Fails the bad case at "+fx(R.mc)+" minimum."+(R.safe?" Safer: senior "+fx(R.safe.s)+" ("+fm(R.safe.sen)+") and a "+fm(R.safe.add)+" seller note, bad-case coverage "+fx(R.safe.cov)+".":""))+"</p>";
+ }
+ h+="<h2>Diligence order</h2>";
+ h+="<table><tr><th></th><th>Bad: AI misses, QoE finds</th><th>Base: deal passes</th><th>Good: caught at screening</th></tr>";
+ h+="<tr><td>Usual path, no AI</td><td>"+fd(R.full)+" lost</td><td>"+fd(R.full)+" spent</td><td>"+fd(R.full)+" lost</td></tr>";
+ h+="<tr><td>Screen-first, AI read "+fd(R.ai)+"</td><td>"+fd(R.ai+R.full)+" lost</td><td>"+fd(R.ai+R.full)+" spent</td><td>"+fd(R.ai)+" lost</td></tr></table>";
+ h+='<p class="fn">Figures entered by the searcher. CPA performs and signs the QoE. Senior coverage only, seller note assumed on standby. Not investment, legal or tax advice. Printed '+new Date().toISOString().slice(0,10)+".</p>";
+ sh.innerHTML=h;
+}
+function refreshSummary(){
+ var c=gather();
+ document.getElementById("counts").innerHTML='<span class="o">'+c.op.length+' open</span>, <span class="k">'+c.uk.length+' unknown</span>, <span class="m">'+c.mt+" met</span> of 25.";
+ var body=textSummary(0);if(body.length>1700)body=textSummary(60);if(body.length>1700)body=body.slice(0,1700)+"\n...";
+ var subj="Gap summary: "+(S.inputs.target?String(S.inputs.target).split(".")[0]:"target")+(R.months>0?" (month "+R.months+")":"");
+ document.getElementById("mailBtn").href="mailto:"+encodeURIComponent(S.lead||"")+"?subject="+encodeURIComponent(subj)+"&body="+encodeURIComponent(body);
+ buildSheet();
+}
+function update(){R=calc();renderSize();renderDebt();renderPath();renderList();refreshSummary();}
+function syncInputs(){
+ document.querySelectorAll("[data-k]").forEach(function(el){el.value=S.inputs[el.getAttribute("data-k")]||"";});
+ document.getElementById("lead").value=S.lead||"";
+}
+
+document.querySelector(".app").addEventListener("input",function(e){
+ var el=e.target;
+ if(el.hasAttribute&&el.hasAttribute("data-k")){S.inputs[el.getAttribute("data-k")]=el.value;save();update();return;}
+ if(el.id==="lead"){S.lead=el.value;save();refreshSummary();return;}
+ if(el.tagName==="TEXTAREA"){
+  var it=el.closest(".item");if(!it)return;var id=it.getAttribute("data-id");
+  S.items[id].note=el.value.slice(0,400);
+  var cc=it.querySelector(".cc");if(cc)cc.textContent=S.items[id].note.length+"/400";
+  save();refreshSummary();
+ }
+});
+document.getElementById("panel").addEventListener("click",function(e){
+ var b=e.target.closest("button");if(!b)return;var it=b.closest(".item");if(!it)return;var id=it.getAttribute("data-id");
+ if(b.hasAttribute("data-s")){S.items[id].state=b.getAttribute("data-s");save();renderList();refreshSummary();
+  var nb=document.querySelector('.item[data-id="'+id+'"] [data-s="'+S.items[id].state+'"]');if(nb)nb.focus();return;}
+ if(b.classList.contains("nbtn")){
+  var nd=it.querySelector(".note"),show=nd.hidden;nd.hidden=!show;openNotes[id]=show;b.setAttribute("aria-expanded",String(show));
+  if(show)nd.querySelector("textarea").focus();
+ }
+});
+function goGroup(i){
+ S.group=Math.max(0,Math.min(G.length-1,i));save();renderList();
+ var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+ var t=document.getElementById("tabs");if(t&&t.scrollIntoView)t.scrollIntoView({behavior:reduce?"auto":"smooth",block:"start"});
+}
+document.getElementById("tabs").addEventListener("click",function(e){var b=e.target.closest("[data-g]");if(b)goGroup(parseInt(b.getAttribute("data-g"),10));});
+document.getElementById("gnav").addEventListener("click",function(e){var b=e.target.closest("[data-step]");if(b&&!b.disabled)goGroup(S.group+parseInt(b.getAttribute("data-step"),10));});
+document.getElementById("printBtn").addEventListener("click",function(){buildSheet();window.print();});
+window.addEventListener("beforeprint",buildSheet);
+document.getElementById("copyBtn").addEventListener("click",function(){
+ var t=textSummary(0);
+ function fallback(){
+  var ta=document.createElement("textarea");ta.value=t;ta.setAttribute("readonly","");ta.style.position="fixed";ta.style.left="-9999px";document.body.appendChild(ta);ta.select();
+  var ok=false;try{ok=document.execCommand("copy");}catch(err){ok=false;}
+  document.body.removeChild(ta);status(ok?"Summary copied. Paste it into your investor update.":"Copy is blocked here. Use Print or Email instead.");
+ }
+ try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){status("Summary copied. Paste it into your investor update.");},fallback);}else fallback();}catch(err){fallback();}
+});
+document.getElementById("exBtn").addEventListener("click",function(){var l=S.lead;S=example();S.lead=l;openNotes={};syncInputs();save();update();});
+document.getElementById("clrBtn").addEventListener("click",function(){S=blank();openNotes={};syncInputs();save();update();});
+
+S=load()||example();
+syncInputs();
+R=calc();
+renderSize();renderDebt();renderPath();renderList();refreshSummary();
+if(!storageOK)status("Storage is blocked in this browser. The page still works. Changes last until you close the tab.");
+else status("Worked example loaded. Change any figure. Everything saves in this browser as you type.");
+})();
+</script>
+</body>
+</html>
