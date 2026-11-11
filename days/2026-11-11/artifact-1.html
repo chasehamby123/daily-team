@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ready Before First Ring: document checklist for seconds-fast lead replies</title>
+<style>
+:root{
+  --paper:#f4f1ea;--card:#fbfaf6;--ink:#1e2629;--muted:#5b6468;--line:#d8d2c4;
+  --consent:#1d5c63;--agents:#8a5a14;--systems:#3f4a5a;--warm:#b5462a;--cold:#7e97a6;
+  font-size:clamp(10.5px,1.55vh,14px);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  height:100vh;overflow:hidden;background:var(--paper);color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.3;display:grid;grid-template-rows:auto auto 1fr auto;gap:.5rem;padding:.6rem .9rem .4rem;
+}
+.num{font-variant-numeric:tabular-nums}
+header{display:flex;align-items:flex-end;gap:1.2rem;flex-wrap:wrap;border-bottom:2px solid var(--ink);padding-bottom:.4rem}
+header .t h1{font-size:1.7rem;letter-spacing:-.01em;line-height:1.05}
+header .t p{color:var(--muted);font-size:.92rem}
+.q{display:flex;gap:.8rem;align-items:flex-end}
+.q label{display:flex;flex-direction:column;font-size:.8rem;color:var(--muted)}
+.q input{font:inherit;font-size:1.15rem;width:6.5rem;padding:.15rem .35rem;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:3px}
+.prep{margin-left:auto;text-align:right}
+.prep .big{font-size:1.7rem;font-weight:700;line-height:1}
+.prep .sub{font-size:.82rem;color:var(--muted)}
+.btns{display:flex;gap:.4rem}
+button{font:inherit;font-size:.8rem;padding:.2rem .55rem;border:1px solid var(--ink);background:var(--card);color:var(--ink);border-radius:3px;cursor:pointer}
+button:hover{background:#ebe6da}
+.strip .head{display:flex;justify-content:space-between;gap:1rem;font-size:.85rem}
+.strip .head b{font-size:.95rem}
+.strip svg{display:block;width:100%;height:40px;border:1px solid var(--line);background:var(--card)}
+.marks{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);gap:1rem}
+.marks .m9{color:var(--consent);font-weight:600}
+.marks .mc{color:var(--warm);font-weight:600;text-align:right}
+main{display:grid;grid-template-columns:repeat(3,1fr) 1.25fr;gap:.6rem;min-height:0}
+.grp{display:flex;flex-direction:column;gap:.3rem;min-height:0}
+.grp h2{font-size:.95rem;display:flex;justify-content:space-between;border-bottom:2px solid currentColor;padding-bottom:.1rem}
+.grp .note{font-size:.76rem;color:var(--muted);margin-top:-.15rem}
+.g0{color:var(--consent)}.g1{color:var(--agents)}.g2{color:var(--systems)}
+.it{flex:1;min-height:0;overflow:hidden;background:var(--card);border:1px solid var(--line);border-left:4px solid currentColor;border-radius:3px;padding:.3rem .45rem;color:var(--ink)}
+.it label{display:flex;gap:.45rem;cursor:pointer;align-items:flex-start}
+.it input[type=checkbox]{width:1.05rem;height:1.05rem;margin-top:.1rem;flex:none}
+.g0 .it input[type=checkbox]{accent-color:var(--consent)}
+.g1 .it input[type=checkbox]{accent-color:var(--agents)}
+.g2 .it input[type=checkbox]{accent-color:var(--systems)}
+.it b{display:block;font-size:.95rem}
+.it .who{display:block;font-size:.8rem;color:var(--muted)}
+.it .ag{display:block;font-size:.8rem}
+.it .ag i{font-style:normal;font-weight:600}
+.it.done b{text-decoration:line-through}
+.it.done{opacity:.55}
+.ex{display:flex;gap:.35rem;align-items:center;font-size:.78rem;color:var(--muted);margin:.2rem 0 0 1.5rem}
+.ex input{font:inherit;font-size:.82rem;padding:.05rem .3rem;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:3px;width:9rem}
+.ex input.n{width:3.2rem}
+aside{display:flex;flex-direction:column;gap:.35rem;min-height:0;overflow:hidden;font-size:.82rem}
+aside h3{font-size:.92rem;border-bottom:2px solid var(--ink);padding-bottom:.1rem}
+table{border-collapse:collapse;width:100%}
+th,td{padding:.12rem .3rem;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}
+th:first-child,td:first-child{text-align:left;color:var(--muted);font-weight:400}
+thead th{font-size:.8rem;color:var(--ink);font-weight:700}
+thead th.bad{color:var(--warm)}
+tr.res td{font-weight:700;color:var(--ink)}
+tr.res td:first-child{font-weight:400;color:var(--muted)}
+.verdict{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--consent);padding:.3rem .45rem}
+.verdict.no{border-left-color:var(--warm)}
+.f{font-size:.74rem;color:var(--muted)}
+.person{font-size:.78rem}
+footer{font-size:.72rem;color:var(--muted);border-top:1px solid var(--line);padding-top:.25rem;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+@media (prefers-reduced-motion:reduce){*{transition:none;animation:none}}
+@media (max-width:760px){
+  body{height:auto;overflow:auto;display:block}
+  body>*{margin-bottom:.6rem}
+  main{grid-template-columns:1fr}
+  .it{flex:none}
+  aside{overflow:visible}
+  .prep{margin-left:0;text-align:left}
+}
+@media print{
+  body{height:auto;overflow:visible;display:block;background:#fff}
+  body>*{margin-bottom:.4rem}
+  button{display:none}
+  main{grid-template-columns:repeat(3,1fr)}
+  aside{grid-column:1/-1;overflow:visible}
+  .it{flex:none;break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="t">
+    <h1>Ready Before First Ring</h1>
+    <p>Twelve documents to gather before new leads hear back in seconds and your agents take the call. Ticks stay in this browser.</p>
+  </div>
+  <div class="q">
+    <label for="L">Leads a month<input id="L" class="num" type="number" min="0" step="10" inputmode="numeric"></label>
+    <label for="C">Callback time today, minutes<input id="C" class="num" type="number" min="0" step="5" inputmode="decimal"></label>
+  </div>
+  <div class="prep">
+    <div class="big num" id="left">3 h 40 min</div>
+    <div class="sub num" id="leftSub">prep left</div>
+  </div>
+  <div class="btns"><button id="clr" type="button">Clear</button><button id="ex" type="button">Load example</button></div>
+</header>
+
+<section class="strip" aria-label="One lead's wait">
+  <div class="head"><b>One lead's wait, drawn to scale</b><span id="stripNote" class="num"></span></div>
+  <svg id="svg" viewBox="0 0 1000 40" preserveAspectRatio="none" role="img" aria-label="Wait strip: first answer at 9 seconds against today's callback time"></svg>
+  <div class="marks"><span><span class="m9">9 s: first answer, books, transfers to your agent</span> &nbsp;(the speck at the left edge)</span><span class="mc num" id="mC">120 min: today's callback</span></div>
+</section>
+
+<main>
+  <section class="grp g0" id="g0"><h2><span>1. Consent</span><span class="num">100 min</span></h2><p class="note">First. Nothing goes live until this group is ticked.</p></section>
+  <section class="grp g1" id="g1"><h2><span>2. Agents</span><span class="num">50 min</span></h2><p class="note">Every lead ends with one of your agents.</p></section>
+  <section class="grp g2" id="g2"><h2><span>3. Systems</span><span class="num">70 min</span></h2><p class="note">What your agents see before they pick up.</p></section>
+  <aside>
+    <h3>Leads gone cold, month after month</h3>
+    <table class="num" id="cases">
+      <thead><tr><th></th><th class="bad">Bad</th><th>Base</th><th>Good</th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div class="verdict" id="verdict"></div>
+    <p class="f">Gone cold a month = leads × first-caller share × min(1, callback ÷ 60). Recovered = cold at today's callback − cold at 9 s. Holds when month-one recovered spend beats prep cost: 220 min ÷ 60 × $35 = $128. Example lead cost $28, example staff rate $35 an hour. A lead answered after 60 min is counted as already called by someone else.</p>
+    <h3>Consent review: AI pre-read next to the usual path</h3>
+    <table class="num">
+      <thead><tr><th></th><th>Lawyer reads all</th><th>AI pre-read, officer signs</th></tr></thead>
+      <tbody>
+        <tr><td>Time</td><td>6 h</td><td>4 min + 45 min officer</td></tr>
+        <tr><td>Base: language passes</td><td>$1,500 fee</td><td>49 min staff, about $29</td></tr>
+        <tr><td>Bad: vendor language fails, rollout stops</td><td>$1,500 to learn it</td><td>49 min to learn it</td></tr>
+      </tbody>
+    </table>
+    <p class="f">$1,500 is an example fee. Rates vary by firm and state.</p>
+    <p class="person"><b>A person still reviews:</b> your compliance officer signs every consent finding. Agents take every transfer. The owner approves the sender name on texts.</p>
+  </aside>
+</main>
+
+<footer>
+  <span>Chef: one line per document with holder and minutes, the falling prep total. Taxidermist: twelve rows, three groups of four, one screen, ticks saved here. Insurance agency owner: consent first, an agent named on every row, the reviewer field. Gulliver: the wait strip and the AI pre-read line.</span>
+  <span>Not legal advice. Consent and recording rules vary by state. Published by VoxxyAI.</span>
+</footer>
+
+<script>
+(function(){
+var K='voxxy-checklist-v1';
+var ITEMS=[
+ {g:0,t:'Web form consent text',w:'Marketing lead',m:10,a:'your agent\'s name appears in the first text.'},
+ {g:0,t:'Lead vendor contracts, consent clauses',w:'Office manager',m:20,a:'works only leads with consent on file.'},
+ {g:0,t:'Call recording disclosure, by state',w:'Compliance officer',m:25,a:'hears it read on every transferred call.',x:'s'},
+ {g:0,t:'Consent review sign-off',w:'Compliance officer',m:45,a:'starts calling only after this is signed. AI pre-read: 4 min.',x:'r'},
+ {g:1,t:'Agent roster with licensed states',w:'Office manager',m:15,a:'gets leads only from states they hold a license in.'},
+ {g:1,t:'Warm transfer phone numbers',w:'Each agent',m:10,a:'picks up the transfer live.'},
+ {g:1,t:'Calendar access for booking',w:'Each agent',m:15,a:'owns every booked slot.'},
+ {g:1,t:'Text sender name and signature',w:'Owner',m:10,a:'name is on every text a lead gets.'},
+ {g:2,t:'Lead sources and monthly volume',w:'Marketing lead',m:15,a:'sees the source on each lead.'},
+ {g:2,t:'CRM export and API key',w:'Office manager, IT',m:25,a:'finds call notes in their own CRM view.'},
+ {g:2,t:'Business hours, after-hours rule',w:'Owner',m:10,a:'knows when transfers stop for the day.'},
+ {g:2,t:'First five quote questions',w:'Top producer',m:20,a:'gets the answers before pickup.'}
+];
+var TOTAL=220, RATE=35, LEADCOST=28, FAST=0.15;
+var PREP=TOTAL/60*RATE;
+var DEF={t:[true,false,false,false,true,false,false,false,false,false,false,false],r:'Dana Ruiz',s:'11',L:'400',C:'120'};
+function copy(o){return JSON.parse(JSON.stringify(o));}
+function load(){
+  try{var v=localStorage.getItem(K);if(v){var o=JSON.parse(v);if(o&&o.t&&o.t.length===12)return o;}}catch(e){}
+  return copy(DEF);
+}
+function save(){try{localStorage.setItem(K,JSON.stringify(st));}catch(e){}}
+var st=load();
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function fm(m){m=Math.round(m);var h=Math.floor(m/60),r=m%60;return h?(h+' h '+r+' min'):(r+' min');}
+function n0(x){return Math.round(x).toLocaleString('en-US');}
+function n1(x){return (Math.round(x*10)/10).toLocaleString('en-US');}
+
+ITEMS.forEach(function(it,i){
+  var d=document.createElement('div');d.className='it';d.id='it'+i;
+  var h='<label><input type="checkbox" data-i="'+i+'"><span><b>'+esc(it.t)+'</b><span class="who num">'+esc(it.w)+' · '+it.m+' min</span><span class="ag"><i>Agent:</i> '+esc(it.a)+'</span></span></label>';
+  if(it.x==='s')h+='<div class="ex"><label for="s">All-party consent states you write in</label><input id="s" class="n num" type="number" min="0" max="50"><span>Enter your own count.</span></div>';
+  if(it.x==='r')h+='<div class="ex"><label for="r">Reviewer</label><input id="r" type="text" placeholder="Compliance officer name"></div>';
+  d.innerHTML=h;$('g'+it.g).appendChild(d);
+});
+
+function fill(){
+  document.querySelectorAll('input[type=checkbox]').forEach(function(c){c.checked=Boolean(st.t[+c.dataset.i]);});
+  $('L').value=st.L;$('C').value=st.C;$('s').value=st.s;$('r').value=st.r;
+}
+
+function cold(L,s,C){return L*s*Math.min(1,C/60);}
+
+function calc(){
+  var left=0,done=0;
+  ITEMS.forEach(function(it,i){
+    var on=Boolean(st.t[i]);$('it'+i).classList.toggle('done',on);
+    if(on)done++;else left+=it.m;
+  });
+  $('left').textContent=fm(left)+' left';
+  $('leftSub').textContent=done+' of 12 ticked · of '+fm(TOTAL)+' total · at 1 h a day, '+Math.ceil(left/60)+' days';
+
+  var L=parseFloat(st.L),C=parseFloat(st.C);
+  var ok=isFinite(L)&&isFinite(C)&&L>0&&C>0;
+  L=ok?L:0;C=ok?C:0;
+
+  var cs=[{n:'Bad',L:L*0.5,s:0.25},{n:'Base',L:L,s:0.5},{n:'Good',L:L*1.25,s:0.6}];
+  cs.forEach(function(c){
+    c.cold=cold(c.L,c.s,C);c.fast=cold(c.L,c.s,FAST);
+    c.rec=Math.max(0,c.cold-c.fast);c.six=c.rec*6;c.spend=c.six*LEADCOST;
+    c.holds=c.rec*LEADCOST>PREP;
+  });
+  var rows=[
+    ['Leads a month',function(c){return n0(c.L);}],
+    ['Share that buys from the first caller',function(c){return Math.round(c.s*100)+'%';}],
+    ['Callback today',function(){return n1(C)+' min';}],
+    ['Gone cold a month, today',function(c){return n1(c.cold);}],
+    ['Gone cold a month, at 9 s',function(c){return n1(c.fast);}],
+    ['Leads recovered, 6 months',function(c){return n0(c.six);},1],
+    ['Lead spend recovered, 6 months',function(c){return '$'+n0(c.spend);},1],
+    ['Holds against $128 prep',function(c){return c.holds?'Yes':'No';},1]
+  ];
+  $('cases').tBodies[0].innerHTML=rows.map(function(r){
+    return '<tr'+(r[2]?' class="res"':'')+'><td>'+r[0]+'</td>'+cs.map(function(c){return '<td>'+r[1](c)+'</td>';}).join('')+'</tr>';
+  }).join('');
+
+  var v=$('verdict'),b=cs[0];
+  if(ok===false){v.className='verdict';v.textContent='Enter leads a month and today\'s callback time to see the three cases.';}
+  else if(b.holds){
+    var cStar=60*PREP/(b.L*b.s*LEADCOST)+FAST;
+    var late=Math.min(1,C/60)-Math.min(1,FAST/60);
+    var lStar=2*PREP/(b.s*late*LEADCOST);
+    v.className='verdict';
+    v.textContent='Holds in the bad case. In the bad case it breaks only if today\'s callback is under '+n1(cStar)+' min, or leads fall under '+n0(Math.ceil(lStar))+' a month.';
+  } else {
+    v.className='verdict no';
+    v.textContent='Safer setting first: tick the Consent group only (100 min) and measure your callback time for one month before the other eight items. Does not hold in the bad case at '+n1(C)+' min and '+n0(L)+' leads a month.';
+  }
+
+  var base=cs[1];
+  $('stripNote').textContent='× '+n0(L)+' leads this month. About '+n0(base.cold)+' have heard from someone else first. Six months: '+n0(base.cold*6)+'.';
+  $('mC').textContent=n1(C)+' min: today\'s callback';
+  draw(L,C);
+}
+
+function draw(L,C){
+  var s='<defs><linearGradient id="cg" x1="0" x2="1"><stop offset="0" stop-color="#b5462a"/><stop offset="1" stop-color="#7e97a6"/></linearGradient></defs>';
+  var rowsN=Math.max(0,Math.min(18,Math.round(L/25)));
+  for(var i=0;i<rowsN;i++){s+='<rect x="0" y="'+(2+i*2)+'" width="1000" height="1" fill="#7e97a6" opacity=".18"/>';}
+  if(C>0){
+    var x=Math.max(3,FAST/C*1000);
+    s+='<rect x="'+x+'" y="15" width="'+(1000-x)+'" height="10" fill="url(#cg)" opacity=".85"/>';
+    s+='<rect x="0" y="6" width="'+x+'" height="28" fill="#1d5c63"/>';
+    s+='<rect x="996" y="2" width="4" height="36" fill="#b5462a"/>';
+  }
+  $('svg').innerHTML=s;
+}
+
+document.addEventListener('change',function(e){
+  var el=e.target;
+  if(el.type==='checkbox'&&el.dataset.i){st.t[+el.dataset.i]=el.checked;save();calc();}
+});
+['L','C','s','r'].forEach(function(id){
+  $(id).addEventListener('input',function(){st[id]=this.value;save();calc();});
+});
+$('clr').addEventListener('click',function(){st={t:[false,false,false,false,false,false,false,false,false,false,false,false],r:'',s:'',L:'',C:''};save();fill();calc();});
+$('ex').addEventListener('click',function(){st=copy(DEF);save();fill();calc();});
+fill();calc();
+})();
+</script>
+</body>
+</html>
