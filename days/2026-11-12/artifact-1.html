@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What They'll Open First: fee or share for sale prep</title>
+<style>
+:root{--paper:#f4efe6;--card:#fbf8f2;--ink:#1f1b16;--grey:#5b544a;--rule:#cfc4b2;--amber:#9a5a1c;--amberl:#efe0cc;--bad:#8a2b1f;--badl:#f3e2dd;--good:#3d5a3a;--goodl:#e3ebdf;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;--sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--sans)}
+main{max-width:980px;margin:0 auto;padding:24px 16px 40px}
+h1{font:600 2.1rem/1.1 var(--serif);margin:0 0 8px;letter-spacing:-.01em}
+h2{font:600 1.3rem/1.2 var(--serif);margin:0 0 4px}
+h3{font:600 1rem/1.3 var(--sans);margin:0 0 6px}
+p{margin:0 0 10px}
+.lede{color:var(--grey);max-width:64ch}
+.step{font:600 .78rem/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--amber);margin:0 0 6px}
+section{background:var(--card);border:1px solid var(--rule);border-radius:4px;padding:18px 16px;margin:0 0 16px}
+.hint{color:var(--grey);font-size:.88rem}
+.f{font:.86rem/1.45 var(--mono);color:var(--ink);background:#efe9dd;border-left:3px solid var(--amber);padding:6px 10px;margin:8px 0 0;overflow-x:auto;white-space:pre-wrap}
+.rows{display:grid;gap:0;border-top:1px solid var(--rule)}
+.row{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--rule)}
+.row b{display:block}
+.row .hint{display:block}
+.hrs{font:600 .95rem var(--mono);min-width:5ch;text-align:right}
+button{font:600 .9rem var(--sans);border:1px solid var(--ink);background:var(--card);color:var(--ink);padding:7px 12px;border-radius:3px;cursor:pointer;min-height:38px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+.tog{min-width:9.5ch}
+.tog[aria-pressed="true"]{background:var(--bad);color:#fff;border-color:var(--bad)}
+.tot{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:baseline;margin-top:12px}
+.big{font:600 1.7rem/1.1 var(--mono)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+label{display:block;font-size:.88rem;font-weight:600}
+input,select{width:100%;font:1rem var(--mono);padding:7px 8px;border:1px solid var(--grey);border-radius:3px;background:#fff;color:var(--ink);margin-top:3px}
+.q{background:var(--amberl);border:1px solid var(--rule);padding:10px;border-radius:3px}
+.chairs{display:inline-flex;border:1px solid var(--ink);border-radius:3px;overflow:hidden;margin:4px 0 12px}
+.chairs button{border:0;border-radius:0;min-width:12ch}
+.chairs button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.head{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.box{border:1px solid var(--rule);padding:12px;border-radius:3px;background:#fff}
+.box.bad{border-color:var(--bad);background:var(--badl)}
+.box.good{border-color:var(--good);background:var(--goodl)}
+.box.off{opacity:.55}
+svg{width:100%;height:auto;display:block;background:#fff;border:1px solid var(--rule)}
+.cases{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.cases .box h3{font:600 .8rem var(--sans);letter-spacing:.08em;text-transform:uppercase}
+.kv{display:flex;justify-content:space-between;gap:8px;font-size:.92rem;border-bottom:1px dotted var(--rule);padding:3px 0}
+.kv span:last-child{font-family:var(--mono);text-align:right}
+.verdict{border-left:4px solid var(--ink);padding:8px 12px;margin-top:12px;background:#fff}
+.verdict.yes{border-color:var(--good)}
+.verdict.no{border-color:var(--bad)}
+.verdict p{margin:0 0 6px}
+.safer{font-weight:600;color:var(--bad)}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:620px}
+th,td{border-bottom:1px solid var(--rule);padding:7px 6px;text-align:left;vertical-align:top}
+th{font-weight:600;background:#efe9dd}
+td.n{font-family:var(--mono);white-space:nowrap}
+.note{background:var(--badl);border:1px solid var(--bad);padding:10px;border-radius:3px;margin:0 0 12px}
+.sent{font:1rem/1.5 var(--serif);background:#fff;border:1px solid var(--rule);padding:12px;border-radius:3px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+footer{max-width:980px;margin:0 auto;padding:0 16px 32px;color:var(--grey);font-size:.82rem}
+footer p{margin:0 0 6px}
+[hidden]{display:none}
+@media (max-width:680px){.head,.cases{grid-template-columns:1fr}h1{font-size:1.7rem}.row{grid-template-columns:1fr auto}.row .hrs{grid-row:1;grid-column:2}.row .tog{grid-column:1/3;justify-self:start}}
+@media (prefers-reduced-motion:no-preference){button{transition:background-color .15s}}
+@media (prefers-reduced-motion:reduce){*{transition:none;animation:none;scroll-behavior:auto}}
+@media print{body{background:#fff;font-size:12px}section{break-inside:avoid;border-color:#999}.noprint{display:none}main{padding:0}.tog[aria-pressed="true"]{background:#fff;color:var(--bad);border:2px solid var(--bad)}}
+</style>
+</head>
+<body>
+<main>
+<header style="margin-bottom:16px">
+<p class="step">Sale prep, fee or share</p>
+<h1>What They'll Open First</h1>
+<p class="lede">A buyer checks six things before talking price. Mark what is ready. The gaps become prep hours. Then compare a flat fee against a small base plus a share of the price above your own floor. No valuation is suggested. The price you enter stays yours.</p>
+</header>
+
+<section id="s1">
+<p class="step">Step 1. The drawers a buyer pulls open</p>
+<h2>Mark anything that is not ready</h2>
+<p class="hint">Each gap adds prep hours. Hours per item are estimates. They are on screen so your accountant can argue with each one.</p>
+<div class="rows" id="list"></div>
+<div class="tot">
+<div><span class="hint">Gap hours</span><div class="big" id="gapH">0</div></div>
+<div><span class="hint">Prep hours (with model)</span><div class="big" id="totH">0</div></div>
+<div><span class="hint">Fee F</span><div class="big" id="feeF">£0</div></div>
+</div>
+<p class="f" id="fline"></p>
+<p class="hint" style="margin-top:8px">A model does the contract read and the first pass on the books. A person checks every contract it flags. A named chartered accountant signs off the cleaned accounts. That sign-off is inside the base hours.</p>
+<p class="hint" id="timeline"></p>
+</section>
+
+<section id="s2">
+<p class="step">Step 2. Your numbers</p>
+<h2>Floor, price and terms</h2>
+<p class="hint">Floor B is the lowest price you would accept. Expected price P is your own figure. Fees exclude VAT, and tax on the sale is not counted. Both depend on local rules. Check them with your accountant.</p>
+<div class="grid" style="margin:10px 0">
+<div class="q"><label for="band">Question 1. Annual revenue</label><select id="band"></select><span class="hint">Sets the base hours.</span></div>
+<div class="q"><label for="months">Question 2. Months until the planned sale</label><input id="months" type="number" min="0" step="1" inputmode="numeric"></div>
+</div>
+<div class="grid">
+<div><label for="B">Your floor B (£)</label><input id="B" type="number" min="0" step="10000" inputmode="numeric"></div>
+<div><label for="P">Expected price P (£)</label><input id="P" type="number" min="0" step="10000" inputmode="numeric"></div>
+<div><label for="s">Share s (%)</label><input id="s" type="number" min="0.5" max="50" step="0.5" inputmode="decimal"></div>
+<div><label for="sb">Share path base (£)</label><input id="sb" type="number" min="0" step="250" inputmode="numeric"></div>
+<div><label for="rate">Hourly rate (£)</label><input id="rate" type="number" min="1" step="5" inputmode="numeric"></div>
+<div><label for="r">Annual discount rate (%)</label><input id="r" type="number" min="0" max="30" step="0.5" inputmode="decimal"></div>
+</div>
+<div class="bar noprint">
+<button id="ex" type="button">Load worked example</button>
+<button id="clr" type="button">Clear</button>
+<span class="hint">Worked example: a joinery workshop, £1m to £3m revenue, owner works the long hours, lease has 3 years left.</span>
+</div>
+</section>
+
+<section id="needs" hidden><p>Enter your floor, expected price, share and rate to see the comparison. The checklist above works without them.</p></section>
+
+<div id="results">
+<section>
+<p class="step">Result</p>
+<h2 id="hTitle">If the buyer walks in week 10</h2>
+<div class="chairs noprint" role="group" aria-label="Whose side to show">
+<button type="button" id="cOwner" aria-pressed="true">Owner's chair</button>
+<button type="button" id="cAdv" aria-pressed="false">Advisor's chair</button>
+</div>
+<div id="drop" class="note" hidden></div>
+<div class="head" id="head"></div>
+<p class="f" id="headF"></p>
+</section>
+
+<section>
+<p class="step">Two lines, one crossing</p>
+<h2>Cost at each sale price</h2>
+<div id="chart"></div>
+<p class="f" id="chartF"></p>
+</section>
+
+<section>
+<p class="step">Bad, base, good</p>
+<h2>Three prices side by side</h2>
+<div class="cases" id="cases"></div>
+<div id="verdict"></div>
+</section>
+
+<section>
+<p class="step">Bad-case panel</p>
+<h2>Who loses what</h2>
+<p class="hint">Owner cost is cash paid or lost. Advisor cost is hours worked at the rate minus what the advisor is paid. A negative figure is a gain.</p>
+<div class="tw"><table id="bad"></table></div>
+</section>
+
+<section>
+<p class="step">Usual path and shortcut</p>
+<h2>Prep with and without the model</h2>
+<p class="hint">Same checklist, same rate, same terms. Only the base hours change.</p>
+<div class="tw"><table id="ai"></table></div>
+<p class="hint" style="margin-top:10px"><b>A person still reviews:</b> every contract the model flags; the cleaned accounts, signed off by a named chartered accountant; owner hours, staff and lease, which are conversations with people, not documents.</p>
+</section>
+
+<section>
+<p class="step">For your accountant</p>
+<h2>One sentence</h2>
+<p class="sent" id="sent"></p>
+<div class="bar noprint"><button type="button" id="copy">Copy sentence</button><span class="hint" id="cst" aria-live="polite"></span></div>
+</section>
+</div>
+
+<p class="hint">This page compares costs using your inputs. It is not legal, tax or investment advice.</p>
+</main>
+<footer>
+<p>Credits. Luthier: the two-line chart, the formula under every result, the £2,500 base on the share path. Cobbler: the six-item checklist that comes before price, with hours per item. Owner preparing to sell: diligence before price, no suggested valuation, the week-10 loss as the headline. The Fool: the two-chair toggle, the q* line, the one sentence for the accountant.</p>
+<p>Published by OuterHaven Advisory.</p>
+</footer>
+
+<script>
+(function(){
+var ITEMS=[
+{k:'contracts',n:'Contracts',d:'Customer and supplier contracts. Buyers look for change-of-control clauses and end dates.',h:12},
+{k:'books',n:'Books',d:'Three years of accounts that tie to bank statements, owner costs split out.',h:20},
+{k:'customers',n:'Customers',d:'Share of sales from your top three customers, by year.',h:8},
+{k:'owner',n:'Owner hours',d:'Work only you do: quoting, key clients, sign-off. Buyers price the risk of you leaving.',h:10},
+{k:'staff',n:'Staff',d:'Tenure, contracts, and who holds the key skills.',h:6},
+{k:'lease',n:'Lease',d:'Years left, break clauses, landlord consent to assign.',h:4}];
+var BANDS=[{v:'u1',n:'Under £1m',f:0.8},{v:'1to3',n:'£1m to £3m',f:1},{v:'3to10',n:'£3m to £10m',f:1.4},{v:'o10',n:'Over £10m',f:2}];
+var EX={gaps:{owner:true,lease:true},rate:150,sb:2500,B:1200000,P:1500000,s:10,r:6,band:'1to3',months:12,chair:'owner'};
+var KEY='oh-fee-share-v1',S;
+function clone(o){return JSON.parse(JSON.stringify(o))}
+try{var raw=localStorage.getItem(KEY);S=raw?JSON.parse(raw):clone(EX)}catch(e){S=clone(EX)}
+if(!S||!S.gaps)S=clone(EX);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function $(i){return document.getElementById(i)}
+function m(v){if(!isFinite(v))return '–';var neg=v<0;return (neg?'−':'')+'£'+Math.round(Math.abs(v)).toLocaleString('en-GB')}
+function k(v){return v>=1e6?'£'+(v/1e6).toFixed(2)+'m':'£'+Math.round(v/1000)+'k'}
+function pc(q){if(q===Infinity)return 'no share above floor';return (q*100).toFixed(1)+'%'}
+function num(v){return v===''||v===null||v===undefined?NaN:Number(v)}
+
+var sel=$('band');BANDS.forEach(function(b){var o=document.createElement('option');o.value=b.v;o.textContent=b.n;sel.appendChild(o)});
+var list=$('list');
+ITEMS.forEach(function(it){
+var r=document.createElement('div');r.className='row';
+r.innerHTML='<div><b>'+it.n+'</b><span class="hint">'+it.d+'</span></div><span class="hrs">'+it.h+' h</span><button type="button" class="tog" data-k="'+it.k+'" aria-pressed="false" aria-label="'+it.n+' status">Ready</button>';
+list.appendChild(r)});
+list.addEventListener('click',function(e){var b=e.target.closest('.tog');if(!b)return;var key=b.getAttribute('data-k');S.gaps[key]=!S.gaps[key];save();render()});
+
+var F_IDS=['B','P','s','sb','rate','r','months'];
+function fill(){F_IDS.forEach(function(id){$(id).value=isFinite(S[id])&&S[id]!==null?S[id]:''});sel.value=S.band||'1to3'}
+F_IDS.forEach(function(id){$(id).addEventListener('input',function(){S[id]=num(this.value);save();render()})});
+sel.addEventListener('change',function(){S.band=this.value;save();render()});
+$('ex').addEventListener('click',function(){S=clone(EX);save();fill();render()});
+$('clr').addEventListener('click',function(){S.gaps={};S.B=NaN;S.P=NaN;save();fill();render()});
+$('cOwner').addEventListener('click',function(){S.chair='owner';save();render()});
+$('cAdv').addEventListener('click',function(){S.chair='adv';save();render()});
+$('copy').addEventListener('click',function(){
+var t=$('sent').textContent,st=$('cst');
+function fb(){try{var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();var ok=document.execCommand('copy');document.body.removeChild(a);st.textContent=ok?'Copied.':'Select the sentence and copy it.'}catch(e){st.textContent='Select the sentence and copy it.'}}
+try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){st.textContent='Copied.'},fb)}else fb()}catch(e){fb()}});
+
+function render(){
+var band=BANDS.filter(function(b){return b.v===S.band})[0]||BANDS[1];
+var gap=0,names=[];ITEMS.forEach(function(it){if(S.gaps[it.k]){gap+=it.h;names.push(it.n.toLowerCase()+' '+it.h)}});
+document.querySelectorAll('.tog').forEach(function(b){var on=!!S.gaps[b.getAttribute('data-k')];b.setAttribute('aria-pressed',on?'true':'false');b.textContent=on?'Not ready':'Ready'});
+var bh=Math.round(70*band.f),bm=Math.round(120*band.f),rate=S.rate;
+$('gapH').textContent=gap+' h';
+var okR=rate>0;
+var H=bh+gap,Hm=bm+gap,F=okR?rate*H:NaN,Fm=okR?rate*Hm:NaN;
+$('totH').textContent=H+' h';$('feeF').textContent=m(F);
+$('fline').textContent='F = rate × (base hours + Σ gap hours)\nbase hours = 70 × '+band.f+' (revenue '+band.n+') = '+bh+'\nΣ gap hours = '+(names.length?names.join(' + '):'0')+' = '+gap+'\nF = '+(okR?'£'+rate:'rate')+' × ('+bh+' + '+gap+') = '+m(F);
+var mo=S.months,wk=Math.ceil(H/10);
+$('timeline').textContent='At about 10 hours a week, prep runs about '+wk+' weeks (weeks = hours ÷ 10). '+(mo>=0&&isFinite(mo)?'Your planned sale is '+mo+' months away. '+(wk>mo*4.33?'Prep runs past that date at this pace.':'Prep fits inside that window.'):'');
+var Sb=S.sb,B=S.B,P=S.P,s=S.s/100,r=(isFinite(S.r)?S.r:0)/100;
+var ok=okR&&B>0&&P>0&&s>0&&Sb>=0;
+$('needs').hidden=ok;$('results').hidden=!ok;
+$('cOwner').setAttribute('aria-pressed',S.chair!=='adv'?'true':'false');$('cAdv').setAttribute('aria-pressed',S.chair==='adv'?'true':'false');
+if(!ok)return;
+function sh(x){return Sb+s*Math.max(0,x-B)}
+function ps(f){return B+Math.max(0,f-Sb)/s}
+function qs(f,x){if(f<=Sb)return 0;return x>B?(f-Sb)/(s*(x-B)):Infinity}
+var Ps=ps(F),qP=qs(F,P),viable=qP<=1,adv=S.chair==='adv';
+var xb=P*0.75,xg=P*1.15;
+var sp=S.s+'%';
+
+// drop notice
+var d=$('drop');
+if(!viable){d.hidden=false;d.innerHTML='<b>Share option dropped.</b> At £'+Math.round(P).toLocaleString('en-GB')+' the share above the floor is '+m(s*Math.max(0,P-B))+'. That does not cover '+m(F-Sb)+' of unpaid hours even if every deal closed (q* = '+pc(qP)+'). The fee alone is shown as the working option. The share column stays visible, greyed, for reference.'}else d.hidden=true;
+
+// headline
+var hd=$('head');
+if(!adv){
+$('hTitle').textContent='If the buyer walks in week 10';
+hd.innerHTML='<div class="box bad"><h3>Fee path</h3><div class="big">'+m(F)+'</div><span class="hint">You are out the full fee. No sale.</span></div><div class="box '+(viable?'good':'off')+'"><h3>Share path</h3><div class="big">'+m(Sb)+'</div><span class="hint">You are out the base only. The advisor carries the hours.</span></div>';
+$('headF').textContent='Fee path loss = F = '+m(F)+'\nShare path loss = base = '+m(Sb)+'\nDifference = F − base = '+m(F-Sb);
+}else{
+$('hTitle').textContent='How often deals must close for the share to pay';
+hd.innerHTML='<div class="box"><h3>q* at your price</h3><div class="big">'+pc(qP)+'</div><span class="hint">Below this completion rate, the advisor loses on the share.</span></div><div class="box"><h3>Unpaid if the buyer walks</h3><div class="big">'+m(F-Sb)+'</div><span class="hint">'+(H)+' hours worked, '+m(Sb)+' paid.</span></div>';
+var pv=sh(P)/Math.pow(1+r,(mo>0?mo:0)/12);
+$('headF').textContent='q* = (F − base) ÷ (s × (P − B)) = ('+m(F)+' − '+m(Sb)+') ÷ ('+sp+' × '+m(P-B)+') = '+pc(qP)+'\nShare payment at completion = base + s × (P − B) = '+m(sh(P))+'\nWorth today = payment ÷ (1 + r)^(months ÷ 12) = '+m(sh(P))+' ÷ '+(1+r).toFixed(3)+'^('+(mo>0?mo:0)+' ÷ 12) = '+m(pv);
+}
+
+// chart
+chart(F,Ps,sh,B,P,Sb,adv,viable);
+$('chartF').textContent='Fee line: F = '+m(F)+' at any price\nShare line: base + s × max(0, price − B) = '+m(Sb)+' + '+sp+' × max(0, price − '+m(B)+')\nCrossing: P* = B + (F − base) ÷ s = '+m(B)+' + '+m(F-Sb)+' ÷ '+sp+' = '+m(Ps)+'\nBelow P* the share costs the owner less. Above P* it pays the advisor more.';
+
+// cases
+var cs=[['Bad','bad',xb,'P × 0.75'],['Base','',P,'P'],['Good','good',xg,'P × 1.15']];
+$('cases').innerHTML=cs.map(function(c){var x=c[2],v=sh(x),q=qs(F,x),ch=v<F?'Share, by '+m(F-v):v>F?'Fee, by '+m(v-F):'Equal';
+return '<div class="box '+c[1]+'"><h3>'+c[0]+'</h3><p class="hint">Price = '+c[3]+' = '+m(x)+'<br>B '+m(B)+', s '+sp+', F '+m(F)+', base '+m(Sb)+'</p><div class="kv"><span>Fee path</span><span>'+m(F)+'</span></div><div class="kv"><span>Share path</span><span>'+m(v)+'</span></div><div class="kv"><span>'+(adv?'Pays advisor more':'Cheaper for owner')+'</span><span>'+(adv?(v>F?'Share, by '+m(v-F):v<F?'Fee, by '+m(F-v):'Equal'):ch)+'</span></div><div class="kv"><span>q*</span><span>'+(q>1&&q!==Infinity?'above 100%':pc(q))+'</span></div><p class="f">share = '+m(Sb)+' + '+sp+' × max(0, '+m(x)+' − '+m(B)+') = '+m(v)+'</p></div>'}).join('');
+
+// verdict
+var vb=$('verdict'),vs=sh(xb),qb=qs(F,xb);
+if(!adv){
+var push=Ps>P?'<p>How far you can push: the price can rise to '+m(Ps)+' (P*) before the share costs more than the fee. That is '+m(Ps-P)+' above your expected price.</p>':'<p>Your expected price is above P* ('+m(Ps)+'). At '+m(P)+' the share costs '+m(sh(P)-F)+' more than the fee. That is the price of not carrying the week-10 risk.</p>';
+vb.innerHTML='<div class="verdict yes"><p><b>Survives the bad case: yes, on the share path.</b> If the buyer walks you are out '+m(Sb)+'. If the price falls 25% to '+m(xb)+' you pay '+m(vs)+'. On the fee path you are out '+m(F)+' in both.</p>'+push+'</div>';
+}else{
+if(qb>1){
+var Bs=xb-2*Math.max(0,F-Sb)/s;
+var safer=Bs>0?'Safer setting first: a floor of '+m(Bs)+' keeps q* at 50% even at the bad-case price ('+m(xb)+'). The floor is the owner\u2019s number. The other safe setting is the fee alone, '+m(F)+'.':'Safer setting first: the fee alone, '+m(F)+'. No floor above zero covers the hours at the bad-case price.';
+vb.innerHTML='<div class="verdict no"><p class="safer">'+safer+'</p><p><b>Survives the bad case: no, for the advisor.</b> At '+m(xb)+' the share pays '+m(vs)+' for '+m(F)+' of hours, so q* is '+(qb===Infinity?'undefined (price below floor)':pc(qb))+'.</p><p class="f">B_safe = 0.75P − 2 × (F − base) ÷ s = '+m(xb)+' − 2 × '+m(F-Sb)+' ÷ '+sp+' = '+m(Bs)+'</p>'+(viable?'<p>At your expected price the share holds while deals close more than '+pc(qP)+' of the time.</p>':'')+'</div>';
+}else{
+vb.innerHTML='<div class="verdict yes"><p><b>Survives the bad case: yes, for the advisor.</b> At '+m(xb)+', q* is '+pc(qb)+'.</p><p>How far it can be pushed: the price can fall to '+m(Ps)+' (P*), where q* reaches 100%. At your price, completion odds can fall to '+pc(qP)+'.</p></div>';
+}}
+
+// bad-case table
+var X=sh(P),slip=X*(1-1/Math.pow(1+r,0.5)),sb2=sh(xb);
+function row(t,a,b,c,e,f){return '<tr><td>'+t+'</td><td class="n">'+a+'</td><td class="n">'+b+'</td><td class="n">'+c+'</td><td class="n">'+e+'</td><td><span class="f" style="display:block;margin:0">'+f+'</span></td></tr>'}
+$('bad').innerHTML='<thead><tr><th>Case</th><th>Fee: owner</th><th>Fee: advisor</th><th>Share: owner</th><th>Share: advisor</th><th>Formula</th></tr></thead><tbody>'+
+row('Falls through in week 10',m(F),m(0),m(Sb),m(F-Sb),'fee owner = F; share owner = base; share advisor = F − base')+
+row('Price −25%, '+m(xb),m(F),m(0),m(sb2),m(F-sb2),'share = base + s × max(0, 0.75P − B) = '+m(sb2)+'; advisor = F − share')+
+row('Slip of 6 months',m(0),m(0),m(0),m(slip),'fee paid in stages, no change; advisor value lost = '+m(X)+' × (1 − 1 ÷ (1 + '+(r*100).toFixed(1)+'%)^0.5)')+
+'</tbody>';
+
+// AI table
+var Psm=ps(Fm),qPm=qs(Fm,P),sbm=sh(xb);
+function q2(q){return q>1&&q!==Infinity?'above 100% ('+pc(q)+')':pc(q)}
+$('ai').innerHTML='<thead><tr><th></th><th>Usual path: by hand</th><th>Shortcut: model plus review</th></tr></thead><tbody>'+
+'<tr><td>Prep hours</td><td class="n">'+bm+' + '+gap+' = '+Hm+'</td><td class="n">'+bh+' + '+gap+' = '+H+'</td></tr>'+
+'<tr><td>Base case: fee F</td><td class="n">'+m(Fm)+'</td><td class="n">'+m(F)+'</td></tr>'+
+'<tr><td>Base case: P*</td><td class="n">'+m(Psm)+'</td><td class="n">'+m(Ps)+'</td></tr>'+
+'<tr><td>Base case: q* at '+m(P)+'</td><td class="n">'+q2(qPm)+'</td><td class="n">'+q2(qP)+'</td></tr>'+
+'<tr><td>Bad case, buyer walks: owner on fee</td><td class="n">'+m(Fm)+'</td><td class="n">'+m(F)+'</td></tr>'+
+'<tr><td>Bad case, buyer walks: advisor on share</td><td class="n">'+m(Fm-Sb)+'</td><td class="n">'+m(F-Sb)+'</td></tr>'+
+'<tr><td>Bad case, price −25%: advisor on share</td><td class="n">'+m(Fm-sbm)+'</td><td class="n">'+m(F-sbm)+'</td></tr>'+
+'<tr><td>Formula</td><td colspan="2"><span class="f" style="display:block;margin:0">F = £'+rate+' × (base + '+gap+'); base = 120 × '+band.f+' by hand, 70 × '+band.f+' with the model. Saving = £'+rate+' × '+(bm-bh)+' = '+m(Fm-F)+'</span></td></tr></tbody>';
+
+// sentence
+$('sent').textContent=viable?'Fee costs '+m(F)+' whatever happens. Share costs '+m(Sb)+' plus '+sp+' of anything above '+m(B)+', and is cheaper for me below '+m(Ps)+'.':'Fee costs '+m(F)+' whatever happens. At my expected price of '+m(P)+' the share terms do not cover the work, so the fee is the option on the table.';
+}
+
+function chart(F,Ps,sh,B,P,Sb,adv,viable){
+var W=640,Hh=300,pl=66,pr=14,pt=18,pb=42;
+var x0=Math.min(B*0.9,P*0.7),x1=Math.max(P*1.08,Ps*1.08);
+var ym=Math.max(F,sh(x1))*1.15;
+function X(v){return pl+(v-x0)/(x1-x0)*(W-pl-pr)}
+function Y(v){return pt+(1-v/ym)*(Hh-pt-pb)}
+var g='',i;
+for(i=0;i<=4;i++){var yv=ym*i/4;g+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+Y(yv)+'" y2="'+Y(yv)+'" stroke="#e6dfd2"/><text x="'+(pl-6)+'" y="'+(Y(yv)+4)+'" text-anchor="end" font-size="11" fill="#5b544a">'+k(yv)+'</text>'}
+for(i=0;i<=4;i++){var xv=x0+(x1-x0)*i/4;g+='<text x="'+X(xv)+'" y="'+(Hh-pb+16)+'" text-anchor="middle" font-size="11" fill="#5b544a">'+k(xv)+'</text>'}
+g+='<text x="'+((pl+W-pr)/2)+'" y="'+(Hh-6)+'" text-anchor="middle" font-size="11" fill="#5b544a">Sale price</text>';
+g+='<line x1="'+X(B)+'" x2="'+X(B)+'" y1="'+pt+'" y2="'+(Hh-pb)+'" stroke="#5b544a" stroke-dasharray="2 3"/><text x="'+(X(B)+4)+'" y="'+(pt+10)+'" font-size="11" fill="#5b544a">floor B</text>';
+g+='<line x1="'+X(P)+'" x2="'+X(P)+'" y1="'+pt+'" y2="'+(Hh-pb)+'" stroke="#1f1b16" stroke-dasharray="5 3"/><text x="'+(X(P)+4)+'" y="'+(pt+24)+'" font-size="11" fill="#1f1b16">your price</text>';
+g+='<line x1="'+X(x0)+'" x2="'+X(x1)+'" y1="'+Y(F)+'" y2="'+Y(F)+'" stroke="#1f1b16" stroke-width="2.5"/><text x="'+(X(x0)+4)+'" y="'+(Y(F)-6)+'" font-size="12" fill="#1f1b16">Fee '+k(F)+'</text>';
+g+='<polyline fill="none" stroke="#9a5a1c" stroke-width="2.5" '+(viable?'':'stroke-dasharray="6 4" opacity=".6"')+' points="'+X(x0)+','+Y(Sb)+' '+X(B)+','+Y(Sb)+' '+X(x1)+','+Y(sh(x1))+'"/><text x="'+(X(x0)+4)+'" y="'+(Y(Sb)-6)+'" font-size="12" fill="#9a5a1c">Share</text>';
+if(Ps>=x0&&Ps<=x1)g+='<circle cx="'+X(Ps)+'" cy="'+Y(F)+'" r="5" fill="#9a5a1c" stroke="#fff"/><text x="'+(X(Ps)-6)+'" y="'+(Y(F)+18)+'" text-anchor="end" font-size="12" font-weight="600" fill="#9a5a1c">P* '+k(Ps)+'</text>';
+var lab=adv?'Paid to advisor':'Cost to owner';
+g+='<text x="12" y="'+(pt+(Hh-pt-pb)/2)+'" font-size="11" fill="#5b544a" transform="rotate(-90 12 '+(pt+(Hh-pt-pb)/2)+')" text-anchor="middle">'+lab+'</text>';
+$('chart').innerHTML='<svg viewBox="0 0 '+W+' '+Hh+'" role="img" aria-label="Fee line flat at '+k(F)+', share line rising above floor, crossing at '+k(Ps)+'">'+g+'</svg>';
+}
+
+fill();render();
+})();
+</script>
+</body>
+</html>

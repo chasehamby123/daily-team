@@ -1,11 +1,12 @@
 # Archive
 
-Every daily team and the asset it made, newest first. 39 days recorded.
+Every daily team and the asset it made, newest first. 40 days recorded.
 
 [Today](README.md)
 
 | Date | Task | Team | Constraint | Asset |
 |---|---|---|---|---|
+| [2026-11-12](days/2026-11-12/) | What They'll Open First | Luthier · Cobbler · Owner preparing to sell · The Fool | Shows the formula or rule behind every result. | [asset](days/2026-11-12/artifact-1.html) |
 | [2026-11-11](days/2026-11-11/) | Ready Before First Ring | Chef · Taxidermist · Insurance agency owner · Gulliver | Everything fits on one screen without scrolling. | [asset](days/2026-11-11/artifact-1.html) |
 | [2026-11-10](days/2026-11-10/) | Lender's Eye | Packaging designer · Glassblower · Search fund entrepreneur · Glass fox | Readable from 2 metres on a laptop screen. | [asset](days/2026-11-10/artifact-1.html) |
 | [2026-11-09](days/2026-11-09/) | Day 100 Inbox | Calligrapher · Teacher · Corporate development head · The Outsider | Usable with one thumb on a phone. | [asset](days/2026-11-09/artifact-1.html) |

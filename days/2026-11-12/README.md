@@ -1,0 +1,122 @@
+# 2026-11-12: What They'll Open First
+
+[Today](../../README.md) · [Archive](../../ARCHIVE.md)
+
+<img src="team.png" alt="Team for 2026-11-12: Luthier · Cobbler · Owner preparing to sell · The Fool" width="100%">
+
+**Task:** Seat comparer: the same work done for a fee or for a share gives cash now against value later, with the bad case for each and the point where the share wins.
+
+**Constraint:** Shows the formula or rule behind every result.
+
+**Season:** 2026-10-07
+
+**Decision:** The page lists what buyers will check first, turns the owner's gaps into prep hours, and compares a flat fee against a small base plus a share of the price above the owner's own floor, with the formula, the bad case, and the crossing pri...
+
+## Asset
+
+<a href="artifact-1.html"><img src="artifact-1.png" alt="Screenshot of artifact-1.html" width="100%"></a>
+
+[artifact-1.html](artifact-1.html), led by Luthier. Model: claude-opus-5-5.
+
+## The session
+
+### Pitch
+
+**1 · Luthier: Bare Bench**\
+Strip it to what still plays with nothing spent. Three inputs, two lines, one crossing.\
+Fee: F, paid in stages, kept by the advisor whatever happens. Share: s × (P − B), paid only at completion.\
+The crossing is printed under the chart: P* = B + F ÷ s.\
+If the formula isn't on the page, the number is a guess with varnish on it.\
+No logo wall. No valuation. No slider that runs past the price the owner typed.
+
+**2 · Cobbler: One New Sole**\
+The brief asks fee against share. The owner's trouble sits one step earlier: they can't fill in P.\
+So keep the comparer and rework the one weak part, which is the price box.\
+Before any price, list six things buyers check first: customer concentration, owner hours, contracts, books, staff tenure, lease.\
+Each one ticked "not ready" adds prep hours to F. On screen: F = rate × (base hours + Σ gap hours).\
+The price stays the owner's own number. We never suggest one.
+
+**Owner preparing to sell (buyer; outerhaven): What They'll Open First**\
+The last chap who came round said I'd get two million. Shook my hand at the door. Never heard from him once he'd seen the books.\
+I don't want a number. I want to know which drawer they'll pull open.\
+Start there. Then show me what it costs to have someone tidy it, paid now or paid out of the sale.\
+And show me what I'm out if the buyer walks in week ten.\
+Something I'd hand my accountant. Not something I'd frame.
+
+**4 · The Fool: Two Chairs**\
+Ha. Everyone's arguing about the price, and nobody's asked who pays for the tidy-up if nobody buys.\
+One sum, two chairs. Flip a toggle and the owner's loss becomes the advisor's loss.\
+Owner's chair: the share is cheaper below P*. Advisor's chair: the share pays more above P*, but only if deals close often enough. q* = F ÷ (s × (P − B)).\
+The result ends in one plain sentence the owner can paste into an email to their accountant.
+
+### Clash
+
+**3 · Owner preparing to sell:** Luthier, your bench opens on P. The minute I type a price I'm back at that door with that handshake. Put the drawers first.
+
+**1 · Luthier:** Fair. The drawers go first. But Cobbler, your gap hours have to be real hours, or the F line is a guess dressed as a sum.
+
+**2 · Cobbler:** They're estimates, they'll always be estimates. No, wait. You're right that they can't hide. Show the hours per item on screen, 12 for contracts and 20 for books, so the owner's accountant can argue with each one.
+
+**4 · The Fool:** Twelve hours to read contracts? Ha. Who reads forty supplier contracts by hand any more? A model reads them in an afternoon and a person checks the ones it flags.
+
+**2 · Cobbler:** Then count it. A model does the contract read and the first pass on the books, and the base drops from 120 hours to 70. At £150 an hour, F goes from £18,000 to £10,500. A named chartered accountant still signs off the cleaned accounts, and that sign-off stays in the hours.
+
+**1 · Luthier:** Bad case, Fool. The buyer walks in week ten. On the fee path the owner is out £10,500. Without the model it's £18,000, so most of the saving lands right there. On the share path the owner is out nothing and the advisor eats 70 hours. Now drop the price 25%, from £1.5m to £1.125m. That's under a £1.2m floor, so the share pays zero.
+
+**4 · The Fool:** So the advisor's chair is the one that gets sat on. Your own sum says it: at £1.5m, q* = 10,500 ÷ 30,000 = 35%. Fewer than one deal in three closes and the share loses.
+
+**1 · Luthier:** Then I'll side with the chair that's losing. Put a £2,500 base on the share path for the model run and the sign-off. P* moves to £1.28m, q* drops to 27%, and the owner's walk-away loss is £2,500, not £10,500.
+
+**3 · Owner preparing to sell:** Keep the base, I'll pay that. When I took my first apprentice I paid him from Monday, job or no job. But Fool, I don't want to see the advisor's chair. The moment it shows me his side, it reads like his sales sheet.
+
+**4 · The Fool:** Ha, it is his side. That's why you'll believe the rest. A page that hides who loses what is the handshake at the door all over again.
+
+### Decision
+
+The page lists what buyers will check first, turns the owner's gaps into prep hours, and compares a flat fee against a small base plus a share of the price above the owner's own floor, with the formula, the bad case, and the crossing price shown for each.
+
+Concept: What They'll Open First
+
+- Luthier: the two-line chart, the printed formulas under every result, and the £2,500 base on the share path.
+- Cobbler: the six-item diligence checklist that replaces the price box as the first screen, with visible hours per item.
+- Owner preparing to sell: diligence before price, no suggested valuation, and the week-ten walk-away loss as the headline figure.
+- The Fool: the two-chair toggle, the q* line, and the one-sentence summary for the accountant.
+- The Owner lost the argument on hiding the advisor's chair. It stays as a toggle, set to the owner's chair by default, because q* is what shows the share terms are not a pitch.
+- Bad case: tested a week-ten fall-through, a 25% price drop below the floor, and a six-month slip. For the owner, the share path costs £2,500 against £10,500 on fee. For the advisor, the share holds when completion odds stay above 27% at £1.5m. A six-month slip costs about £900 of value on £32,500 at 6%. When P − B is under £80,000, q* goes above 100%, so the page drops the share option and shows the fee alone.
+
+### Build notes
+
+1. Screen 1 has six checklist rows. Each row has a ready / not ready toggle and its hours (contracts 12, books 20, customers 8, owner hours 10, staff 6, lease 4). The running total shows F = £150 × (70 + Σ gap hours) and a note that a model does the contract read and books first pass, with a named accountant signing off.
+2. Screen 2 has three inputs: the owner's floor B, the expected price P, and the share s (default 10%). It also has two qualifying questions: annual revenue band and months until the planned sale. The SVG chart draws the fee line and the share line £2,500 + s × (P − B). It prints P* = B + (F − 2,500) ÷ s and q* = (F − 2,500) ÷ (s × (P − B)) under the crossing.
+3. A bad-case panel sits under the chart. It has three fixed rows: falls through in week 10, price −25%, and slip of 6 months. Each row shows the owner and advisor cost on both paths with its formula. A copy button outputs one sentence: "Fee costs £F whatever happens. Share costs £2,500 plus s of anything above £B, and is cheaper for me below £P*."
+
+**Guest:** The Fool (archetype; archetype). The method is drawn from public-domain history, myth, or literature, or invented. The guest speaks in character in original words, never quoting the source, and nothing here is endorsed by anyone.
+
+## Team
+
+```text
+Team for 2026-11-12
+Season: 2026-10-07
+
+1. Luthier
+   Method: Set a budget of zero and see what still works.
+   Stance: Guards execution quality.
+   Temperament: Sides with whoever is losing.
+2. Cobbler
+   Method: Rework only the weakest part.
+   Stance: Questions the brief.
+   Temperament: Changes their mind out loud, mid-argument.
+3. Owner preparing to sell (buyer; outerhaven) [buyer] [new]
+   Method: Pain: Has no idea what buyers will ask or pay. Walks when: It opens with a valuation that sounds too good. Opens up when: You explain what buyers will dig into before anyone talks price.
+   Stance: Pushes for a less expected result.
+   Temperament: Tells a story from the workshop instead of arguing.
+4. The Fool (archetype; archetype) [guest]
+   Method: Ask the question everyone stopped asking.
+   Stance: Plans how it reaches people.
+   Temperament: Laughs at the problem first, then takes it apart.
+
+Constraint: Shows the formula or rule behind every result.
+Task: Seat comparer: the same work done for a fee or for a share gives cash now against value later, with the bad case for each and the point where the share wins.
+```
+
+Provider: claude. Model: claude-opus-5-5.

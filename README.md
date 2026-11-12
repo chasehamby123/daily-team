@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-11-11: Ready Before First Ring
+### 2026-11-12: What They'll Open First
 
-<a href="days/2026-11-11/"><img src="days/2026-11-11/team.png" alt="Team for 2026-11-11: Chef · Taxidermist · Insurance agency owner · Gulliver" width="100%"></a>
+<a href="days/2026-11-12/"><img src="days/2026-11-12/team.png" alt="Team for 2026-11-12: Luthier · Cobbler · Owner preparing to sell · The Fool" width="100%"></a>
 
-**Task:** Document checklist: the buyer's stage gives a list of documents to prepare before a deal or rollout, grouped and ticked off in the browser.
+**Task:** Seat comparer: the same work done for a fee or for a share gives cash now against value later, with the bad case for each and the point where the share wins.
 
-**Decision:** The page lists twelve documents an insurance agency needs before Voxxy goes live, grouped as Consent, Agents and Systems, ticked and saved in the browser, under a strip that shows one lead's wait at today's callback time against nine sec...
+**Decision:** The page lists what buyers will check first, turns the owner's gaps into prep hours, and compares a flat fee against a small base plus a share of the price above the owner's own floor, with the formula, the bad case, and the crossing pri...
 
-<a href="days/2026-11-11/"><img src="days/2026-11-11/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-11-12/"><img src="days/2026-11-12/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-11-11/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-11-12/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,15 +37,15 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-11-12](days/2026-11-12/) | <a href="days/2026-11-12/"><img src="days/2026-11-12/artifact-1.png" alt="What They'll Open First" width="160"></a> | What They'll Open First | Luthier · Cobbler · Owner preparing to sell · The Fool |
 | [2026-11-11](days/2026-11-11/) | <a href="days/2026-11-11/"><img src="days/2026-11-11/artifact-1.png" alt="Ready Before First Ring" width="160"></a> | Ready Before First Ring | Chef · Taxidermist · Insurance agency owner · Gulliver |
 | [2026-11-10](days/2026-11-10/) | <a href="days/2026-11-10/"><img src="days/2026-11-10/artifact-1.png" alt="Lender's Eye" width="160"></a> | Lender's Eye | Packaging designer · Glassblower · Search fund entrepreneur · Glass fox |
 | [2026-11-09](days/2026-11-09/) | <a href="days/2026-11-09/"><img src="days/2026-11-09/artifact-1.png" alt="Day 100 Inbox" width="160"></a> | Day 100 Inbox | Calligrapher · Teacher · Corporate development head · The Outsider |
 | [2026-11-08](days/2026-11-08/) | <a href="days/2026-11-08/"><img src="days/2026-11-08/artifact-1.png" alt="The Deadline Cue Sheet" width="160"></a> | The Deadline Cue Sheet | Lighting designer · Puppeteer · Revenue cycle manager · Robinson Crusoe |
 | [2026-11-07](days/2026-11-07/) | <a href="days/2026-11-07/"><img src="days/2026-11-07/artifact-1.png" alt="The Exclusivity Rack" width="160"></a> | The Exclusivity Rack | Costume designer · Museum curator · Independent sponsor · Ebenezer Scrooge |
 | [2026-11-06](days/2026-11-06/) | <a href="days/2026-11-06/"><img src="days/2026-11-06/artifact-1.png" alt="The Signed Gathering" width="160"></a> | The Signed Gathering | Bookbinder · Comic artist · Family office CIO · The Null |
-| [2026-11-05](days/2026-11-05/) | <a href="days/2026-11-05/"><img src="days/2026-11-05/artifact-1.png" alt="Kiln Log" width="160"></a> | Kiln Log | Ceramicist · Animator · Founder raising a growth round · Clockwork beetle |
 
-[All 39 days](ARCHIVE.md)
+[All 40 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works
