@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-11-12: What They'll Open First
+### 2026-11-13: Stay-or-Go Ledger
 
-<a href="days/2026-11-12/"><img src="days/2026-11-12/team.png" alt="Team for 2026-11-12: Luthier · Cobbler · Owner preparing to sell · The Fool" width="100%"></a>
+<a href="days/2026-11-13/"><img src="days/2026-11-13/team.png" alt="Team for 2026-11-13: Urban planner · Weaver · Roll-up operator · Hydra" width="100%"></a>
 
-**Task:** Seat comparer: the same work done for a fee or for a share gives cash now against value later, with the bad case for each and the point where the share wins.
+**Task:** Downside check: a plan's cost, likely gain, and odds give the worst case, the expected result, and whether the loss is capped.
 
-**Decision:** The page lists what buyers will check first, turns the owner's gaps into prep hours, and compares a flat fee against a small base plus a share of the price above the owner's own floor, with the formula, the bad case, and the crossing pri...
+**Decision:** The page takes one add-on's price, EBITDA, integration cost, and odds the owner stays, then shows the worst case, the expected result, and whether the loss is capped for all-cash and earnout side by side.
 
-<a href="days/2026-11-12/"><img src="days/2026-11-12/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-11-13/"><img src="days/2026-11-13/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-11-12/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-11-13/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,15 +37,15 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-11-13](days/2026-11-13/) | <a href="days/2026-11-13/"><img src="days/2026-11-13/artifact-1.png" alt="Stay-or-Go Ledger" width="160"></a> | Stay-or-Go Ledger | Urban planner · Weaver · Roll-up operator · Hydra |
 | [2026-11-12](days/2026-11-12/) | <a href="days/2026-11-12/"><img src="days/2026-11-12/artifact-1.png" alt="What They'll Open First" width="160"></a> | What They'll Open First | Luthier · Cobbler · Owner preparing to sell · The Fool |
 | [2026-11-11](days/2026-11-11/) | <a href="days/2026-11-11/"><img src="days/2026-11-11/artifact-1.png" alt="Ready Before First Ring" width="160"></a> | Ready Before First Ring | Chef · Taxidermist · Insurance agency owner · Gulliver |
 | [2026-11-10](days/2026-11-10/) | <a href="days/2026-11-10/"><img src="days/2026-11-10/artifact-1.png" alt="Lender's Eye" width="160"></a> | Lender's Eye | Packaging designer · Glassblower · Search fund entrepreneur · Glass fox |
 | [2026-11-09](days/2026-11-09/) | <a href="days/2026-11-09/"><img src="days/2026-11-09/artifact-1.png" alt="Day 100 Inbox" width="160"></a> | Day 100 Inbox | Calligrapher · Teacher · Corporate development head · The Outsider |
 | [2026-11-08](days/2026-11-08/) | <a href="days/2026-11-08/"><img src="days/2026-11-08/artifact-1.png" alt="The Deadline Cue Sheet" width="160"></a> | The Deadline Cue Sheet | Lighting designer · Puppeteer · Revenue cycle manager · Robinson Crusoe |
 | [2026-11-07](days/2026-11-07/) | <a href="days/2026-11-07/"><img src="days/2026-11-07/artifact-1.png" alt="The Exclusivity Rack" width="160"></a> | The Exclusivity Rack | Costume designer · Museum curator · Independent sponsor · Ebenezer Scrooge |
-| [2026-11-06](days/2026-11-06/) | <a href="days/2026-11-06/"><img src="days/2026-11-06/artifact-1.png" alt="The Signed Gathering" width="160"></a> | The Signed Gathering | Bookbinder · Comic artist · Family office CIO · The Null |
 
-[All 40 days](ARCHIVE.md)
+[All 41 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works
