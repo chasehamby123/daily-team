@@ -1,11 +1,12 @@
 # Archive
 
-Every daily team and the asset it made, newest first. 41 days recorded.
+Every daily team and the asset it made, newest first. 42 days recorded.
 
 [Today](README.md)
 
 | Date | Task | Team | Constraint | Asset |
 |---|---|---|---|---|
+| [2026-11-14](days/2026-11-14/) | Empty frames | Beekeeper · Florist · Fund manager raising capital · The Trickster | Fits in a postcard-sized area. | [asset](days/2026-11-14/artifact-1.html) |
 | [2026-11-13](days/2026-11-13/) | Stay-or-Go Ledger | Urban planner · Weaver · Roll-up operator · Hydra | All text at 18 px or larger. | [asset](days/2026-11-13/artifact-1.html) |
 | [2026-11-12](days/2026-11-12/) | What They'll Open First | Luthier · Cobbler · Owner preparing to sell · The Fool | Shows the formula or rule behind every result. | [asset](days/2026-11-12/artifact-1.html) |
 | [2026-11-11](days/2026-11-11/) | Ready Before First Ring | Chef · Taxidermist · Insurance agency owner · Gulliver | Everything fits on one screen without scrolling. | [asset](days/2026-11-11/artifact-1.html) |

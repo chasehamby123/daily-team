@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-11-13: Stay-or-Go Ledger
+### 2026-11-14: Empty frames
 
-<a href="days/2026-11-13/"><img src="days/2026-11-13/team.png" alt="Team for 2026-11-13: Urban planner · Weaver · Roll-up operator · Hydra" width="100%"></a>
+<a href="days/2026-11-14/"><img src="days/2026-11-14/team.png" alt="Team for 2026-11-14: Beekeeper · Florist · Fund manager raising capital · The Trickster" width="100%"></a>
 
-**Task:** Downside check: a plan's cost, likely gain, and odds give the worst case, the expected result, and whether the loss is capped.
+**Task:** Scenario comparer: three versions of a plan with the buyer's own numbers give a side-by-side table of outcomes.
 
-**Decision:** The page takes one add-on's price, EBITDA, integration cost, and odds the owner stays, then shows the worst case, the expected result, and whether the loss is capped for all-cash and earnout side by side.
+**Decision:** The page asks a fund manager for their smallest worthwhile cheque, a fund I or II track-record filter, list size, partner hours per investor, target fund size, and months raised so far, and shows three fundraising plans side by side on a...
 
-<a href="days/2026-11-13/"><img src="days/2026-11-13/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-11-14/"><img src="days/2026-11-14/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-11-13/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-11-14/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,15 +37,15 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-11-14](days/2026-11-14/) | <a href="days/2026-11-14/"><img src="days/2026-11-14/artifact-1.png" alt="Empty frames" width="160"></a> | Empty frames | Beekeeper · Florist · Fund manager raising capital · The Trickster |
 | [2026-11-13](days/2026-11-13/) | <a href="days/2026-11-13/"><img src="days/2026-11-13/artifact-1.png" alt="Stay-or-Go Ledger" width="160"></a> | Stay-or-Go Ledger | Urban planner · Weaver · Roll-up operator · Hydra |
 | [2026-11-12](days/2026-11-12/) | <a href="days/2026-11-12/"><img src="days/2026-11-12/artifact-1.png" alt="What They'll Open First" width="160"></a> | What They'll Open First | Luthier · Cobbler · Owner preparing to sell · The Fool |
 | [2026-11-11](days/2026-11-11/) | <a href="days/2026-11-11/"><img src="days/2026-11-11/artifact-1.png" alt="Ready Before First Ring" width="160"></a> | Ready Before First Ring | Chef · Taxidermist · Insurance agency owner · Gulliver |
 | [2026-11-10](days/2026-11-10/) | <a href="days/2026-11-10/"><img src="days/2026-11-10/artifact-1.png" alt="Lender's Eye" width="160"></a> | Lender's Eye | Packaging designer · Glassblower · Search fund entrepreneur · Glass fox |
 | [2026-11-09](days/2026-11-09/) | <a href="days/2026-11-09/"><img src="days/2026-11-09/artifact-1.png" alt="Day 100 Inbox" width="160"></a> | Day 100 Inbox | Calligrapher · Teacher · Corporate development head · The Outsider |
 | [2026-11-08](days/2026-11-08/) | <a href="days/2026-11-08/"><img src="days/2026-11-08/artifact-1.png" alt="The Deadline Cue Sheet" width="160"></a> | The Deadline Cue Sheet | Lighting designer · Puppeteer · Revenue cycle manager · Robinson Crusoe |
-| [2026-11-07](days/2026-11-07/) | <a href="days/2026-11-07/"><img src="days/2026-11-07/artifact-1.png" alt="The Exclusivity Rack" width="160"></a> | The Exclusivity Rack | Costume designer · Museum curator · Independent sponsor · Ebenezer Scrooge |
 
-[All 41 days](ARCHIVE.md)
+[All 42 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works
