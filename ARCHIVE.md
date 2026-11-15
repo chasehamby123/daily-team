@@ -1,11 +1,12 @@
 # Archive
 
-Every daily team and the asset it made, newest first. 42 days recorded.
+Every daily team and the asset it made, newest first. 43 days recorded.
 
 [Today](README.md)
 
 | Date | Task | Team | Constraint | Asset |
 |---|---|---|---|---|
+| [2026-11-15](days/2026-11-15/) | The Bench Test | Documentary director · Playwright · Private equity principal · Janus | Every change can be undone. | [asset](days/2026-11-15/artifact-1.html) |
 | [2026-11-14](days/2026-11-14/) | Empty frames | Beekeeper · Florist · Fund manager raising capital · The Trickster | Fits in a postcard-sized area. | [asset](days/2026-11-14/artifact-1.html) |
 | [2026-11-13](days/2026-11-13/) | Stay-or-Go Ledger | Urban planner · Weaver · Roll-up operator · Hydra | All text at 18 px or larger. | [asset](days/2026-11-13/artifact-1.html) |
 | [2026-11-12](days/2026-11-12/) | What They'll Open First | Luthier · Cobbler · Owner preparing to sell · The Fool | Shows the formula or rule behind every result. | [asset](days/2026-11-12/artifact-1.html) |
