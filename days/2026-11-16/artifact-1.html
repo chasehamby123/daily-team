@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Round Six: eight rounds, three fixes for a stalling mandate</title>
+<style>
+:root{--ink:#111;--paper:#fff;--mute:#555;--line:#111;--soft:#e6e6e6}
+*{box-sizing:border-box;font-size:15px;line-height:1.45}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.l{font-size:22px;line-height:1.3}
+h1,h2,h3,p{margin:0}
+h1{font-size:22px;line-height:1.3;font-weight:700}
+h2{font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:28px 0 8px;padding-top:8px;border-top:2px solid var(--line)}
+h3{font-size:15px;font-weight:700}
+input,select,button{font:inherit;font-size:15px;color:var(--ink)}
+code,.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px}
+.wrap{max-width:1180px;margin:0 auto;padding:16px}
+header.top{border-bottom:2px solid var(--line);padding-bottom:12px;margin-bottom:16px}
+header.top p{color:var(--mute);margin-top:6px;max-width:62ch}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:28px;align-items:start}
+@media (max-width:880px){.cols{grid-template-columns:1fr}}
+fieldset{border:0;border-top:1px solid var(--line);margin:0;padding:10px 0 14px}
+legend{padding:0;font-weight:700}
+legend .rd{color:var(--mute);font-weight:400;margin-right:6px}
+.help{color:var(--mute)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+@media (max-width:420px){.opts{grid-template-columns:1fr}}
+.opt{position:relative;display:block;cursor:pointer}
+.opt input{position:absolute;opacity:0;width:1px;height:1px}
+.opt span{display:block;border:1px solid var(--line);padding:7px 9px;min-height:40px;background:var(--paper)}
+.opt span small{display:block;color:var(--mute);font-size:15px}
+.opt input:checked+span{background:var(--ink);color:var(--paper)}
+.opt input:checked+span small{color:#ccc}
+.opt input:focus-visible+span{outline:3px solid var(--ink);outline-offset:2px}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+button,.btn{border:1px solid var(--line);background:var(--paper);padding:8px 12px;cursor:pointer;text-decoration:none;color:var(--ink);display:inline-block}
+button.solid,.btn.solid{background:var(--ink);color:var(--paper)}
+button:focus-visible,.btn:focus-visible,input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.say{border-left:6px solid var(--ink);padding:6px 0 6px 14px;margin:6px 0 12px}
+.tag{display:inline-block;border:1px solid var(--line);padding:2px 8px;margin-right:6px;font-weight:700}
+.tag.on{background:var(--ink);color:var(--paper)}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;vertical-align:top;padding:6px 8px;border:1px solid var(--line)}
+th{font-weight:700}
+.scroll{overflow-x:auto}
+.loom td,.loom th{padding:0;height:30px;text-align:center;vertical-align:middle}
+.loom th{padding:4px 6px}
+.loom td.rl{text-align:left;padding:4px 8px;width:46%}
+.loom td.c{width:18%}
+.loom td.f{background:var(--ink)}
+.loom tr.fray td{border-top:3px dashed var(--ink)}
+.gapbar{display:grid;grid-template-columns:repeat(30,1fr);gap:2px;margin:8px 0 4px}
+.gapbar i{display:block;height:16px;border:1px solid var(--ink)}
+.gapbar i.f{background:var(--ink)}
+.gapbar i.m{outline:2px solid var(--ink);outline-offset:1px}
+.cases{display:grid;grid-template-columns:repeat(3,minmax(150px,1fr));gap:8px}
+.case{border:1px solid var(--line);padding:10px}
+.case.bad{border-width:3px}
+.case dl{margin:6px 0 0}
+.case dt{color:var(--mute)}
+.case dd{margin:0 0 4px;font-weight:700}
+.verdict{border:2px solid var(--ink);padding:10px 12px;margin:10px 0}
+.verdict.fail{background:var(--ink);color:var(--paper)}
+.assume{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px 14px;margin-top:8px}
+.assume label{display:block}
+.assume input{width:100%;border:1px solid var(--line);padding:6px 8px;margin-top:2px}
+.formula{border:1px dashed var(--ink);padding:10px;white-space:pre-wrap;overflow-x:auto}
+.note{border:1px solid var(--ink);padding:14px;margin-top:10px;font-family:Georgia,"Times New Roman",serif}
+.note p+p{margin-top:8px}
+.empty{border:1px dashed var(--ink);padding:16px}
+footer{border-top:2px solid var(--line);margin-top:32px;padding-top:12px;color:var(--mute)}
+footer p+p{margin-top:6px}
+.vh{position:absolute;left:-9999px}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important;scroll-behavior:auto !important}}
+@media print{
+  .noprint,.btns{display:none !important}
+  .cols{grid-template-columns:1fr}
+  .wrap{padding:0}
+  .opt span{border:1px solid #000}
+  .opt input:checked+span{background:#fff;color:#000;border-width:3px}
+  .loom td.f,.gapbar i.f{background:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .verdict.fail{background:#fff;color:#000;border-width:4px}
+  .case,.note,table{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <h1>Round Six. Eight rounds of your sale, three ways to keep the bidders in the room.</h1>
+  <p>Answer from where your mandate stands today. You get Refill, Hold, or Anchor, with you as lead in each. No client name, no sign-up. Takes about ninety seconds. A worked example is already filled in: an $80M mandate, week 14, two bidders left.</p>
+</header>
+
+<div class="cols">
+<section aria-labelledby="qh">
+  <h2 id="qh" style="margin-top:0">The rounds</h2>
+  <p class="help">Rounds 1 and 2 size the deal. Rounds 3 to 8 read the process.</p>
+  <form id="quiz" onsubmit="return false"></form>
+  <div class="btns noprint">
+    <button type="button" id="clearBtn">Clear answers</button>
+    <button type="button" id="exampleBtn">Load worked example</button>
+  </div>
+</section>
+
+<section aria-labelledby="rh" aria-live="polite">
+  <h2 id="rh" style="margin-top:0">Result</h2>
+  <div id="result"></div>
+</section>
+</div>
+
+<section aria-labelledby="ah" class="noprint-keep">
+  <h2 id="ah">Assumptions behind the figures</h2>
+  <p class="help">Example terms. Replace them with the terms in your engagement letter and any quote you hold. Fee levels and how they are taxed or disclosed depend on local rules and your firm's policy.</p>
+  <div class="assume" id="assume"></div>
+</section>
+
+<footer>
+  <p>Credits. Game designer: the eight rounds, the three endings, and the opening line to your client. Textile designer: the black-and-white 8 by 3 grid, the days-without-data strip, and the two type sizes. Investment banker: no client name asked, no contact promised, "you decide whether they join," and associate sign-off on every drafted answer. Cassandra: the dated note, the bad-case figures for both fee paths, and the forward button.</p>
+  <p>This is a planning aid. It is not investment, legal, or tax advice.</p>
+  <p>Published by OuterHaven Advisory.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+var NAMES={refill:"Refill",hold:"Hold",anchor:"Anchor"};
+var COLS=["refill","hold","anchor"];
+var Q=[
+ {id:"ev",rd:"Round 1 · Teaser",short:"Deal size",text:"What is the enterprise value of the mandate?",help:"Qualifier. Sets the success fee.",
+  o:[["Under $30M","calculated at $20M",20,"refill"],["$30M to $50M","calculated at $40M",40,"refill"],["$50M to $120M","calculated at $80M",80,"anchor"],["Over $120M","calculated at $200M",200,"anchor"]]},
+ {id:"wk",rd:"Round 2 · NDA",short:"Weeks since launch",text:"How many weeks since the process launched?",help:"Qualifier. Sets how many months are left.",
+  o:[["Under 8","calculated at 6",6,"refill"],["8 to 12","calculated at 10",10,"refill"],["13 to 18","calculated at 14",14,"hold"],["19 or more","calculated at 20",20,"anchor"]]},
+ {id:"st",rd:"Round 3 · IOI",short:"Stage",text:"Where is the process now?",
+  o:[["Teaser and NDAs out","pre-IOI","pre","refill"],["IOIs received","post-IOI","post","anchor"],["Management meetings","post-IOI","post","anchor"],["LOI or confirmatory","post-IOI","post","hold"]]},
+ {id:"lv",rd:"Round 4 · Management meeting",short:"Live bidders",text:"How many bidders are still live?",
+  o:[["0 or 1","",1,"anchor"],["2","",2,"refill"],["3 to 5","",4,"hold"],["6 or more","",6,"hold"]]},
+ {id:"gp",rd:"Round 5 · Data room",short:"Days without new data",text:"Days since anything new went into the data room?",help:"Bidders drift in the gaps. Count days.",
+  o:[["Under 5","calculated at 3",3,"refill"],["5 to 10","calculated at 8",8,"refill"],["11 to 20","calculated at 15",15,"hold"],["Over 20","calculated at 23",23,"anchor"]]},
+ {id:"qt",rd:"Round 6 · LOI",short:"Why the last one went quiet",text:"Why did the last bidder go quiet?",
+  o:[["Valuation gap","","val","anchor"],["Slow diligence answers","","slow","hold"],["Their strategy changed","","strat","refill"],["No reply, no reason","","none","hold"]]},
+ {id:"dr",rd:"Round 7 · Confirmatory",short:"Who drafts answers",text:"Who drafts diligence answers now?",
+  o:[["One associate, alone","","assoc","hold"],["The client CFO team","","cfo","anchor"],["Shared, no clear owner","","shared","hold"],["Nobody yet, questions queued","","nobody","refill"]]},
+ {id:"tm",rd:"Round 8 · Your terms",short:"What stays with you",text:"What will you not hand to outside help?",help:"This page asks for none of these.",
+  o:[["The client name","","client","anchor"],["My buyer list","","list","hold"],["Data room access","","room","refill"],["I would share all three","","all","refill"]]}
+];
+var EXAMPLE={ev:2,wk:2,st:1,lv:1,gp:3,qt:0,dr:0,tm:0};
+var A=[
+ ["rate","Success fee (% of EV)",2,"Set by your engagement letter."],
+ ["plen","Planned process length (weeks)",26,"Launch to signing."],
+ ["fixed","Fixed fee path ($)",60000,"Paid whether or not the deal closes."],
+ ["share","Share path (% of your success fee)",10,"Paid at close."],
+ ["floor","Monthly floor on share path ($)",5000,"Credited against the share at close."],
+ ["ai","AI mapping and drafting ($/month)",4000,"Buyer mapping and first drafts."],
+ ["rev","Human reviewer ($/month)",6000,"Checks every draft before your associate."],
+ ["analyst","Analyst by hand ($/month)",18000,"Same mapping and drafts, no AI."],
+ ["slipBase","Base case slip (months)",3,"Closes late."],
+ ["slipBad","Bad case slip (months)",6,"Half the IOIs drop. No close."]
+];
+var KEY="roundsix-v1";
+var state={ans:{},as:{}};
+
+function load(){
+  try{var s=localStorage.getItem(KEY);if(s){var p=JSON.parse(s);if(p&&p.ans&&p.as){state=p;return true;}}}catch(e){}
+  return false;
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+function setExample(){
+  state.ans={};for(var k in EXAMPLE)state.ans[k]=EXAMPLE[k];
+  state.as={};A.forEach(function(a){state.as[a[0]]=a[2];});
+}
+if(!load())setExample();
+A.forEach(function(a){if(typeof state.as[a[0]]!=="number")state.as[a[0]]=a[2];});
+
+var form=document.getElementById("quiz");
+function buildQuiz(){
+  var h="";
+  Q.forEach(function(q){
+    h+='<fieldset><legend><span class="rd">'+q.rd+'</span>'+q.text+'</legend>';
+    if(q.help)h+='<p class="help">'+q.help+'</p>';
+    h+='<div class="opts">';
+    q.o.forEach(function(o,i){
+      var c=state.ans[q.id]===i?" checked":"";
+      h+='<label class="opt"><input type="radio" name="'+q.id+'" value="'+i+'"'+c+'><span>'+o[0]+(o[1]?'<small>'+o[1]+'</small>':'')+'</span></label>';
+    });
+    h+='</div></fieldset>';
+  });
+  form.innerHTML=h;
+}
+form.addEventListener("change",function(e){
+  if(e.target&&e.target.type==="radio"){state.ans[e.target.name]=parseInt(e.target.value,10);save();render();}
+});
+
+var asEl=document.getElementById("assume");
+function buildAssume(){
+  var h="";
+  A.forEach(function(a){
+    h+='<label>'+a[1]+'<input type="number" inputmode="decimal" step="any" min="0" data-k="'+a[0]+'" value="'+state.as[a[0]]+'"><span class="help">'+a[3]+'</span></label>';
+  });
+  asEl.innerHTML=h;
+}
+asEl.addEventListener("input",function(e){
+  var k=e.target.getAttribute("data-k");if(!k)return;
+  var v=parseFloat(e.target.value);state.as[k]=isFinite(v)&&v>=0?v:0;save();render();
+});
+
+document.getElementById("clearBtn").addEventListener("click",function(){state.ans={};save();buildQuiz();render();});
+document.getElementById("exampleBtn").addEventListener("click",function(){setExample();save();buildQuiz();buildAssume();render();});
+
+function money(n){
+  var s=n<0?"-":"";n=Math.abs(n);
+  if(n>=1e6)return s+"$"+(n/1e6).toFixed(2)+"M";
+  if(n>=1000)return s+"$"+Math.round(n/1000)+"k";
+  return s+"$"+Math.round(n);
+}
+function val(id){var i=state.ans[id];var q=Q.filter(function(x){return x.id===id;})[0];return q.o[i][2];}
+
+var COPY={
+ refill:{say:"We are widening the field this week, under our name, before IOIs are due.",
+   why:"Pre-IOI with two or fewer live bidders. The field is thin before the first bid. Widen it.",
+   what:"A long list of buyers mapped with AI. You approve each name. Every email goes out under your name, inside your process.",
+   human:["You approve every buyer on the long list before any contact.","Every outreach email is sent by your team, under your name."]},
+ hold:{say:"Every open question in the data room will have an answer within 24 hours.",
+   why:"Three or more bidders live and the data room silent for over 10 days. Bidders drift in the gap. Close it.",
+   what:"Diligence answers drafted within 24 hours from the data room. Each one goes to your associate before it goes to a bidder.",
+   human:["A reviewer checks every AI draft.","Your named associate signs each answer before it is sent. Unsigned answers do not go out."]},
+ anchor:{say:"We have a new party who wants in. They come through our process, on our timeline.",
+   why:"Past IOI, two or fewer bidders live, and EV of $50M or more. One more drop ends the process. Put a backstop in the room.",
+   what:"A backstop buyer is introduced to you. You decide whether they join. They sign your NDA and bid on your timeline. Nobody contacts your client.",
+   human:["You decide whether the backstop buyer joins.","The buyer signs your NDA. Your team runs every contact.","Your associate signs any diligence answer the buyer receives."]}
+};
+
+function render(){
+  var out=document.getElementById("result");
+  var done=Q.every(function(q){return typeof state.ans[q.id]==="number";});
+  if(!done){
+    var left=Q.filter(function(q){return typeof state.ans[q.id]!=="number";}).length;
+    out.innerHTML='<div class="empty"><p class="l">'+left+' of 8 rounds still open.</p><p class="help">Answer every round to see which fix fits and what it costs in the bad case.</p></div>';
+    return;
+  }
+  var ev=val("ev")*1e6,wk=val("wk"),st=val("st"),lv=val("lv"),gp=val("gp");
+  var as=state.as;
+  // grid
+  var picks=Q.map(function(q){return q.o[state.ans[q.id]][3];});
+  var tally={refill:0,hold:0,anchor:0};picks.forEach(function(p){tally[p]++;});
+  var frays=[];for(var i=1;i<picks.length;i++)if(picks[i]!==picks[i-1])frays.push(i+1);
+  // rules
+  var pick,rule;
+  if(st==="post"&&lv<=2&&ev>=50e6){pick="anchor";rule="Rule: post-IOI, 2 or fewer live, EV $50M or more.";}
+  else if(lv>=3&&gp>10){pick="hold";rule="Rule: 3 or more live, data gap over 10 days.";}
+  else if(st==="pre"&&lv<=2){pick="refill";rule="Rule: pre-IOI, 2 or fewer live.";}
+  else{
+    pick=["anchor","hold","refill"].sort(function(a,b){return tally[b]-tally[a];})[0];
+    rule="No rule matched outright. The grid tally decides: "+COLS.map(function(c){return NAMES[c]+" "+tally[c];}).join(", ")+".";
+  }
+  var C=COPY[pick];
+  // money
+  var success=ev*as.rate/100;
+  var rem=Math.max(1,Math.round((as.plen-wk)/4.33));
+  var cases=[
+    {k:"bad",name:"Bad",slip:as.slipBad,close:false,line:"Slips "+as.slipBad+" months. Half the IOIs drop. No close."},
+    {k:"base",name:"Base",slip:as.slipBase,close:true,line:"Slips "+as.slipBase+" months. Closes."},
+    {k:"good",name:"Good",slip:0,close:true,line:"On schedule. Closes."}
+  ];
+  cases.forEach(function(c){
+    c.m=rem+c.slip;
+    c.fee=c.close?success:0;
+    c.fixed=as.fixed;
+    c.floorTot=as.floor*c.m;
+    c.shareCost=c.close?Math.max(as.share/100*success,c.floorTot):c.floorTot;
+    c.netFixed=c.fee-c.fixed;c.netShare=c.fee-c.shareCost;
+    c.withAI=(as.ai+as.rev)*c.m;c.noAI=as.analyst*c.m;
+  });
+  var bad=cases[0],base=cases[1];
+  var survives=bad.shareCost<=as.fixed;
+  var breakM=as.floor>0?Math.floor(as.fixed/as.floor):Infinity;
+  var push=breakM===Infinity?Infinity:breakM-bad.m;
+  var safeFloor=bad.m>0?Math.floor(as.fixed/bad.m/500)*500:0;
+  var shortfall=bad.withAI-bad.floorTot;
+  var noFloorShort=bad.withAI;
+  // note date
+  var noteWeek=gp>=21?Math.max(1,Math.round(wk-(gp-21)/7)):Math.ceil(wk+(21-gp)/7);
+
+  var h='';
+  h+='<p><span class="tag on">'+NAMES[pick]+'</span>'+COLS.filter(function(c){return c!==pick;}).map(function(c){return '<span class="tag">'+NAMES[c]+'</span>';}).join("")+'</p>';
+  h+='<p class="help" style="margin-top:10px">What you tell your client:</p>';
+  h+='<p class="say l">"'+C.say+'"</p>';
+  h+='<p><b>Why.</b> '+C.why+'</p><p class="help">'+rule+'</p>';
+  h+='<p style="margin-top:8px"><b>What it is.</b> '+C.what+' You stay lead throughout.</p>';
+  h+='<p style="margin-top:8px"><b>A person still does this:</b></p><ul style="margin:4px 0 0;padding-left:20px">'+C.human.map(function(x){return '<li>'+x+'</li>';}).join("")+'</ul>';
+
+  // loom
+  h+='<h2>The thread</h2><p class="help">One filled cell per answer. A dashed line marks where the thread breaks.</p>';
+  h+='<div class="scroll"><table class="loom"><thead><tr><th style="text-align:left">Round</th>'+COLS.map(function(c){return '<th>'+NAMES[c]+'</th>';}).join("")+'</tr></thead><tbody>';
+  Q.forEach(function(q,i){
+    h+='<tr'+(frays.indexOf(i+1)>-1?' class="fray"':'')+'><td class="rl">'+(i+1)+'. '+q.short+'</td>';
+    COLS.forEach(function(c){var f=picks[i]===c;h+='<td class="c'+(f?' f':'')+'">'+(f?'<span class="vh">filled</span>':'')+'</td>';});
+    h+='</tr>';
+  });
+  h+='</tbody></table></div>';
+  h+='<p style="margin-top:6px">'+(frays.length?'Thread breaks '+frays.length+' times, first at round '+frays[0]+'.':'Thread runs unbroken in one column.')+'</p>';
+  h+='<p style="margin-top:10px"><b>Days without new data: '+gp+'.</b> The ringed square is day 21.</p><div class="gapbar" aria-hidden="true">';
+  for(var d=1;d<=30;d++)h+='<i class="'+(d<=gp?'f':'')+(d===21?' m':'')+'"></i>';
+  h+='</div>';
+
+  // cases
+  h+='<h2>Bad, base, good</h2>';
+  h+='<p class="help">EV '+money(ev)+' at '+as.rate+'% gives a success fee of '+money(success)+'. Week '+wk+' of '+as.plen+' leaves '+rem+' month'+(rem===1?'':'s')+' of support before any slip.</p>';
+  h+='<div class="scroll"><div class="cases">';
+  cases.forEach(function(c){
+    h+='<div class="case '+c.k+'"><h3>'+c.name+'</h3><p class="help">'+c.line+'</p><dl>'+
+      '<dt>Months of support</dt><dd>'+c.m+'</dd>'+
+      '<dt>Your success fee</dt><dd>'+money(c.fee)+'</dd>'+
+      '<dt>Fixed path costs you</dt><dd>'+money(c.fixed)+'</dd>'+
+      '<dt>Share path costs you</dt><dd>'+money(c.shareCost)+'</dd>'+
+      '<dt>Net, fixed / share</dt><dd>'+money(c.netFixed)+' / '+money(c.netShare)+'</dd></dl></div>';
+  });
+  h+='</div></div>';
+
+  if(survives){
+    h+='<div class="verdict"><p><b>The share path with a floor survives the bad case.</b> Your loss is '+money(bad.shareCost)+' against '+money(as.fixed)+' on the fixed path.</p>'+
+      (push===Infinity?'<p>With no floor set, it never costs you more than the fixed path in a dead deal.</p>':
+      '<p>How far it stretches: up to '+breakM+' months of support with no close. That is '+push+' more month'+(push===1?'':'s')+' of slip past the bad case. Past month '+breakM+', the fixed fee costs you less.</p>')+
+      '<p>The trade: when the deal closes, the share path costs you '+money(base.shareCost-as.fixed)+' more than the fixed path in the base case.</p></div>';
+  }else{
+    h+='<div class="verdict fail"><p><b>Safer setting first: a floor of '+money(safeFloor)+' a month or less.</b></p><p>At the current floor the share path does not survive the bad case. It costs you '+money(bad.shareCost)+' in a dead deal, more than the '+money(as.fixed)+' fixed fee.</p></div>';
+  }
+  h+='<p class="help">On the other side of the table: in the bad case the work costs '+money(bad.withAI)+'. With the floor, the outside party carries a '+money(Math.max(0,shortfall))+' shortfall. With no floor, the shortfall is '+money(noFloorShort)+', and few will offer that structure. The plan holds with the floor and does not hold without it.</p>';
+
+  // fee table
+  h+='<h2>Usual path and shortcut</h2><p class="help">Same inputs: EV '+money(ev)+', week '+wk+', '+rem+' months left.</p>';
+  h+='<div class="scroll"><table><thead><tr><th>Path</th><th>Good</th><th>Base</th><th>Bad, 6-month slip</th></tr></thead><tbody>'+
+    '<tr><td>Usual: fixed '+money(as.fixed)+'</td><td>'+money(cases[2].fixed)+'</td><td>'+money(base.fixed)+'</td><td>'+money(bad.fixed)+' lost</td></tr>'+
+    '<tr><td>Shortcut: '+as.share+'% of your fee at close, '+money(as.floor)+'/month floor</td><td>'+money(cases[2].shareCost)+'</td><td>'+money(base.shareCost)+'</td><td>'+money(bad.shareCost)+' lost</td></tr>'+
+    '</tbody></table></div>';
+
+  // AI table
+  h+='<h2>The work, with and without AI</h2><div class="scroll"><table><thead><tr><th>Case</th><th>With AI ('+money(as.ai)+' tools + '+money(as.rev)+' reviewer)</th><th>By hand ('+money(as.analyst)+' analyst)</th><th>Saved</th></tr></thead><tbody>'+
+    '<tr><td>Base, '+base.m+' months</td><td>'+money(base.withAI)+'</td><td>'+money(base.noAI)+'</td><td>'+money(base.noAI-base.withAI)+'</td></tr>'+
+    '<tr><td>Bad, '+bad.m+' months</td><td>'+money(bad.withAI)+'</td><td>'+money(bad.noAI)+'</td><td>'+money(bad.noAI-bad.withAI)+'</td></tr>'+
+    '</tbody></table></div>';
+  h+='<p class="help" style="margin-top:6px">AI does the buyer mapping and first drafts. A reviewer checks every draft. Your named associate signs every buyer answer before it is sent. You approve every buyer before contact.</p>';
+
+  // formula
+  h+='<h2>Formula</h2><div class="formula mono">success fee      = EV × fee rate
+months of support = max(1, round((process length − weeks since launch) ÷ 4.33)) + slip
+fixed path cost   = fixed fee
+share path cost   = if closes: max(share × success fee, floor × months)
+                    if no close: floor × months
+work cost, AI     = (AI tools + reviewer) × months
+work cost, hand   = analyst × months
+break point       = fixed fee ÷ floor   (months, no close)</div>';
+
+  // note
+  h+='<h2>The note you want never to receive</h2><div class="note"><p>Friday, week '+noteWeek+' of your process. The week the data room gap reaches 21 days.</p><p>"Thank you for the opportunity. After further review, we have decided not to proceed at this time."</p></div>';
+  h+='<p class="help" style="margin-top:6px">'+(gp>=21?'Your gap is already '+gp+' days.':'Your gap is '+gp+' days. At this pace it reaches 21 in '+(21-gp)+' days.')+'</p>';
+
+  // share
+  var summary="Round Six fit quiz result: "+NAMES[pick]+".\n"+C.say+"\n\nEV "+money(ev)+", week "+wk+", "+lv+" live bidder(s), "+gp+" days without new data.\nBad case (no close, "+bad.m+" months): fixed path "+money(as.fixed)+" lost, share path "+money(bad.shareCost)+" lost.\nBase case: fixed "+money(base.fixed)+", share "+money(base.shareCost)+".\nNo client name was entered.";
+  h+='<div class="btns noprint"><a class="btn solid" id="fwd" href="mailto:?subject='+encodeURIComponent("Round Six: "+NAMES[pick]+" for a live mandate")+'&body='+encodeURIComponent(summary)+'">Forward to a colleague</a><button type="button" id="copyBtn">Copy summary</button><button type="button" onclick="window.print()">Print</button></div><p class="help" id="copyMsg" role="status"></p>';
+  out.innerHTML=h;
+  var cb=document.getElementById("copyBtn");
+  cb.addEventListener("click",function(){
+    var msg=document.getElementById("copyMsg");
+    function fallback(){
+      try{var t=document.createElement("textarea");t.value=summary;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);msg.textContent="Summary copied.";}
+      catch(e){msg.textContent="Copy is blocked here. Use Forward or Print.";}
+    }
+    try{
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(summary).then(function(){msg.textContent="Summary copied.";},fallback);}
+      else fallback();
+    }catch(e){fallback();}
+  });
+}
+
+buildQuiz();buildAssume();render();
+})();
+</script>
+</body>
+</html>

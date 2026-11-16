@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-11-15: The Bench Test
+### 2026-11-16: Round Six
 
-<a href="days/2026-11-15/"><img src="days/2026-11-15/team.png" alt="Team for 2026-11-15: Documentary director · Playwright · Private equity principal · Janus" width="100%"></a>
+<a href="days/2026-11-16/"><img src="days/2026-11-16/team.png" alt="Team for 2026-11-16: Game designer · Textile designer · Investment banker · Cassandra" width="100%"></a>
 
-**Task:** Hire or automate calculator: a role's salary, ramp time, and workload against a tool's cost give the cheaper path at 6, 12, and 24 months.
+**Task:** Fit quiz: eight multiple-choice questions give which of three approaches suits the buyer and why.
 
-**Decision:** The page takes three inputs and returns the cheaper of hire or automate at 6, 12 and 24 months for teaser screening, with every assumption listed, an undo cost for each path, and the bad case beside the base case.
+**Decision:** The page asks a sell-side banker eight questions about a live mandate.
 
-<a href="days/2026-11-15/"><img src="days/2026-11-15/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-11-16/"><img src="days/2026-11-16/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-11-15/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-11-16/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,15 +37,15 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-11-16](days/2026-11-16/) | <a href="days/2026-11-16/"><img src="days/2026-11-16/artifact-1.png" alt="Round Six" width="160"></a> | Round Six | Game designer · Textile designer · Investment banker · Cassandra |
 | [2026-11-15](days/2026-11-15/) | <a href="days/2026-11-15/"><img src="days/2026-11-15/artifact-1.png" alt="The Bench Test" width="160"></a> | The Bench Test | Documentary director · Playwright · Private equity principal · Janus |
 | [2026-11-14](days/2026-11-14/) | <a href="days/2026-11-14/"><img src="days/2026-11-14/artifact-1.png" alt="Empty frames" width="160"></a> | Empty frames | Beekeeper · Florist · Fund manager raising capital · The Trickster |
 | [2026-11-13](days/2026-11-13/) | <a href="days/2026-11-13/"><img src="days/2026-11-13/artifact-1.png" alt="Stay-or-Go Ledger" width="160"></a> | Stay-or-Go Ledger | Urban planner · Weaver · Roll-up operator · Hydra |
 | [2026-11-12](days/2026-11-12/) | <a href="days/2026-11-12/"><img src="days/2026-11-12/artifact-1.png" alt="What They'll Open First" width="160"></a> | What They'll Open First | Luthier · Cobbler · Owner preparing to sell · The Fool |
 | [2026-11-11](days/2026-11-11/) | <a href="days/2026-11-11/"><img src="days/2026-11-11/artifact-1.png" alt="Ready Before First Ring" width="160"></a> | Ready Before First Ring | Chef · Taxidermist · Insurance agency owner · Gulliver |
 | [2026-11-10](days/2026-11-10/) | <a href="days/2026-11-10/"><img src="days/2026-11-10/artifact-1.png" alt="Lender's Eye" width="160"></a> | Lender's Eye | Packaging designer · Glassblower · Search fund entrepreneur · Glass fox |
-| [2026-11-09](days/2026-11-09/) | <a href="days/2026-11-09/"><img src="days/2026-11-09/artifact-1.png" alt="Day 100 Inbox" width="160"></a> | Day 100 Inbox | Calligrapher · Teacher · Corporate development head · The Outsider |
 
-[All 43 days](ARCHIVE.md)
+[All 44 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works
