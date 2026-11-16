@@ -1,0 +1,185 @@
+{
+  "start": "2026-11-23",
+  "base": "2026-10-07",
+  "provider": "claude",
+  "model": "claude-opus-5-5",
+  "added": {
+    "roles": [
+      {
+        "text": "Cooper",
+        "credit": ""
+      },
+      {
+        "text": "Saddler",
+        "credit": ""
+      },
+      {
+        "text": "Milliner",
+        "credit": ""
+      },
+      {
+        "text": "Wheelwright",
+        "credit": ""
+      },
+      {
+        "text": "Basket maker",
+        "credit": ""
+      },
+      {
+        "text": "Jeweller",
+        "credit": ""
+      },
+      {
+        "text": "Stage manager",
+        "credit": ""
+      },
+      {
+        "text": "Land surveyor",
+        "credit": ""
+      }
+    ],
+    "methods": [
+      {
+        "text": "Read the brief aloud and mark every word that makes you hesitate.",
+        "credit": ""
+      },
+      {
+        "text": "Price each part before building it, and drop what costs more than it returns.",
+        "credit": ""
+      },
+      {
+        "text": "Describe the work to a colleague using only nouns and numbers.",
+        "credit": ""
+      },
+      {
+        "text": "Write the three questions a doubtful buyer will ask and answer each on the page.",
+        "credit": ""
+      },
+      {
+        "text": "Keep a log of every decision with its reason, and review it at the end.",
+        "credit": ""
+      },
+      {
+        "text": "Change one variable at a time and record the result.",
+        "credit": ""
+      },
+      {
+        "text": "Start with the dullest part and finish it completely.",
+        "credit": ""
+      },
+      {
+        "text": "Set every default value to the most common real case.",
+        "credit": ""
+      }
+    ],
+    "constraints": [
+      {
+        "text": "Readable at 200 percent browser zoom without sideways scrolling.",
+        "credit": ""
+      },
+      {
+        "text": "Every number rounds to at most two decimal places.",
+        "credit": ""
+      }
+    ],
+    "tasks": [
+      {
+        "text": "Churn cost calculator: customer count, monthly churn rate, and average monthly revenue per customer give the revenue lost per year and the gain from cutting churn by one point.",
+        "credit": ""
+      },
+      {
+        "text": "Price change simulator: current price, monthly volume, unit cost, and an expected volume change give revenue and margin at five price steps, side by side.",
+        "credit": ""
+      },
+      {
+        "text": "Error cost tally: errors per month, cost to fix each, and the share caught late give the monthly and yearly cost of mistakes, with each step of the sum shown.",
+        "credit": ""
+      },
+      {
+        "text": "Tool overlap finder: the buyer's current tools with monthly cost and main uses give the functions covered more than once and the spend that could be cut.",
+        "credit": ""
+      },
+      {
+        "text": "Rollout timeline builder: a start date, number of teams, and weeks per team give a dated rollout schedule with a buffer week the buyer sets, printable.",
+        "credit": ""
+      },
+      {
+        "text": "Single point check: the buyer's key tasks, who can do each, and whether a backup exists give a list of tasks that depend on one person, ranked by impact.",
+        "credit": ""
+      }
+    ],
+    "guests": [
+      {
+        "text": "historical | Gregor Mendel | Count the outcomes over many trials before naming a rule. | died 1884",
+        "credit": ""
+      },
+      {
+        "text": "literary | Phileas Fogg | Set a hard deadline and plan every leg against it. | Jules Verne, died 1905",
+        "credit": ""
+      }
+    ],
+    "temperaments": [
+      {
+        "text": "Repeats the other side's point before answering it.",
+        "credit": ""
+      },
+      {
+        "text": "Asks what it would cost to be wrong.",
+        "credit": ""
+      },
+      {
+        "text": "Goes quiet, then returns with a written list.",
+        "credit": ""
+      },
+      {
+        "text": "Splits every argument into smaller questions.",
+        "credit": ""
+      }
+    ]
+  },
+  "retired": {
+    "guests": [
+      "historical | Euclid | State a few assumptions, then build everything from them. | died c. 270 BC",
+      "historical | Ibn al-Haytham | Trust nothing until an experiment shows it. | died c. 1040"
+    ],
+    "temperaments": [
+      "Impatient; cuts people off mid-sentence.",
+      "Hoards evidence before saying anything.",
+      "Agrees fast, then quietly does it their own way.",
+      "Argues the opposite side to test an idea."
+    ],
+    "roles": [
+      "Industrial designer",
+      "Furniture maker",
+      "Set designer",
+      "Lighting designer",
+      "Costume designer",
+      "Game designer",
+      "Puppeteer",
+      "Choreographer"
+    ],
+    "methods": [
+      "Design the error and empty states first.",
+      "List the assumptions in the brief and check each one.",
+      "Make it work in black and white before adding color.",
+      "Prototype in the final material.",
+      "Take the conventions of a genre and break exactly one.",
+      "Storyboard every change of state.",
+      "Write the copy before the layout.",
+      "Scope the work to what fits in one day."
+    ],
+    "constraints": [
+      "Under 100 words of fixed text on the page.",
+      "Three colors at most."
+    ],
+    "tasks": [
+      "Cost-of-inaction calculator: the buyer's current volumes and rates give what the problem costs per month and per year, with each step of the sum shown.",
+      "Readiness scorecard: twelve yes-or-no questions give a score out of 100, the three weakest areas, and one next step for each.",
+      "Benchmark checker: the buyer's own figures sit next to typical ranges they can edit, with each gap marked ahead, level, or behind.",
+      "Leak finder: a funnel of stages with counts gives the stage that loses the most and what fixing half of that loss would be worth.",
+      "Time-back calculator: weekly hours on manual tasks and an hourly cost give the hours and money an automated step would return.",
+      "Before-and-after map: today's process as a list of steps becomes a side-by-side view marking the steps that could be removed or automated."
+    ]
+  },
+  "suggestions": []
+}
