@@ -1,11 +1,12 @@
 # Archive
 
-Every daily team and the asset it made, newest first. 44 days recorded.
+Every daily team and the asset it made, newest first. 45 days recorded.
 
 [Today](README.md)
 
 | Date | Task | Team | Constraint | Asset |
 |---|---|---|---|---|
+| [2026-11-17](days/2026-11-17/) | The Carry Wall | Exhibition designer · Puppeteer · Real estate developer · Sisyphus | Saves the input in the browser and restores it on reload. | [asset](days/2026-11-17/artifact-1.html) |
 | [2026-11-16](days/2026-11-16/) | Round Six | Game designer · Textile designer · Investment banker · Cassandra | Uses no more than two font sizes. | [asset](days/2026-11-16/artifact-1.html) |
 | [2026-11-15](days/2026-11-15/) | The Bench Test | Documentary director · Playwright · Private equity principal · Janus | Every change can be undone. | [asset](days/2026-11-15/artifact-1.html) |
 | [2026-11-14](days/2026-11-14/) | Empty frames | Beekeeper · Florist · Fund manager raising capital · The Trickster | Fits in a postcard-sized area. | [asset](days/2026-11-14/artifact-1.html) |

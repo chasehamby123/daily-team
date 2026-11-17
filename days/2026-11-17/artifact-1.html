@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Can this close by your date: carry, score, next steps</title>
+<style>
+:root{--wall:#f2efe7;--paper:#fffdf8;--ink:#141414;--mute:#5c584f;--line:#d2ccbe;--red:#c22f19}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--wall);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+.num{font-variant-numeric:tabular-nums}
+header{padding:36px 0 22px}
+.label{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:0}
+h1{font-size:clamp(34px,6.4vw,60px);line-height:1;margin:10px 0 14px;letter-spacing:-.025em;font-weight:800}
+.lede{max-width:42em;margin:0;color:var(--mute)}
+.wall{background:var(--red);color:#fff;padding:26px 0 28px}
+.wall .label{color:#ffe3dc}
+.carry{font-size:clamp(46px,14vw,72pt);font-weight:800;line-height:1;letter-spacing:-.035em;margin:8px 0 0;font-variant-numeric:tabular-nums;word-break:break-word}
+.carry .per{font-size:.28em;font-weight:600;letter-spacing:0;margin-left:.2em}
+.score{font-size:24pt;font-weight:700;margin:12px 0 4px;font-variant-numeric:tabular-nums}
+.wallnote{margin:6px 0 0;max-width:44em;color:#fff}
+section{padding:30px 0 8px}
+.room{display:flex;align-items:baseline;gap:14px;border-top:2px solid var(--ink);padding-top:10px;margin-bottom:14px}
+.room b{font-size:13px;letter-spacing:.12em}
+.room h2{font-size:22px;margin:0;letter-spacing:-.01em}
+.help{color:var(--mute);font-size:14px;margin:4px 0 12px;max-width:46em}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px 28px}
+.field label{display:block;font-weight:700;font-size:15px}
+.field input{width:100%;font:inherit;font-size:22px;padding:8px 10px;border:2px solid var(--ink);background:var(--paper);border-radius:0;margin-top:6px;font-variant-numeric:tabular-nums}
+.field .echo{font-size:14px;color:var(--mute);margin-top:4px;min-height:1.4em}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 0}
+button{font:inherit;font-size:14px;padding:8px 14px;border:2px solid var(--ink);background:var(--paper);color:var(--ink);cursor:pointer;border-radius:0}
+button:hover{background:var(--ink);color:#fff}
+button:focus-visible,input:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.stack{display:flex;height:46px;border:2px solid var(--ink);background:var(--paper);margin-top:6px}
+.cell{border-right:1px solid var(--wall);background:repeating-linear-gradient(45deg,transparent 0 6px,rgba(194,47,25,.45) 6px 8px);transition:background-color .25s}
+.cell:last-child{border-right:0}
+.cell.on{background:var(--ink)}
+.stacklab{display:flex;font-size:11px;color:var(--mute);letter-spacing:.04em;text-transform:uppercase}
+.stacklab span{padding:4px 2px 0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.areas{display:grid;grid-template-columns:1fr 1fr;gap:6px 28px;margin-top:16px}
+.area h3{font-size:13px;letter-spacing:.1em;text-transform:uppercase;margin:12px 0 2px;display:flex;justify-content:space-between}
+.area h3 span{color:var(--mute);font-weight:400;letter-spacing:0;text-transform:none}
+.q{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 0;border-top:1px solid var(--line)}
+.q p{margin:0;font-size:15px}
+.yn{display:flex;flex:none;position:relative}
+.yn input{position:absolute;opacity:0;width:1px;height:1px}
+.yn label{border:2px solid var(--ink);padding:6px 0;width:54px;text-align:center;cursor:pointer;font-size:14px;background:var(--paper)}
+.yn label+input+label{border-left:0}
+.yn input:checked+label{background:var(--ink);color:#fff}
+.yn input:focus-visible+label{outline:3px solid var(--red);outline-offset:2px}
+.status{font-size:14px;color:var(--mute);margin:10px 0 0}
+.weak{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{background:var(--paper);border:1px solid var(--line);padding:14px 16px}
+.card h3{margin:0 0 4px;font-size:18px}
+.card .k{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.card p{margin:6px 0 0;font-size:15px}
+.cases{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.cases .card.bad{border-top:6px solid var(--red)}
+.cases .card.base{border-top:6px solid var(--ink)}
+.cases .card.good{border-top:6px solid #8a857a}
+dl{margin:8px 0 0;display:grid;grid-template-columns:1fr auto;gap:2px 10px;font-size:14px}
+dt{color:var(--mute)}
+dd{margin:0;text-align:right;font-variant-numeric:tabular-nums}
+dd.big{font-size:18px;font-weight:700}
+.verdict{border-left:6px solid var(--ink);background:var(--paper);padding:12px 16px;margin:16px 0 0;font-size:16px}
+.verdict.no{border-left-color:var(--red)}
+.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:14px;background:var(--paper)}
+th,td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+thead th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);border-bottom:2px solid var(--ink);white-space:normal;vertical-align:bottom}
+.note{font-size:14px;color:var(--mute);margin:10px 0 0;max-width:48em}
+.small{border:2px solid var(--ink);padding:10px 14px;margin:0 0 14px;background:var(--paper);font-size:15px}
+.inline{display:inline-block;width:5.5em;font:inherit;font-size:14px;padding:3px 6px;border:1px solid var(--ink);background:var(--paper)}
+.asm{display:grid;grid-template-columns:1fr 1fr;gap:8px 28px}
+.asm label{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px;border-top:1px solid var(--line);padding:6px 0}
+.asm input{width:7.5em;font:inherit;font-size:14px;padding:4px 6px;border:1px solid var(--ink);background:var(--paper);text-align:right}
+.formula{font:13px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:var(--paper);border:1px solid var(--line);padding:12px 14px;white-space:pre-wrap;margin:0}
+#summary{padding:30px 0}
+.sheet{background:#fff;border:1px solid var(--line);padding:24px 26px;max-width:800px}
+.sheet h2{margin:0 0 2px;font-size:22px}
+.sheet h3{font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin:14px 0 4px;border-bottom:1px solid var(--ink);padding-bottom:2px}
+.sheet ul{margin:0;padding-left:0;list-style:none;columns:2;column-gap:24px;font-size:13px}
+.sheet li{break-inside:avoid;padding:1px 0}
+.sheet ol{margin:0;padding-left:18px;font-size:13px}
+.sheet table{font-size:12px}
+.sheet th,.sheet td{padding:4px 6px}
+footer{border-top:2px solid var(--ink);margin-top:30px;padding:16px 0 40px;font-size:13px;color:var(--mute)}
+footer p{margin:6px 0;max-width:60em}
+@media (max-width:720px){
+ .two,.areas,.asm{grid-template-columns:1fr}
+ .weak,.cases{grid-template-columns:1fr}
+ .stacklab{font-size:9px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none;animation:none;scroll-behavior:auto}}
+@media print{
+ @page{size:A4;margin:12mm}
+ body{background:#fff;font-size:10pt}
+ body>*{display:none}
+ body>#summary{display:block;padding:0}
+ #summary .wrap{padding:0;max-width:none}
+ #summary .room,#summary .btns,#summary .help{display:none}
+ .sheet{border:0;padding:0;max-width:none}
+ table{background:#fff}
+}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+ <p class="label">Free tool. No sign-up. Your answers stay in this browser.</p>
+ <h1>Can this close by your date</h1>
+ <p class="lede">Two numbers and twelve yes-or-no answers. The result leads with what the wait costs you each month in dollars. Below that: a score out of 100, the three weakest areas, and one next step for each. The example below is a $26,000,000 project with 74 days left. Change it or clear it.</p>
+</header>
+
+<div class="wall" role="region" aria-label="Monthly carry">
+ <div class="wrap">
+  <p class="label">Carry until you close, base case</p>
+  <p class="carry" id="wCarry">—</p>
+  <p class="score" id="wScore">Score — / 100</p>
+  <p class="wallnote" id="wNote"></p>
+ </div>
+</div>
+
+<main class="wrap">
+
+<section>
+ <div class="room"><b>01</b><h2>Two numbers</h2></div>
+ <div class="two">
+  <div class="field">
+   <label for="cost">Total project cost, $</label>
+   <input id="cost" type="number" inputmode="decimal" min="0" step="any">
+   <div class="echo" id="costEcho"></div>
+  </div>
+  <div class="field">
+   <label for="days">Days until the capital window closes</label>
+   <input id="days" type="number" inputmode="numeric" min="0" step="1">
+   <div class="echo" id="daysEcho"></div>
+  </div>
+ </div>
+ <div class="btns">
+  <button type="button" id="bExample">Load the example</button>
+  <button type="button" id="bClear">Clear all</button>
+  <button type="button" id="bTime">Time a fresh run</button>
+ </div>
+ <p class="status" id="saveNote"></p>
+ <p class="status" id="timerNote"></p>
+</section>
+
+<section>
+ <div class="room"><b>02</b><h2>Twelve answers</h2></div>
+ <p class="help">The bar is your capital stack. Each yes fills its block. Each no leaves a hatched hole. Senior debt and equity blocks are worth 10 points each. The rest are worth 7.5.</p>
+ <div class="stack" id="stack" aria-hidden="true"></div>
+ <div class="stacklab" id="stackLab" aria-hidden="true"></div>
+ <div class="areas" id="areas"></div>
+ <p class="status" id="answered"></p>
+</section>
+
+<section>
+ <div class="room"><b>03</b><h2>The three weakest areas</h2></div>
+ <div id="small"></div>
+ <div class="weak" id="weak"></div>
+</section>
+
+<section>
+ <div class="room"><b>04</b><h2>Three cases</h2></div>
+ <p class="help">Same project. Each case changes the land loan rate, the months of slip, and profit at sale. Edit them in section 08.</p>
+ <div class="cases" id="cases"></div>
+ <div class="verdict" id="verdict"></div>
+</section>
+
+<section>
+ <div class="room"><b>05</b><h2>Two ways to pay for the raise</h2></div>
+ <p class="help">Same inputs, both structures. Usual path: a placement retainer plus a percent of the raise. Shortcut: nothing up front, a share of profit at sale. Terms vary by firm and deal. Enter yours in section 08.</p>
+ <div class="tbl"><table id="paths"></table></div>
+ <p class="note" id="pathNote"></p>
+</section>
+
+<section>
+ <div class="room"><b>06</b><h2>Lender packets: by hand or drafted</h2></div>
+ <p class="help">Each lender wants the same answers in its own packet. A model can draft each packet from the answers saved here and your pro forma. This page does not call a model. It counts the hours.</p>
+ <p class="help">
+  Packets <input class="inline" id="i_lenders" type="number" min="0" step="1"> ·
+  Hours each by hand <input class="inline" id="i_hours" type="number" min="0" step="any"> ·
+  Analyst minutes each when drafted <input class="inline" id="i_draftMin" type="number" min="0" step="any"> ·
+  Analyst $/hour <input class="inline" id="i_wage" type="number" min="0" step="any">
+ </p>
+ <div class="tbl"><table id="ai"></table></div>
+ <p class="note">A person still does three things. The analyst checks every figure against the pro forma. The developer picks which lenders receive a packet. The CFO reads and signs each packet before it goes out.</p>
+</section>
+
+<section>
+ <div class="room"><b>08</b><h2>Formula and assumptions</h2></div>
+ <pre class="formula" id="formula"></pre>
+ <p class="note">Rates, property tax, insurance, permit times, and fees depend on your lender and local rules. The defaults are placeholders. Enter yours. This page does arithmetic on your inputs. It is not legal, tax, or investment advice.</p>
+ <div class="asm" id="asm" style="margin-top:12px"></div>
+</section>
+
+</main>
+
+<section id="summary">
+ <div class="wrap">
+  <div class="room"><b>07</b><h2>Lender summary</h2></div>
+  <p class="help">One page, built from the saved answers. Print it once per lender. Change two answers and it updates.</p>
+  <div class="btns" style="margin:0 0 14px"><button type="button" id="bPrint">Print lender summary</button></div>
+  <div class="sheet" id="sheet"></div>
+ </div>
+</section>
+
+<footer class="wrap">
+ <p>Credits. Exhibition designer: the carry figure across the top and the score set small beneath it. Puppeteer: the capital stack bar, the 90-second timer, and the two-path table. Real estate developer: the title, the four capital stack questions, and dollar figures in place of labels. Sisyphus: answers saved in this browser and the one-page lender summary.</p>
+ <p>Published by OuterHaven Advisory.</p>
+</footer>
+
+<script>
+(function(){
+var KEY='carrywall.v1';
+var AREAS=[
+ {name:'Site control',pts:7.5,q:['Land is owned or under signed contract.','Title report is back with no open exceptions.'],step:'Order the title commitment now. Clear each exception before lender counsel asks.'},
+ {name:'Entitlements',pts:7.5,q:['Zoning allows the project as drawn.','Building permits are issued or have a date from the city.'],step:'Get a zoning confirmation letter and a permit date in writing. Times follow local rules; ask the city.'},
+ {name:'Budget',pts:7.5,q:['Hard costs are bid by a general contractor.','The contingency line is in the budget and the lender has seen it.'],step:'Get a GC bid on hard costs. Show the lender the contingency line before they ask for it.'},
+ {name:'Senior debt',pts:10,q:['Senior term sheet is signed.','Lender closing conditions are cleared.'],step:'List every closing condition with an owner and a date. Clear the longest one first.'},
+ {name:'Equity',pts:10,q:['Equity is committed in writing.','The gap is sized in dollars and has a named source.'],step:'Size the gap: project cost minus senior loan minus committed equity. Put a name and a date next to each dollar.'},
+ {name:'Timeline',pts:7.5,q:['The closing calendar fits inside the window.','The schedule holds if any one item slips 30 days.'],step:'Build the closing calendar backward from your date. Mark each item that can slip and what a month of it costs.'}
+];
+var DEF={rate:9,badRate:11,goodRate:8,landPct:25,otherPct:0.05,slip:6,margin:34.6,badMargin:17.5,goodMargin:40,raisePct:15,retainer:30000,feePct:2,sharePct:6,lenders:8,hours:6,draftMin:20,wage:90};
+var ASM=[
+ ['rate','Land loan rate, base','%'],['badRate','Land loan rate, bad case','%'],['goodRate','Land loan rate, good case','%'],
+ ['landPct','Land, share of project cost','%'],['otherPct','Other carry per month (tax, insurance, fees), share of cost','%'],
+ ['slip','Slip in the bad case','months'],['margin','Profit at sale, base','% of cost'],
+ ['badMargin','Profit at sale before slip carry, bad','% of cost'],['goodMargin','Profit at sale, good','% of cost'],
+ ['raisePct','Capital to raise','% of cost'],['retainer','Placement retainer','$'],['feePct','Placement fee','% of raise'],['sharePct','Profit share','% of profit']
+];
+var EX={cost:26000000,days:74,a:[1,1,1,1,1,0,1,1,0,0,0,0]};
+
+function copy(o){return JSON.parse(JSON.stringify(o));}
+function isNum(v){return typeof v==='number'&&isFinite(v);}
+function $(id){return document.getElementById(id);}
+function money(n){var s='$'+Math.round(Math.abs(n)).toLocaleString('en-US');return n<0?'−'+s:s;}
+function pct(n){return (Math.round(n*100)/100)+'%';}
+function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+
+var state=null,storeOK=true;
+try{
+ var raw=localStorage.getItem(KEY);
+ if(raw){var o=JSON.parse(raw);if(o&&o.a&&o.a.length===12){state=o;}}
+}catch(e){storeOK=false;}
+var restored=state?true:false;
+if(state===null){state={cost:EX.cost,days:EX.days,a:EX.a.slice(),as:copy(DEF)};}
+if(typeof state.as==='object'&&state.as){}else{state.as={};}
+Object.keys(DEF).forEach(function(k){if(isNum(state.as[k])){}else{state.as[k]=DEF[k];}});
+
+function save(){
+ state.saved=new Date().toISOString();
+ try{localStorage.setItem(KEY,JSON.stringify(state));storeOK=true;
+  $('saveNote').textContent='Saved in this browser at '+new Date().toLocaleTimeString()+'. Reload and it comes back.';
+ }catch(e){storeOK=false;
+  $('saveNote').textContent='Storage is blocked in this browser. The page works, but answers will not come back after a reload.';}
+}
+
+/* build the form */
+var stack=$('stack'),lab=$('stackLab'),areasEl=$('areas');
+AREAS.forEach(function(A,ai){
+ var w=A.pts*2;
+ var s=document.createElement('span');s.style.flex=w+' 0 0';s.textContent=A.name;lab.appendChild(s);
+ var box=document.createElement('div');box.className='area';
+ var h=document.createElement('h3');h.innerHTML=A.name+' <span>'+A.pts+' pts each</span>';box.appendChild(h);
+ A.q.forEach(function(text,j){
+  var i=ai*2+j;
+  var c=document.createElement('div');c.className='cell';c.style.flex=A.pts+' 0 0';c.id='cell'+i;stack.appendChild(c);
+  var row=document.createElement('div');row.className='q';
+  row.innerHTML='<p id="qt'+i+'">'+text+'</p><div class="yn" role="radiogroup" aria-labelledby="qt'+i+'">'+
+   '<input type="radio" name="q'+i+'" id="q'+i+'y" value="1"><label for="q'+i+'y">Yes</label>'+
+   '<input type="radio" name="q'+i+'" id="q'+i+'n" value="0"><label for="q'+i+'n">No</label></div>';
+  box.appendChild(row);
+ });
+ areasEl.appendChild(box);
+});
+var asmEl=$('asm');
+ASM.forEach(function(f){
+ var l=document.createElement('label');
+ l.innerHTML='<span>'+f[1]+' ('+f[2]+')</span><input type="number" step="any" id="i_'+f[0]+'">';
+ asmEl.appendChild(l);
+});
+var ALLASM=ASM.map(function(f){return f[0];}).concat(['lenders','hours','draftMin','wage']);
+
+function syncForm(){
+ $('cost').value=isNum(state.cost)?state.cost:'';
+ $('days').value=isNum(state.days)?state.days:'';
+ for(var i=0;i<12;i++){
+  $('q'+i+'y').checked=state.a[i]===1;
+  $('q'+i+'n').checked=state.a[i]===0;
+ }
+ ALLASM.forEach(function(k){$('i_'+k).value=state.as[k];});
+}
+
+function readNum(v){if(v===''||v===null)return null;var n=Number(v);return isFinite(n)?n:null;}
+
+/* timer */
+var timing=false,t0=0;
+function answeredCount(){return state.a.filter(function(x){return x===0||x===1;}).length;}
+
+document.addEventListener('input',function(e){
+ var t=e.target;
+ if(t.id==='cost'){state.cost=readNum(t.value);}
+ else if(t.id==='days'){state.days=readNum(t.value);}
+ else if(t.id&&t.id.indexOf('i_')===0){var k=t.id.slice(2),n=readNum(t.value);state.as[k]=n===null?0:n;}
+ else return;
+ save();render();
+});
+document.addEventListener('change',function(e){
+ var t=e.target;
+ if(t.type==='radio'&&/^q\d+$/.test(t.name)){
+  state.a[Number(t.name.slice(1))]=Number(t.value);
+  if(timing){
+   if(t0===0)t0=Date.now();
+   if(answeredCount()===12){
+    var s=Math.max(1,Math.round((Date.now()-t0)/1000));
+    $('timerNote').textContent='Run time: '+s+' seconds from first to last answer. '+(s<=90?'Under 90.':'Over 90. One question is too slow to answer.');
+    timing=false;
+   }
+  }
+  save();render();
+ }
+});
+$('bExample').addEventListener('click',function(){state={cost:EX.cost,days:EX.days,a:EX.a.slice(),as:copy(DEF)};save();syncForm();render();});
+$('bClear').addEventListener('click',function(){state.cost=null;state.days=null;state.a=[null,null,null,null,null,null,null,null,null,null,null,null];save();syncForm();render();});
+$('bTime').addEventListener('click',function(){
+ state.a=[null,null,null,null,null,null,null,null,null,null,null,null];timing=true;t0=0;
+ save();syncForm();render();
+ $('timerNote').textContent='Timer armed. It starts at your first answer and stops at the twelfth. Target: under 90 seconds.';
+ $('q0y').focus();
+});
+$('bPrint').addEventListener('click',function(){window.print();});
+
+function render(){
+ var as=state.as,c=state.cost,d=state.days;
+ for(var i=0;i<12;i++){$('cell'+i).classList.toggle('on',state.a[i]===1);}
+ var n=answeredCount();
+ $('answered').textContent=n+' of 12 answered.';
+ $('costEcho').textContent=isNum(c)?money(c):'';
+ var close=new Date();if(isNum(d))close.setDate(close.getDate()+Math.round(d));
+ $('daysEcho').textContent=isNum(d)?'Window closes '+iso(close)+'.':'';
+
+ var ok=isNum(c)&&c>0&&isNum(d)&&d>=0&&n===12;
+ var blocks=['weak','cases','verdict','paths','pathNote','ai','sheet','small'];
+ if(ok===false){
+  $('wCarry').innerHTML='—';
+  $('wScore').textContent='Score — / 100';
+  $('wNote').textContent='Enter project cost and days, and answer all twelve. '+(14-n-(isNum(c)&&c>0?1:0)-(isNum(d)&&d>=0?1:0))+' inputs to go.';
+  blocks.forEach(function(id){$(id).innerHTML='';});
+  $('weak').innerHTML='<p class="note">The three weakest areas show when all 14 inputs are in.</p>';
+  renderFormula(null);
+  return;
+ }
+
+ /* score and weak areas */
+ var score=0;
+ var areas=AREAS.map(function(A,ai){
+  var got=0;for(var j=0;j<2;j++){if(state.a[ai*2+j]===1)got+=A.pts;}
+  score+=got;return {i:ai,name:A.name,got:got,max:A.pts*2,pct:got/(A.pts*2),step:A.step};
+ });
+ var weak=areas.slice().sort(function(x,y){return (x.pct-y.pct)||(x.i-y.i);}).slice(0,3);
+ var sc=Math.round(score);
+
+ /* carry and cases */
+ var land=c*as.landPct/100,other=c*as.otherPct/100;
+ function carryAt(r){return land*r/100/12+other;}
+ var raise=c*as.raisePct/100;
+ var fee=as.retainer+raise*as.feePct/100;
+ var cases=[
+  {k:'Bad',cls:'bad',rate:as.badRate,slip:as.slip,m:as.badMargin},
+  {k:'Base',cls:'base',rate:as.rate,slip:0,m:as.margin},
+  {k:'Good',cls:'good',rate:as.goodRate,slip:0,m:as.goodMargin}
+ ];
+ cases.forEach(function(cs){
+  cs.carry=carryAt(cs.rate);cs.slipCost=cs.slip*cs.carry;
+  cs.profit=c*cs.m/100-cs.slipCost;
+  cs.share=Math.max(cs.profit,0)*as.sharePct/100;
+ });
+ var bad=cases[0],base=cases[1],good=cases[2];
+ var toDate=base.carry*d/30.4;
+
+ /* wall */
+ $('wCarry').innerHTML=money(base.carry)+'<span class="per">a month</span>';
+ $('wScore').textContent='Score '+sc+' / 100';
+ $('wNote').textContent=Math.round(d)+' days to your date ('+iso(close)+'). Carry from today to then: '+money(toDate)+'. In the bad case each month past it costs '+money(bad.carry)+'.';
+
+ /* small deal note */
+ $('small').innerHTML=c<5000000?'<div class="small">At '+money(c)+' the three steps below are the work. The fee and share comparison in section 05 moves about '+money(Math.abs(fee-base.share))+', near '+(Math.round(Math.abs(fee-base.share)/base.carry*10)/10)+' months of carry. Take the steps in order.</div>':'';
+
+ $('weak').innerHTML=weak.map(function(w,k){
+  return '<div class="card"><div class="k">Weak area '+(k+1)+' · '+w.got+' of '+w.max+' pts</div><h3>'+w.name+'</h3><p>'+w.step+'</p></div>';
+ }).join('');
+
+ $('cases').innerHTML=cases.map(function(cs){
+  return '<div class="card '+cs.cls+'"><div class="k">'+cs.k+' case</div><dl>'+
+   '<dt>Land loan rate</dt><dd>'+pct(cs.rate)+'</dd>'+
+   '<dt>Slip</dt><dd>'+cs.slip+' mo</dd>'+
+   '<dt>Profit at sale before slip carry</dt><dd>'+pct(cs.m)+' of cost</dd>'+
+   '<dt>Carry per month</dt><dd>'+money(cs.carry)+'</dd>'+
+   '<dt>Slip carry</dt><dd>'+money(cs.slipCost)+'</dd>'+
+   '<dt>Profit at sale</dt><dd class="big">'+money(cs.profit)+'</dd></dl></div>';
+ }).join('');
+
+ /* verdict */
+ var pre=c*as.badMargin/100;
+ var maxSlip=bad.carry>0?Math.floor(pre/bad.carry):Infinity;
+ var rateCap=(as.slip>0&&land>0)?((pre/as.slip-other)*1200/land):null;
+ var v=$('verdict');
+ if(bad.profit>0){
+  v.className='verdict';
+  v.textContent='The plan survives the bad case. Bad-case profit: '+money(bad.profit)+'. At '+pct(as.badRate)+' it breaks after a slip of '+(isFinite(maxSlip)?maxSlip+' months':'no finite number of months')+
+   (rateCap===null?'.':'. With a '+as.slip+' month slip it breaks at a land loan rate of '+pct(Math.round(rateCap*10)/10)+'.')+
+   ' Separate from profit: a '+as.slip+' month slip is about '+Math.round(as.slip*30.4)+' days. Your window has '+Math.round(d)+'.';
+ }else{
+  v.className='verdict no';
+  var safe=pre<=0?'Safer setting first: profit before slip carry must be above 0% of cost. Recheck the bad-case margin.':
+   'Safer setting first: hold the slip to '+maxSlip+' months or less at '+pct(as.badRate)+(rateCap!==null&&rateCap>0?', or lock a land loan rate under '+pct(Math.round(rateCap*10)/10)+' for a '+as.slip+' month slip':'')+'.';
+  v.textContent=safe+' As entered, the plan does not survive the bad case. Bad-case profit: '+money(bad.profit)+'.';
+ }
+
+ /* paths */
+ var rows=[good,base,bad].map(function(cs){
+  return '<tr><td>'+cs.k+(cs.slip?' ('+cs.slip+' mo slip at '+pct(cs.rate)+')':'')+'</td><td>'+money(cs.profit)+'</td><td>'+money(fee)+'</td><td>'+money(cs.profit-fee)+'</td><td>'+money(cs.share)+'</td><td>'+money(cs.profit-cs.share)+'</td></tr>';
+ }).join('');
+ rows+='<tr><td>Deal dies</td><td>'+money(0)+'</td><td>'+money(as.retainer)+'</td><td>'+money(-as.retainer)+'</td><td>'+money(0)+'</td><td>'+money(0)+'</td></tr>';
+ $('paths').innerHTML='<thead><tr><th>Case</th><th>Profit</th><th>Usual: retainer + '+pct(as.feePct)+' of '+money(raise)+'</th><th>You keep</th><th>Shortcut: '+pct(as.sharePct)+' of profit</th><th>You keep</th></tr></thead><tbody>'+rows+'</tbody>';
+ var be=as.sharePct>0?fee/(as.sharePct/100):Infinity;
+ $('pathNote').textContent='Break-even: the share costs less than the fee only when profit is under '+(isFinite(be)?money(be):'any amount')+'. Above that, the share costs more in every case that closes. If the deal dies, the usual path costs '+money(as.retainer)+' and the shortcut costs '+money(0)+'.';
+
+ /* AI */
+ var hand=as.lenders*as.hours*as.wage,drafted=as.lenders*as.draftMin/60*as.wage;
+ $('ai').innerHTML='<thead><tr><th>Case</th><th>Analyst hours by hand</th><th>Cost by hand</th><th>Analyst hours drafted</th><th>Cost drafted</th><th>Difference</th></tr></thead><tbody>'+
+  '<tr><td>Base: one round, '+as.lenders+' packets</td><td>'+Math.round(as.lenders*as.hours*10)/10+'</td><td>'+money(hand)+'</td><td>'+Math.round(as.lenders*as.draftMin/6)/10+'</td><td>'+money(drafted)+'</td><td>'+money(hand-drafted)+'</td></tr>'+
+  '<tr><td>Bad: slip forces a second round</td><td>'+Math.round(as.lenders*as.hours*20)/10+'</td><td>'+money(hand*2)+'</td><td>'+Math.round(as.lenders*as.draftMin/3)/10+'</td><td>'+money(drafted*2)+'</td><td>'+money((hand-drafted)*2)+'</td></tr></tbody>';
+
+ /* sheet */
+ var lines=state.a.map(function(x,i){var A=AREAS[Math.floor(i/2)];return '<li>'+(x===1?'Yes':'No')+' · '+A.q[i%2]+'</li>';}).join('');
+ $('sheet').innerHTML='<h2>Lender summary</h2><p class="label">Prepared '+iso(new Date())+' from saved answers</p>'+
+  '<h3>Project</h3><table><tbody>'+
+  '<tr><td>Total project cost</td><td>'+money(c)+'</td><td>Capital to raise ('+pct(as.raisePct)+')</td><td>'+money(raise)+'</td></tr>'+
+  '<tr><td>Capital window closes</td><td>'+iso(close)+' ('+Math.round(d)+' days)</td><td>Carry per month, base</td><td>'+money(base.carry)+'</td></tr>'+
+  '<tr><td>Score</td><td>'+sc+' / 100</td><td>Carry from today to the date</td><td>'+money(toDate)+'</td></tr></tbody></table>'+
+  '<h3>Twelve answers</h3><ul>'+lines+'</ul>'+
+  '<h3>Open items and next step</h3><ol>'+weak.map(function(w){return '<li><b>'+w.name+'.</b> '+w.step+'</li>';}).join('')+'</ol>'+
+  '<h3>Cases</h3><table><thead><tr><th>Case</th><th>Rate</th><th>Slip</th><th>Carry / mo</th><th>Profit at sale</th></tr></thead><tbody>'+
+  cases.map(function(cs){return '<tr><td>'+cs.k+'</td><td>'+pct(cs.rate)+'</td><td>'+cs.slip+' mo</td><td>'+money(cs.carry)+'</td><td>'+money(cs.profit)+'</td></tr>';}).join('')+
+  '</tbody></table><p class="note">Figures come from the sponsor’s inputs and stated assumptions. Carry = land at '+pct(as.landPct)+' of cost × rate ÷ 12 + '+pct(as.otherPct)+' of cost per month.</p>';
+
+ renderFormula({c:c,land:land,other:other,base:base,bad:bad,raise:raise,fee:fee});
+}
+
+function renderFormula(x){
+ var as=state.as;
+ var t='Score  = 7.5 pts per yes in Site control, Entitlements, Budget, Timeline\n'+
+  '       + 10 pts per yes in Senior debt, Equity             (max 100)\n'+
+  'Weakest areas = lowest share of points earned; ties go in listed order\n\n'+
+  'Carry per month = land × rate ÷ 12 + other\n'+
+  '  land  = project cost × '+pct(as.landPct)+'\n'+
+  '  other = project cost × '+pct(as.otherPct)+' per month\n'+
+  'Profit at sale  = project cost × profit % − slip months × carry\n'+
+  'Usual path cost = retainer + fee % × (project cost × '+pct(as.raisePct)+')\n'+
+  'Shortcut cost   = share % × profit at sale; 0 if the deal dies\n'+
+  'Packet cost     = packets × analyst hours × analyst $/hour';
+ if(x){
+  t+='\n\nOn your numbers, base case:\n'+
+   '  land = '+money(x.land)+'; other = '+money(x.other)+'\n'+
+   '  carry = '+money(x.land)+' × '+pct(as.rate)+' ÷ 12 + '+money(x.other)+' = '+money(x.base.carry)+'\n'+
+   '  usual path = '+money(as.retainer)+' + '+pct(as.feePct)+' × '+money(x.raise)+' = '+money(x.fee);
+ }
+ $('formula').textContent=t;
+}
+
+syncForm();
+render();
+if(restored){$('saveNote').textContent='Restored your saved answers from this browser.';}
+else{save();if(storeOK){$('saveNote').textContent='Example loaded and saved in this browser. Your changes save as you type.';}}
+})();
+</script>
+</body>
+</html>
