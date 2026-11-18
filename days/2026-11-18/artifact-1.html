@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Who Keeps the Keys: staff takeover or bank-funded sale, month by month</title>
+<style>
+:root{
+  --paper:#f3eee4; --card:#fbf8f2; --ink:#2a221d; --muted:#6a5e52;
+  --sang:#9b3a1e; --walnut:#5b3e2a; --line:#cdbfa9; --ok:#3d5a3a; --wall:#e6ddcd;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+main{max-width:1080px;margin:0 auto;padding:20px 16px 40px}
+h1,h2,h3{font-family:ui-serif,Georgia,"Times New Roman",serif;font-weight:600;line-height:1.2;margin:0}
+h1{font-size:2.1rem;color:var(--walnut)}
+h2{font-size:1.35rem;margin-bottom:10px}
+h3{font-size:1.05rem;margin-bottom:8px}
+.kicker,.cap{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.lede{font-size:1.1rem;max-width:44em;margin:8px 0 0}
+section{margin-top:22px}
+.card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--walnut);padding:16px;margin-top:14px}
+.card.alt{border-left-color:var(--sang)}
+dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;margin:0}
+dt{font-weight:600}
+dd{margin:0}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+label{display:block;font-size:.9rem;margin-top:10px}
+label span{display:block;color:var(--muted);font-size:.8rem}
+input{width:100%;font:inherit;padding:8px 10px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:2px;margin-top:2px}
+input:focus{outline:2px solid var(--sang);outline-offset:1px}
+button{font:inherit;font-size:.9rem;padding:7px 12px;border:1px solid var(--walnut);background:#fff;color:var(--walnut);border-radius:2px;cursor:pointer}
+button:hover{background:var(--wall)}
+button.main{background:var(--walnut);color:#fff}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.status{font-size:.85rem;color:var(--muted)}
+.head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:top}
+th{font-weight:600;background:var(--wall)}
+td.ok{color:var(--ok);font-weight:600}
+td.no{color:var(--sang);font-weight:600}
+.scroll{overflow-x:auto}
+pre{font-family:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;font-size:13.5px;line-height:1.4;white-space:pre-wrap;word-break:break-word;background:#fff;border:1px solid var(--line);padding:12px;margin:8px 0 0;letter-spacing:.02em}
+.verdict p{margin:8px 0}
+.verdict .ok{color:var(--ok)}
+.verdict .no{color:var(--sang)}
+.big{font-family:ui-serif,Georgia,serif;font-size:1.2rem;margin:4px 0 0}
+.note{font-size:.85rem;color:var(--muted)}
+footer{border-top:1px solid var(--line);margin-top:30px;padding-top:14px;font-size:.82rem;color:var(--muted)}
+footer ul{padding-left:18px;margin:6px 0}
+[hidden]{display:none!important}
+@media (max-width:860px){.three{grid-template-columns:1fr}}
+@media (max-width:640px){.two{grid-template-columns:1fr} dl{grid-template-columns:1fr} dt{margin-top:6px} h1{font-size:1.7rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media print{
+  body{background:#fff}
+  button,.noprint{display:none!important}
+  .card{break-inside:avoid;border-color:#999}
+  input{border:none;padding:0}
+  .three{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <p class="kicker">Free payback calculator for an owner planning to step back</p>
+  <h1>Who Keeps the Keys</h1>
+  <p class="lede">Your own people taking over, set beside a bank-funded sale. Same numbers. The month each successor breaks even, and the month you are paid in full.</p>
+</header>
+
+<section aria-labelledby="w">
+  <div class="card">
+    <h2 id="w">The words, defined before the numbers</h2>
+    <dl>
+      <dt>Successor</dt><dd>Whoever takes over the firm. On this page: your own people, or someone funded by a bank loan.</dd>
+      <dt>Setup</dt><dd>What the successor pays on day one.</dd>
+      <dt>Monthly cost</dt><dd>What the successor pays out each month. For your own people this is the earn-out: a share of profit paid to you.</dd>
+      <dt>Monthly gain</dt><dd>What the business earns the successor each month, before they pay you or the bank.</dd>
+      <dt>Breaks even</dt><dd>The first month the successor has earned back their setup.</dd>
+      <dt>Paid in full</dt><dd>The month the agreed price has reached you.</dd>
+      <dt>Survives</dt><dd>The successor breaks even by the month you set below, in the bad case.</dd>
+    </dl>
+  </div>
+</section>
+
+<section aria-labelledby="n">
+  <h2 id="n">Your numbers</h2>
+  <label>The people who could carry this on <span>A name or a role. It labels the staff path.</span>
+    <input id="who" type="text" autocomplete="off"></label>
+  <div class="two">
+    <label>Agreed price <span>The same price on both paths, in your currency.</span>
+      <input id="price" type="number" min="0" step="any" inputmode="decimal"></label>
+    <label>Monthly gain <span>Profit the business makes each month. The same on both paths.</span>
+      <input id="gain" type="number" min="0" step="any" inputmode="decimal"></label>
+  </div>
+  <div class="two">
+    <div class="card">
+      <p class="cap">The shortcut</p>
+      <h3>Your own people</h3>
+      <label>Setup <span>Their deposit to you on day one.</span>
+        <input id="sDep" type="number" min="0" step="any" inputmode="decimal"></label>
+      <label>Earn-out share, % <span>Share of monthly gain paid to you until the price is paid. This is their monthly cost.</span>
+        <input id="sShare" type="number" min="0" max="100" step="any" inputmode="decimal"></label>
+    </div>
+    <div class="card alt">
+      <p class="cap">The usual path</p>
+      <h3>Bank-funded successor</h3>
+      <label>Setup <span>Their own money in on day one. A bank lends the rest of the price.</span>
+        <input id="bDep" type="number" min="0" step="any" inputmode="decimal"></label>
+      <label>Monthly cost <span>Their loan repayment. Enter the figure from a real quote. Loan terms depend on local rules.</span>
+        <input id="bCost" type="number" min="0" step="any" inputmode="decimal"></label>
+    </div>
+  </div>
+  <div class="three">
+    <label>Bad case: gain falls to, % <span>50 means profit halves.</span>
+      <input id="bad" type="number" min="0" step="any" inputmode="decimal"></label>
+    <label>Good case: gain rises to, % <span>125 means a quarter more.</span>
+      <input id="good" type="number" min="0" step="any" inputmode="decimal"></label>
+    <label>Survives if it breaks even by month <span>Your limit for the successor.</span>
+      <input id="horizon" type="number" min="1" step="1" inputmode="numeric"></label>
+  </div>
+  <div class="card">
+    <h3>Diligence, paid by you before completion</h3>
+    <div class="three">
+      <label>Model reads the papers <span>Contracts, leases, three years of books.</span>
+        <input id="aiRead" type="number" min="0" step="any" inputmode="decimal"></label>
+      <label>Named accountant reviews and signs
+        <input id="acct" type="number" min="0" step="any" inputmode="decimal"></label>
+      <label>Conventional diligence quote <span>Done by hand, no model.</span>
+        <input id="conv" type="number" min="0" step="any" inputmode="decimal"></label>
+    </div>
+  </div>
+  <div class="row noprint">
+    <button class="main" id="exBtn" type="button">Load the worked example</button>
+    <button id="clrBtn" type="button">Clear all</button>
+    <button id="rstBtn" type="button" hidden>Restore my last numbers</button>
+    <span class="status" id="status" aria-live="polite">Worked example loaded: 31-year firm, 9 staff, two managers taking over.</span>
+  </div>
+</section>
+
+<div id="empty" class="card" hidden>
+  <h2>Nothing to count yet</h2>
+  <p>Enter the agreed price, the monthly gain, a setup and monthly cost for each path, the three case settings, and the diligence figures. The months appear here as you type.</p>
+</div>
+
+<div id="results">
+  <section aria-labelledby="r1">
+    <div class="card">
+      <div class="head"><h2 id="r1">Result</h2><button type="button" data-copy="cases">Copy</button></div>
+      <p class="big" id="headline"></p>
+      <div class="scroll"><table id="caseTable"></table></div>
+      <div class="verdict" id="verdict"></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="r2">
+    <h2 id="r2">Timeline</h2>
+    <p class="note">One square per month, twelve to a line, one line per year. ■ counted toward the result. □ not needed. M0 is completion.</p>
+    <div class="three">
+      <div class="card"><div class="head"><h3>Bad case</h3><button type="button" data-copy="tl0">Copy</button></div><pre id="tl0"></pre></div>
+      <div class="card"><div class="head"><h3>Base case</h3><button type="button" data-copy="tl1">Copy</button></div><pre id="tl1"></pre></div>
+      <div class="card"><div class="head"><h3>Good case</h3><button type="button" data-copy="tl2">Copy</button></div><pre id="tl2"></pre></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="r3">
+    <div class="card alt">
+      <div class="head"><h2 id="r3">If the deal falls through</h2><button type="button" data-copy="dil">Copy</button></div>
+      <p>Diligence is month zero on both paths. It is paid by you whether or not the deal completes.</p>
+      <div class="scroll"><table id="dilTable"></table></div>
+      <p id="dilNote"></p>
+      <p><strong>Who still reviews what.</strong> A model reads the contracts, leases, and three years of books, and lists what it finds. A named accountant checks every finding against the source papers and signs the report. Your bookkeeper checks the figures against the books they keep. Anything flagged in a contract or lease goes to a lawyer. What needs a lawyer depends on local rules.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="r4">
+    <div class="card">
+      <div class="head"><h2 id="r4">Formula</h2><button type="button" data-copy="formula">Copy</button></div>
+      <pre id="formula"></pre>
+    </div>
+  </section>
+
+  <section aria-labelledby="q">
+    <div class="card">
+      <h2 id="q">Two questions</h2>
+      <div class="two">
+        <label>How many people work for you?
+          <input id="staff" type="number" min="0" step="1" inputmode="numeric"></label>
+        <label>How many months have you been looking for a successor?
+          <input id="looked" type="number" min="0" step="1" inputmode="numeric"></label>
+      </div>
+      <p id="qNote"></p>
+      <div class="row">
+        <button class="main" type="button" data-copy="summary">Send this to your accountant: copy everything</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <p>This page is a calculator. It is not financial, tax, or legal advice. Earn-out terms, loan terms, and tax on a sale depend on local rules. Enter your own figures and check them with your accountant. Your numbers stay on this device.</p>
+  <p>Made by:</p>
+  <ul>
+    <li>Museum curator: the defined words above the inputs and the five storyboarded states: empty, typing, paid back, never pays back, copied.</li>
+    <li>Furniture maker: one file with no libraries, timelines in plain characters that copy clean, and the halved-gain bad case.</li>
+    <li>Retiring owner with no successor: the staff path beside the bank path, the word successor, and the paid-in-full row.</li>
+    <li>Leonardo da Vinci: rows of twelve squares per year, your bookkeeper as the test reader, and the hand-checked worked example.</li>
+  </ul>
+  <p>Published by OuterHaven Advisory.</p>
+</footer>
+</main>
+
+<script>
+(function(){
+var $=function(id){return document.getElementById(id)};
+var NUMS=['price','gain','sDep','sShare','bDep','bCost','bad','good','horizon','aiRead','acct','conv'];
+var ALL=['who'].concat(NUMS,['staff','looked']);
+var EX={who:'Two managers',price:615000,gain:21000,sDep:60000,sShare:40,bDep:180000,bCost:7500,bad:50,good:125,horizon:36,aiRead:6000,acct:4000,conv:30000,staff:9,looked:24};
+var KEY='whoKeepsTheKeys.v1', MAX=600, T={};
+
+function num(id){var v=$(id).value.trim();if(v==='')return NaN;return Number(v.replace(/,/g,''));}
+function fmt(n){return Math.round(n).toLocaleString('en-GB');}
+function mtxt(m){if(m===null)return 'never within 50 years';if(m===0)return 'month 0';return 'month '+m+(m>=24?' ('+Math.floor(m/12)+' yr '+(m%12)+' mo)':'');}
+
+function staffCalc(g,dep,share,price){
+  var cum=-dep, owed=Math.max(0,price-dep), be=dep<=0?0:null, paid=owed<=0?0:null;
+  for(var m=1;m<=MAX&&(be===null||paid===null);m++){
+    var pay=Math.min(share*g,owed); owed-=pay; cum+=g-pay;
+    if(be===null&&cum>=0)be=m;
+    if(paid===null&&owed<=1e-9)paid=m;
+  }
+  return {be:be,paid:paid};
+}
+function bankCalc(g,dep,cost){
+  if(dep<=0)return 0; var net=g-cost; if(net<=0)return null;
+  var m=Math.ceil(dep/net-1e-9); return m>MAX?null:m;
+}
+function grid(n){
+  if(n===null)return ['    no result within 50 years'];
+  if(n===0)return ['    month 0'];
+  var out=[], yrs=Math.ceil(n/12), show=Math.min(yrs,15);
+  for(var y=1;y<=show;y++){
+    var s=('Y'+y+'   ').slice(0,4);
+    for(var i=1;i<=12;i++)s+=((y-1)*12+i<=n)?'■':'□';
+    out.push(s);
+  }
+  if(yrs>15)out.push('    continues to month '+n);
+  return out;
+}
+
+function render(){
+  var v={};
+  for(var i=0;i<NUMS.length;i++){v[NUMS[i]]=num(NUMS[i]);if(!isFinite(v[NUMS[i]])||v[NUMS[i]]<0){$('results').hidden=true;$('empty').hidden=false;return;}}
+  $('results').hidden=false;$('empty').hidden=true;
+  var who=$('who').value.trim()||'Your own people';
+  var whoL=who.charAt(0).toLowerCase()+who.slice(1);
+  var share=Math.min(1,v.sShare/100), H=Math.max(1,Math.round(v.horizon));
+  var ai=v.aiRead+v.acct;
+  var cases=[['Bad',v.bad/100],['Base',1],['Good',v.good/100]].map(function(c){
+    var g=v.gain*c[1], s=staffCalc(g,v.sDep,share,v.price);
+    return {k:c[0],f:c[1],g:g,sBe:s.be,sPaid:s.paid,bBe:bankCalc(g,v.bDep,v.bCost)};
+  });
+  var bad=cases[0], base=cases[1];
+  var drive='Inputs: price '+fmt(v.price)+'. Staff path setup '+fmt(v.sDep)+', earn-out '+v.sShare+'% of gain. Bank path setup '+fmt(v.bDep)+', cost '+fmt(v.bCost)+' a month.';
+
+  // headline
+  var hl;
+  if(base.sBe===null&&base.bBe===null)hl='Base case: neither successor breaks even within 50 years. Monthly cost is at or above monthly gain.';
+  else hl='Base case: '+whoL+' break even in '+mtxt(base.sBe)+'. A bank-funded successor breaks even in '+mtxt(base.bBe)+'. You are paid in full in '+mtxt(base.sPaid)+' on the staff path, and at completion on the bank path.';
+  $('headline').textContent=hl;
+
+  // table
+  var rows=[
+    ['Monthly gain',function(c){return fmt(c.g)+' ('+Math.round(c.f*100)+'% of base)';}],
+    [who+' break even',function(c){return mtxt(c.sBe);},'s'],
+    ['Bank-funded successor breaks even',function(c){return mtxt(c.bBe);},'b'],
+    ['You are paid in full, staff path',function(c){return mtxt(c.sPaid);}],
+    ['You are paid in full, bank path',function(){return 'month 0, at completion';}]
+  ];
+  var h='<thead><tr><th scope="col">Bad, base, good</th>'+cases.map(function(c){return '<th scope="col">'+c.k+' case</th>';}).join('')+'</tr></thead><tbody>';
+  var txt=['RESULT: WHO KEEPS THE KEYS',hl,'',drive,''];
+  rows.forEach(function(r){
+    h+='<tr><th scope="row">'+esc(r[0])+'</th>';
+    cases.forEach(function(c){
+      var cls='';
+      if(r[2]){var m=r[2]==='s'?c.sBe:c.bBe;cls=(m!==null&&m<=H)?'ok':'no';}
+      h+='<td class="'+cls+'">'+esc(r[1](c))+'</td>';
+    });
+    h+='</tr>';
+    txt.push(r[0]+': '+cases.map(function(c){return c.k+' '+r[1](c);}).join(' | '));
+  });
+  h+='</tbody>';
+  $('caseTable').innerHTML=h;
+
+  // verdicts
+  var gB=bad.g, out=[];
+  // staff path
+  if(bad.sBe!==null&&bad.sBe<=H){
+    var gm=share<1?v.sDep/(H*(1-share)):Infinity;
+    out.push(['ok',who+': survives the bad case. Breaks even in '+mtxt(bad.sBe)+', inside the limit of month '+H+'. It still survives if monthly gain falls to '+fmt(gm)+', '+Math.round(gm/v.gain*100)+'% of the base case.']);
+  }else{
+    var dS=H*gB*(1-share), shMax=gB>0?(1-v.sDep/(H*gB))*100:-1, opt=[];
+    if(dS>0)opt.push('lower the setup to '+fmt(dS));
+    if(shMax>0)opt.push('lower the earn-out share to '+Math.floor(shMax)+'%');
+    out.push(['no','Safer setting first: '+(opt.length?opt.join(', or ')+'. Then '+whoL+' break even by month '+H+' in the bad case.':'the bad-case gain leaves nothing to repay the setup. Raise the bad-case gain only if you have evidence for it.')+' As entered, they break even in '+mtxt(bad.sBe)+', which does not survive.']);
+  }
+  // bank path
+  if(bad.bBe!==null&&bad.bBe<=H){
+    var gmB=v.bDep/H+v.bCost;
+    out.push(['ok','Bank-funded successor: survives the bad case. Breaks even in '+mtxt(bad.bBe)+'. It still survives if monthly gain falls to '+fmt(gmB)+', '+Math.round(gmB/v.gain*100)+'% of the base case.']);
+  }else{
+    var dB=H*(gB-v.bCost), cMax=gB-v.bDep/H, o2=[];
+    if(dB>0)o2.push('lower their setup to '+fmt(dB));
+    if(cMax>0)o2.push('lower the monthly cost to '+fmt(cMax));
+    out.push(['no','Safer setting first: '+(o2.length?o2.join(', or ')+'. Then a bank-funded successor breaks even by month '+H+' in the bad case.':'the loan repayment of '+fmt(v.bCost)+' is at or above the bad-case gain of '+fmt(gB)+'. No setup fits.')+' As entered, they break even in '+mtxt(bad.bBe)+', which does not survive. A loan repayment does not fall when profit does.']);
+  }
+  // owner
+  var ow='Your payout on the staff path moves from '+mtxt(base.sPaid)+' in the base case to '+mtxt(bad.sPaid)+' in the bad case. On the bank path you are paid at completion in every case.';
+  if(share+0.1<=1){
+    var alt=staffCalc(gB,v.sDep,share+0.1,v.price);
+    ow+=' At '+Math.round(v.sShare+10)+'% earn-out, the bad-case payout comes to '+mtxt(alt.paid)+' and '+whoL+' break even in '+mtxt(alt.be)+'.';
+  }
+  out.push(['',ow]);
+  $('verdict').innerHTML=out.map(function(p){return '<p class="'+p[0]+'">'+esc(p[1])+'</p>';}).join('');
+  txt.push('');out.forEach(function(p){txt.push(p[1]);});
+  T.cases=txt.join('\n');
+
+  // timelines
+  cases.forEach(function(c,i){
+    var L=[c.k.toUpperCase()+' CASE: gain '+fmt(c.g)+' a month','M0  diligence '+fmt(ai)+', paid by you'];
+    if(c.k==='Bad')L.push('    lost if the deal falls through');
+    L.push('',who+': break even '+mtxt(c.sBe));L=L.concat(grid(c.sBe));
+    L.push('','Bank-funded successor: break even '+mtxt(c.bBe));L=L.concat(grid(c.bBe));
+    L.push('','You, staff path: paid in full '+mtxt(c.sPaid));L=L.concat(grid(c.sPaid));
+    L.push('','You, bank path: paid in full at completion, month 0');
+    T['tl'+i]=L.join('\n');$('tl'+i).textContent=T['tl'+i];
+  });
+
+  // diligence
+  var d=v.conv-ai;
+  $('dilTable').innerHTML='<thead><tr><th scope="col">Case</th><th scope="col">Model read + accountant sign-off</th><th scope="col">Conventional, no model</th><th scope="col">Difference</th></tr></thead><tbody>'+
+    '<tr><th scope="row">Base: deal completes</th><td>'+fmt(ai)+' paid</td><td>'+fmt(v.conv)+' paid</td><td>'+fmt(d)+'</td></tr>'+
+    '<tr><th scope="row">Bad: deal falls through</th><td class="no">'+fmt(ai)+' lost</td><td class="no">'+fmt(v.conv)+' lost</td><td>'+fmt(d)+'</td></tr></tbody>';
+  var dn='With the model: '+fmt(v.aiRead)+' for the read plus '+fmt(v.acct)+' for the signed review. The figure is the same on both paths, so it does not change either breakeven month.';
+  $('dilNote').textContent=dn;
+  T.dil=['IF THE DEAL FALLS THROUGH','Base, deal completes: '+fmt(ai)+' paid with model read and accountant sign-off, '+fmt(v.conv)+' paid conventionally. Difference '+fmt(d)+'.','Bad, deal falls through: '+fmt(ai)+' lost against '+fmt(v.conv)+' lost. Difference '+fmt(d)+'.',dn,'A named accountant reviews every finding and signs. Your bookkeeper checks the figures. A lawyer reads anything flagged in contracts or leases.'].join('\n');
+
+  // formula
+  T.formula=['Breaks even = first month where months x (monthly gain - monthly cost) >= setup.','Simple form: round up (setup / (monthly gain - monthly cost)).','Staff path monthly cost = earn-out share x monthly gain, until the agreed price is paid.','You, staff path, paid in full = round up ((agreed price - setup) / (earn-out share x monthly gain)).','You, bank path: the bank lends the rest, so you are paid at completion, month 0.','Bad and good cases multiply monthly gain by your percentages. The bank repayment stays fixed.','','Worked example, checked by hand:','Bank: 180,000 / (21,000 - 7,500) = 13.3, month 14.','Staff: 60,000 / (21,000 x 0.6) = 4.8, month 5.','Gain halved: 180,000 / 3,000 = month 60. 60,000 / 6,300 = 9.5, month 10.','Your payout: 555,000 / 8,400 = 66.1, month 67. Gain halved: 555,000 / 4,200 = 132.1, month 133.','','Left out: interest beyond the repayment you enter, tax, inflation. These depend on local rules.'].join('\n');
+  $('formula').textContent=T.formula;
+
+  // qualifying questions
+  var st=num('staff'), lk=num('looked'), q=[];
+  if(isFinite(lk)&&lk>=0&&base.sPaid!==null){
+    q.push('You have been looking for '+lk+' months. Counted from when you started, the staff path pays you in full at month '+(lk+base.sPaid)+' in the base case'+(bad.sPaid!==null?' and month '+(lk+bad.sPaid)+' in the bad case':'')+'. Each further month of looking adds one to both.');
+  }
+  if(isFinite(st)&&st>0)q.push('On the staff path, the '+st+' people on your payroll report to '+whoL+' from completion. Your own people break even in '+mtxt(base.sBe)+', against '+mtxt(base.bBe)+' for a bank-funded successor.');
+  $('qNote').textContent=q.join(' ');
+  T.summary=['Who Keeps the Keys: staff takeover beside a bank-funded sale','',T.cases,'',q.join('\n'),'',T.tl0,'',T.tl1,'',T.tl2,'',T.dil,'',T.formula,'','This is a calculator, not advice. Please check these figures against our books.'].join('\n');
+}
+
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function setAll(o){ALL.forEach(function(k){$(k).value=(o&&o[k]!==undefined)?o[k]:'';});}
+function save(){try{var o={};ALL.forEach(function(k){o[k]=$(k).value;});localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}}
+function stored(){try{var s=localStorage.getItem(KEY);return s?JSON.parse(s):null;}catch(e){return null;}}
+
+function copyText(t,btn){
+  var label=btn.getAttribute('data-label')||btn.textContent;btn.setAttribute('data-label',label);
+  function done(ok){btn.textContent=ok?'Copied':'Copy blocked: select the text';$('status').textContent=ok?'Copied as plain text.':'Copy was blocked by the browser.';setTimeout(function(){btn.textContent=label;},1800);}
+  function fallback(){var ta=document.createElement('textarea');ta.value=t;ta.setAttribute('readonly','');ta.style.position='fixed';ta.style.top='0';ta.style.opacity='0';document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand('copy');}catch(e){}document.body.removeChild(ta);done(ok);}
+  try{if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t).then(function(){done(true);},fallback);return;}}catch(e){}
+  fallback();
+}
+
+var timer;
+document.addEventListener('input',function(e){
+  if(e.target.tagName!=='INPUT')return;
+  $('status').textContent='Recounting as you type.';
+  render();save();
+  clearTimeout(timer);timer=setTimeout(function(){$('status').textContent='Counted. Saved on this device where the browser allows it.';},700);
+});
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-copy]');if(b&&T[b.getAttribute('data-copy')])copyText(T[b.getAttribute('data-copy')],b);
+});
+$('exBtn').onclick=function(){setAll(EX);render();save();$('status').textContent='Worked example loaded: 31-year firm, 9 staff, two managers taking over.';};
+$('clrBtn').onclick=function(){setAll(null);render();save();$('status').textContent='Cleared. Enter your own figures.';};
+var prev=stored();
+if(prev&&JSON.stringify(prev)!==JSON.stringify((function(){var o={};ALL.forEach(function(k){o[k]=String(EX[k]);});return o;})())){
+  $('rstBtn').hidden=false;
+  $('rstBtn').onclick=function(){setAll(prev);render();$('status').textContent='Your last numbers restored.';};
+}
+setAll(EX);render();
+})();
+</script>
+</body>
+</html>

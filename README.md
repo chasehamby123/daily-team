@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-11-17: The Carry Wall
+### 2026-11-18: Who Keeps the Keys
 
-<a href="days/2026-11-17/"><img src="days/2026-11-17/team.png" alt="Team for 2026-11-17: Exhibition designer · Puppeteer · Real estate developer · Sisyphus" width="100%"></a>
+<a href="days/2026-11-18/"><img src="days/2026-11-18/team.png" alt="Team for 2026-11-18: Museum curator · Furniture maker · Retiring owner with no successor · Leonardo da Vinci" width="100%"></a>
 
-**Task:** Readiness scorecard: twelve yes-or-no questions give a score out of 100, the three weakest areas, and one next step for each.
+**Task:** Payback calculator: setup cost, monthly cost, and monthly gain give the month the buyer breaks even, shown on a timeline.
 
-**Decision:** The page asks for project cost, days until the capital window closes, and twelve yes-or-no questions, then shows monthly carry in dollars, a score out of 100, the three weakest areas with one next step each, a fee path and a share path c...
+**Decision:** The page shows a retiring owner, side by side, when a staff successor and a bank-funded successor each break even on the same inputs, and when the owner is paid in full under each.
 
-<a href="days/2026-11-17/"><img src="days/2026-11-17/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-11-18/"><img src="days/2026-11-18/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-11-17/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-11-18/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,15 +37,15 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-11-18](days/2026-11-18/) | <a href="days/2026-11-18/"><img src="days/2026-11-18/artifact-1.png" alt="Who Keeps the Keys" width="160"></a> | Who Keeps the Keys | Museum curator · Furniture maker · Retiring owner with no successor · Leonardo da Vinci |
 | [2026-11-17](days/2026-11-17/) | <a href="days/2026-11-17/"><img src="days/2026-11-17/artifact-1.png" alt="The Carry Wall" width="160"></a> | The Carry Wall | Exhibition designer · Puppeteer · Real estate developer · Sisyphus |
 | [2026-11-16](days/2026-11-16/) | <a href="days/2026-11-16/"><img src="days/2026-11-16/artifact-1.png" alt="Round Six" width="160"></a> | Round Six | Game designer · Textile designer · Investment banker · Cassandra |
 | [2026-11-15](days/2026-11-15/) | <a href="days/2026-11-15/"><img src="days/2026-11-15/artifact-1.png" alt="The Bench Test" width="160"></a> | The Bench Test | Documentary director · Playwright · Private equity principal · Janus |
 | [2026-11-14](days/2026-11-14/) | <a href="days/2026-11-14/"><img src="days/2026-11-14/artifact-1.png" alt="Empty frames" width="160"></a> | Empty frames | Beekeeper · Florist · Fund manager raising capital · The Trickster |
 | [2026-11-13](days/2026-11-13/) | <a href="days/2026-11-13/"><img src="days/2026-11-13/artifact-1.png" alt="Stay-or-Go Ledger" width="160"></a> | Stay-or-Go Ledger | Urban planner · Weaver · Roll-up operator · Hydra |
 | [2026-11-12](days/2026-11-12/) | <a href="days/2026-11-12/"><img src="days/2026-11-12/artifact-1.png" alt="What They'll Open First" width="160"></a> | What They'll Open First | Luthier · Cobbler · Owner preparing to sell · The Fool |
-| [2026-11-11](days/2026-11-11/) | <a href="days/2026-11-11/"><img src="days/2026-11-11/artifact-1.png" alt="Ready Before First Ring" width="160"></a> | Ready Before First Ring | Chef · Taxidermist · Insurance agency owner · Gulliver |
 
-[All 45 days](ARCHIVE.md)
+[All 46 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works
