@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proof Sheet: senior reconciliation hours on one page</title>
+<style>
+:root{
+  --paper:#f2ede2;
+  --sheet:#fffdf8;
+  --ink:#1c1b18;
+  --grey:#6b665c;
+  --rule:#cdc5b3;
+  --red:#b3311d;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.45 var(--sans)}
+.wrap{display:grid;grid-template-columns:330px minmax(0,1fr);gap:28px;max-width:1180px;margin:0 auto;padding:24px 20px 12px}
+@media (max-width:880px){.wrap{grid-template-columns:1fr;gap:20px;padding:16px 12px}}
+
+/* Panel */
+.panel h1{font:600 30px/1.1 var(--serif);margin:0 0 6px;letter-spacing:.01em}
+.panel h1 span{color:var(--red)}
+.panel .lede{margin:0 0 6px;color:var(--ink)}
+.panel .loaded{margin:0 0 16px;font-size:13px;color:var(--grey);border-left:3px solid var(--red);padding-left:8px}
+fieldset{border:1px solid var(--rule);background:var(--sheet);margin:0 0 14px;padding:10px 12px 4px}
+legend{font:600 12px/1 var(--sans);text-transform:uppercase;letter-spacing:.08em;padding:0 6px;color:var(--grey)}
+label{display:block;margin:0 0 10px;font-size:14px}
+label .hint{display:block;font-size:12px;color:var(--grey);margin-top:2px}
+input{display:block;width:100%;margin-top:3px;padding:7px 8px;font:15px/1.2 var(--sans);font-variant-numeric:tabular-nums;color:var(--ink);background:#fff;border:1px solid #a9a191;border-radius:0}
+input:focus{outline:2px solid var(--red);outline-offset:0}
+.pair{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.pair label{font-size:13px}
+details{border:1px solid var(--rule);background:var(--sheet);margin:0 0 14px;padding:8px 12px}
+summary{cursor:pointer;font:600 12px/1.6 var(--sans);text-transform:uppercase;letter-spacing:.08em;color:var(--grey)}
+details[open] summary{margin-bottom:8px}
+.buttons{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 8px}
+button{font:600 14px/1 var(--sans);padding:10px 14px;border:1px solid var(--ink);background:var(--sheet);color:var(--ink);cursor:pointer;border-radius:0}
+button.primary{background:var(--ink);color:var(--sheet)}
+button:focus{outline:2px solid var(--red);outline-offset:2px}
+.status{font-size:12px;color:var(--grey);min-height:1em;margin:0}
+
+/* Sheet */
+.sheet{position:relative;background:var(--sheet);padding:30px 34px 22px;box-shadow:0 1px 0 #d9d1bf,0 6px 18px rgba(28,27,24,.08);font-size:14px}
+.crop{position:absolute;width:16px;height:16px;border-color:var(--red);border-style:solid;border-width:0}
+.crop.tl{top:8px;left:8px;border-top-width:1px;border-left-width:1px}
+.crop.tr{top:8px;right:8px;border-top-width:1px;border-right-width:1px}
+.crop.bl{bottom:8px;left:8px;border-bottom-width:1px;border-left-width:1px}
+.crop.br{bottom:8px;right:8px;border-bottom-width:1px;border-right-width:1px}
+.inked{animation:ink .28s ease-out}
+@keyframes ink{from{opacity:.55}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.inked{animation:none}}
+
+.sh-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;border-bottom:2px solid var(--ink);padding-bottom:8px;margin-bottom:14px}
+.kicker{margin:0;font:600 11px/1.3 var(--sans);text-transform:uppercase;letter-spacing:.1em;color:var(--red)}
+.sh-head h2{margin:2px 0 0;font:600 24px/1.15 var(--serif)}
+.sh-head .date{margin:0;font-size:12px;color:var(--grey);white-space:nowrap}
+
+.headline{margin:0 0 10px}
+.headline .label{margin:0;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--grey)}
+.hours{margin:2px 0 0;font:700 46px/1.05 var(--serif);font-variant-numeric:tabular-nums}
+.dollars{margin:2px 0 4px;font:700 36.8px/1.05 var(--serif);font-variant-numeric:tabular-nums}
+.hours small,.dollars small{font:400 15px/1 var(--sans);color:var(--grey);margin-left:6px}
+.f{font-size:9pt;color:var(--grey);margin:2px 0 0;font-variant-numeric:tabular-nums}
+
+.givens{margin:0 0 14px;padding:6px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-size:13px}
+
+h3{font:600 15px/1.2 var(--serif);margin:14px 0 6px}
+.rows{margin:0;padding:0;list-style:none}
+.rows li{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:4px 0;border-bottom:1px dotted var(--rule)}
+.rows li .v{font-variant-numeric:tabular-nums;font-weight:600;text-align:right}
+.rows li .f{grid-column:1 / -1}
+
+.tbl{width:100%;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{padding:4px 6px;border-bottom:1px solid var(--rule);text-align:right;vertical-align:top}
+th:first-child,td:first-child{text-align:left}
+thead th{font-weight:600;border-bottom:1.5px solid var(--ink)}
+tr.sub td{color:var(--grey)}
+tr.path td:first-child{font-weight:600}
+.neg{color:var(--red)}
+
+.verdict{margin:10px 0 4px;padding:8px 10px;border-left:3px solid var(--ink);background:#f7f3ea;font-size:14px}
+.push{margin:0 0 4px;font-size:13px}
+.who{font-size:13px;margin:8px 0 4px}
+.fixed{font-size:13px;font-weight:600;margin:4px 0 0}
+.sign{margin:18px 0 6px;font-size:14px}
+.sign span{display:inline-block;border-bottom:1px solid var(--ink);min-width:220px;margin:0 16px 0 4px}
+.note{font-size:11px;color:var(--grey);margin:6px 0 0}
+
+.site-foot{max-width:1180px;margin:0 auto;padding:6px 20px 28px;font-size:12px;color:var(--grey)}
+.site-foot p{margin:4px 0}
+
+@page{size:A4 portrait;margin:12mm}
+@media print{
+  body{background:#fff;font-size:9.5pt}
+  .panel,.site-foot,.crop{display:none !important}
+  .wrap{display:block;padding:0;max-width:none}
+  .sheet{box-shadow:none;padding:0;font-size:9.5pt;animation:none}
+  .sh-head h2{font-size:17pt}
+  .hours{font-size:28pt}
+  .dollars{font-size:22.4pt}
+  .hours small,.dollars small{font-size:9.5pt}
+  table{font-size:9pt}
+  th,td{padding:2px 5px}
+  h3{font-size:10.5pt;margin:8px 0 3px}
+  .rows li{padding:2px 0}
+  .givens,.verdict,.push,.who,.fixed{font-size:9pt}
+  .f{font-size:8pt}
+  .sign{margin-top:12px;font-size:10pt}
+  .note{font-size:7.5pt}
+  section,.tbl,table,.verdict{break-inside:avoid}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <aside class="panel" aria-label="Inputs">
+    <h1>Proof Sheet<span>.</span></h1>
+    <p class="lede">Five numbers about your senior reconciliation hours. The sheet redraws as you type. Print gives one A4 page.</p>
+    <p class="loaded" id="loaded">Example loaded: Halden &amp; Rowe, 4 seniors, 12 hours a week each. Change any figure, or clear them.</p>
+
+    <fieldset>
+      <legend>The givens</legend>
+      <label>Your firm (optional)
+        <input id="firm" type="text" value="Halden &amp; Rowe" maxlength="60" autocomplete="organization">
+        <span class="hint">Your own firm. No client names.</span>
+      </label>
+      <label>Seniors on reconciliations
+        <input id="seniors" type="number" inputmode="decimal" min="0" step="1" value="4">
+      </label>
+      <label>Hours each, per week
+        <input id="hours" type="number" inputmode="decimal" min="0" step="0.5" value="12">
+      </label>
+      <label>Advisory rate, $ per hour
+        <input id="rate" type="number" inputmode="decimal" min="0" step="5" value="240">
+      </label>
+      <label>Freed advisory hours you could sell, %
+        <input id="sold" type="number" inputmode="decimal" min="0" max="100" step="5" value="50">
+        <span class="hint">The one figure you can't check yet. Set it low if unsure.</span>
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Two questions</legend>
+      <label>How many months has this been running?
+        <input id="months" type="number" inputmode="decimal" min="0" step="1" value="18">
+      </label>
+      <label>Client entities reconciled each month
+        <input id="entities" type="number" inputmode="decimal" min="0" step="1" value="140">
+      </label>
+    </fieldset>
+
+    <details>
+      <summary>Case settings and tool terms</summary>
+      <label>Working weeks a year
+        <input id="weeks" type="number" inputmode="decimal" min="0" max="52" step="1" value="46">
+        <span class="hint">Depends on your leave policy and local rules. Enter your own.</span>
+      </label>
+      <p class="f" style="margin:0 0 4px">First-pass matching saves, % of reconciliation hours, net of review</p>
+      <div class="pair">
+        <label>Bad<input id="saveBad" type="number" inputmode="decimal" min="0" max="100" step="5" value="30"></label>
+        <label>Base<input id="saveBase" type="number" inputmode="decimal" min="0" max="100" step="5" value="60"></label>
+        <label>Good<input id="saveGood" type="number" inputmode="decimal" min="0" max="100" step="5" value="70"></label>
+      </div>
+      <p class="f" style="margin:0 0 4px">Freed hours sold, %. Base is the field above.</p>
+      <div class="pair">
+        <label>Bad<input id="soldBad" type="number" inputmode="decimal" min="0" max="100" step="5" value="25"></label>
+        <label>Good<input id="soldGood" type="number" inputmode="decimal" min="0" max="100" step="5" value="75"></label>
+        <span></span>
+      </div>
+      <label>Usual path: licence, $ a year
+        <input id="licence" type="number" inputmode="decimal" min="0" step="500" value="24000">
+      </label>
+      <div class="pair" style="grid-template-columns:1fr 1fr">
+        <label>Shortcut: share of advisory billed, %<input id="sharePct" type="number" inputmode="decimal" min="0" max="100" step="1" value="15"></label>
+        <label>Share floor, $ a year<input id="floor" type="number" inputmode="decimal" min="0" step="500" value="6000"></label>
+      </div>
+      <span class="hint" style="display:block;font-size:12px;color:var(--grey);margin-bottom:8px">Enter the terms a vendor quotes you. These are example figures.</span>
+    </details>
+
+    <div class="buttons">
+      <button class="primary" id="btnPrint" type="button">Print one page</button>
+      <button id="btnClear" type="button">Clear</button>
+      <button id="btnExample" type="button">Restore example</button>
+      <button id="btnLast" type="button" hidden>Load my last figures</button>
+    </div>
+    <p class="status" id="status" aria-live="polite"></p>
+  </aside>
+
+  <article id="sheet" class="sheet" aria-label="One-page summary">
+    <span class="crop tl"></span><span class="crop tr"></span><span class="crop bl"></span><span class="crop br"></span>
+    <header class="sh-head">
+      <div>
+        <p class="kicker">Proof sheet · senior reconciliation hours</p>
+        <h2 id="s-firm">Halden &amp; Rowe</h2>
+      </div>
+      <p class="date" id="s-date"></p>
+    </header>
+
+    <section class="headline">
+      <p class="label">Advisory hours freed each year</p>
+      <p class="hours"><span id="h-hours">1,325</span><small>advisory hours</small></p>
+      <p class="dollars"><span id="h-dollars">$158,976</span><small id="h-dlabel">if 50% are sold</small></p>
+      <p class="f" id="f-head"></p>
+    </section>
+
+    <p class="givens" id="givens"></p>
+
+    <section>
+      <h3 id="m-title">This has been running for 18 months</h3>
+      <ul class="rows">
+        <li><span>Senior hours on reconciliations, per month</span><span class="v" id="m-hours"></span><span class="f" id="f-mhours"></span></li>
+        <li><span>Senior time per client entity</span><span class="v" id="m-entity"></span><span class="f" id="f-mentity"></span></li>
+        <li><span>Advisory billing not reached, per month</span><span class="v" id="m-month"></span><span class="f" id="f-mmonth"></span></li>
+        <li><span>Advisory billing not reached since it started</span><span class="v" id="m-total"></span><span class="f" id="f-mtotal"></span></li>
+      </ul>
+    </section>
+
+    <section>
+      <h3>Three cases, same inputs, plus zero sold</h3>
+      <div class="tbl"><table id="t-cases"></table></div>
+      <p class="f" id="f-cases"></p>
+      <p class="verdict" id="verdict"></p>
+      <p class="push" id="push"></p>
+    </section>
+
+    <section>
+      <h3>With and without AI first-pass matching</h3>
+      <div class="tbl"><table id="t-ai"></table></div>
+      <p class="f" id="f-ai"></p>
+      <p class="who"><strong>AI does:</strong> first-pass matching of bank lines to ledger lines, and flags every line that does not match. <strong>A named senior still:</strong> reviews each exception, approves any adjustment, and signs the reconciliation.</p>
+      <p class="fixed">No client names or ledger data entered. Nothing leaves this browser.</p>
+    </section>
+
+    <p class="sign">Reviewed and signed:<span>&nbsp;</span> Date:<span style="min-width:110px">&nbsp;</span></p>
+    <p class="note">Arithmetic on the figures entered above. It is not accounting, tax, legal, or investment advice. Rates, working weeks, and tool terms vary by firm and by local rules.</p>
+  </article>
+</main>
+
+<footer class="site-foot">
+  <p>Credits. Printmaker: the example firm, the live redraw, the one-A4 print, the two questions. Costume designer: the monthly line, the running total, the licence and share rows. Accounting firm partner: the advisory dollar line, the no-client-names line, the signed-reviewer line, the words "advisory hours". Euclid: three givens, a formula under every line, the bad case at full size.</p>
+  <p>Published by VoxxyAI.</p>
+</footer>
+
+<script>
+(function(){
+  var KEY = 'proofsheet.v1';
+  var IDS = ['firm','seniors','hours','rate','sold','months','entities','weeks','saveBad','saveBase','saveGood','soldBad','soldGood','licence','sharePct','floor'];
+  var EXAMPLE = {firm:'Halden & Rowe',seniors:'4',hours:'12',rate:'240',sold:'50',months:'18',entities:'140',weeks:'46',saveBad:'30',saveBase:'60',saveGood:'70',soldBad:'25',soldGood:'75',licence:'24000',sharePct:'15',floor:'6000'};
+  var KEEP_ON_CLEAR = ['weeks','saveBad','saveBase','saveGood','soldBad','soldGood','licence','sharePct','floor'];
+
+  function $(id){ return document.getElementById(id); }
+  function n(id){ var v = parseFloat($(id).value); return isFinite(v) ? v : 0; }
+  function money(x){ var r = Math.round(Math.abs(x)); return (x < -0.5 ? '\u2212$' : '$') + r.toLocaleString('en-US'); }
+  function hrs(x){ return Math.round(x).toLocaleString('en-US'); }
+  function pc(x){ return (Math.round(x*10)/10).toLocaleString('en-US') + '%'; }
+  function cls(x){ return x < -0.5 ? ' class="neg"' : ''; }
+  function set(id, t){ $(id).textContent = t; }
+
+  function storeGet(){ try { var s = localStorage.getItem(KEY); return s ? JSON.parse(s) : null; } catch(e){ return null; } }
+  function storeSet(o){ try { localStorage.setItem(KEY, JSON.stringify(o)); } catch(e){} }
+
+  function read(){ var o = {}; IDS.forEach(function(id){ o[id] = $(id).value; }); return o; }
+  function fill(o){ IDS.forEach(function(id){ if (o && o[id] !== undefined) $(id).value = o[id]; }); }
+
+  function caseOf(annual, save, sold, rate, licence, share, floor){
+    var freed = annual * save;
+    var soldHrs = freed * sold;
+    var billed = soldHrs * rate;
+    var shareCost = Math.max(billed * share, floor);
+    return {save:save, sold:sold, freed:freed, soldHrs:soldHrs, billed:billed,
+            licNet: billed - licence, shareCost: shareCost, shareNet: billed - shareCost,
+            left: annual - freed};
+  }
+
+  function render(){
+    var s = n('seniors'), h = n('hours'), rate = n('rate'), sold = n('sold')/100;
+    var months = n('months'), ent = n('entities'), weeks = n('weeks');
+    var sB = n('saveBad')/100, s0 = n('saveBase')/100, sG = n('saveGood')/100;
+    var soB = n('soldBad')/100, soG = n('soldGood')/100;
+    var lic = n('licence'), sh = n('sharePct')/100, floor = n('floor');
+    var annual = s * h * weeks;
+
+    var bad = caseOf(annual, sB, soB, rate, lic, sh, floor);
+    var base = caseOf(annual, s0, sold, rate, lic, sh, floor);
+    var good = caseOf(annual, sG, soG, rate, lic, sh, floor);
+    var zero = caseOf(annual, s0, 0, rate, lic, sh, floor);
+
+    var firm = $('firm').value.trim();
+    set('s-firm', firm || 'Your firm');
+    try { set('s-date', new Date().toLocaleDateString(undefined, {year:'numeric', month:'long', day:'numeric'})); } catch(e){ set('s-date',''); }
+
+    set('h-hours', hrs(base.freed));
+    set('h-dollars', money(base.billed));
+    set('h-dlabel', 'advisory billed, if ' + pc(sold*100) + ' are sold');
+    set('f-head', s + ' seniors \u00d7 ' + h + ' h a week \u00d7 ' + weeks + ' weeks = ' + hrs(annual) + ' h. \u00d7 ' + pc(s0*100) + ' saved = ' + hrs(base.freed) + ' advisory hours. \u00d7 ' + pc(sold*100) + ' sold \u00d7 $' + rate.toLocaleString('en-US') + ' = ' + money(base.billed) + '.');
+
+    set('givens', 'Givens: ' + s + ' seniors on reconciliations \u00b7 ' + h + ' hours each a week \u00b7 $' + rate.toLocaleString('en-US') + ' advisory rate \u00b7 ' + pc(sold*100) + ' of freed hours sold. Assumed: ' + weeks + ' working weeks, ' + pc(s0*100) + ' saved by first-pass matching, net of review.');
+
+    var mh = annual / 12;
+    var mBill = base.billed / 12;
+    set('m-title', 'This has been running for ' + months + (months === 1 ? ' month' : ' months'));
+    set('m-hours', hrs(mh) + ' h');
+    set('f-mhours', hrs(annual) + ' h a year \u00f7 12');
+    set('m-entity', ent > 0 ? Math.round(mh * 60 / ent).toLocaleString('en-US') + ' min' : '\u2014');
+    set('f-mentity', ent > 0 ? hrs(mh) + ' h \u00d7 60 \u00f7 ' + ent + ' entities a month' : 'Enter entities reconciled each month');
+    set('m-month', money(mBill));
+    set('f-mmonth', money(base.billed) + ' a year \u00f7 12, at ' + pc(s0*100) + ' saved and ' + pc(sold*100) + ' sold');
+    set('m-total', money(mBill * months));
+    set('f-mtotal', money(mBill) + ' \u00d7 ' + months + ' months');
+
+    function col(c){ return c; }
+    var cs = [bad, base, good, zero];
+    function row(label, fn, extra){ return '<tr' + (extra||'') + '><td>' + label + '</td>' + cs.map(function(c){ var v = fn(c); return '<td' + (typeof v === 'number' ? cls(v) : '') + '>' + (typeof v === 'number' ? money(v) : v) + '</td>'; }).join('') + '</tr>'; }
+    var t = '<thead><tr><th></th><th>Bad</th><th>Base</th><th>Good</th><th>Zero sold</th></tr></thead><tbody>';
+    t += row('Matching saves', function(c){ return pc(c.save*100); }, ' class="sub"');
+    t += row('Freed hours sold', function(c){ return pc(c.sold*100); }, ' class="sub"');
+    t += row('Advisory hours freed', function(c){ return hrs(c.freed) + ' h'; });
+    t += row('Advisory billed', function(c){ return c.billed; });
+    t += row('Usual path: licence, net', function(c){ return c.licNet; }, ' class="path"');
+    t += row('Shortcut: share, cost', function(c){ return money(c.shareCost); }, ' class="sub"');
+    t += row('Shortcut: share, net', function(c){ return c.shareNet; }, ' class="path"');
+    t += '</tbody>';
+    $('t-cases').innerHTML = t;
+    set('f-cases', 'Billed = ' + hrs(annual) + ' h \u00d7 saved % \u00d7 sold % \u00d7 $' + rate.toLocaleString('en-US') + '. Licence net = billed \u2212 ' + money(lic) + '. Share cost = the larger of ' + pc(sh*100) + ' of billed or ' + money(floor) + ', for 12 months. Share net = billed \u2212 share cost.');
+
+    var bl = bad.licNet, bs = bad.shareNet;
+    var badDen = annual * sB * rate;
+    var licBreak = badDen > 0 ? lic / badDen * 100 : null;
+    var shBreak = badDen > 0 ? floor / badDen * 100 : null;
+    var licSaveBreak = (annual * sold * rate) > 0 ? lic / (annual * sold * rate) * 100 : null;
+    function p(x){ return x === null ? 'n/a' : pc(x); }
+    var v, pu;
+    if (bl >= 0 && bs >= 0){
+      v = 'The plan survives the bad case. At ' + pc(sB*100) + ' saved and ' + pc(soB*100) + ' sold, the licence row nets ' + money(bl) + ' and the share row nets ' + money(bs) + '. At zero sold, the licence row loses ' + money(lic) + ' and the share row loses ' + money(floor) + '.';
+      pu = 'How far you can push it: at the bad-case saving of ' + pc(sB*100) + ', the licence row breaks below ' + p(licBreak) + ' of freed hours sold, and the share row below ' + p(shBreak) + '. At ' + pc(sold*100) + ' sold, the licence row breaks below ' + p(licSaveBreak) + ' saved.';
+    } else {
+      var safer = bs >= bl ? 'share' : 'licence';
+      var saferNet = bs >= bl ? bs : bl;
+      var need = safer === 'share' ? shBreak : licBreak;
+      if (bl < 0 && bs < 0){
+        v = 'Neither row survives the bad case. Safer setting first: the ' + safer + ' row, which comes to ' + money(saferNet) + ' at ' + pc(sB*100) + ' saved and ' + pc(soB*100) + ' sold.';
+      } else {
+        var fails = bl < 0 ? 'licence' : 'share';
+        v = 'The ' + fails + ' row does not survive the bad case. Safer setting first: the ' + safer + ' row, which nets ' + money(saferNet) + ' at ' + pc(sB*100) + ' saved and ' + pc(soB*100) + ' sold. The ' + fails + ' row comes to ' + money(fails === 'licence' ? bl : bs) + '.';
+      }
+      pu = 'To break even at the bad-case saving, the ' + safer + ' row needs ' + p(need) + ' of freed hours sold. Lower the quoted terms or the hours you expect to sell, then check again.';
+    }
+    set('verdict', v);
+    set('push', pu);
+
+    var noAI = annual * rate;
+    var a = '<thead><tr><th></th><th>Without AI</th><th>With AI, base</th><th>With AI, bad</th></tr></thead><tbody>';
+    a += '<tr><td>Senior hours a year on reconciliations</td><td>' + hrs(annual) + ' h</td><td>' + hrs(base.left) + ' h</td><td>' + hrs(bad.left) + ' h</td></tr>';
+    a += '<tr><td>Senior time at your advisory rate</td><td>' + money(noAI) + '</td><td>' + money(base.left*rate) + '</td><td>' + money(bad.left*rate) + '</td></tr>';
+    a += '<tr><td>Tool cost (licence)</td><td>$0</td><td>' + money(lic) + '</td><td>' + money(lic) + '</td></tr>';
+    a += '<tr class="path"><td>Total</td><td>' + money(noAI) + '</td><td>' + money(base.left*rate + lic) + '</td><td>' + money(bad.left*rate + lic) + '</td></tr>';
+    a += '</tbody>';
+    $('t-ai').innerHTML = a;
+    set('f-ai', 'Hours with AI = ' + hrs(annual) + ' h \u00d7 (1 \u2212 saved %), which includes senior review of exceptions. Senior time = hours \u00d7 $' + rate.toLocaleString('en-US') + '. Base saves ' + pc(s0*100) + ', bad saves ' + pc(sB*100) + '.');
+
+    var sheet = $('sheet');
+    sheet.classList.remove('inked'); void sheet.offsetWidth; sheet.classList.add('inked');
+  }
+
+  var saveTimer = null;
+  function onInput(){
+    render();
+    $('loaded').textContent = 'Your figures. Restore the example at any time.';
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function(){ storeSet(read()); }, 300);
+  }
+
+  IDS.forEach(function(id){ $(id).addEventListener('input', onInput); });
+
+  $('btnPrint').addEventListener('click', function(){ window.print(); });
+  $('btnClear').addEventListener('click', function(){
+    IDS.forEach(function(id){ if (KEEP_ON_CLEAR.indexOf(id) === -1) $(id).value = ''; });
+    render();
+    $('loaded').textContent = 'Cleared. Case settings and tool terms keep their example values.';
+    set('status', 'Fields cleared.');
+    $('seniors').focus();
+  });
+  $('btnExample').addEventListener('click', function(){
+    fill(EXAMPLE); render();
+    $('loaded').textContent = 'Example loaded: Halden & Rowe, 4 seniors, 12 hours a week each. Change any figure, or clear them.';
+    set('status', 'Example restored.');
+  });
+  $('btnLast').addEventListener('click', function(){
+    var o = storeGet();
+    if (o){ fill(o); render(); set('status', 'Your last figures loaded.'); $('loaded').textContent = 'Your last figures, saved in this browser only.'; }
+  });
+
+  var last = storeGet();
+  if (last) $('btnLast').hidden = false;
+
+  fill(EXAMPLE);
+  render();
+})();
+</script>
+</body>
+</html>
