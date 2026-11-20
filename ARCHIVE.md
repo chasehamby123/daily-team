@@ -1,11 +1,12 @@
 # Archive
 
-Every daily team and the asset it made, newest first. 47 days recorded.
+Every daily team and the asset it made, newest first. 48 days recorded.
 
 [Today](README.md)
 
 | Date | Task | Team | Constraint | Asset |
 |---|---|---|---|---|
+| [2026-11-20](days/2026-11-20/) | The Month Already Gone | Data journalist · Animator · Home services owner · Odysseus | No more than two levels of heading. | [asset](days/2026-11-20/artifact-1.html) |
 | [2026-11-19](days/2026-11-19/) | Proof Sheet | Printmaker · Costume designer · Accounting firm partner · Euclid | Shows a filled-in example before the user types. | [asset](days/2026-11-19/artifact-1.html) |
 | [2026-11-18](days/2026-11-18/) | Who Keeps the Keys | Museum curator · Furniture maker · Retiring owner with no successor · Leonardo da Vinci | Every result can be copied as plain text with one action. | [asset](days/2026-11-18/artifact-1.html) |
 | [2026-11-17](days/2026-11-17/) | The Carry Wall | Exhibition designer · Puppeteer · Real estate developer · Sisyphus | Saves the input in the browser and restores it on reload. | [asset](days/2026-11-17/artifact-1.html) |

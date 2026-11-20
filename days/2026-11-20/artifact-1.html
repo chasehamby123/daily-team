@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Month Already Gone: capacity planner for home service crews</title>
+<style>
+:root{
+  --paper:#f3efe6;--card:#fbf9f4;--ink:#1a1a1a;--mute:#5b574e;--rule:#cfc7b6;
+  --night:#1f2a44;--red:#b8321d;--redl:#e2a397;--grey:#a29c8c;--ok:#2e6a3a;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --mono:ui-monospace,Menlo,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.45 var(--sans)}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 40px}
+p{margin:0 0 8px}
+.kicker{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:0 0 6px}
+h1{font-family:var(--serif);font-size:clamp(2.2rem,7vw,3.6rem);line-height:1.02;margin:0 0 10px;font-weight:700}
+.dek{font-size:1.05rem;max-width:44em;margin:0 0 18px}
+h2{font-family:var(--serif);font-size:1.55rem;line-height:1.15;margin:0 0 6px}
+.strip{display:grid;grid-template-columns:repeat(3,1fr);border-top:3px solid var(--ink);border-bottom:1px solid var(--ink);margin:0 0 12px}
+.strip>div{padding:12px 12px 12px 0}
+.strip>div+div{padding-left:12px;border-left:1px solid var(--rule)}
+.lbl{font-size:.8rem;color:var(--mute);text-transform:uppercase;letter-spacing:.06em;margin:0}
+.span{font-size:.8rem;letter-spacing:.02em;margin:0;color:var(--ink)}
+.big{font-variant-numeric:tabular-nums;font-weight:800;font-size:clamp(1.5rem,5.2vw,2.7rem);line-height:1.05;margin:4px 0}
+.huge{font-variant-numeric:tabular-nums;font-weight:800;font-size:clamp(3rem,13vw,6rem);line-height:1;margin:4px 0 8px}
+.red{color:var(--red)}.night{color:var(--night)}
+.ctl{margin:0 0 6px}
+.note{font-size:.88rem;color:var(--mute)}
+.act{display:grid;grid-template-columns:76px 1fr;gap:14px;border-top:1px solid var(--ink);padding-top:16px;margin:26px 0 30px}
+.num{font-family:var(--serif);font-size:4.8rem;line-height:.82;font-weight:700;color:var(--red)}
+.sec{border-top:1px solid var(--ink);padding-top:16px;margin:26px 0 30px}
+.boxes{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:10px 0 14px}
+.box{background:var(--card);border:1px solid var(--rule);padding:10px}
+.box label{display:block;font-weight:700;font-size:.92rem;margin-bottom:4px}
+.box input{width:100%;font:700 1.35rem var(--sans);padding:6px 8px;border:1px solid var(--ink);background:#fff;color:var(--ink);border-radius:0;font-variant-numeric:tabular-nums}
+.box input:focus{outline:3px solid var(--night);outline-offset:1px}
+.find{font-size:.8rem;color:var(--mute);margin:5px 0 0}
+.upload{border:1px dashed var(--grey);padding:10px;margin:0 0 14px;font-size:.9rem}
+.upload label{font-weight:700;display:block;margin-bottom:4px}
+table.cases{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:.92rem;margin:8px 0 6px;background:var(--card)}
+.cases th,.cases td{border:1px solid var(--rule);padding:6px 8px;text-align:right;vertical-align:top}
+.cases th:first-child,.cases td:first-child{text-align:left;font-weight:400;color:var(--mute);width:34%}
+.cases thead th{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;background:var(--paper)}
+.cases th.bad{color:var(--red)}.cases th.good{color:var(--ok)}
+.cases tr.drv td{font-size:.82rem;color:var(--mute)}
+.cases tr.key td{font-weight:800}
+.cap{font-size:.82rem;color:var(--mute);margin:0 0 4px}
+.chart{background:var(--card);border:1px solid var(--rule);padding:6px;margin:10px 0 6px}
+.chart svg{display:block;width:100%;height:auto}
+.legend{font-size:.82rem;color:var(--mute);display:flex;flex-wrap:wrap;gap:6px 14px;margin:0 0 8px}
+.sw{display:inline-block;width:12px;height:12px;vertical-align:-1px;margin-right:4px}
+.paths{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:10px 0}
+.path{border-top:4px solid var(--grey);padding-top:8px}
+.path.side{border-top-color:var(--night)}
+.pname{font-weight:800;font-size:1.05rem;margin:0 0 6px}
+.path ul{margin:6px 0 0;padding-left:18px;font-size:.9rem}
+.path li{margin-bottom:3px}
+.verdict{border-left:6px solid var(--ok);background:var(--card);padding:10px 12px;margin:8px 0}
+.verdict.fail{border-left-color:var(--red)}
+.verdict.safer{border-left-color:var(--night)}
+.verdict b{display:block;margin-bottom:2px}
+.f{font-family:var(--mono);font-size:.84rem;background:var(--card);border-left:3px solid var(--ink);padding:8px 10px;white-space:pre-wrap;margin:6px 0 10px;overflow-wrap:anywhere}
+.btn{font:700 1rem var(--sans);padding:10px 14px;border:2px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer;border-radius:0;margin:0 6px 6px 0}
+.btn.alt{background:transparent;color:var(--ink)}
+.btn:focus{outline:3px solid var(--night);outline-offset:2px}
+.cardwrap{display:grid;grid-template-columns:minmax(0,340px) 1fr;gap:16px;align-items:start}
+canvas{width:100%;height:auto;border:1px solid var(--rule);background:var(--paper)}
+textarea{width:100%;font:.9rem var(--sans);margin-top:6px}
+footer{border-top:3px solid var(--ink);padding-top:12px;margin-top:30px;font-size:.82rem;color:var(--mute)}
+footer p{margin:0 0 8px}
+@media (max-width:640px){
+  .strip{grid-template-columns:1fr}
+  .strip>div+div{padding-left:0;border-left:0;border-top:1px solid var(--rule)}
+  .act{grid-template-columns:1fr;gap:4px}
+  .num{font-size:3.4rem}
+  .paths,.cardwrap{grid-template-columns:1fr}
+  .cases{font-size:.84rem}
+  .cases th,.cases td{padding:5px 5px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+}
+@media (prefers-reduced-motion:no-preference){
+  .chart rect{transition:height .25s ease,y .25s ease}
+}
+@media print{
+  body{background:#fff;font-size:12px}
+  .noprint{display:none!important}
+  .act,.sec,.verdict,table{break-inside:avoid}
+  .box input{border:0;padding:0;font-size:1.1rem}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .cardwrap{grid-template-columns:200px 1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="kicker">Capacity planner for home service crews</p>
+  <h1>The Month Already Gone</h1>
+  <p class="dek">Five numbers from your own phone, invoices, and schedule board. No industry averages. The page gives two months: when your crews fill up, and how much sooner that comes once the night calls get answered.</p>
+  <div class="strip" aria-live="polite">
+    <div><p class="lbl">Night line, last month</p><p class="big red" id="sLost">—</p><p class="span">in jobs that went to voicemail</p></div>
+    <div><p class="lbl">Crews full, as now</p><p class="big" id="sNow">—</p><p class="span" id="sSpan"></p></div>
+    <div><p class="lbl">Crews full, nights answered</p><p class="big night" id="sNight">—</p><p class="span" id="sNightSpan"></p></div>
+  </div>
+  <div class="ctl noprint">
+    <button class="btn alt" id="reset" type="button">Load the example</button>
+    <button class="btn alt" id="clear" type="button">Clear all boxes</button>
+  </div>
+  <p class="note">Worked example: a 4-truck plumbing and heating shop. Every box is filled in. Change any of them. Nothing to install, no sign-up.</p>
+</header>
+
+<section class="act" aria-labelledby="h-a1">
+  <div class="num" aria-hidden="true">1</div>
+  <div>
+    <h2 id="h-a1">Last month, in dollars</h2>
+    <p>Three boxes. The dollar figure comes first.</p>
+    <div class="boxes">
+      <div class="box"><label for="calls">Calls per week</label><input id="calls" type="number" inputmode="decimal" min="0" step="1"><p class="find">Find it: recent calls on your phone, last 7 days.</p></div>
+      <div class="box"><label for="vm">Voicemails last week</label><input id="vm" type="number" inputmode="decimal" min="0" step="1"><p class="find">Find it: voicemail list on your phone. Two taps.</p></div>
+      <div class="box"><label for="job">Average job value, $</label><input id="job" type="number" inputmode="decimal" min="0" step="10"><p class="find">Find it: last month's invoices ÷ number of jobs.</p></div>
+    </div>
+    <div class="upload noprint">
+      <label for="log">Optional: carrier call log (CSV)</label>
+      <input type="file" id="log" accept=".csv,.txt,text/csv">
+      <p class="find" id="logMsg">The page counts missed calls before 8am and after 6pm. The file is read on this device and goes nowhere. Skip this if the password is not handy.</p>
+    </div>
+    <p class="lbl">Lost last month</p>
+    <p class="huge red" id="lostBig">—</p>
+    <p id="lostLine"></p>
+    <p id="check" class="note"></p>
+    <p class="cap">Bad case: half the voicemails, so answering pays less. Good case: half again more.</p>
+    <table class="cases" id="moneyCases"></table>
+  </div>
+</section>
+
+<section class="act" aria-labelledby="h-a2">
+  <div class="num" aria-hidden="true">2</div>
+  <div>
+    <h2 id="h-a2">The month the trucks fill up</h2>
+    <p>Two more boxes. Your crew hours are the ceiling. Booked hours climb to meet it.</p>
+    <div class="boxes">
+      <div class="box"><label for="hours">Crew hours per week</label><input id="hours" type="number" inputmode="decimal" min="0" step="1"><p class="find">Find it: the schedule board. Bookable hours, all techs.</p></div>
+      <div class="box"><label for="growth">Monthly growth, %</label><input id="growth" type="number" inputmode="decimal" min="0" step="0.5"><p class="find">Find it: jobs this year ÷ jobs last year, minus 1, ÷ 12.</p></div>
+    </div>
+    <div class="chart" id="chart"></div>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--grey)"></i>As now</span>
+      <span><i class="sw" style="background:var(--night)"></i>Nights answered</span>
+      <span><i class="sw" style="background:var(--red)"></i>Named month and after</span>
+      <span>Dashed line: crew hours</span>
+    </div>
+    <p class="note">Red starts at the named month. The month is rounded toward the earlier one, so in that month you are within one month's growth of full.</p>
+    <p class="cap">Bad case: growth doubles. Good case: growth halves. Calls and crew hours stay as entered.</p>
+    <table class="cases" id="capCases"></table>
+    <p id="either"></p>
+  </div>
+</section>
+
+<section class="act" aria-labelledby="h-a3">
+  <div class="num" aria-hidden="true">3</div>
+  <div>
+    <h2 id="h-a3">Two ways to answer the night line</h2>
+    <p>Same inputs on both sides. The bad case sits under each.</p>
+    <div class="paths">
+      <div class="path">
+        <p class="pname">Usual path: hire a night dispatcher</p>
+        <div class="box"><label for="hire">Monthly cost, $</label><input id="hire" type="number" inputmode="decimal" min="0" step="100"><p class="find">Wage plus payroll tax. Wage and overtime rules vary by state. Enter your local figure.</p></div>
+        <table class="cases" id="hireCases"></table>
+        <ul>
+          <li>Setup: post the job, interview, train. Weeks.</li>
+          <li>A person answers, books, and can talk price if you let them.</li>
+          <li>Cost stays fixed when calls drop.</li>
+        </ul>
+      </div>
+      <div class="path side">
+        <p class="pname">Side door: forward nights to an AI answering service</p>
+        <div class="box"><label for="perjob">Cost per booked job, $</label><input id="perjob" type="number" inputmode="decimal" min="0" step="1"><p class="find">Enter the quote you have. This page quotes nothing.</p></div>
+        <table class="cases" id="aiCases"></table>
+        <ul>
+          <li>Setup: dial your carrier's forward code once. About 2 minutes. Codes vary by carrier.</li>
+          <li>The AI answers, takes name and address, and books an open slot in the calendar you already use. It does not diagnose.</li>
+          <li><b>Owner approves every price and urgency text.</b></li>
+          <li id="reviewLine"></li>
+          <li>Call recording and consent rules vary by state. Check yours before recording is on.</li>
+        </ul>
+      </div>
+    </div>
+    <p id="aiLine"></p>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="h-bad">
+  <h2 id="h-bad">Bad case check</h2>
+  <p class="note">The plan tested here: forward nights to the side door. Six months of room counts as enough time to hire and train a tech.</p>
+  <div id="verdict" aria-live="polite"></div>
+</section>
+
+<section class="sec" aria-labelledby="h-q">
+  <h2 id="h-q">Two questions</h2>
+  <div class="boxes">
+    <div class="box"><label for="trucks">Trucks on the road</label><input id="trucks" type="number" inputmode="decimal" min="0" step="1"><p class="find">Count the ones with a tech in them.</p></div>
+    <div class="box"><label for="months">Months the night line has gone to voicemail</label><input id="months" type="number" inputmode="decimal" min="0" step="1"><p class="find">Since the last person who took night calls.</p></div>
+  </div>
+  <p id="qMonths"></p>
+  <p id="qTrucks"></p>
+</section>
+
+<section class="sec" aria-labelledby="h-assume">
+  <h2 id="h-assume">Figures the page assumes</h2>
+  <p>Change them if yours differ.</p>
+  <div class="boxes">
+    <div class="box"><label for="book">Calls that book, %</label><input id="book" type="number" inputmode="decimal" min="0" max="100" step="5"><p class="find">Last month's jobs ÷ answered calls.</p></div>
+    <div class="box"><label for="hpj">Hours per job</label><input id="hpj" type="number" inputmode="decimal" min="0" step="0.1"><p class="find">Drive time included. Crew hours worked ÷ jobs done.</p></div>
+  </div>
+  <p class="note">Fixed: 4.3 weeks per month. Six months of room counts as enough.</p>
+</section>
+
+<section class="sec" aria-labelledby="h-card">
+  <h2 id="h-card">Text this</h2>
+  <p>A card sized for a phone, 1080 × 1350. Send it to whoever splits the work with you.</p>
+  <div class="cardwrap">
+    <canvas id="card" width="1080" height="1350" aria-label="Share card with last month's lost dollars and the run-out month"></canvas>
+    <div>
+      <div class="noprint">
+        <button class="btn" id="share" type="button">Text this</button>
+        <a class="btn alt" id="save" href="#" download="month-already-gone.png" style="display:inline-block;text-decoration:none">Save image</a>
+      </div>
+      <p class="note" id="shareMsg" aria-live="polite"></p>
+      <textarea id="shareText" rows="3" hidden aria-label="Text to copy"></textarea>
+    </div>
+  </div>
+</section>
+
+<section class="sec" aria-labelledby="h-f">
+  <h2 id="h-f">How the numbers are worked out</h2>
+  <div id="formulas"></div>
+  <p class="note">This page is a planning aid. It is not legal, tax, or financial advice.</p>
+</section>
+
+<footer>
+  <p>Credits. Data journalist: every input comes from your own phone, invoices, and schedule, plus the two-month result and the two questions. Animator: the three acts, the bar chart with the crew-hour ceiling, and the share card. Home services owner: five boxes, dollars first, nothing to install. Odysseus: the call-forward side door, booking with no diagnosis, owner approval on price and urgency, and rounding to the earlier month.</p>
+  <p>Published by VoxxyAI. Inputs are kept on this device only.</p>
+</footer>
+
+</div>
+<script>
+(function(){
+var $=function(id){return document.getElementById(id)};
+var DEF={calls:140,vm:18,job:380,hours:185,growth:3,book:50,hpj:2.4,hire:3800,perjob:25,trucks:4,months:8};
+var KEYS=Object.keys(DEF);
+var WPM=4.3,RUN=6,CAP=60,SKEY='month-already-gone-v1';
+var cardBlob=null,last=null;
+
+function num(k){var x=parseFloat($(k).value);return isFinite(x)&&x>=0?x:0}
+function has(k){return $(k).value.trim()!==''}
+function usd(x){return '$'+Math.round(x).toLocaleString('en-US')}
+function usd100(x){return '$'+(Math.round(x/100)*100).toLocaleString('en-US')}
+function sgn(x){return (x<0?'−':'')+usd100(Math.abs(x))}
+function r1(x){return Math.round(x*10)/10}
+function pct(x){return r1(x*100)+'%'}
+function monthsTo(K,L,g){if(L<=0)return CAP;if(L>=K)return 0;if(g<=0)return CAP;return Math.min(CAP,Math.floor(Math.log(K/L)/Math.log(1+g)))}
+function mName(n,short){
+  if(n>=CAP)return short?'5+ yrs':'Not within 5 years';
+  var t=new Date(),d=new Date(t.getFullYear(),t.getMonth()+n,1);
+  return d.toLocaleDateString('en-US',short?{month:'short'}:{month:'long',year:'numeric'});
+}
+function mOut(n){return n===0?'this month':n>=CAP?'more than 5 years out':n===1?'1 month out':n+' months out'}
+
+function save(){var o={};KEYS.forEach(function(k){o[k]=$(k).value});try{localStorage.setItem(SKEY,JSON.stringify(o))}catch(e){}}
+function load(){var s=null;try{s=JSON.parse(localStorage.getItem(SKEY)||'null')}catch(e){s=null}
+  KEYS.forEach(function(k){$(k).value=(s&&typeof s[k]==='string')?s[k]:DEF[k]})}
+
+function calc(){
+  var v={};KEYS.forEach(function(k){v[k]=num(k)});
+  var b=Math.min(v.book,100)/100,g=v.growth/100,vm=Math.min(v.vm,v.calls);
+  var r={v:v,b:b,g:g,vm:vm};
+  r.okMoney=has('vm')&&has('job')&&has('book');
+  r.okCap=has('calls')&&has('hours')&&has('growth')&&has('book')&&has('hpj');
+  r.lostWk=vm*b;r.lostMo=r.lostWk*WPM*v.job;
+  r.dayJobs=Math.max(0,v.calls-vm)*b;
+  r.L=r.dayJobs*v.hpj;r.Ln=(r.dayJobs+r.lostWk)*v.hpj;
+  r.money=[0.5,1,1.5].map(function(m){var lw=vm*m*b,lm=lw*WPM*v.job,ai=lw*WPM*v.perjob;
+    return{vm:vm*m,lw:lw,jobsMo:lw*WPM,lost:lm,hire:v.hire,ai:ai,netHire:lm-v.hire,netAI:lm-ai}});
+  r.cap=[2,1,0.5].map(function(m){var gg=g*m;return{g:gg,now:monthsTo(v.hours,r.L,gg),night:monthsTo(v.hours,r.Ln,gg)}});
+  r.loNow=monthsTo(v.hours,r.L,g+0.01);r.loNight=monthsTo(v.hours,r.Ln,g+0.01);
+  return r;
+}
+function D(ok,s){return ok?s:'—'}
+function spanText(lo,hi,g){
+  if(lo===hi)return 'Same month at '+pct(g)+' to '+pct(g+0.01)+' growth';
+  return 'Earliest '+mName(lo)+', latest '+mName(hi)+' at '+pct(g)+' to '+pct(g+0.01)+' growth';
+}
+function head(){return '<thead><tr><th scope="col"></th><th scope="col" class="bad">Bad</th><th scope="col">Base</th><th scope="col" class="good">Good</th></tr></thead>'}
+function row(lbl,cells,cls){return '<tr'+(cls?' class="'+cls+'"':'')+'><td>'+lbl+'</td>'+cells.map(function(c){return '<td>'+c+'</td>'}).join('')+'</tr>'}
+
+function render(){
+  var r=calc(),v=r.v,M=r.money,C=r.cap,base=C[1];last=r;
+  var oM=r.okMoney,oC=r.okCap;
+
+  $('sLost').textContent=D(oM,usd100(r.lostMo));
+  $('sNow').textContent=D(oC,mName(base.now));
+  $('sNight').textContent=D(oC&&oM,mName(base.night));
+  $('sSpan').textContent=oC?spanText(r.loNow,base.now,r.g):'Enter calls, crew hours, and growth';
+  $('sNightSpan').textContent=oC&&oM?spanText(r.loNight,base.night,r.g):'';
+
+  $('lostBig').textContent=D(oM,usd100(r.lostMo));
+  $('lostLine').textContent=oM?(r1(r.vm)+' voicemails × '+pct(r.b)+' that book = '+r1(r.lostWk)+' jobs a week you did not get. About '+Math.round(r.lostWk*WPM)+' a month at '+usd(v.job)+' each.'):'Enter voicemails and job value.';
+  $('check').textContent=(oM&&v.calls>0)?('Second check: '+r1(r.vm)+' voicemails is '+pct(r.vm/v.calls)+' of '+r1(v.calls)+' calls. If your call list shows a different share, recount before trusting the dollars.'):'';
+
+  $('moneyCases').innerHTML=head()+'<tbody>'+
+    row('Driver: voicemails a week',M.map(function(m){return D(oM,r1(m.vm))}),'drv')+
+    row('Jobs missed a month',M.map(function(m){return D(oM,Math.round(m.jobsMo))}))+
+    row('Lost a month',M.map(function(m){return D(oM,usd100(m.lost))}),'key')+'</tbody>';
+
+  $('chart').innerHTML=chart(r);
+  $('capCases').innerHTML=head()+'<tbody>'+
+    row('Driver: monthly growth',C.map(function(c){return D(oC,pct(c.g))}),'drv')+
+    row('Crews full, as now',C.map(function(c){return D(oC,mName(c.now))}))+
+    row('Crews full, nights answered',C.map(function(c){return D(oC&&oM,mName(c.night))}),'key')+'</tbody>';
+  $('either').textContent=(oC&&oM)?('Either path answers the nights. Either way, crews fill by '+mName(base.night)+' instead of '+mName(base.now)+'. Answering the phone brings the full month forward.'):'';
+
+  $('hireCases').innerHTML=head()+'<tbody>'+
+    row('Driver: voicemails a week',M.map(function(m){return D(oM,r1(m.vm))}),'drv')+
+    row('Cost a month',M.map(function(m){return D(oM,usd100(m.hire))}))+
+    row('Jobs won back',M.map(function(m){return D(oM,usd100(m.lost))}))+
+    row('Left over',M.map(function(m){return D(oM,sgn(m.netHire))}),'key')+'</tbody>';
+  $('aiCases').innerHTML=head()+'<tbody>'+
+    row('Driver: voicemails a week',M.map(function(m){return D(oM,r1(m.vm))}),'drv')+
+    row('Cost a month',M.map(function(m){return D(oM,usd100(m.ai))}))+
+    row('Jobs won back',M.map(function(m){return D(oM,usd100(m.lost))}))+
+    row('Left over',M.map(function(m){return D(oM,sgn(m.netAI))}),'key')+'</tbody>';
+  $('reviewLine').textContent=oM?('You still review: every price question, every "can it wait" call, and the morning list of bookings. About '+Math.round(M[1].lw)+' texts a week in the base case, '+Math.round(M[0].lw)+' in the bad case.'):'You still review: every price question, every "can it wait" call, and the morning list of bookings.';
+  $('aiLine').textContent=oM?('Cost with AI and without. Base case: '+usd100(M[1].ai)+' a month with AI, '+usd100(v.hire)+' without. Bad case: '+usd100(M[0].ai)+' with AI, '+usd100(v.hire)+' without. Both win back the same jobs.'):'';
+
+  verdict(r);
+
+  $('qMonths').textContent=(oM&&has('months'))?(r1(v.months)+' months at last week\'s rate is about '+usd100(r.lostMo*v.months)+'. The problem has run for months and keeps running until the night line is answered.'):'Enter how many months the night line has gone to voicemail.';
+  if(oC&&oM&&v.trucks>0&&v.hours>0){
+    var per=v.hours/v.trucks,n1=monthsTo(v.hours+per,r.Ln,r.g);
+    $('qTrucks').textContent=r1(v.trucks)+' trucks at about '+Math.round(per)+' crew hours each. One more truck moves the nights-answered month from '+mName(base.night)+' to '+mName(n1)+'.';
+  }else $('qTrucks').textContent='Enter trucks to see what one more does.';
+
+  formulas(r);
+  card(r);
+}
+
+function verdict(r){
+  var v=r.v,M=r.money,C=r.cap,out='';
+  if(!(r.okMoney&&r.okCap)){$('verdict').innerHTML='<div class="verdict safer">Fill the boxes in acts one and two to run the check.</div>';return}
+  var bad=M[0];
+  if(bad.netAI>0){
+    var push='';
+    if(r.b>0&&v.perjob>0){var vb=v.hire/(r.b*WPM*v.perjob);
+      push=' The side door stays cheaper than the hire up to about '+Math.round(vb)+' voicemails a week'+(r.vm>0?', '+r1(vb/r.vm)+' times last week.':'.');}
+    out+='<div class="verdict"><b>Money survives the bad case.</b>At half the voicemails the side door leaves '+usd100(bad.netAI)+' a month after its cost. The night hire leaves '+sgn(bad.netHire)+'.'+push+' It pays as long as a job is worth more than '+usd(v.perjob)+'.</div>';
+  }else{
+    out+='<div class="verdict safer"><b>Safer setting first.</b>Keep nights on voicemail until the job value is above the per-job cost, or get a lower quote.</div>';
+    out+='<div class="verdict fail"><b>Money does not survive the bad case.</b>At half the voicemails the side door leaves '+sgn(bad.netAI)+' a month.</div>';
+  }
+  var cb=C[0];
+  if(cb.night>=RUN){
+    var gm=r.Ln>0&&v.hours>0?Math.pow(v.hours/r.Ln,1/RUN)-1:0;
+    out+='<div class="verdict"><b>Schedule survives the bad case.</b>At '+pct(cb.g)+' growth with nights answered, crews fill by '+mName(cb.night)+', '+mOut(cb.night)+'. It holds up to about '+pct(gm)+' a month before the room drops under '+RUN+' months.</div>';
+  }else{
+    var need=Math.ceil(r.Ln*Math.pow(1+cb.g,RUN)),extra=Math.max(0,need-v.hours);
+    var per=v.trucks>0?v.hours/v.trucks:0;
+    var tr=per>0?', about '+r1(extra/per)+' trucks at '+Math.round(per)+' hours each':'';
+    out+='<div class="verdict safer"><b>Safer setting first.</b>Get to '+need+' crew hours a week before nights get answered. That is '+Math.round(extra)+' more than now'+tr+'. Or forward only the night calls that fit an open slot.</div>';
+    out+='<div class="verdict fail"><b>Schedule does not survive the bad case.</b>At '+pct(cb.g)+' growth with nights answered, crews fill by '+mName(cb.night)+', '+mOut(cb.night)+'. Without answering nights it is '+mName(cb.now)+'. Fixing the phone breaks the schedule sooner.</div>';
+  }
+  $('verdict').innerHTML=out;
+}
+
+function chart(r){
+  var v=r.v,N=18,W=720,H=260,pl=10,pr=10,pt=26,pb=30,gw=(W-pl-pr)/N,bw=Math.max(4,gw*0.36);
+  if(!(r.okCap&&r.okMoney))return '<p class="note" style="padding:10px">Enter calls, voicemails, crew hours, and growth to draw the chart.</p>';
+  var nNow=r.cap[1].now,nN=r.cap[1].night,top=Math.max(v.hours*1.3,r.Ln*1.1,1);
+  function y(x){return pt+(H-pt-pb)*(1-Math.min(x,top)/top)}
+  var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Hours booked a week for the next 18 months against '+Math.round(v.hours)+' crew hours. As now, crews fill by '+mName(nNow)+'. With nights answered, by '+mName(nN)+'.">';
+  s+='<text x="'+pl+'" y="14" font-size="12" fill="#5b574e" font-family="system-ui,sans-serif">Hours booked a week</text>';
+  for(var i=0;i<N;i++){
+    var a=r.L*Math.pow(1+r.g,i),b=r.Ln*Math.pow(1+r.g,i),x0=pl+i*gw+gw*0.12;
+    var ya=y(a),yb=y(b),base=H-pb;
+    s+='<rect x="'+x0.toFixed(1)+'" y="'+ya.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(base-ya).toFixed(1)+'" fill="'+(i>=nNow?'#e2a397':'#a29c8c')+'"/>';
+    s+='<rect x="'+(x0+bw+1).toFixed(1)+'" y="'+yb.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+(base-yb).toFixed(1)+'" fill="'+(i>=nN?'#b8321d':'#1f2a44')+'"/>';
+    if(i%3===0)s+='<text x="'+(x0+bw).toFixed(1)+'" y="'+(H-pb+17)+'" font-size="12" text-anchor="middle" fill="#1a1a1a" font-family="system-ui,sans-serif">'+mName(i,true)+'</text>';
+  }
+  s+='<line x1="'+pl+'" y1="'+(H-pb)+'" x2="'+(W-pr)+'" y2="'+(H-pb)+'" stroke="#1a1a1a"/>';
+  if(v.hours>0){var yc=y(v.hours).toFixed(1);
+    s+='<line x1="'+pl+'" y1="'+yc+'" x2="'+(W-pr)+'" y2="'+yc+'" stroke="#1a1a1a" stroke-width="2" stroke-dasharray="7 5"/>';
+    s+='<text x="'+(W-pr)+'" y="'+(yc-6)+'" font-size="13" font-weight="700" text-anchor="end" fill="#1a1a1a" font-family="system-ui,sans-serif">Crew hours: '+Math.round(v.hours)+'</text>';}
+  return s+'</svg>';
+}
+
+function formulas(r){
+  var v=r.v,n=r.cap[1],q=function(x){return r1(x)};
+  var raw=(r.L>0&&v.hours>r.L&&r.g>0)?q(Math.log(v.hours/r.L)/Math.log(1+r.g)):'—';
+  var rawN=(r.Ln>0&&v.hours>r.Ln&&r.g>0)?q(Math.log(v.hours/r.Ln)/Math.log(1+r.g)):'—';
+  $('formulas').innerHTML=
+  '<div class="f">Lost a month = voicemails a week × calls that book × 4.3 × job value\n  = '+q(r.vm)+' × '+pct(r.b)+' × 4.3 × '+usd(v.job)+' = '+usd(r.lostMo)+'</div>'+
+  '<div class="f">Hours booked a week, as now = (calls − voicemails) × calls that book × hours per job\n  = ('+q(v.calls)+' − '+q(r.vm)+') × '+pct(r.b)+' × '+q(v.hpj)+' = '+q(r.L)+'</div>'+
+  '<div class="f">Hours booked a week, nights answered = calls × calls that book × hours per job\n  = '+q(v.calls)+' × '+pct(r.b)+' × '+q(v.hpj)+' = '+q(r.Ln)+'</div>'+
+  '<div class="f">Months to full = floor( ln(crew hours ÷ hours booked) ÷ ln(1 + growth) )\n  As now:          floor( ln('+q(v.hours)+' ÷ '+q(r.L)+') ÷ ln('+(1+r.g).toFixed(3)+') ) = floor('+raw+') → '+mName(n.now)+'\n  Nights answered: floor( ln('+q(v.hours)+' ÷ '+q(r.Ln)+') ÷ ln('+(1+r.g).toFixed(3)+') ) = floor('+rawN+') → '+mName(n.night)+'\n  floor rounds toward the earlier month. Month 0 is this month.</div>'+
+  '<div class="f">Side door cost a month = voicemails a week × calls that book × 4.3 × cost per booked job\n  = '+q(r.vm)+' × '+pct(r.b)+' × 4.3 × '+usd(v.perjob)+' = '+usd(r.money[1].ai)+'\nNight hire cost a month = the figure you enter = '+usd(v.hire)+'</div>'+
+  '<div class="f">Span = months to full at your growth and at growth + 1 point.\nSafer crew hours = hours booked with nights answered × (1 + bad growth)^6.</div>';
+}
+
+function fit(x,t,max,start,weight,F){var s=start;x.font=weight+' '+s+'px '+F;while(x.measureText(t).width>max&&s>18){s-=4;x.font=weight+' '+s+'px '+F}}
+function card(r){
+  var c=$('card'),x=c.getContext&&c.getContext('2d');if(!x)return;
+  var W=1080,H=1350,L=80,MW=920,F='system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif',n=r.cap[1];
+  var lost=r.okMoney?usd100(r.lostMo):'—',now=r.okCap?mName(n.now):'—',nt=(r.okCap&&r.okMoney)?mName(n.night):'—';
+  x.fillStyle='#f3efe6';x.fillRect(0,0,W,H);
+  x.fillStyle='#b8321d';x.fillRect(0,0,W,24);
+  x.textBaseline='alphabetic';x.fillStyle='#1a1a1a';
+  x.font='700 36px '+F;x.fillText('THE MONTH ALREADY GONE',L,130);
+  x.font='48px '+F;x.fillText('Last month, the night line cost',L,270);
+  x.fillStyle='#b8321d';fit(x,lost,MW,200,'800',F);x.fillText(lost,L,470);
+  x.fillStyle='#1a1a1a';x.fillRect(L,540,MW,4);
+  x.font='48px '+F;x.fillText('Crews full by',L,650);
+  fit(x,now,MW,140,'800',F);x.fillText(now,L,800);
+  x.fillStyle='#1f2a44';var t2='Nights answered: '+nt;fit(x,t2,MW,58,'700',F);x.fillText(t2,L,900);
+  x.fillStyle='#1a1a1a';var sp=r.okCap?spanText(r.loNow,n.now,r.g):'';fit(x,sp,MW,36,'400',F);x.fillText(sp,L,970);
+  x.fillStyle='#5b574e';x.font='30px '+F;
+  x.fillText('From our own voicemails, invoices, and schedule.',L,1220);
+  x.fillText('Rounded to the earlier month.',L,1265);
+  cardBlob=null;
+  try{if(c.toBlob)c.toBlob(function(b){cardBlob=b},'image/png')}catch(e){}
+}
+function shareText(){
+  var r=last||calc(),n=r.cap[1];
+  return 'The night line cost about '+usd100(r.lostMo)+' last month in missed jobs. Crews are full by '+mName(n.now)+' as things are, and by '+mName(n.night)+' if nights get answered.';
+}
+function msg(t){$('shareMsg').textContent=t}
+function copyText(t){
+  function fb(){var ta=$('shareText');ta.hidden=false;ta.value=t;ta.focus();ta.select();
+    try{document.execCommand('copy');msg('Copied. Paste it into a text.')}catch(e){msg('Select the text below and copy it.')}}
+  try{if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){msg('Copied. Paste it into a text.')},fb)}else fb()}catch(e){fb()}
+}
+$('share').addEventListener('click',function(){
+  var t=shareText();
+  function textOnly(){
+    try{if(navigator.share){navigator.share({text:t}).then(function(){msg('Sent.')},function(e){if(e&&e.name==='AbortError')msg('Not sent.');else copyText(t)})}else copyText(t)}catch(e){copyText(t)}
+  }
+  try{
+    if(cardBlob&&navigator.canShare&&typeof File==='function'){
+      var f=new File([cardBlob],'month-already-gone.png',{type:'image/png'});
+      if(navigator.canShare({files:[f]})){navigator.share({files:[f],text:t}).then(function(){msg('Sent.')},function(e){if(e&&e.name==='AbortError')msg('Not sent.');else textOnly()});return}
+    }
+  }catch(e){}
+  textOnly();
+});
+$('save').addEventListener('click',function(e){
+  try{this.href=$('card').toDataURL('image/png')}catch(err){e.preventDefault();msg('This browser cannot save the image. Use a screenshot.')}
+});
+
+$('log').addEventListener('change',function(e){
+  var f=e.target.files&&e.target.files[0];if(!f)return;
+  var out=function(t){$('logMsg').textContent=t};
+  var rd=new FileReader();
+  rd.onerror=function(){out('The file could not be read. Keep the count from your phone.')};
+  rd.onload=function(){
+    var lines=String(rd.result).split(/\r?\n/),cnt=0,ds=[];
+    lines.forEach(function(l){
+      if(!/missed|voicemail|no answer|unanswered/i.test(l))return;
+      var tm=l.match(/\b(\d{1,2}):(\d{2})(?::\d{2})?\s*([ap]\.?m\.?)?/i);
+      if(tm){var h=+tm[1],ap=tm[3]?tm[3].toLowerCase().charAt(0):'';if(ap==='p'&&h<12)h+=12;if(ap==='a'&&h===12)h=0;if(h>=8&&h<18)return}
+      cnt++;
+      var d=l.match(/(\d{4})-(\d{1,2})-(\d{1,2})/),t=null;
+      if(d)t=new Date(+d[1],+d[2]-1,+d[3]);
+      else{d=l.match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);if(d){var yy=+d[3];if(yy<100)yy+=2000;t=new Date(yy,+d[1]-1,+d[2])}}
+      if(t&&!isNaN(t.getTime()))ds.push(t.getTime());
+    });
+    if(!cnt){out('No missed after-hours calls found in that file. Keep the count from your phone.');return}
+    var days=ds.length?Math.round((Math.max.apply(null,ds)-Math.min.apply(null,ds))/864e5)+1:7;
+    var wk=Math.round(cnt/Math.max(1,days/7));
+    $('vm').value=wk;save();render();
+    out('Counted '+cnt+' missed after-hours calls over '+days+' days: about '+wk+' a week. Check it against your phone.');
+  };
+  rd.readAsText(f);
+});
+
+KEYS.forEach(function(k){$(k).addEventListener('input',function(){save();render()})});
+$('reset').addEventListener('click',function(){KEYS.forEach(function(k){$(k).value=DEF[k]});save();render()});
+$('clear').addEventListener('click',function(){KEYS.forEach(function(k){$(k).value=''});save();render()});
+
+load();render();
+})();
+</script>
+</body>
+</html>
