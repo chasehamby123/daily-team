@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-11-20: The Month Already Gone
+### 2026-11-21: The Zero Ledger, Fixed-Width Docket
 
-<a href="days/2026-11-20/"><img src="days/2026-11-20/team.png" alt="Team for 2026-11-20: Data journalist · Animator · Home services owner · Odysseus" width="100%"></a>
+<a href="days/2026-11-21/"><img src="days/2026-11-21/team.png" alt="Team for 2026-11-21: Weaver · Clockmaker · Multi-family office adviser · Alice" width="100%"></a>
 
-**Task:** Capacity planner: current volume, growth rate, and staff hours give the month the buyer's team runs out of capacity.
+**Task:** Objection sorter: the buyer ticks the doubts they have and gets a plain answer and one question to ask any provider for each.
 
-**Decision:** The page turns last month's missed after-hours calls into dollars, then shows the month his crews fill up with and without those calls answered, and compares a night hire against pay-per-booked-job answering under the same bad case.
+**Decision:** The page lets a multi-family office adviser tick the doubts they hold about a private deal provider and get, for each one, a plain answer, the cost if it goes wrong, a named reviewer, and one question to ask any provider, plus a side-by-...
 
-<a href="days/2026-11-20/"><img src="days/2026-11-20/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-11-21/"><img src="days/2026-11-21/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-11-20/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-11-21/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,15 +37,15 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-11-21](days/2026-11-21/) | <a href="days/2026-11-21/"><img src="days/2026-11-21/artifact-1.png" alt="The Zero Ledger, Fixed-Width Docket" width="160"></a> | The Zero Ledger, Fixed-Width Docket | Weaver · Clockmaker · Multi-family office adviser · Alice |
 | [2026-11-20](days/2026-11-20/) | <a href="days/2026-11-20/"><img src="days/2026-11-20/artifact-1.png" alt="The Month Already Gone" width="160"></a> | The Month Already Gone | Data journalist · Animator · Home services owner · Odysseus |
 | [2026-11-19](days/2026-11-19/) | <a href="days/2026-11-19/"><img src="days/2026-11-19/artifact-1.png" alt="Proof Sheet" width="160"></a> | Proof Sheet | Printmaker · Costume designer · Accounting firm partner · Euclid |
 | [2026-11-18](days/2026-11-18/) | <a href="days/2026-11-18/"><img src="days/2026-11-18/artifact-1.png" alt="Who Keeps the Keys" width="160"></a> | Who Keeps the Keys | Museum curator · Furniture maker · Retiring owner with no successor · Leonardo da Vinci |
 | [2026-11-17](days/2026-11-17/) | <a href="days/2026-11-17/"><img src="days/2026-11-17/artifact-1.png" alt="The Carry Wall" width="160"></a> | The Carry Wall | Exhibition designer · Puppeteer · Real estate developer · Sisyphus |
 | [2026-11-16](days/2026-11-16/) | <a href="days/2026-11-16/"><img src="days/2026-11-16/artifact-1.png" alt="Round Six" width="160"></a> | Round Six | Game designer · Textile designer · Investment banker · Cassandra |
 | [2026-11-15](days/2026-11-15/) | <a href="days/2026-11-15/"><img src="days/2026-11-15/artifact-1.png" alt="The Bench Test" width="160"></a> | The Bench Test | Documentary director · Playwright · Private equity principal · Janus |
-| [2026-11-14](days/2026-11-14/) | <a href="days/2026-11-14/"><img src="days/2026-11-14/artifact-1.png" alt="Empty frames" width="160"></a> | Empty frames | Beekeeper · Florist · Fund manager raising capital · The Trickster |
 
-[All 48 days](ARCHIVE.md)
+[All 49 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works
