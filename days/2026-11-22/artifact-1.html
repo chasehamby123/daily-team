@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Pass: priority sorter for deal problems</title>
+<style>
+:root{
+  --paper:#f4eee2;--card:#fffaf1;--ink:#1f1a14;--muted:#665a4b;
+  --leather:#6e4326;--heat:#b23a1e;--heatsoft:#f2d8cd;--line:#d6c9b2;
+  --senior:#3f4a52;--mezz:#8a6a4a;--equity:#b23a1e;--ok:#2f5d3a;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.45 var(--sans)}
+.wrap{max-width:1040px;margin:0 auto;padding:20px 16px 40px}
+h1{font:700 32px/1.1 var(--sans);margin:4px 0 8px;letter-spacing:-.01em}
+h2{font:700 20px/1.2 var(--sans);margin:0 0 12px}
+h3{font:700 16px/1.25 var(--sans);margin:0 0 8px}
+.kicker{font:600 13px/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--leather);margin:0}
+.lede{max-width:44em;margin:0 0 6px}
+.help{font-size:14px;color:var(--muted);margin:6px 0 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:16px;margin:16px 0}
+.num{font-family:var(--mono)}
+label{display:block;font-weight:600;font-size:14px}
+input[type=text]{display:block;width:100%;margin-top:4px;padding:10px;font:16px var(--mono);color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:4px}
+input:focus{outline:2px solid var(--leather);outline-offset:1px}
+.qrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+button{font:600 14px var(--sans);padding:9px 14px;border-radius:4px;border:1px solid var(--leather);background:var(--leather);color:#fff;cursor:pointer}
+button.ghost{background:transparent;color:var(--leather)}
+button:focus{outline:2px solid var(--heat);outline-offset:2px}
+/* stack */
+.stackrow{display:flex;gap:6px;margin-top:14px;align-items:stretch}
+.bar{display:flex;height:34px;border-radius:3px;overflow:hidden;flex:1 1 auto;border:1px solid var(--ink)}
+.seg{height:100%}
+.gap{flex:0 0 18%;border:2px dashed var(--heat);border-radius:3px;display:flex;align-items:center;justify-content:center;font:600 12px var(--mono);color:var(--heat);background:repeating-linear-gradient(45deg,transparent 0 6px,var(--heatsoft) 6px 8px)}
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 0;padding:0;list-style:none;font-size:14px}
+.legend i{display:inline-block;width:12px;height:12px;margin-right:6px;vertical-align:-1px;border-radius:2px}
+.stop{font:700 20px/1.3 var(--sans);color:var(--heat);margin:12px 0 0}
+/* pass */
+.passgrid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:760px){.passgrid{grid-template-columns:1fr}}
+#grid{width:100%;max-width:470px;height:auto;display:block;touch-action:none;user-select:none;-webkit-user-select:none}
+#grid text{font-family:var(--sans);font-size:13px;fill:var(--muted)}
+#grid .qlab{font-weight:700;fill:var(--ink);font-size:13px}
+#grid .dot{cursor:grab}
+#grid .dot:focus{outline:none}
+#grid .dot:focus circle.body{stroke:var(--heat);stroke-width:4}
+#grid .dot text{fill:#fff;font:700 14px var(--mono);pointer-events:none}
+.ticket{border:1px solid var(--line);border-top:3px dashed var(--leather);background:#fff;padding:10px 12px;margin-bottom:10px;border-radius:0 0 4px 4px}
+.ticket .read{font:14px var(--mono);margin:6px 0 0;color:var(--muted)}
+.ticket.first{border-top-color:var(--heat);box-shadow:inset 4px 0 0 var(--heat)}
+.ticket.cleared{opacity:.6}
+.tag{display:inline-block;font:700 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;padding:2px 6px;border-radius:3px;background:var(--ink);color:#fff;margin-left:6px;vertical-align:1px}
+.tag.hot{background:var(--heat)}
+/* pick */
+.pickgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.pickcard{border:1px solid var(--ink);border-radius:4px;padding:14px;background:#fff}
+.pickcard.locked{background:repeating-linear-gradient(135deg,#efe7d8 0 10px,#e8dfcd 10px 20px);border-style:dashed;color:var(--muted)}
+.big{font:700 24px/1.2 var(--mono)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:15px;margin:8px 0}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-family:var(--mono);text-align:right}
+.fix{border-left:3px solid var(--heat);padding-left:10px;margin:10px 0}
+/* cases */
+.verdict{font:700 18px/1.35 var(--sans);margin:0 0 8px}
+.verdict.good{color:var(--ok)}
+.verdict.bad{color:var(--heat)}
+.safer{border:2px solid var(--ok);background:#eef3ec;padding:10px 12px;border-radius:4px;margin:0 0 12px}
+.cases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media (max-width:760px){.cases{grid-template-columns:1fr}}
+.case{border:1px solid var(--line);border-radius:4px;padding:12px;background:#fff}
+.case.badc{border-top:4px solid var(--heat)}
+.case.basec{border-top:4px solid var(--ink)}
+.case.goodc{border-top:4px solid var(--ok)}
+.drive{font-size:13px;color:var(--muted);margin:0 0 8px;padding-left:16px}
+.drive li{margin:2px 0}
+/* paths */
+.paths{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.paths{grid-template-columns:1fr}}
+.path{border:1px solid var(--ink);border-radius:4px;padding:12px;background:#fff}
+.path .row{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding:8px 0;font-size:15px}
+.path .row span:last-child{font-family:var(--mono);text-align:right}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+td.n{font-family:var(--mono);text-align:right}
+.formula li{margin:4px 0;font-size:14px}
+.formula code{font-family:var(--mono);font-size:13px;background:#f1e9da;padding:1px 4px;border-radius:3px}
+footer{font-size:13px;color:var(--muted);margin-top:24px;border-top:1px solid var(--line);padding-top:12px}
+footer p{margin:6px 0}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:no-preference){.pickcard,.ticket{transition:opacity .2s,background-color .2s}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media print{
+  body{background:#fff}
+  .noprint,button{display:none!important}
+  .card{break-inside:avoid;border-color:#999}
+  .wrap{max-width:none;padding:0}
+  input[type=text]{border:none;padding:2px 0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="kicker">Priority sorter · 5 inputs</p>
+  <h1>The Pass</h1>
+  <p class="lede">Put each deal problem on the pass. Up is what it costs every month it sits. Right is the work to clear it. The ticket nearest the top-left corner goes out first.</p>
+  <p class="help">Five inputs: two questions about the deal, three problem tickets. Drag a dot to place a ticket. A focused dot moves with the arrow keys.</p>
+</header>
+
+<section class="card" aria-labelledby="qh">
+  <h2 id="qh">The stack</h2>
+  <div class="qrow">
+    <label for="deal">1. Deal size ($)
+      <input type="text" id="deal" inputmode="decimal" autocomplete="off" placeholder="40m">
+    </label>
+    <label for="eq">2. Sponsor's own cheque ($)
+      <input type="text" id="eq" inputmode="decimal" autocomplete="off" placeholder="8m">
+    </label>
+  </div>
+  <p class="help">Type 40m, 750k or 40,000,000. A cheque of zero closes the pass.</p>
+  <div id="stack"></div>
+</section>
+
+<div id="main">
+<section class="card" aria-labelledby="ph">
+  <h2 id="ph">The pass</h2>
+  <div class="passgrid">
+    <svg id="grid" viewBox="-58 -14 470 468" role="group" aria-label="Grid of problems. Vertical axis is cost per month, 0 to 250 thousand dollars. Horizontal axis is effort, 0 to 12 weeks.">
+      <rect x="0" y="0" width="200" height="200" fill="#f2d8cd"/>
+      <rect x="200" y="0" width="200" height="200" fill="#f7ece4"/>
+      <rect x="0" y="200" width="200" height="200" fill="#fbf6ee"/>
+      <rect x="200" y="200" width="200" height="200" fill="#f1ebe0"/>
+      <path d="M0 0 L40 0 L0 40Z" fill="#b23a1e"/>
+      <line x1="200" y1="0" x2="200" y2="400" stroke="#b9a98f" stroke-dasharray="5 5"/>
+      <line x1="0" y1="200" x2="400" y2="200" stroke="#b9a98f" stroke-dasharray="5 5"/>
+      <rect x="0" y="0" width="400" height="400" fill="none" stroke="#1f1a14" stroke-width="1.5"/>
+      <text class="qlab" x="46" y="22">Clear now</text>
+      <text class="qlab" x="390" y="22" text-anchor="end">Plan it</text>
+      <text class="qlab" x="10" y="390">Fit it in</text>
+      <text class="qlab" x="390" y="390" text-anchor="end">Leave it</text>
+      <text x="-6" y="10" text-anchor="end">$250k</text>
+      <text x="-6" y="205" text-anchor="end">$125k</text>
+      <text x="-6" y="400" text-anchor="end">$0</text>
+      <text x="-44" y="200" text-anchor="middle" transform="rotate(-90 -44 200)">Cost per month it sits</text>
+      <text x="0" y="420" text-anchor="start">0 wk</text>
+      <text x="200" y="420" text-anchor="middle">6 wk</text>
+      <text x="400" y="420" text-anchor="end">12 wk</text>
+      <text x="200" y="446" text-anchor="middle">Effort to clear</text>
+      <g id="dots"></g>
+    </svg>
+    <div>
+      <div class="ticket" id="tk0"><label for="t0">Ticket 1</label><input type="text" id="t0" maxlength="40" autocomplete="off" placeholder="Problem, 40 characters"><p class="read" id="r0"></p></div>
+      <div class="ticket" id="tk1"><label for="t1">Ticket 2</label><input type="text" id="t1" maxlength="40" autocomplete="off" placeholder="Problem, 40 characters"><p class="read" id="r1"></p></div>
+      <div class="ticket" id="tk2"><label for="t2">Ticket 3</label><input type="text" id="t2" maxlength="40" autocomplete="off" placeholder="Problem, 40 characters"><p class="read" id="r2"></p></div>
+      <p class="help">An empty ticket stays off the pass.</p>
+    </div>
+  </div>
+</section>
+
+<section class="card" aria-labelledby="oh">
+  <h2 id="oh">Goes out first</h2>
+  <div id="pick"></div>
+</section>
+
+<section class="card" aria-labelledby="ch">
+  <h2 id="ch">Bad, base and good case</h2>
+  <div id="cases"></div>
+</section>
+
+<section class="card" aria-labelledby="sh">
+  <h2 id="sh">Fee or share: same inputs, two paths</h2>
+  <div id="paths"></div>
+</section>
+
+<section class="card" aria-labelledby="ah">
+  <h2 id="ah">Diligence with and without an AI first read</h2>
+  <div id="ai"></div>
+</section>
+</div>
+
+<section class="card formula" aria-labelledby="fh">
+  <h2 id="fh">Formulas</h2>
+  <ul>
+    <li>Debt <code>= deal − sponsor equity</code>. Senior <code>= min(debt, 60% × deal)</code>. Mezz <code>= debt − senior</code>. The 60% senior cap is a page assumption.</li>
+    <li>Cost per month <code>= $250k × (1 − height ÷ 400)</code>, rounded to $5k. Effort <code>= 12 weeks × across ÷ 400</code>, rounded to 0.5 week.</li>
+    <li>Order <code>= √((effort ÷ 12)² + (1 − cost ÷ $250k)²)</code>. Distance to the top-left corner. Smallest goes out first.</li>
+    <li>Six-month slip on one ticket <code>= cost per month × 6</code>.</li>
+    <li>Problem carry, bad case <code>= Σ open cost per month × 6</code>. Base case: tickets cleared one at a time in pass order, each runs until its own fix ends, <code>months = weeks ÷ 4.33</code>. Good case: all worked at once, each runs only its own effort.</li>
+    <li>Equity left <code>= sponsor equity − problem carry</code>. The deal places while equity left is above zero.</li>
+    <li>Fee <code>= 1.5% × deal</code>. Share <code>= 0.75% × deal + 3% × max(0, exit value − debt)</code>.</li>
+    <li>Exit value <code>= 1.3 × deal</code> base, <code>0.65 × deal</code> bad (halved), <code>1.6 × deal</code> good. These multiples are page assumptions, not a forecast.</li>
+    <li>Diligence on a deal <code>= $120k</code> usual path, <code>$30k</code> with an AI first read, counsel review included.</li>
+  </ul>
+</section>
+
+<footer>
+  <div class="btns noprint">
+    <button type="button" id="ex">Load worked example</button>
+    <button type="button" class="ghost" id="clr">Clear all</button>
+  </div>
+  <p>This page sorts problems and shows arithmetic. It is not investment, legal or tax advice. Fee and warrant terms, and how they are taxed, depend on your engagement letter and local rules. Check those before relying on any figure.</p>
+  <p>Credits. Chef, lead: the pass, the drag-to-place grid, top-left goes out first. Cobbler: the five-input cut and the zero-equity stop. Merchant banker: the stack in dollars above the grid and the two questions. Scheherazade: the drawn gap, the locked next ticket, the bad-case numbers.</p>
+  <p>Published by OuterHaven Advisory.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+var KEY='thepass-v1';
+var EX={deal:40e6,eq:8e6,t:[
+  {text:'Sponsor audit one quarter late',x:100,y:176},
+  {text:'Senior lender wants new valuation',x:267,y:112},
+  {text:'Key customer contract up for renewal',x:333,y:304}
+],done:[false,false,false]};
+function clone(o){return JSON.parse(JSON.stringify(o));}
+function load(){
+  try{
+    var r=localStorage.getItem(KEY); if(!r) return null;
+    var o=JSON.parse(r);
+    if(!o||!o.t||o.t.length!==3||!o.done) return null;
+    return o;
+  }catch(e){return null;}
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+var S=load()||clone(EX);
+
+var $=function(id){return document.getElementById(id);};
+var dealIn=$('deal'),eqIn=$('eq'),svg=$('grid'),dotsG=$('dots');
+var NS='http://www.w3.org/2000/svg';
+
+function trim(s){return s.replace(/\.?0+$/,'');}
+function money(n){
+  var a=Math.abs(n),sg=n<0?'−$':'$';
+  if(a>=1e6) return sg+trim((a/1e6).toFixed(2))+'m';
+  if(a>=1e3) return sg+Math.round(a/1e3)+'k';
+  return sg+Math.round(a);
+}
+function full(n){return n==null?'':Math.round(n).toLocaleString('en-US');}
+function parseMoney(str){
+  var s=String(str).trim().toLowerCase().replace(/[$,\s]/g,'');
+  if(s==='') return null;
+  var m=s.match(/^(\d*\.?\d+)([km]?)$/);
+  if(!m) return NaN;
+  return parseFloat(m[1])*(m[2]==='m'?1e6:m[2]==='k'?1e3:1);
+}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function cost(t){return Math.round(250000*(1-t.y/400)/5000)*5000;}
+function effort(t){return Math.round(12*t.x/400*2)/2;}
+function dist(t){return Math.hypot(t.x/400,t.y/400);}
+function wk(e){return e+(e===1?' week':' weeks');}
+function fixText(c,e){
+  var hot=c>=125000,hard=e>6;
+  if(hot&&!hard) return 'Clear it now. About '+wk(e)+' of work stops '+money(c)+' a month.';
+  if(hot&&hard) return 'Plan it and start this week. '+wk(e)+' to clear, '+money(c)+' a month until then.';
+  if(!hot&&!hard) return 'Fit it in. '+wk(e)+' of work saves '+money(c)+' a month.';
+  return 'Leave it until the others clear. '+wk(e)+' of work for '+money(c)+' a month.';
+}
+function quad(c,e){var hot=c>=125000,hard=e>6;return hot&&!hard?'Clear now':hot?'Plan it':!hard?'Fit it in':'Leave it';}
+
+/* dots */
+var dotEls=[];
+for(var i=0;i<3;i++){(function(i){
+  var g=document.createElementNS(NS,'g');
+  g.setAttribute('class','dot');g.setAttribute('tabindex','0');g.setAttribute('role','slider');
+  var ring=document.createElementNS(NS,'circle');ring.setAttribute('r','24');ring.setAttribute('fill','none');ring.setAttribute('stroke','#b23a1e');ring.setAttribute('stroke-width','3');ring.setAttribute('stroke-dasharray','4 3');
+  var c=document.createElementNS(NS,'circle');c.setAttribute('r','16');c.setAttribute('class','body');c.setAttribute('stroke','#fff');c.setAttribute('stroke-width','2');
+  var tx=document.createElementNS(NS,'text');tx.setAttribute('text-anchor','middle');tx.setAttribute('dy','5');tx.textContent=String(i+1);
+  g.appendChild(ring);g.appendChild(c);g.appendChild(tx);dotsG.appendChild(g);
+  dotEls.push({g:g,ring:ring,c:c});
+  var dragging=false;
+  g.addEventListener('pointerdown',function(e){dragging=true;try{g.setPointerCapture(e.pointerId);}catch(x){}g.focus();move(e);e.preventDefault();});
+  g.addEventListener('pointermove',function(e){if(dragging) move(e);});
+  function end(){if(dragging){dragging=false;save();}}
+  g.addEventListener('pointerup',end);g.addEventListener('pointercancel',end);
+  function move(e){
+    var pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;
+    var m=svg.getScreenCTM(); if(!m) return;
+    var p=pt.matrixTransform(m.inverse());
+    S.t[i].x=Math.max(4,Math.min(396,p.x));S.t[i].y=Math.max(4,Math.min(396,p.y));
+    render();
+  }
+  g.addEventListener('keydown',function(e){
+    var d=e.shiftKey?40:8,t=S.t[i],k=e.key;
+    if(k==='ArrowLeft') t.x-=d; else if(k==='ArrowRight') t.x+=d;
+    else if(k==='ArrowUp') t.y-=d; else if(k==='ArrowDown') t.y+=d; else return;
+    t.x=Math.max(4,Math.min(396,t.x));t.y=Math.max(4,Math.min(396,t.y));
+    e.preventDefault();save();render();
+  });
+})(i);}
+
+/* inputs */
+function syncInputs(){
+  dealIn.value=full(S.deal);eqIn.value=full(S.eq);
+  for(var i=0;i<3;i++) $('t'+i).value=S.t[i].text;
+}
+var badParse={deal:false,eq:false};
+dealIn.addEventListener('input',function(){var v=parseMoney(dealIn.value);badParse.deal=isNaN(v)&&v!==null;S.deal=badParse.deal?null:v;save();render();});
+eqIn.addEventListener('input',function(){var v=parseMoney(eqIn.value);badParse.eq=isNaN(v)&&v!==null;S.eq=badParse.eq?null:v;save();render();});
+dealIn.addEventListener('blur',function(){if(!badParse.deal) dealIn.value=full(S.deal);});
+eqIn.addEventListener('blur',function(){if(!badParse.eq) eqIn.value=full(S.eq);});
+for(var j=0;j<3;j++){(function(j){
+  $('t'+j).addEventListener('input',function(){S.t[j].text=this.value.slice(0,40);if(!S.t[j].text.trim()) S.done[j]=false;save();render();});
+})(j);}
+$('ex').addEventListener('click',function(){S=clone(EX);badParse={deal:false,eq:false};save();syncInputs();render();});
+$('clr').addEventListener('click',function(){S={deal:null,eq:null,t:[{text:'',x:200,y:200},{text:'',x:200,y:200},{text:'',x:200,y:200}],done:[false,false,false]};save();syncInputs();render();});
+$('pick').addEventListener('click',function(e){
+  var b=e.target.closest('button'); if(!b) return;
+  if(b.hasAttribute('data-done')){S.done[+b.getAttribute('data-done')]=true;}
+  if(b.hasAttribute('data-reopen')){S.done=[false,false,false];}
+  save();render();
+});
+
+/* render */
+function renderStack(deal,eq){
+  var el=$('stack');
+  if(badParse.deal){el.innerHTML='<p class="stop">Could not read the deal size.</p>';return;}
+  if(!(deal>0)){el.innerHTML='<p class="help">Enter a deal size to draw the stack.</p>';return;}
+  var e=eq==null||badParse.eq?0:Math.max(0,Math.min(eq,deal));
+  var debt=deal-e,senior=Math.min(debt,0.6*deal),mezz=debt-senior;
+  var segs=[['Senior',senior,'var(--senior)'],['Mezz',mezz,'var(--mezz)'],['Sponsor equity',e,'var(--equity)']];
+  var bar='';segs.forEach(function(s){if(s[1]>0) bar+='<div class="seg" style="width:'+(s[1]/deal*100)+'%;background:'+s[2]+'" title="'+s[0]+' '+money(s[1])+'"></div>';});
+  var zero=(eq===0);
+  var h='<div class="stackrow"><div class="bar">'+bar+'</div>'+(zero?'<div class="gap">Equity $0</div>':'')+'</div>';
+  h+='<ul class="legend">';
+  segs.forEach(function(s){h+='<li><i style="background:'+s[2]+'"></i>'+s[0]+' <span class="num">'+money(s[1])+'</span></li>';});
+  h+='<li>Total <span class="num">'+money(deal)+'</span></li></ul>';
+  if(badParse.eq) h+='<p class="stop">Could not read the sponsor cheque.</p>';
+  else if(eq==null) h+='<p class="help">Enter the sponsor\u2019s own cheque to open the pass.</p>';
+  else if(zero) h+='<p class="stop">This deal will not place.</p><p class="help">No sponsor money sits in the stack. The pass stays closed until the cheque is above zero.</p>';
+  else{
+    h+='<p class="help">Sponsor has <span class="num">'+money(e)+'</span> in: '+Math.round(e/deal*100)+'% of the deal.'+(eq>deal?' The cheque is above deal size, so the page caps it at deal size.':'')+'</p>';
+  }
+  el.innerHTML=h;
+}
+
+function render(){
+  var deal=S.deal,eq0=S.eq;
+  renderStack(deal,eq0);
+  var ok=deal>0&&eq0!=null&&eq0>0&&!badParse.deal&&!badParse.eq;
+  $('main').hidden=!ok;
+  if(!ok) return;
+  var eq=Math.min(eq0,deal),debt=deal-eq;
+
+  var ranked=[0,1,2].filter(function(i){return S.t[i].text.trim()&&!S.done[i];}).sort(function(a,b){return dist(S.t[a])-dist(S.t[b]);});
+  var first=ranked.length?ranked[0]:-1;
+
+  /* dots and tickets */
+  for(var i=0;i<3;i++){
+    var t=S.t[i],d=dotEls[i],has=!!t.text.trim(),c=cost(t),e=effort(t);
+    d.g.setAttribute('transform','translate('+t.x+' '+t.y+')');
+    d.c.setAttribute('fill',S.done[i]?'#9a8f80':i===first?'#b23a1e':has?'#1f1a14':'#b9a98f');
+    d.ring.style.display=i===first?'':'none';
+    d.g.setAttribute('aria-label','Ticket '+(i+1)+(has?', '+t.text:', empty')+'. '+money(c)+' a month, '+wk(e)+' to clear.');
+    d.g.setAttribute('aria-valuetext',money(c)+' a month, '+wk(e));
+    var tk=$('tk'+i);
+    tk.className='ticket'+(i===first?' first':'')+(S.done[i]?' cleared':'');
+    var r=$('r'+i);
+    if(!has) r.innerHTML='Empty. Write the problem to put it on the pass.';
+    else r.innerHTML=money(c)+' a month · '+wk(e)+' to clear'+(S.done[i]?'<span class="tag">cleared</span>':i===first?'<span class="tag hot">out first</span>':'');
+  }
+
+  /* pick */
+  var ph='';
+  var doneList=[0,1,2].filter(function(i){return S.done[i]&&S.t[i].text.trim();});
+  if(first<0){
+    ph='<p>No open tickets on the pass.'+(doneList.length?' Every written ticket is cleared.':' Write a problem on a ticket to place it.')+'</p>';
+  }else{
+    var ft=S.t[first],fc=cost(ft),fe=effort(ft);
+    ph+='<div class="pickgrid"><div class="pickcard"><p class="kicker">Ticket '+(first+1)+' · '+quad(fc,fe)+'</p><p class="big" style="margin:6px 0">'+esc(ft.text)+'</p>';
+    ph+='<dl class="kv"><dt>Cost per month</dt><dd>'+money(fc)+'</dd><dt>Six-month slip</dt><dd>'+money(fc*6)+'</dd><dt>Effort</dt><dd>'+wk(fe)+'</dd></dl>';
+    ph+='<p class="fix">'+fixText(fc,fe)+'</p>';
+    ph+='<button type="button" data-done="'+first+'">Mark ticket '+(first+1)+' done</button></div>';
+    if(ranked.length>1){
+      var n=ranked[1],nt=S.t[n];
+      ph+='<div class="pickcard locked" aria-label="Next ticket, locked"><p class="kicker">Next · Ticket '+(n+1)+'</p><p class="big" style="margin:6px 0">'+esc(nt.text)+'</p>';
+      ph+='<dl class="kv"><dt>Cost per month</dt><dd>'+money(cost(nt))+'</dd><dt>Six-month slip</dt><dd>'+money(cost(nt)*6)+'</dd></dl>';
+      ph+='<p class="fix">The fix opens when ticket '+(first+1)+' is marked done.</p>';
+      if(ranked.length>2) ph+='<p class="help">One more ticket waits behind it.</p>';
+      ph+='</div>';
+    }
+    ph+='</div>';
+  }
+  if(doneList.length){
+    ph+='<p class="help">Cleared: '+doneList.map(function(i){return 'ticket '+(i+1)+' ('+esc(S.t[i].text)+')';}).join(', ')+'. Cleared tickets stop costing money in the cases below.</p><div class="btns noprint"><button type="button" class="ghost" data-reopen="1">Reopen all tickets</button></div>';
+  }
+  $('pick').innerHTML=ph;
+
+  /* cases */
+  var monthly=0,bad=0,base=0,good=0,cum=0;
+  ranked.forEach(function(i){var c=cost(S.t[i]),e=effort(S.t[i]);monthly+=c;bad+=c*6;cum+=e;base+=c*cum/4.33;good+=c*e/4.33;});
+  var fee=0.015*deal,cash=0.0075*deal;
+  function warr(mult){return 0.03*Math.max(0,mult*deal-debt);}
+  var cases=[
+    {k:'Bad',cls:'badc',carry:bad,mult:0.65,drive:['Close slips 6 months','Exit value halved: 0.65 × deal = '+money(0.65*deal),'Every open problem runs 6 months'],fee:money(fee)+', six months late'},
+    {k:'Base',cls:'basec',carry:base,mult:1.3,drive:['Closes on time','Exit value 1.3 × deal = '+money(1.3*deal),'Tickets cleared one at a time, in pass order'],fee:money(fee)+' at close'},
+    {k:'Good',cls:'goodc',carry:good,mult:1.6,drive:['Closes on time','Exit value 1.6 × deal = '+money(1.6*deal),'All tickets worked at once'],fee:money(fee)+' at close'}
+  ];
+  var survives=eq-bad>0,ch='';
+  if(survives){
+    ch+='<p class="verdict good">The deal survives the bad case.</p>';
+    if(monthly>0) ch+='<p>Six months of every open problem costs <span class="num">'+money(bad)+'</span> against <span class="num">'+money(eq)+'</span> of sponsor equity. Room to push: the problems could run about <span class="num">'+Math.floor(eq/monthly)+'</span> months before they eat the equity, or the cheque could fall to <span class="num">'+money(bad)+'</span> before six months breaks it.</p>';
+    else ch+='<p>No open problem costs anything per month, so the slip does not touch the equity.</p>';
+  }else{
+    var fc1=first>=0?cost(S.t[first])*6:0,without=bad-fc1;
+    ch+='<div class="safer"><strong>Safer setting first.</strong> ';
+    if(first>=0&&eq-without>0) ch+='Clear ticket '+(first+1)+' before anything else. Six months of the rest costs <span class="num">'+money(without)+'</span>, under the <span class="num">'+money(eq)+'</span> cheque.';
+    else ch+='Raise the sponsor\u2019s cheque above <span class="num">'+money(bad)+'</span>, or clear tickets until six months of cost sits under <span class="num">'+money(eq)+'</span>.';
+    ch+='</div><p class="verdict bad">The deal does not survive the bad case.</p><p>Six months of every open problem costs <span class="num">'+money(bad)+'</span>. The sponsor has <span class="num">'+money(eq)+'</span> in.</p>';
+  }
+  ch+='<div class="cases">';
+  cases.forEach(function(c){
+    var left=eq-c.carry,w=warr(c.mult);
+    ch+='<div class="case '+c.cls+'"><h3>'+c.k+' case</h3><ul class="drive">'+c.drive.map(function(d){return '<li>'+d+'</li>';}).join('')+'</ul>';
+    ch+='<dl class="kv"><dt>Problem carry</dt><dd>'+money(c.carry)+'</dd><dt>Equity left</dt><dd>'+money(left)+'</dd><dt>Places</dt><dd>'+(left>0?'Yes':'No')+'</dd><dt>Fee path</dt><dd>'+c.fee+'</dd><dt>Share path</dt><dd>'+money(cash)+' + '+money(w)+'</dd></dl></div>';
+  });
+  ch+='</div>';
+  $('cases').innerHTML=ch;
+
+  /* paths */
+  var wb=warr(1.3),cross=0.25*deal;
+  var p='<p class="help" style="margin:0 0 10px">Both columns use the deal size and sponsor cheque above. They carry the same weight on the page.</p><div class="paths">';
+  p+='<div class="path"><h3>Fee: 1.5% at close</h3>';
+  p+='<div class="row"><span>Closes on time</span><span>'+money(fee)+' at close</span></div>';
+  p+='<div class="row"><span>Six-month slip, exit value halved</span><span>'+money(fee)+', six months late</span></div>';
+  p+='<div class="row"><span>Deal dies</span><span>$0 fee; $120k diligence lost, or $30k with an AI first read</span></div></div>';
+  p+='<div class="path"><h3>Share: 0.75% + warrants on 3% of equity</h3>';
+  p+='<div class="row"><span>Closes on time</span><span>'+money(cash)+' at close + '+money(wb)+' warrants at exit = '+money(cash+wb)+'</span></div>';
+  p+='<div class="row"><span>Six-month slip, exit value halved</span><span>'+money(cash)+' at close; warrants '+money(warr(0.65))+'</span></div>';
+  p+='<div class="row"><span>Deal dies</span><span>$0; $120k diligence lost, or $30k with an AI first read</span></div></div></div>';
+  p+='<p class="help">The share path has a floor of <span class="num">'+money(cash)+'</span>. It pays more than the fee when equity at exit is above <span class="num">'+money(cross)+'</span>, which is 25% of deal size. Warrant value at exit depends on the warrant terms and local rules.</p>';
+  $('paths').innerHTML=p;
+
+  /* ai */
+  var a='<table><thead><tr><th>Case</th><th>Usual path</th><th>AI first read</th></tr></thead><tbody>';
+  a+='<tr><td>Base: deal closes, fee path</td><td class="n">'+money(fee)+' − $120k = '+money(fee-120000)+'</td><td class="n">'+money(fee)+' − $30k = '+money(fee-30000)+'</td></tr>';
+  a+='<tr><td>Bad: deal dies</td><td class="n">−$120k</td><td class="n">−$30k</td></tr></tbody></table>';
+  a+='<h3 style="margin-top:14px">A person still reviews</h3><ul class="formula">';
+  a+='<li>Counsel reads and signs the term-sheet summary before anyone relies on it.</li>';
+  a+='<li>The banker checks the sponsor accounts against bank statements.</li>';
+  a+='<li>The banker confirms the sponsor cheque and every figure in the stack.</li></ul>';
+  a+='<p class="help">AI first read; reviewed and signed by counsel.</p>';
+  $('ai').innerHTML=a;
+}
+
+syncInputs();
+render();
+})();
+</script>
+</body>
+</html>
