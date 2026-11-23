@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-11-22: The Pass
+### 2026-11-24: The Repayment Schedule
 
-<a href="days/2026-11-22/"><img src="days/2026-11-22/team.png" alt="Team for 2026-11-22: Chef · Cobbler · Merchant banker · Scheherazade" width="100%"></a>
+<a href="days/2026-11-24/"><img src="days/2026-11-24/team.png" alt="Team for 2026-11-24: Locksmith · Upholsterer · Private credit fund manager · Florence Nightingale" width="100%"></a>
 
-**Task:** Priority sorter: a list of problems rated by cost and effort gives a two-by-two grid and the first one to tackle.
+**Task:** Time-back calculator: weekly hours on manual tasks and an hourly cost give the hours and money an automated step would return.
 
-**Decision:** The page takes a deal's size, the sponsor's own equity, and up to three problems placed by drag on a cost-by-effort grid, then draws the capital stack, names the first problem to clear with its six-month cost, and keeps the next problem ...
+**Decision:** The page takes a fund's weekly analyst hours on borrower-file cleanup and an hourly cost, shows the money lost on files that die before committee first, and then shows the net hours, money, and payback month an automated step returns und...
 
-<a href="days/2026-11-22/"><img src="days/2026-11-22/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-11-24/"><img src="days/2026-11-24/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-11-22/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-11-24/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,15 +37,15 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-11-24](days/2026-11-24/) | <a href="days/2026-11-24/"><img src="days/2026-11-24/artifact-1.png" alt="The Repayment Schedule" width="160"></a> | The Repayment Schedule | Locksmith · Upholsterer · Private credit fund manager · Florence Nightingale |
 | [2026-11-22](days/2026-11-22/) | <a href="days/2026-11-22/"><img src="days/2026-11-22/artifact-1.png" alt="The Pass" width="160"></a> | The Pass | Chef · Cobbler · Merchant banker · Scheherazade |
 | [2026-11-21](days/2026-11-21/) | <a href="days/2026-11-21/"><img src="days/2026-11-21/artifact-1.png" alt="The Zero Ledger, Fixed-Width Docket" width="160"></a> | The Zero Ledger, Fixed-Width Docket | Weaver · Clockmaker · Multi-family office adviser · Alice |
 | [2026-11-20](days/2026-11-20/) | <a href="days/2026-11-20/"><img src="days/2026-11-20/artifact-1.png" alt="The Month Already Gone" width="160"></a> | The Month Already Gone | Data journalist · Animator · Home services owner · Odysseus |
 | [2026-11-19](days/2026-11-19/) | <a href="days/2026-11-19/"><img src="days/2026-11-19/artifact-1.png" alt="Proof Sheet" width="160"></a> | Proof Sheet | Printmaker · Costume designer · Accounting firm partner · Euclid |
 | [2026-11-18](days/2026-11-18/) | <a href="days/2026-11-18/"><img src="days/2026-11-18/artifact-1.png" alt="Who Keeps the Keys" width="160"></a> | Who Keeps the Keys | Museum curator · Furniture maker · Retiring owner with no successor · Leonardo da Vinci |
 | [2026-11-17](days/2026-11-17/) | <a href="days/2026-11-17/"><img src="days/2026-11-17/artifact-1.png" alt="The Carry Wall" width="160"></a> | The Carry Wall | Exhibition designer · Puppeteer · Real estate developer · Sisyphus |
-| [2026-11-16](days/2026-11-16/) | <a href="days/2026-11-16/"><img src="days/2026-11-16/artifact-1.png" alt="Round Six" width="160"></a> | Round Six | Game designer · Textile designer · Investment banker · Cassandra |
 
-[All 50 days](ARCHIVE.md)
+[All 51 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works

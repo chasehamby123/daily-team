@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Repayment Schedule: analyst hours on borrower-file cleanup</title>
+<style>
+:root{
+  --paper:#f5f1e8; --card:#fbf9f3; --ink:#1c2230; --muted:#575c6b; --rule:#cdc3ad;
+  --lost:#4a1a1e; --lostmid:#7a2e33; --kept:#dccda6; --brass:#7d5f22; --ok:#2d5638;
+  --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--sans);font-variant-numeric:tabular-nums}
+.wrap{max-width:1120px;margin:0 auto;padding:20px 16px 40px}
+h1,h2,h3{font-family:var(--serif);font-weight:normal;line-height:1.2;margin:0}
+h1{font-size:2rem;letter-spacing:.01em}
+h2{font-size:1.4rem;margin:0 0 10px}
+h3{font-size:1.05rem;margin:0 0 6px}
+header{border-bottom:3px double var(--ink);padding-bottom:12px;margin-bottom:18px}
+header p{margin:6px 0 0;max-width:70ch;color:var(--muted)}
+.layout{display:grid;gap:18px;grid-template-areas:"ledger" "inputs"}
+@media(min-width:880px){.layout{grid-template-columns:340px 1fr;grid-template-areas:"inputs ledger"}}
+.inputs{grid-area:inputs}.ledger{grid-area:ledger}
+section,.panel{background:var(--card);border:1px solid var(--rule);padding:16px;margin-bottom:18px}
+.layout>.panel{margin-bottom:0}
+label{display:block;font-size:.9rem;margin:10px 0 3px}
+.help{font-size:.8rem;color:var(--muted);margin:2px 0 0}
+input[type=number],input[type=text]{width:100%;font:inherit;padding:7px 8px;border:1px solid var(--rule);background:#fff;color:var(--ink);border-radius:2px}
+input:focus{outline:2px solid var(--brass);outline-offset:1px}
+.row3{display:grid;grid-template-columns:1fr 84px;gap:6px 10px;align-items:center}
+.row3 label{margin:0}
+fieldset{border:1px solid var(--rule);padding:8px 10px 10px;margin:12px 0 0}
+legend{font-size:.85rem;color:var(--brass);padding:0 4px}
+details{margin-top:12px}
+summary{cursor:pointer;font-size:.9rem;color:var(--brass)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+button{font:inherit;font-size:.9rem;padding:7px 12px;border:1px solid var(--ink);background:var(--paper);color:var(--ink);cursor:pointer;border-radius:2px}
+button.primary{background:var(--ink);color:var(--paper)}
+.example{font-size:.85rem;background:#efe8d6;padding:8px 10px;border-left:3px solid var(--brass);margin:0 0 6px}
+.step{border-top:1px solid var(--rule);padding:12px 0}
+.step:first-of-type{border-top:0;padding-top:4px}
+.step .n{font-family:var(--serif);color:var(--brass);font-size:.9rem}
+.big{font-family:var(--serif);font-size:2.3rem;line-height:1.1;margin:2px 0}
+.step.down .big{color:var(--lost)}
+.sub{margin:2px 0}
+.formula{font:13px/1.45 var(--mono);color:var(--muted);background:#f1ecdf;padding:4px 6px;margin-top:6px;overflow-wrap:anywhere}
+.status{font-size:.9rem;color:var(--lostmid);min-height:0}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{padding:6px 8px;border-bottom:1px solid var(--rule);text-align:right;vertical-align:top}
+th:first-child,td:first-child{text-align:left}
+thead th{font-family:var(--serif);font-weight:normal;border-bottom:2px solid var(--ink)}
+tr.group td{font-size:.78rem;color:var(--brass);text-transform:uppercase;letter-spacing:.06em;padding-top:12px;border-bottom:1px solid var(--ink)}
+td.neg{color:var(--lostmid);font-weight:600}
+td.pos{color:var(--ok)}
+.scroll{overflow-x:auto}
+.verdict{font-size:.98rem;padding:10px 12px;border-left:4px solid var(--ok);background:#eef1ea;margin:0 0 12px}
+.verdict.warn{border-left-color:var(--lostmid);background:#f4e9e6}
+.verdict p{margin:4px 0}
+.wheelbox{display:grid;gap:16px}
+@media(min-width:760px){.wheelbox{grid-template-columns:360px 1fr}}
+svg{width:100%;max-width:360px;height:auto;display:block}
+.legend{list-style:none;padding:0;margin:0;font-size:.88rem}
+.legend li{margin:6px 0;display:flex;gap:8px;align-items:center}
+.sw{width:16px;height:16px;display:inline-block;border:1px solid var(--ink);flex:none}
+.check{font-size:.88rem;margin-top:8px;font-weight:600}
+.check.bad{color:var(--lostmid)}
+ul.plain{margin:6px 0;padding-left:20px}
+ul.plain li{margin:3px 0}
+textarea{width:100%;min-height:150px;font:13px/1.45 var(--mono);border:1px solid var(--rule);padding:8px;background:#fff;color:var(--ink)}
+footer{font-size:.82rem;color:var(--muted);border-top:3px double var(--ink);padding-top:12px}
+footer p{margin:4px 0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+@media print{
+  body{background:#fff;font-size:11pt}
+  .no-print{display:none!important}
+  .layout{grid-template-columns:1fr;grid-template-areas:"ledger" "inputs"}
+  section,.panel{break-inside:avoid;border-color:#999;background:#fff}
+  details{display:block}
+  details>*{display:block}
+  .formula{background:#fff;border:1px solid #ccc}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>The Repayment Schedule</h1>
+  <p>Borrower files that arrive as scanned PDFs and three versions of one spreadsheet cost analyst hours. This page prices those hours. It starts with the files that die before committee. It then shows the month an automated step repays its setup. Review hours by a named analyst come off before any figure is shown.</p>
+</header>
+
+<div class="layout">
+
+<div class="panel inputs" id="inputs">
+  <h2>Your desk</h2>
+  <p class="example" id="exampleNote">Worked example: a fund that reviews 40 borrower files a quarter. 15 analyst hours a week on cleanup at $120 an hour. 40% of files die before committee.</p>
+
+  <fieldset>
+    <legend>Last week's cleanup, hours by task</legend>
+    <div class="row3">
+      <label for="t1">Chasing missing documents</label><input type="number" id="t1" min="0" step="0.5" inputmode="decimal">
+      <label for="t2">Re-keying statements from PDFs</label><input type="number" id="t2" min="0" step="0.5" inputmode="decimal">
+      <label for="t3">Reconciling covenants to the model</label><input type="number" id="t3" min="0" step="0.5" inputmode="decimal">
+    </div>
+    <p class="help">The rows add up to weekly hours below.</p>
+  </fieldset>
+
+  <label for="hours">Weekly analyst hours on file cleanup</label>
+  <input type="number" id="hours" min="0" step="0.5" inputmode="decimal">
+  <p class="help" id="rowsNote">Filled from the task rows. You can type over it.</p>
+
+  <label for="cost">Loaded hourly cost of an analyst</label>
+  <input type="number" id="cost" min="0" step="1" inputmode="decimal">
+  <p class="help">Salary, payroll taxes and overhead per hour. These follow local employment and tax rules. Enter your own figure.</p>
+
+  <label for="sym">Currency symbol</label>
+  <input type="text" id="sym" maxlength="4" style="max-width:80px">
+
+  <fieldset>
+    <legend>Two questions about your pipeline</legend>
+    <label for="files">Files reviewed per quarter</label>
+    <input type="number" id="files" min="0" step="1" inputmode="numeric">
+    <label for="dead">Share of files that die before committee, %</label>
+    <input type="number" id="dead" min="0" max="100" step="1" inputmode="decimal">
+  </fieldset>
+
+  <details open>
+    <summary>Assumptions about the automated step</summary>
+    <p class="help">Edit these to match the quote and the trial you run.</p>
+    <label for="auto">Share of cleanup hours the step automates, %</label>
+    <input type="number" id="auto" min="0" max="100" step="1">
+    <label for="review">Review hours a week by a named analyst</label>
+    <input type="number" id="review" min="0" step="0.5">
+    <p class="help">Checking every cleaned file, including files that later die.</p>
+    <label for="weeks">Working weeks a year</label>
+    <input type="number" id="weeks" min="0" max="52" step="1">
+    <label for="setup">One-time setup, analyst hours</label>
+    <input type="number" id="setup" min="0" step="1">
+    <p class="help">Mapping your templates and testing on past files.</p>
+    <label for="fee">Usual path: fixed fee per month</label>
+    <input type="number" id="fee" min="0" step="50">
+    <p class="help">From a vendor quote. Enter your own.</p>
+    <label for="share">Shortcut: share of measured savings, %</label>
+    <input type="number" id="share" min="0" max="100" step="1">
+    <label for="badv">Bad case: volume as % of today</label>
+    <input type="number" id="badv" min="0" step="5">
+    <label for="goodv">Good case: volume as % of today</label>
+    <input type="number" id="goodv" min="0" step="5">
+  </details>
+
+  <div class="btns no-print">
+    <button type="button" id="reset">Reset to worked example</button>
+    <button type="button" id="clear">Clear all</button>
+    <button type="button" id="print">Print</button>
+  </div>
+  <p class="help" id="storeNote"></p>
+</div>
+
+<div class="panel ledger" id="ledger">
+  <h2>The ledger, downside first</h2>
+  <p class="status" id="status"></p>
+
+  <div class="step down">
+    <div class="n">1. Lost on files that die before committee, per year</div>
+    <div class="big" id="o_dead"></div>
+    <p class="sub" id="o_dead_sub"></p>
+    <div class="formula" id="f_dead"></div>
+  </div>
+
+  <div class="step">
+    <div class="n">2. Payback month, share path</div>
+    <div class="big" id="o_pay"></div>
+    <p class="sub" id="o_pay_sub"></p>
+    <div class="formula" id="f_pay"></div>
+  </div>
+
+  <div class="step">
+    <div class="n">3. Hours and money returned per year, after review and share</div>
+    <div class="big" id="o_net"></div>
+    <p class="sub" id="o_net_sub"></p>
+    <div class="formula" id="f_net"></div>
+  </div>
+
+  <div class="btns no-print">
+    <button type="button" class="primary" id="copy">Text for your investment committee</button>
+  </div>
+  <p class="help no-print" id="copyNote"></p>
+  <textarea id="memo" class="no-print" readonly hidden aria-label="Summary text"></textarea>
+</div>
+
+</div>
+
+<section id="cases" style="margin-top:18px">
+  <h2>Bad, base and good case</h2>
+  <div id="verdict" class="verdict"></div>
+  <div class="scroll"><table id="caseTable"></table></div>
+  <p class="help">Cost with the step = remaining analyst hours × hourly cost × weeks + share or fee. Setup is counted in payback. Review hours stay fixed when volume falls.</p>
+</section>
+
+<section id="shortcut">
+  <h2>Fixed fee or share of measured savings</h2>
+  <p>Same inputs, two ways to pay for the step. The fixed fee is the usual path. The share is the shortcut the team chose as the default, because its cost falls when volume falls.</p>
+  <div class="scroll"><table id="pathTable"></table></div>
+  <p id="pathNote" style="margin-bottom:0"></p>
+</section>
+
+<section id="people">
+  <h2>What the step does, and what a person still reviews</h2>
+  <h3>The automated step</h3>
+  <ul class="plain">
+    <li>Reads scanned statements and spreadsheets and lays the figures into your template.</li>
+    <li>Flags duplicate versions of the same file and missing periods.</li>
+    <li>Drafts the list of documents to chase from the borrower.</li>
+  </ul>
+  <h3>A named analyst still reviews</h3>
+  <ul class="plain">
+    <li>Every cleaned file before it enters the credit model. This is the review time already subtracted above.</li>
+    <li>Covenant definitions, and any reconciliation that changes a ratio.</li>
+    <li>The decision to send a file to committee or drop it.</li>
+  </ul>
+  <p class="help">The bad, base and good table shows the cost with and without the step in each case.</p>
+</section>
+
+<section id="wheel">
+  <h2>The year on one circle</h2>
+  <p>Base case, share path, the 12 months after the step is switched on. Each wedge is one month. Area matches hours.</p>
+  <div class="wheelbox">
+    <div>
+      <svg id="svg" viewBox="0 0 340 340" role="img" aria-labelledby="svgT"><title id="svgT">Twelve monthly wedges of analyst hours</title></svg>
+      <p class="check" id="check"></p>
+    </div>
+    <div>
+      <ul class="legend">
+        <li><span class="sw" style="background:var(--lost)"></span>Outer ring: hours spent on files that die before committee.</li>
+        <li><span class="sw" style="background:var(--kept)"></span>Inner wedge: hours that produced a committee decision.</li>
+        <li><span class="sw" style="background:none;border:1px dashed var(--ink)"></span>Dashed line: monthly hours before the step.</li>
+        <li><span class="sw" style="background:none;border:3px solid var(--ink)"></span>Bold outline: the payback month.</li>
+      </ul>
+      <p id="wheelNote" class="help"></p>
+    </div>
+  </div>
+  <h3 style="margin-top:14px">The same figures as a table</h3>
+  <div class="scroll"><table id="amort"></table></div>
+</section>
+
+<section id="formulas">
+  <h2>Formulas</h2>
+  <div class="formula">
+    H = weekly cleanup hours, c = hourly cost, w = weeks a year, d = share of files that die,<br>
+    a = share automated, r = review hours a week, s = share of savings, F = fixed fee a month, S = setup hours<br><br>
+    Without the step, per year = H × c × w<br>
+    Dead-file cost, per year = H × c × w × d<br>
+    Hours left with the step, weekly = H − a×H + r<br>
+    Net hours returned, weekly = a×H − r<br>
+    Gross saving, per year = (a×H − r) × c × w<br>
+    Share path net = gross × (1 − s)<br>
+    Fee path net = gross − 12 × F<br>
+    Payback month = first month where cumulative net ≥ S × c<br>
+    Share path stays positive while H &gt; r ÷ a<br>
+    Fee path breaks even at H = (12×F ÷ (c×w) + r) ÷ a
+  </div>
+  <p class="help">This page estimates analyst time. It is not investment, legal or tax advice. Hourly cost and working weeks depend on local rules. Enter your own.</p>
+</section>
+
+<footer>
+  <p>Credits. Locksmith: review hours subtracted before any figure, and the committee text. Upholsterer: the three task rows that build weekly hours. Private credit fund manager: downside first, the payback month, the share path as default, and the two pipeline questions. The fund manager still prefers the table to lead. Florence Nightingale: the 12-wedge circle and the check of every figure against the inputs.</p>
+  <p>Published by OuterHaven Advisory.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+  var EX={t1:4,t2:7,t3:4,hours:15,cost:120,sym:"$",files:40,dead:40,auto:60,review:1.5,weeks:48,setup:40,fee:1500,share:25,badv:50,goodv:130};
+  var IDS=Object.keys(EX);
+  var KEY="repayment-schedule-v1";
+  function $(id){return document.getElementById(id);}
+  function num(id){var v=parseFloat($(id).value);return isFinite(v)?v:0;}
+  function setAll(o){IDS.forEach(function(k){$(k).value=(o[k]===undefined||o[k]===null)?"":o[k];});}
+  function save(){
+    try{var o={};IDS.forEach(function(k){o[k]=$(k).value;});localStorage.setItem(KEY,JSON.stringify(o));$("storeNote").textContent="Inputs kept on this device only.";}
+    catch(e){$("storeNote").textContent="Storage is blocked. The page still works. Inputs reset on reload.";}
+  }
+  function load(){
+    try{var s=localStorage.getItem(KEY);if(s){var o=JSON.parse(s);if(o&&typeof o==="object"){setAll(o);return true;}}}
+    catch(e){}
+    return false;
+  }
+
+  var SYM="$";
+  function money(x){var r=Math.round(x);var s=SYM+Math.abs(r).toLocaleString("en-US");return r<0?"\u2212"+s:s;}
+  function hrs(x){return (Math.round(x*10)/10).toLocaleString("en-US",{minimumFractionDigits:1,maximumFractionDigits:1});}
+  function pct(x){return Math.round(x*100)+"%";}
+  function payLabel(m){if(m===null)return "No payback";return "Month "+m+(m>12?" (after year 1)":"");}
+
+  function payback(netYr,setupCost){
+    if(netYr<=0)return null;
+    if(setupCost<=0)return 1;
+    return Math.max(1,Math.ceil(setupCost/(netYr/12)-1e-9));
+  }
+
+  function calc(H,p){
+    var autoH=H*p.a, netH=autoH-p.r, remH=H-autoH+p.r;
+    var manual=H*p.c*p.w;
+    var gross=netH*p.w*p.c;
+    var shareCost=Math.max(0,gross)*p.s;
+    var shareNet=gross-shareCost;
+    var feeCost=p.F*12, feeNet=gross-feeCost;
+    var setupCost=p.S*p.c;
+    return {H:H,autoH:autoH,netH:netH,remH:remH,manual:manual,gross:gross,
+      shareCost:shareCost,shareNet:shareNet,feeCost:feeCost,feeNet:feeNet,setupCost:setupCost,
+      withShare:remH*p.c*p.w+shareCost, withFee:remH*p.c*p.w+feeCost,
+      deadNow:manual*p.d, deadAfter:remH*p.c*p.w*p.d,
+      payShare:payback(shareNet,setupCost), payFee:payback(feeNet,setupCost)};
+  }
+
+  function render(){
+    var p={c:num("cost"),w:num("weeks"),d:num("dead")/100,a:num("auto")/100,r:num("review"),s:num("share")/100,F:num("fee"),S:num("setup")};
+    SYM=$("sym").value||"";
+    var H=num("hours"), files=num("files"), bad=num("badv")/100, good=num("goodv")/100;
+    var rowSum=num("t1")+num("t2")+num("t3");
+    $("rowsNote").textContent=(Math.abs(rowSum-H)<1e-9)?"Filled from the task rows. You can type over it.":"Task rows sum to "+hrs(rowSum)+" h. Weekly hours are set by hand.";
+    $("status").textContent=(H<=0||p.c<=0)?"Enter weekly hours and an hourly cost to see the schedule.":"";
+
+    var B=calc(H,p), Bd=calc(H*bad,p), G=calc(H*good,p);
+    var filesYr=files*4, deadFiles=filesYr*p.d, perFile=filesYr>0?B.manual/filesYr:0;
+
+    // 1 downside
+    $("o_dead").textContent=money(B.deadNow);
+    $("o_dead_sub").textContent=Math.round(deadFiles)+" of "+Math.round(filesYr)+" files a year die before committee. That is "+money(perFile)+" of analyst time per file. With the step on, the loss is "+money(B.deadAfter)+" a year, review hours included.";
+    $("f_dead").textContent=hrs(H)+" h × "+money(p.c)+" × "+p.w+" weeks × "+pct(p.d)+" = "+money(B.deadNow);
+
+    // 2 payback
+    $("o_pay").textContent=payLabel(B.payShare);
+    $("o_pay_sub").textContent=B.payShare===null?"Net savings are not positive at this volume. Setup of "+hrs(p.S)+" h ("+money(B.setupCost)+") is not repaid.":"Setup of "+hrs(p.S)+" h ("+money(B.setupCost)+") is repaid from net savings of "+money(B.shareNet/12)+" a month. Fixed fee path: "+payLabel(B.payFee).toLowerCase()+".";
+    $("f_pay").textContent="first month where month × "+money(B.shareNet/12)+" ≥ "+hrs(p.S)+" h × "+money(p.c);
+
+    // 3 net
+    $("o_net").textContent=hrs(B.netH*p.w)+" h · "+money(B.shareNet);
+    $("o_net_sub").textContent=hrs(B.autoH)+" h automated − "+hrs(p.r)+" h review = "+hrs(B.netH)+" h a week returned. After the "+pct(p.s)+" share of "+money(B.gross)+".";
+    $("f_net").textContent="("+pct(p.a)+" × "+hrs(H)+" − "+hrs(p.r)+") × "+money(p.c)+" × "+p.w+" × (1 − "+pct(p.s)+") = "+money(B.shareNet);
+
+    // breakpoints
+    var bShare=p.a>0?p.r/p.a:Infinity;
+    var bPay=(p.a>0&&p.c*p.w>0&&p.s<1)?(B.setupCost/((1-p.s)*p.c*p.w)+p.r)/p.a:Infinity;
+    var bFee=(p.a>0&&p.c*p.w>0)?(12*p.F/(p.c*p.w)+p.r)/p.a:Infinity;
+    function bp(x){if(!isFinite(x))return "no volume";return hrs(x)+" h a week"+(H>0?" ("+Math.round(x/H*100)+"% of today's volume)":"");}
+
+    var v=$("verdict"), out=[];
+    var survives=Bd.shareNet>0;
+    if(survives){
+      v.className="verdict";
+      out.push("<p><strong>The share path survives the bad case.</strong> It nets "+money(Bd.shareNet)+" a year at "+hrs(Bd.H)+" h a week.</p>");
+      out.push("<p>It stays above zero down to "+bp(bShare)+". It repays setup within 12 months down to "+bp(bPay)+".</p>");
+    }else{
+      v.className="verdict warn";
+      out.push("<p><strong>Safer setting first: keep this work manual at bad-case volume.</strong> The step returns hours only above "+bp(bShare)+". Cutting review time is not the fix. That is the number that would lie.</p>");
+      out.push("<p>The share path does not survive the bad case. It nets "+money(Bd.shareNet)+" a year at "+hrs(Bd.H)+" h a week.</p>");
+    }
+    if(Bd.feeNet>0)out.push("<p>The fixed fee also survives the bad case, at "+money(Bd.feeNet)+" a year. It breaks below "+bp(bFee)+".</p>");
+    else out.push("<p>The fixed fee does not survive the bad case. It nets "+money(Bd.feeNet)+" a year. It breaks below "+bp(bFee)+".</p>");
+    v.innerHTML=out.join("");
+
+    // case table
+    var C=[Bd,B,G], labels=["Bad case ("+Math.round(bad*100)+"% volume)","Base case","Good case ("+Math.round(good*100)+"% volume)"];
+    function row(name,f,cls){var h="<tr><td>"+name+"</td>";C.forEach(function(x){var val=f(x);var c="";if(cls){var n=cls(x);c=n<0?' class="neg"':(n>0?' class="pos"':"");}h+="<td"+c+">"+val+"</td>";});return h+"</tr>";}
+    var t="<thead><tr><th></th>"+labels.map(function(l){return "<th>"+l+"</th>";}).join("")+"</tr></thead><tbody>";
+    t+='<tr class="group"><td colspan="4">Inputs that drive it</td></tr>';
+    t+=row("Weekly cleanup hours",function(x){return hrs(x.H);});
+    t+=row("Hourly cost",function(){return money(p.c);});
+    t+=row("Automated share",function(){return pct(p.a);});
+    t+=row("Review hours a week",function(){return hrs(p.r);});
+    t+=row("Files dying before committee",function(){return pct(p.d);});
+    t+='<tr class="group"><td colspan="4">Cost per year</td></tr>';
+    t+=row("Without the step",function(x){return money(x.manual);});
+    t+=row("With the step, share path",function(x){return money(x.withShare);});
+    t+=row("With the step, fixed fee",function(x){return money(x.withFee);});
+    t+=row("Lost on dead files, without the step",function(x){return money(x.deadNow);});
+    t+=row("Lost on dead files, with the step",function(x){return money(x.deadAfter);});
+    t+='<tr class="group"><td colspan="4">Returned per year</td></tr>';
+    t+=row("Net hours returned",function(x){return hrs(x.netH*p.w)+" h";},function(x){return x.netH;});
+    t+=row("Net money, share path",function(x){return money(x.shareNet);},function(x){return x.shareNet;});
+    t+=row("Net money, fixed fee",function(x){return money(x.feeNet);},function(x){return x.feeNet;});
+    t+=row("Payback, share path",function(x){return payLabel(x.payShare);});
+    t+=row("Payback, fixed fee",function(x){return payLabel(x.payFee);});
+    $("caseTable").innerHTML=t+"</tbody>";
+
+    // path table
+    function cell(x,which){var net=which==="fee"?x.feeNet:x.shareNet, cost=which==="fee"?x.feeCost:x.shareCost, pay=which==="fee"?x.payFee:x.payShare;
+      return '<td'+(net<0?' class="neg"':'')+'>Costs '+money(cost)+'<br>Nets '+money(net)+'<br>'+payLabel(pay)+'</td>';}
+    var pt="<thead><tr><th>Volume</th><th>Usual path: fixed fee of "+money(p.F)+" a month</th><th>Shortcut: "+pct(p.s)+" of measured savings</th></tr></thead><tbody>";
+    pt+="<tr><td>Base, "+hrs(B.H)+" h a week</td>"+cell(B,"fee")+cell(B,"share")+"</tr>";
+    pt+="<tr><td>Bad case, "+hrs(Bd.H)+" h a week</td>"+cell(Bd,"fee")+cell(Bd,"share")+"</tr>";
+    $("pathTable").innerHTML=pt+"</tbody>";
+    var diff=B.feeNet-B.shareNet;
+    $("pathNote").textContent="At base volume the fixed fee nets "+money(Math.abs(diff))+(diff>=0?" more":" less")+" than the share. In the bad case the fee nets "+money(Bd.feeNet)+" and the share nets "+money(Bd.shareNet)+". The share cannot cost more than the savings it measures.";
+
+    // wheel and amortisation
+    var mw=p.w/12, before=H*mw, rem=B.remH*mw, lost=rem*p.d, dec=rem-lost;
+    var retH=B.netH*mw, grossM=retH*p.c, shareM=Math.max(0,grossM)*p.s, netM=grossM-shareM;
+    var rows=[], cum=-B.setupCost, sumH=0, sumLost=0, wedgeH=0, wedgeLost=0;
+    var at="<thead><tr><th>Month</th><th>Analyst hours</th><th>On dead files</th><th>Hours returned</th><th>Money returned</th><th>Share paid</th><th>Net</th><th>Cumulative after setup</th></tr></thead><tbody>";
+    for(var i=1;i<=12;i++){
+      cum+=netM; sumH+=rem; sumLost+=lost;
+      at+="<tr><td>"+i+"</td><td>"+hrs(rem)+"</td><td>"+hrs(lost)+"</td><td>"+hrs(retH)+"</td><td>"+money(grossM)+"</td><td>"+money(shareM)+"</td><td>"+money(netM)+"</td><td"+(cum<0?' class="neg"':'')+">"+money(cum)+"</td></tr>";
+    }
+    at+="<tr><td><strong>Year</strong></td><td><strong>"+hrs(sumH)+"</strong></td><td><strong>"+hrs(sumLost)+"</strong></td><td><strong>"+hrs(retH*12)+"</strong></td><td><strong>"+money(grossM*12)+"</strong></td><td><strong>"+money(shareM*12)+"</strong></td><td><strong>"+money(netM*12)+"</strong></td><td></td></tr>";
+    $("amort").innerHTML=at+"</tbody>";
+
+    var svg=$("svg"), NS="http://www.w3.org/2000/svg";
+    while(svg.childNodes.length>1)svg.removeChild(svg.lastChild);
+    var cx=170,cy=170,R=128,maxV=Math.max(before,rem,1e-9);
+    function rr(x){return R*Math.sqrt(Math.max(0,x)/maxV);}
+    function pt2(r,a){return [cx+r*Math.cos(a),cy+r*Math.sin(a)];}
+    function sector(r0,r1,a0,a1){
+      var p0=pt2(r1,a0),p1=pt2(r1,a1),p2=pt2(r0,a1),p3=pt2(r0,a0);
+      return "M"+p3[0]+","+p3[1]+" L"+p0[0]+","+p0[1]+" A"+r1+","+r1+" 0 0 1 "+p1[0]+","+p1[1]+" L"+p2[0]+","+p2[1]+(r0>0?" A"+r0+","+r0+" 0 0 0 "+p3[0]+","+p3[1]:"")+" Z";
+    }
+    function el(tag,attrs){var e=document.createElementNS(NS,tag);for(var k in attrs)e.setAttribute(k,attrs[k]);svg.appendChild(e);return e;}
+    var step=Math.PI/6, gap=0.02, rD=rr(dec), rR=rr(rem), rB=rr(before);
+    for(var m=0;m<12;m++){
+      var a0=-Math.PI/2+m*step+gap, a1=-Math.PI/2+(m+1)*step-gap;
+      if(rD>0)el("path",{d:sector(0,rD,a0,a1),fill:"#dccda6",stroke:"#1c2230","stroke-width":"0.6"});
+      if(rR>rD)el("path",{d:sector(rD,rR,a0,a1),fill:"#4a1a1e",stroke:"#1c2230","stroke-width":"0.6"});
+      wedgeH+=dec+lost; wedgeLost+=lost;
+      if(rB>0){var q0=pt2(rB,a0),q1=pt2(rB,a1);el("path",{d:"M"+q0[0]+","+q0[1]+" A"+rB+","+rB+" 0 0 1 "+q1[0]+","+q1[1],fill:"none",stroke:"#1c2230","stroke-width":"1","stroke-dasharray":"3 3"});}
+      var lp=pt2(R+18,(a0+a1)/2), tx=el("text",{x:lp[0],y:lp[1]+4,"text-anchor":"middle","font-size":"11","font-family":"system-ui,sans-serif",fill:"#575c6b"});tx.textContent=String(m+1);
+      if(B.payShare!==null&&B.payShare===m+1&&rR>0){
+        el("path",{d:sector(0,Math.max(rR,rB),a0,a1),fill:"none",stroke:"#1c2230","stroke-width":"3"});
+        var pl=pt2(R+34,(a0+a1)/2), t2=el("text",{x:pl[0],y:pl[1]+4,"text-anchor":"middle","font-size":"10","font-family":"Georgia,serif",fill:"#1c2230"});t2.textContent="Payback";
+      }
+    }
+    $("wheelNote").textContent="Each month: "+hrs(before)+" h before the step, "+hrs(rem)+" h after it, review included. "+hrs(lost)+" h of that goes to files that die before committee. "+(B.payShare===null?"No payback month at this volume.":(B.payShare>12?"Payback falls after month 12.":"Setup is repaid in month "+B.payShare+"."));
+
+    var ok=Math.abs(wedgeH-sumH)<0.01&&Math.abs(wedgeH-B.remH*p.w)<0.01&&Math.abs(wedgeLost*p.c-B.deadAfter)<0.5&&Math.abs(netM*12-B.shareNet)<0.5;
+    var ck=$("check");
+    ck.className=ok?"check":"check bad";
+    ck.textContent=ok?"Figures checked against inputs. 12 wedges sum to "+hrs(wedgeH)+" h. The table sums to "+hrs(sumH)+" h.":"Check failed. The circle and the table disagree. Do not use these figures.";
+
+    // committee memo
+    $("memo").value=[
+      "Borrower-file cleanup, from our own inputs",
+      "Weekly analyst hours: "+hrs(H)+". Loaded cost: "+money(p.c)+" an hour. Files per quarter: "+files+". Share dying before committee: "+pct(p.d)+".",
+      "1. Lost on files that die before committee: "+money(B.deadNow)+" a year ("+money(perFile)+" per file).",
+      "2. Payback, share path: "+payLabel(B.payShare)+". Setup "+hrs(p.S)+" h, "+money(B.setupCost)+".",
+      "3. Returned: "+hrs(B.netH*p.w)+" h and "+money(B.shareNet)+" a year, after review and a "+pct(p.s)+" share.",
+      "Bad case ("+Math.round(bad*100)+"% volume): share path nets "+money(Bd.shareNet)+". Fixed fee nets "+money(Bd.feeNet)+".",
+      "Review: a named analyst checks every cleaned file, "+hrs(p.r)+" h a week, already subtracted.",
+      "Estimate of analyst time only. Not investment, legal or tax advice."
+    ].join("\n");
+  }
+
+  function onInput(e){
+    var id=e.target.id;
+    if(id==="t1"||id==="t2"||id==="t3"){
+      var any=["t1","t2","t3"].some(function(k){return $(k).value!=="";});
+      if(any)$("hours").value=Math.round((num("t1")+num("t2")+num("t3"))*100)/100;
+    }
+    render();save();
+  }
+
+  IDS.forEach(function(k){$(k).addEventListener("input",onInput);});
+  $("reset").addEventListener("click",function(){setAll(EX);render();save();});
+  $("clear").addEventListener("click",function(){var o={};IDS.forEach(function(k){o[k]="";});setAll(o);render();save();});
+  $("print").addEventListener("click",function(){window.print();});
+  $("copy").addEventListener("click",function(){
+    var ta=$("memo"); ta.hidden=false; ta.focus(); ta.select();
+    var done=function(){$("copyNote").textContent="Copied. The text is also shown below.";};
+    var fail=function(){
+      try{if(document.execCommand&&document.execCommand("copy")){done();return;}}catch(e){}
+      $("copyNote").textContent="Select the text below and copy it.";
+    };
+    try{
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(ta.value).then(done,fail);}
+      else fail();
+    }catch(e){fail();}
+  });
+
+  if(!load())setAll(EX);
+  render();
+})();
+</script>
+</body>
+</html>

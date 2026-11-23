@@ -1,11 +1,12 @@
 # Archive
 
-Every daily team and the asset it made, newest first. 50 days recorded.
+Every daily team and the asset it made, newest first. 51 days recorded.
 
 [Today](README.md)
 
 | Date | Task | Team | Constraint | Asset |
 |---|---|---|---|---|
+| [2026-11-24](days/2026-11-24/) | The Repayment Schedule | Locksmith · Upholsterer · Private credit fund manager · Florence Nightingale | Still makes sense in 10 years: no trends. | [asset](days/2026-11-24/artifact-1.html) |
 | [2026-11-22](days/2026-11-22/) | The Pass | Chef · Cobbler · Merchant banker · Scheherazade | No more than five inputs. | [asset](days/2026-11-22/artifact-1.html) |
 | [2026-11-21](days/2026-11-21/) | The Zero Ledger, Fixed-Width Docket | Weaver · Clockmaker · Multi-family office adviser · Alice | Monospace typeface only. | [asset](days/2026-11-21/artifact-1.html) |
 | [2026-11-20](days/2026-11-20/) | The Month Already Gone | Data journalist · Animator · Home services owner · Odysseus | No more than two levels of heading. | [asset](days/2026-11-20/artifact-1.html) |
