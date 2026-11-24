@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entrance Count: fit acquisition targets lost before your first reply</title>
+<style>
+:root{--wax:#f6efdf;--comb:#ebdcbc;--ink:#2a2118;--honey:#a8691a;--hd:#7a4a0e;--grey:#857e72;--bad:#8c2f1c;--ok:#3d5b2a;--line:#cdb98f}
+*{box-sizing:border-box}
+html{font-size:16px}
+body{margin:0;background:var(--wax);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.45}
+.wrap{max-width:1040px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:2rem;line-height:1.1;margin:0 0 6px;letter-spacing:-.01em}
+h2{font-size:1.25rem;margin:32px 0 8px;padding-top:12px;border-top:2px solid var(--ink)}
+h3{font-size:1rem;margin:16px 0 6px}
+p{margin:6px 0}
+.sub{color:#4a3d2c;max-width:44em}
+.small{font-size:.85rem;color:#4a3d2c}
+.entrance{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0 10px}
+.box{background:#fff8e8;border:1px solid var(--line);padding:10px 12px}
+.box .k{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:#5a4a33}
+.box .v{font-size:1.7rem;font-weight:600;font-variant-numeric:tabular-nums}
+.box .u{font-size:.8rem;color:#5a4a33}
+.box.fit{background:var(--ink);color:var(--wax);border-color:var(--ink)}
+.box.fit .k,.box.fit .u{color:#e8d6ad}
+.box.fit .v{font-size:2.1rem;font-weight:800}
+.box.lost{border:2px solid var(--honey)}
+.headline{background:var(--comb);border-left:6px solid var(--honey);padding:14px 16px;margin:10px 0}
+.headline .big{font-size:2.4rem;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
+.headline .est{color:var(--grey)}
+.verdict{font-weight:600;margin-top:8px}
+.verdict.ok{color:var(--ok)}
+.verdict.no{color:var(--bad)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.field{background:#fff8e8;border:1px solid var(--line);padding:8px 10px}
+.field label.lab{display:block;font-weight:600;font-size:.9rem}
+.field .help{font-size:.78rem;color:#5a4a33;margin:2px 0 6px}
+.field input{width:100%;font:inherit;font-size:1.05rem;padding:6px 8px;border:1px solid #9b8760;background:#fff;color:var(--ink);font-variant-numeric:tabular-nums}
+.field .src{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:.78rem}
+.field select{font:inherit;font-size:.8rem;padding:2px 4px;border:1px solid #9b8760;background:#fff;color:var(--ink)}
+.field.is-est{border-style:dashed}
+.field.is-est input{color:#5c564d}
+.qual{border:2px solid var(--honey)}
+.btns{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+button{font:inherit;font-size:.9rem;padding:8px 12px;border:1px solid var(--ink);background:var(--ink);color:var(--wax);cursor:pointer}
+button.alt{background:transparent;color:var(--ink)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--honey);outline-offset:1px}
+.cases{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.case{background:#fff8e8;border:1px solid var(--line);padding:10px 12px}
+.case h3{margin:0 0 4px}
+.case.bad{border-top:5px solid var(--bad)}
+.case.base{border-top:5px solid var(--ink)}
+.case.good{border-top:5px solid var(--ok)}
+.case .n{font-size:1.6rem;font-weight:700;font-variant-numeric:tabular-nums}
+.case ul{margin:6px 0 0;padding-left:18px;font-size:.82rem}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:560px;font-variant-numeric:tabular-nums;font-size:.9rem;background:#fff8e8}
+th,td{border:1px solid var(--line);padding:6px 8px;text-align:right;vertical-align:top}
+th:first-child,td:first-child{text-align:left}
+thead th{background:var(--comb)}
+th.grp{text-align:center}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.82rem;background:#fff;border:1px solid var(--line);padding:10px;white-space:pre-wrap;overflow-x:auto}
+.warn{color:var(--bad);font-weight:600}
+.estline{color:var(--grey)}
+textarea{width:100%;min-height:150px;font:inherit;font-size:.85rem;padding:8px;border:1px solid #9b8760;background:#fff;color:var(--ink)}
+footer{margin-top:36px;padding-top:12px;border-top:1px solid var(--ink);font-size:.8rem;color:#4a3d2c}
+@media (max-width:720px){
+ h1{font-size:1.6rem}
+ .entrance{grid-template-columns:repeat(2,1fr)}
+ .cases{grid-template-columns:1fr}
+ .headline .big{font-size:2rem}
+}
+@media (prefers-reduced-motion:no-preference){
+ .box,.case{transition:background-color .2s}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+@media print{
+ body{background:#fff}
+ .btns,.noprint{display:none}
+ .box.fit{background:#fff;color:#000;border:3px solid #000}
+ .box.fit .k,.box.fit .u{color:#000}
+ h2{break-after:avoid}
+ .case,.field,table{break-inside:avoid}
+ .scroll{overflow:visible}
+ table{min-width:0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>Entrance Count</h1>
+<p class="sub">Count what flies in, what fits, and what flies to another buyer before you reply. Enter last quarter from your own deal log. The page shows how many fit acquisition targets slip away each month and how long that has been running.</p>
+</header>
+
+<section aria-labelledby="h-count">
+<h2 id="h-count" style="border-top:0;margin-top:14px;padding-top:0">The entrance, per month</h2>
+<div class="entrance">
+ <div class="box"><div class="k">In: teasers</div><div class="v" id="b-in">0</div><div class="u">per month</div></div>
+ <div class="box fit"><div class="k">Fit the core business</div><div class="v" id="b-fit">0</div><div class="u">per month</div></div>
+ <div class="box lost"><div class="k">Fit, lost before reply</div><div class="v" id="b-lost">0</div><div class="u">per month</div></div>
+ <div class="box"><div class="k">Closed</div><div class="v" id="b-closed">0</div><div class="u">per month, <span id="b-rate"></span></div></div>
+</div>
+<div class="headline" aria-live="polite">
+ <div class="small">Fit deals you never got to bid on, per month (measured counts only)</div>
+ <div class="big" id="h-big">0</div>
+ <div id="h-est" class="est"></div>
+ <p id="h-back"></p>
+ <p id="h-sample" class="small"></p>
+ <p class="verdict" id="h-verdict"></p>
+</div>
+</section>
+
+<section aria-labelledby="h-in">
+<h2 id="h-in">Last quarter, from your deal log</h2>
+<p class="small">"Lost" means one thing here: the target signed with another buyer before your first reply. A broker who went quiet or an owner who withdrew does not count. Mark each figure as measured or as your estimate. Estimates never feed the headline.</p>
+<div class="grid" id="g-log"></div>
+<h3>Two questions</h3>
+<div class="grid" id="g-qual"></div>
+<div class="btns">
+ <button type="button" id="btn-ex">Load worked example</button>
+ <button type="button" class="alt" id="btn-clear">Clear all figures</button>
+</div>
+</section>
+
+<section aria-labelledby="h-cases">
+<h2 id="h-cases">Bad, base and good, side by side</h2>
+<div class="cases" id="cases"></div>
+<p class="verdict" id="c-verdict"></p>
+<p id="c-push"></p>
+</section>
+
+<section aria-labelledby="h-pay">
+<h2 id="h-pay">Two ways to pay for the same company</h2>
+<p class="small">There is no price field. Payment is shown as a share of whatever you agree. Both paths use the same deal inputs and the same bad case. Earn-out terms, tax treatment and enforceability depend on local rules. Enter your own terms and check them with your own counsel. This page is not legal, tax or investment advice.</p>
+<div class="grid" id="g-pay"></div>
+<div class="scroll"><table id="t-pay"></table></div>
+<p id="p-note" class="small"></p>
+</section>
+
+<section aria-labelledby="h-ai">
+<h2 id="h-ai">Where AI cuts the reply time</h2>
+<p class="small">AI reads every teaser against your fit criteria within a day and does a first pass on the CIM and financials. People still review: an analyst checks every AI note against the source document, the corp dev director signs off on every fit call, and general counsel signs off on anything legal.</p>
+<div class="grid" id="g-ai"></div>
+<div class="scroll"><table id="t-ai"></table></div>
+<p id="ai-note" class="small"></p>
+</section>
+
+<section aria-labelledby="h-f">
+<h2 id="h-f">The formula</h2>
+<div class="formula" id="formula"></div>
+</section>
+
+<section aria-labelledby="h-fw" class="noprint">
+<h2 id="h-fw">Summary to forward</h2>
+<p class="small">Plain text. Select it and paste it to your CFO. It updates when you change a figure.</p>
+<label for="summary" class="small" style="display:block;font-weight:600">Summary text</label>
+<textarea id="summary" readonly></textarea>
+<div class="btns"><button type="button" id="btn-sel">Select summary</button></div>
+</section>
+
+<footer>
+<p>Credits. Beekeeper: the in, fit, lost and closed count, and the two questions on target revenue and backlog months. Tailor: no price field, the bold fit column, both payment paths on one row. Corporate development head: integration months, the 60/40 earn-out beside full payment, the two-minute forward test. Ibn al-Haytham: the single definition of lost, measured counts only in the headline, sample size beside the rate.</p>
+<p>Published by OuterHaven Advisory. Figures stay on this device. Nothing is sent anywhere.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+var F=[
+ ['q_in','Teasers received, last quarter','Every teaser or CIM that reached the inbox.','log','m',120],
+ ['q_fit','Fit teasers, last quarter','Teasers that matched your core business criteria.','log','m',24],
+ ['q_lost','Fit teasers lost before first reply','Signed with another buyer before you answered.','log','m',9],
+ ['q_closed','Deals closed from fit teasers','Closed last quarter.','log','m',3],
+ ['reply','Days to first reply','Median days from teaser in to your first answer.','log','m',12],
+ ['integ','Integration months per deal','From close to integration done.','log','e',18],
+ ['rev','Typical target revenue, $m a year','Annual revenue of a fit target.','qual','e',18],
+ ['months','Months the backlog has run','Since replies began to lag.','qual','e',8],
+ ['eo','Earn-out: share paid at close, %','The rest is tied to integration milestones.','pay','e',60],
+ ['eop','Earn-out period, months','Months over which the held share can be released.','pay','e',24],
+ ['slip','Integration slip in the bad case, months','Added to integration months in the bad case.','pay','e',6],
+ ['gone','Days until a fit target is usually gone','When the good ones sign elsewhere.','ai','e',5],
+ ['hw','Analyst hours per teaser, without AI','Read, screen, write the first note.','ai','e',3],
+ ['ha','Review hours per teaser, with AI','Analyst checks the AI fit note.','ai','e',1],
+ ['cost','Analyst cost per hour, $','Loaded internal cost.','ai','e',150],
+ ['dw','Outside diligence per failed deal, $k, without AI','Fees spent on a deal that dies in diligence.','ai','e',900],
+ ['da','Outside diligence per failed deal, $k, with AI','After an AI first pass on CIM and financials.','ai','e',350],
+ ['fail','Deals that die in diligence, per year','Count from your log.','ai','e',2]
+];
+var KEY='entrance-count-v1',G={log:'g-log',qual:'g-qual',pay:'g-pay',ai:'g-ai'};
+function $(i){return document.getElementById(i)}
+F.forEach(function(f){
+ var d=document.createElement('div');d.className='field'+(f[3]==='qual'?' qual':'');d.id='w-'+f[0];
+ d.innerHTML='<label class="lab" for="'+f[0]+'">'+f[1]+'</label><div class="help">'+f[2]+'</div>'+
+ '<input id="'+f[0]+'" type="number" min="0" step="any" inputmode="decimal">'+
+ '<div class="src"><label for="t-'+f[0]+'">Source:</label><select id="t-'+f[0]+'"><option value="m">measured from deal log</option><option value="e">your estimate</option></select></div>';
+ $(G[f[3]]).appendChild(d);
+});
+function save(){try{var o={};F.forEach(function(f){o[f[0]]=[$(f[0]).value,$('t-'+f[0]).value]});localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}}
+function load(){try{var s=localStorage.getItem(KEY);if(!s)return false;var o=JSON.parse(s);F.forEach(function(f){if(o[f[0]]){$(f[0]).value=o[f[0]][0];$('t-'+f[0]).value=o[f[0]][1]}});return true}catch(e){return false}}
+function example(){F.forEach(function(f){$(f[0]).value=f[5];$('t-'+f[0]).value=f[4]})}
+function clearAll(){F.forEach(function(f){$(f[0]).value=''})}
+function v(i){var x=parseFloat($(i).value);return isFinite(x)&&x>=0?x:NaN}
+function tag(i){return $('t-'+i).value}
+function n(x,d){if(!isFinite(x))return '–';return x.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d})}
+function usd(x){if(!isFinite(x))return '–';return x>=1e6?'$'+n(x/1e6,2)+'m':'$'+n(Math.round(x/1000),0)+'k'}
+function pct(x){return n(x*100,1)+'%'}
+function calc(){
+ F.forEach(function(f){$('w-'+f[0]).className='field'+(f[3]==='qual'?' qual':'')+(tag(f[0])==='e'?' is-est':'')});
+ var V={};F.forEach(function(f){V[f[0]]=v(f[0])});
+ var inM=V.q_in/3,fitM=V.q_fit/3,lostM=V.q_lost/3,clM=V.q_closed/3;
+ var cr=V.q_fit>0?V.q_closed/V.q_fit:NaN;
+ $('b-in').textContent=n(inM,1);$('b-fit').textContent=n(fitM,1);$('b-lost').textContent=n(lostM,1);$('b-closed').textContent=n(clM,2);
+ $('b-rate').textContent='close rate '+(isFinite(cr)?pct(cr):'–');
+ function cs(vm,cm,sl){var m=lostM*vm*cr*cm;return{vm:vm,cm:cm,lost:lostM*vm,cr:cr*cm,m:m,yr:m*12,back:m*V.months,revYr:m*12*V.rev,revBack:m*V.months*V.rev,integ:V.integ+sl}}
+ var bad=cs(.5,.5,V.slip),base=cs(1,1,0),good=cs(1.25,1.25,0);
+ var counts=['q_in','q_fit','q_lost','q_closed'],est=counts.filter(function(c){return tag(c)==='e'});
+ var ok=est.length===0&&isFinite(base.m);
+ if(ok){$('h-big').textContent=n(base.m,3);$('h-big').className='big';$('h-est').textContent=''}
+ else{$('h-big').textContent='No measured figure';$('h-big').className='big est';
+  $('h-est').textContent=isFinite(base.m)?'Estimate, not used as the headline: '+n(base.m,3)+' a month. Marked as estimate: '+est.map(function(c){return F.filter(function(f){return f[0]===c})[0][1]}).join('; ')+'.':'Enter the four counts from last quarter.'}
+ $('h-back').textContent=isFinite(base.back)?'Over the '+n(V.months,0)+' months the backlog has run: '+n(base.back,2)+' fit deals, about $'+n(base.revBack,1)+'m of target revenue not added, and '+n(base.back*V.integ,0)+' integration months of growth never started. At this pace: '+n(base.yr,2)+' deals a year.':'';
+ var smp=V.q_fit;
+ $('h-sample').innerHTML=isFinite(cr)?'Close rate '+pct(cr)+' from '+n(smp,0)+' fit targets.'+(smp<10?' <span class="warn">'+n(smp,0)+' targets are too few to call this a rate. It is shown, not trusted.</span>':''):'';
+ var holds=bad.yr>=1;
+ var vt=holds?'Holds in the bad case: '+n(bad.yr,2)+' missed fit deals a year, about $'+n(bad.revYr,1)+'m of target revenue.':'Does not hold in the bad case: '+n(bad.yr,2)+' missed fit deals a year.';
+ $('h-verdict').textContent=isFinite(bad.yr)?vt:'';$('h-verdict').className='verdict '+(holds?'ok':'no');
+ var C=[['bad','Bad',bad,'Volume halved, close rate halved, integration +'+n(V.slip,0)+' months'],['base','Base',base,'Last quarter as measured'],['good','Good',good,'Volume and close rate up 25%']];
+ $('cases').innerHTML=C.map(function(c){var x=c[2];return '<div class="case '+c[0]+'"><h3>'+c[1]+'</h3><div class="small">'+c[3]+'</div><div class="n">'+n(x.yr,2)+'</div><div class="small">missed fit deals a year</div><ul>'+
+ '<li>Fit lost before reply: '+n(x.lost,2)+' a month</li><li>Close rate: '+(isFinite(x.cr)?pct(x.cr):'–')+'</li><li>Integration: '+n(x.integ,0)+' months</li><li>Target revenue not added: $'+n(x.revYr,1)+'m a year</li><li>Since backlog began: '+n(x.back,2)+' deals</li></ul></div>'}).join('');
+ var unit=lostM*cr*.5*12,vb=unit>0?1/unit:NaN;
+ $('c-verdict').textContent=isFinite(bad.yr)?(holds?'The leak holds in the bad case. The test: at least one missed fit deal a year.':'The leak is under one missed fit deal a year in the bad case.'):'';
+ $('c-verdict').className='verdict '+(holds?'ok':'no');
+ if(!isFinite(vb))$('c-push').textContent='';
+ else if(holds)$('c-push').textContent='How far it bends: with the close rate halved, volume could fall to '+pct(vb)+' of last quarter before the leak drops under one missed fit deal a year.';
+ else $('c-push').textContent='Safer setting first: treat this as a slow leak. Cut reply time with the team you have, and recount next quarter before you spend on it. Volume would need to reach '+pct(vb)+' of last quarter, with the close rate halved, for the bad case to hold.';
+ var eo=V.eo/100,hold=1-eo;
+ $('t-pay').innerHTML='<thead><tr><th rowspan="2">Same inputs</th><th class="grp" colspan="2">Full payment</th><th class="grp" colspan="2">Earn-out '+n(V.eo,0)+'/'+n(100-V.eo,0)+'</th></tr><tr><th>Base</th><th>Bad</th><th>Base</th><th>Bad</th></tr></thead><tbody>'+
+ '<tr><td>Missed fit deals a year</td><td>'+n(base.yr,2)+'</td><td>'+n(bad.yr,2)+'</td><td>'+n(base.yr,2)+'</td><td>'+n(bad.yr,2)+'</td></tr>'+
+ '<tr><td>Integration months</td><td>'+n(base.integ,0)+'</td><td>'+n(bad.integ,0)+'</td><td>'+n(base.integ,0)+'</td><td>'+n(bad.integ,0)+'</td></tr>'+
+ '<tr><td>Paid at close</td><td>100%</td><td>100%</td><td>'+n(V.eo,0)+'%</td><td>'+n(V.eo,0)+'%</td></tr>'+
+ '<tr><td>Paid while integration is unproven</td><td>100%</td><td>100%</td><td>'+n(V.eo,0)+'%</td><td>'+n(V.eo,0)+'%</td></tr>'+
+ '<tr><td>Held at the planned finish date</td><td>0%</td><td>0%</td><td>0%</td><td>'+n(hold*100,0)+'%</td></tr>'+
+ '<tr><td>Last payment, months after close</td><td>0</td><td>0</td><td>'+n(V.eop,0)+'</td><td>'+n(V.eop+V.slip,0)+'</td></tr></tbody>';
+ $('p-note').textContent='In the bad case the full-payment path has paid 100% and waits '+n(V.slip,0)+' more months for integration. The earn-out path has paid '+n(V.eo,0)+'% and still holds '+n(hold*100,0)+'% until the milestones are met. Same company either way.';
+ var tb=V.q_in/3,tbb=tb/2,haB=V.ha*1.5,daB=(V.dw+V.da)/2;
+ function row(l,a,b,c,d){return '<tr><td>'+l+'</td><td>'+a+'</td><td>'+b+'</td><td>'+c+'</td><td>'+d+'</td></tr>'}
+ var hW=tb*V.hw,hA=tb*V.ha,hWb=tbb*V.hw,hAb=tbb*haB;
+ var dW=V.fail*V.dw*1000,dA=V.fail*V.da*1000,dAb=V.fail*daB*1000;
+ var tW=hW*V.cost*12+dW,tA=hA*V.cost*12+dA,tWb=hWb*V.cost*12+dW,tAb=hAb*V.cost*12+dAb;
+ $('t-ai').innerHTML='<thead><tr><th rowspan="2">Measure</th><th class="grp" colspan="2">Base</th><th class="grp" colspan="2">Bad</th></tr><tr><th>Without AI</th><th>With AI</th><th>Without AI</th><th>With AI</th></tr></thead><tbody>'+
+ row('Teasers a month',n(tb,0),n(tb,0),n(tbb,0),n(tbb,0))+
+ row('Days to first reply',n(V.reply,0),'1',n(V.reply,0),'2')+
+ row('Analyst hours a month',n(hW,0),n(hA,0),n(hWb,0),n(hAb,0))+
+ row('Analyst cost a month',usd(hW*V.cost),usd(hA*V.cost),usd(hWb*V.cost),usd(hAb*V.cost))+
+ row('Outside diligence on failed deals, a year',usd(dW),usd(dA),usd(dW),usd(dAb))+
+ row('Total a year',usd(tW),usd(tA),usd(tWb),usd(tAb))+'</tbody>';
+ $('ai-note').textContent='Bad case: volume halves, AI review takes 50% longer ('+n(haB,1)+' hours a teaser), the diligence saving halves, and first reply takes 2 days. Good targets are usually gone by day '+n(V.gone,0)+'. Without AI the reply lands on day '+n(V.reply,0)+(V.reply>V.gone?', after they are gone.':', before they are gone.')+' The change in lost targets is not estimated here. Recount next quarter and enter it as measured.';
+ $('formula').textContent=
+ 'Fit lost a month      = fit lost last quarter / 3            = '+n(V.q_lost,0)+' / 3 = '+n(lostM,2)+'\n'+
+ 'Close rate            = deals closed / fit teasers           = '+n(V.q_closed,0)+' / '+n(V.q_fit,0)+' = '+(isFinite(cr)?pct(cr):'–')+'\n'+
+ 'Missed deals a month  = fit lost a month x close rate        = '+n(base.m,3)+'\n'+
+ 'Since backlog began   = missed a month x backlog months      = '+n(base.m,3)+' x '+n(V.months,0)+' = '+n(base.back,2)+'\n'+
+ 'Revenue not added     = missed a year x target revenue       = '+n(base.yr,2)+' x $'+n(V.rev,0)+'m = $'+n(base.revYr,1)+'m a year\n'+
+ 'Bad case              = fit lost x 0.5, close rate x 0.5, integration + '+n(V.slip,0)+' months\n'+
+ 'Good case             = fit lost x 1.25, close rate x 1.25\n'+
+ 'Bad case holds if     = bad missed a year >= 1\n'+
+ 'Volume floor          = 1 / (fit lost a month x close rate x 0.5 x 12) = '+(isFinite(vb)?pct(vb):'–')+'\n'+
+ 'Analyst cost          = teasers a month x hours a teaser x cost an hour';
+ $('summary').value='Entrance Count, last quarter from our deal log\n'+
+ 'Teasers in: '+n(inM,1)+' a month. Fit: '+n(fitM,1)+'. Fit lost before first reply: '+n(lostM,1)+'. First reply: day '+n(V.reply,0)+'.\n'+
+ 'Close rate: '+(isFinite(cr)?pct(cr):'–')+' from '+n(smp,0)+' fit targets.\n'+
+ 'Missed fit deals: '+n(base.m,3)+' a month, '+n(base.yr,2)+' a year, $'+n(base.revYr,1)+'m target revenue a year.\n'+
+ 'Backlog has run '+n(V.months,0)+' months: '+n(base.back,2)+' fit deals missed.\n'+
+ 'Bad case (volume and close rate halved, integration +'+n(V.slip,0)+' months): '+n(bad.yr,2)+' a year. '+(holds?'Holds.':'Does not hold.')+'\n'+
+ 'Earn-out '+n(V.eo,0)+'/'+n(100-V.eo,0)+' vs full payment: in the bad case the earn-out still holds '+n(hold*100,0)+'%.\n'+
+ 'AI screening: reply day '+n(V.reply,0)+' to day 1, analyst hours '+n(hW,0)+' to '+n(hA,0)+' a month. Corp dev director signs off fit. General counsel signs off legal.\n'+
+ (ok?'':'Note: some counts are estimates. The headline is not measured.\n');
+ save();
+}
+document.addEventListener('input',calc);document.addEventListener('change',calc);
+$('btn-ex').onclick=function(){example();calc()};
+$('btn-clear').onclick=function(){clearAll();calc()};
+$('btn-sel').onclick=function(){$('summary').focus();$('summary').select()};
+if(!load())example();
+calc();
+})();
+</script>
+</body>
+</html>
