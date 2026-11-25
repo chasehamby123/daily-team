@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-11-25: Entrance Count
+### 2026-11-26: Permanent First, Five Views
 
-<a href="days/2026-11-25/"><img src="days/2026-11-25/team.png" alt="Team for 2026-11-25: Beekeeper · Tailor · Corporate development head · Ibn al-Haytham" width="100%"></a>
+<a href="days/2026-11-26/"><img src="days/2026-11-26/team.png" alt="Team for 2026-11-26: Florist · Sculptor · Insurance agency owner · Katsushika Hokusai" width="100%"></a>
 
-**Task:** Missed opportunity counter: inbound volume, response time, and close rate give how many deals or bookings slip away each month.
+**Task:** Vendor question list: the buyer's priorities give a printable list of questions to ask before signing with any provider.
 
-**Decision:** The page takes last quarter's teaser counts, reply time, and close rate, and shows how many fit acquisition targets slip away each month and how long that has been running.
+**Decision:** The page takes an agency owner's leads per month and months of slow callbacks, shows how many leads have waited, and prints a 1-page list of 15 questions in 5 views, with permanent commitments marked for signature, a phone-response test ...
 
-<a href="days/2026-11-25/"><img src="days/2026-11-25/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-11-26/"><img src="days/2026-11-26/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-11-25/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-11-26/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,15 +37,15 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-11-26](days/2026-11-26/) | <a href="days/2026-11-26/"><img src="days/2026-11-26/artifact-1.png" alt="Permanent First, Five Views" width="160"></a> | Permanent First, Five Views | Florist · Sculptor · Insurance agency owner · Katsushika Hokusai |
 | [2026-11-25](days/2026-11-25/) | <a href="days/2026-11-25/"><img src="days/2026-11-25/artifact-1.png" alt="Entrance Count" width="160"></a> | Entrance Count | Beekeeper · Tailor · Corporate development head · Ibn al-Haytham |
 | [2026-11-24](days/2026-11-24/) | <a href="days/2026-11-24/"><img src="days/2026-11-24/artifact-1.png" alt="The Repayment Schedule" width="160"></a> | The Repayment Schedule | Locksmith · Upholsterer · Private credit fund manager · Florence Nightingale |
 | [2026-11-22](days/2026-11-22/) | <a href="days/2026-11-22/"><img src="days/2026-11-22/artifact-1.png" alt="The Pass" width="160"></a> | The Pass | Chef · Cobbler · Merchant banker · Scheherazade |
 | [2026-11-21](days/2026-11-21/) | <a href="days/2026-11-21/"><img src="days/2026-11-21/artifact-1.png" alt="The Zero Ledger, Fixed-Width Docket" width="160"></a> | The Zero Ledger, Fixed-Width Docket | Weaver · Clockmaker · Multi-family office adviser · Alice |
 | [2026-11-20](days/2026-11-20/) | <a href="days/2026-11-20/"><img src="days/2026-11-20/artifact-1.png" alt="The Month Already Gone" width="160"></a> | The Month Already Gone | Data journalist · Animator · Home services owner · Odysseus |
 | [2026-11-19](days/2026-11-19/) | <a href="days/2026-11-19/"><img src="days/2026-11-19/artifact-1.png" alt="Proof Sheet" width="160"></a> | Proof Sheet | Printmaker · Costume designer · Accounting firm partner · Euclid |
-| [2026-11-18](days/2026-11-18/) | <a href="days/2026-11-18/"><img src="days/2026-11-18/artifact-1.png" alt="Who Keeps the Keys" width="160"></a> | Who Keeps the Keys | Museum curator · Furniture maker · Retiring owner with no successor · Leonardo da Vinci |
 
-[All 52 days](ARCHIVE.md)
+[All 53 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works

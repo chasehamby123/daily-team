@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Permanent First, Five Views: vendor questions before you sign</title>
+<style>
+:root{
+  --paper:#f6f1e7; --card:#fffdf8; --ink:#1d2433; --muted:#5b6170;
+  --indigo:#1f3a5f; --indigo-soft:#dfe6ef; --red:#b8322a; --red-soft:#f6e1de;
+  --stem:#4a6b3a; --stem-soft:#e3ead9; --line:#cfc6b4;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-size:16px;line-height:1.45}
+main{max-width:1120px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:28px;line-height:1.15;margin:0 0 6px;color:var(--indigo)}
+h1 .red{color:var(--red)}
+h2{font-size:19px;margin:0 0 10px;color:var(--indigo)}
+h3{font-size:15px;margin:0 0 6px}
+p{margin:0 0 10px}
+.lede{color:var(--muted);max-width:760px}
+section{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:16px;margin:14px 0}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.split div{padding:10px 12px;border-radius:4px}
+.split .perm{border:2px solid var(--red);background:var(--red-soft)}
+.split .rev{border:1px solid var(--stem);background:var(--stem-soft)}
+.inputs{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end}
+label{display:block;font-size:14px;font-weight:600}
+label small{display:block;font-weight:400;color:var(--muted)}
+input[type=number]{font:inherit;width:140px;padding:6px 8px;border:1px solid var(--line);border-radius:4px;background:#fff;color:var(--ink)}
+input:focus,textarea:focus,button:focus{outline:2px solid var(--indigo);outline-offset:1px}
+.unit{font-size:14px;color:var(--muted);margin-left:4px}
+button{font:inherit;font-size:14px;padding:7px 12px;border:1px solid var(--indigo);background:#fff;color:var(--indigo);border-radius:4px;cursor:pointer}
+button.primary{background:var(--indigo);color:#fff}
+.headline{font-size:24px;font-weight:700;color:var(--red);margin:12px 0 4px}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;background:var(--indigo-soft);padding:6px 8px;border-radius:4px;display:inline-block;margin:4px 0 8px}
+.cases{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+.case{border:1px solid var(--line);border-radius:4px;padding:10px;background:#fff}
+.case .tag{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.case.bad .tag{color:var(--red)} .case.base .tag{color:var(--indigo)} .case.good .tag{color:var(--stem)}
+.case.bad{border-top:4px solid var(--red)} .case.base{border-top:4px solid var(--indigo)} .case.good{border-top:4px solid var(--stem)}
+.case .big{font-size:20px;font-weight:700;margin:4px 0}
+.case .in{font-size:13px;color:var(--muted)}
+.verdict{margin-top:12px;padding:10px 12px;border-left:4px solid var(--stem);background:var(--stem-soft)}
+.verdict.fail{border-left-color:var(--red);background:var(--red-soft)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+th{font-size:13px;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+textarea{width:100%;min-height:130px;font:inherit;font-size:14px;padding:8px;border:1px solid var(--line);border-radius:4px;background:#fff;color:var(--ink)}
+.flags li{margin-bottom:6px}
+.flags .key{font-weight:700;color:var(--red)}
+.note{font-size:13px;color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+.fit{font-weight:700}
+.fit.ok{color:var(--stem)} .fit.over{color:var(--red)}
+#sheetWrap{overflow-x:auto;background:#e9e3d6;padding:12px;border-radius:6px;border:1px solid var(--line)}
+footer{max-width:1120px;margin:0 auto;padding:0 16px 30px;font-size:13px;color:var(--muted)}
+
+/* The printable sheet: sized to Letter landscape minus 0.5 in margins */
+.sheet{width:10in;background:#fff;color:#111;font-size:11pt;line-height:1.25;padding:0;margin:0 auto}
+.sheet .sh-head{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid var(--indigo);padding-bottom:3pt;margin-bottom:4pt}
+.sheet .sh-title{font-size:14pt;font-weight:700;color:var(--indigo)}
+.sheet .sh-meta{font-size:10pt}
+.sheet .sh-total{font-size:11pt;font-weight:700;color:var(--red)}
+.sheet .legend{font-size:9pt;margin:2pt 0 4pt}
+.sheet .legend b.r{border:2px solid var(--red);padding:0 3pt}
+.sheet .phone{border:2px solid var(--ink);padding:4pt 6pt;margin-bottom:5pt;font-size:11pt}
+.sheet .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0.1in}
+.sheet .vh{font-size:11pt;font-weight:700;color:var(--indigo);border-bottom:1px solid var(--indigo);margin-bottom:3pt}
+.sheet .vh span{font-weight:400;font-size:9pt;color:#444;display:block}
+.sheet .q{border:1px solid #bbb;padding:3pt 4pt;margin-bottom:4pt;min-height:1.2in;display:flex;flex-direction:column}
+.sheet .q.p{border:2px solid var(--red)}
+.sheet .q .qt{flex:1}
+.sheet .q .rule{font-size:8.5pt;color:#444;margin-top:2pt}
+.sheet .q .ans{border-bottom:1px solid #999;height:14pt;margin-top:2pt}
+.sheet .q .sig{font-size:8.5pt;margin-top:3pt;color:var(--red)}
+.sheet .q .sig i{display:inline-block;width:2in;max-width:100%;border-bottom:1px solid var(--red);height:9pt;vertical-align:bottom}
+.sheet .q .fl{font-size:8.5pt;font-weight:700;color:var(--red);margin-top:2pt}
+.sheet .price{display:grid;grid-template-columns:repeat(4,1fr);gap:0.1in;border-top:2px solid var(--indigo);padding-top:4pt;margin-top:2pt;font-size:9.5pt}
+.sheet .price b{display:block;font-size:10pt}
+.sheet .sh-foot{display:flex;justify-content:space-between;gap:10pt;font-size:9pt;margin-top:5pt;border-top:1px solid #999;padding-top:3pt}
+.sheet .blank{display:inline-block;border-bottom:1px solid #333;width:1in}
+
+@media (max-width:720px){
+  h1{font-size:23px}
+  .split,.cases{grid-template-columns:1fr}
+  .headline{font-size:20px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+@page{size:letter landscape;margin:0.5in}
+@media print{
+  body{background:#fff}
+  main>*:not(#sheetSection),footer{display:none!important}
+  main{padding:0;max-width:none}
+  #sheetSection{border:0;padding:0;margin:0;background:#fff}
+  #sheetSection>*:not(#sheetWrap){display:none!important}
+  #sheetWrap{overflow:visible;background:#fff;padding:0;border:0}
+  .sheet{margin:0}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <h1><span class="red">Permanent First,</span> Five Views</h1>
+  <p class="lede">A 1-page list of 15 questions to ask a lead-response provider before you sign. Sort first. Some answers you can change next week. Some you live with for the full term. Slow down only on those.</p>
+  <div class="split">
+    <div class="perm"><b>Permanent: red border, signature line.</b><br>Contract term, auto-renewal, rate lock, who owns consent records, who keeps the phone numbers, data return on exit.</div>
+    <div class="rev"><b>Reversible: plain box.</b><br>Scripts, call hours, first sentence, handoff timing, state rule setup. Fix these after you sign.</div>
+  </div>
+</header>
+
+<section id="inSection" aria-labelledby="h-in">
+  <h2 id="h-in">Two questions about your agency</h2>
+  <div class="inputs">
+    <label for="leads">Leads per month<small>web forms, quote requests</small>
+      <input id="leads" type="number" min="0" step="10" inputmode="decimal"><span class="unit">leads/month</span></label>
+    <label for="months">Months the callback gap has run<small>since leads started going cold</small>
+      <input id="months" type="number" min="0" step="1" inputmode="decimal"><span class="unit">months</span></label>
+    <div class="row"><button id="clearBtn" type="button">Clear</button><button id="resetBtn" type="button">Load example</button></div>
+  </div>
+  <p class="headline" id="waited"></p>
+  <div class="formula">leads waited = leads/month × months</div>
+  <p class="note">Cases below add the months until the gap closes.</p>
+  <div class="cases" id="leadCases"></div>
+</section>
+
+<section aria-labelledby="h-price">
+  <h2 id="h-price">Price block: flat fee next to per booked appointment</h2>
+  <p>Enter the figures a vendor quoted you. The example figures are for illustration only.</p>
+  <div class="inputs">
+    <label for="flat">Flat fee quoted<input id="flat" type="number" min="0" step="50" inputmode="decimal"><span class="unit">$/month</span></label>
+    <label for="rate">Per booked appointment<input id="rate" type="number" min="0" step="5" inputmode="decimal"><span class="unit">$/appointment</span></label>
+    <label for="book">Leads that book<small>default 15%</small><input id="book" type="number" min="0" max="100" step="1" inputmode="decimal"><span class="unit">%</span></label>
+    <label for="term">Minimum term on flat<input id="term" type="number" min="0" step="1" inputmode="decimal"><span class="unit">months</span></label>
+  </div>
+  <div class="formula">appointments/month = leads/month × booked %<br>per-appointment cost = appointments/month × $/appointment<br>flat committed = $/month × minimum term months</div>
+  <div class="cases" id="priceCases"></div>
+  <div id="priceVerdict" class="verdict"></div>
+
+  <h3 style="margin-top:16px">Shortcut next to the usual path</h3>
+  <div class="tablewrap"><table id="shortcutTable"></table></div>
+  <p class="note">The renewal risk sits with the shortcut. The rate-lock question is in the permanent column for that reason.</p>
+</section>
+
+<section aria-labelledby="h-ai">
+  <h2 id="h-ai">Contract read: with and without an AI reader</h2>
+  <p>An AI reader checks a draft against the permanent column: term length, auto-renewal, rate changes, data ownership, consent records, phone numbers. Counsel then reads what it flags.</p>
+  <div class="inputs">
+    <label for="atty">Counsel rate<small>varies by market. Enter yours.</small><input id="atty" type="number" min="0" step="25" inputmode="decimal"><span class="unit">$/hour</span></label>
+    <label for="vendors">Vendors reviewed<input id="vendors" type="number" min="0" step="1" inputmode="decimal"><span class="unit">vendors</span></label>
+    <label for="hFull">Full read, no AI<input id="hFull" type="number" min="0" step="0.25" inputmode="decimal"><span class="unit">hours/vendor</span></label>
+    <label for="aiCost">AI reader cost<small>enter your tool's cost</small><input id="aiCost" type="number" min="0" step="1" inputmode="decimal"><span class="unit">$/vendor</span></label>
+  </div>
+  <div class="inputs" style="margin-top:10px">
+    <label for="hBad">Counsel on flags, bad case<small>reader flags too much</small><input id="hBad" type="number" min="0" step="0.25" inputmode="decimal"><span class="unit">hours/vendor</span></label>
+    <label for="hBase">Counsel on flags, base<input id="hBase" type="number" min="0" step="0.25" inputmode="decimal"><span class="unit">hours/vendor</span></label>
+    <label for="hGood">Counsel on flags, good<input id="hGood" type="number" min="0" step="0.25" inputmode="decimal"><span class="unit">hours/vendor</span></label>
+  </div>
+  <div class="formula">without AI = vendors × full-read hours × $/hour<br>with AI = vendors × (flag-read hours × $/hour + AI $/vendor)</div>
+  <div class="cases" id="aiCases"></div>
+  <div id="aiVerdict" class="verdict"></div>
+  <p class="note"><b>A person still does these steps:</b> counsel reads every flagged clause and the full permanent sections, then signs the sheet footer. You sign each red box. You run the phone test yourself. The reader finds clauses. It does not judge them.</p>
+
+  <h3 style="margin-top:16px">Check a draft on this page</h3>
+  <p class="note">This check is a keyword match that runs in your browser. Nothing leaves this file. Paste text or open a .txt file. Flags appear here and beside the permanent questions on the sheet.</p>
+  <div class="row"><input id="file" type="file" accept=".txt,text/plain" aria-label="Open a contract text file"><button id="checkBtn" type="button" class="primary">Check draft</button></div>
+  <textarea id="contract" aria-label="Contract text"></textarea>
+  <ul class="flags" id="flags"></ul>
+</section>
+
+<section aria-labelledby="h-ret">
+  <h2 id="h-ret">One figure that depends on local rules</h2>
+  <p>Consent and recording rules vary by state and by carrier. This page gives no legal advice. Enter the record-keeping period your counsel requires. It is printed into the consent question.</p>
+  <label for="ret">Consent records kept after you part<input id="ret" type="number" min="0" step="1" inputmode="decimal"><span class="unit">years</span></label>
+</section>
+
+<section id="sheetSection" aria-labelledby="h-sheet">
+  <h2 id="h-sheet">The sheet</h2>
+  <p>Preview at print size: Letter, landscape, 11 pt, 0.5 in margins. On a phone, scroll sideways.</p>
+  <div class="row"><button id="printBtn" type="button" class="primary">Print the sheet</button><span id="fit" class="fit"></span></div>
+  <div id="sheetWrap"><div class="sheet" id="sheet"></div></div>
+  <div id="ruler" style="position:absolute;visibility:hidden;height:7.5in;width:1px;left:-9999px"></div>
+</section>
+
+</main>
+<footer>
+  <p>Credits. Florist: the reversible/permanent split, red borders and signature lines, the two input boxes, the running total of leads that waited, and the contract read against the permanent column. Sculptor: the one-sentence answer rule under each question, and the per-appointment price block next to the flat fee. Insurance agency owner: the phone test as the first item with a 60-second cutoff, the live-handoff and consent-record questions, and the rate-lock question. Katsushika Hokusai: five views of one lead at 3 questions each, and the 1-sheet layout. Open point from Hokusai: a vendor answering across your desk is a sixth view. It is not on the sheet.</p>
+  <p>Published by VoxxyAI.</p>
+</footer>
+
+<script>
+(function(){
+var EX = {leads:200, months:8, flat:1500, rate:40, book:15, term:12, atty:300, vendors:3, hFull:3, aiCost:5, hBad:2.5, hBase:1, hGood:0.75, ret:5};
+var IDS = Object.keys(EX);
+var KEY = "permFirstFiveViews.v1";
+var SAMPLE = "Initial Term. This Agreement has an initial term of 12 months from the Effective Date. Renewal. This Agreement will automatically renew for successive 12-month terms unless either party gives 60 days written notice. Fees. Client pays a flat fee of $1,500 per month. Provider may adjust fees upon renewal with 30 days notice. Data. All call recordings, transcripts, and consent records are the property of Provider. Telephone numbers provisioned by Provider remain with Provider at termination. Early termination fee equals the remaining monthly fees in the Initial Term.";
+
+var VIEWS = [
+ {name:"The prospect", sub:"hearing the first voice", qs:[
+  {t:"What does the first voice say in its first sentence? Does it name my agency?"},
+  {t:"If the prospect says stop, how many seconds until every call and text stops, on every number?"},
+  {t:"Which phone numbers call my leads? Do I keep them if I leave?", p:1, f:"numbers"}]},
+ {name:"The agent", sub:"taking the handoff", qs:[
+  {t:"Does my agent take the live call, or get a transcript later?"},
+  {t:"If no agent picks up within 30 seconds, what does the prospect hear?"},
+  {t:"Can I change scripts and call hours myself, the same day?"}]},
+ {name:"The compliance file", sub:"what an auditor sees", qs:[
+  {t:"Show me the consent record for my test call. Where is it stored?"},
+  {t:"Who owns consent records? Can I export them for {ret} years after we part?", p:1, f:"consent"},
+  {t:"Which state call rules do you set up, and who on your side signs off?"}]},
+ {name:"The owner's ledger", sub:"what it costs", qs:[
+  {t:"Flat fee or per booked appointment? Quote both, in writing.", p:1, f:"price"},
+  {t:"Is the per-appointment rate locked through renewal, in writing?", p:1, f:"rate"},
+  {t:"What is the minimum term in months? Does it auto-renew?", p:1, f:"term"}]},
+ {name:"The carrier", sub:"who sees the policy", qs:[
+  {t:"What do calls say about coverage, and who approved that wording?"},
+  {t:"For a carrier audit, can you pull every call and record for one lead within 2 business days?"},
+  {t:"When we part, do lead data and recordings come back to me? In what format, within how many days?", p:1, f:"data"}]}
+];
+
+var RULES = [
+ {k:"term", label:"Auto-renewal", re:/automatic(ally)?\s*renew|auto[- ]?renew/i},
+ {k:"term", label:"Term length", re:/(initial|minimum)\s+term|\b\d+[- ]?(month|year)s?\b.*term/i},
+ {k:"term", label:"Early termination fee", re:/early termination|termination fee/i},
+ {k:"rate", label:"Rate can change", re:/(adjust|increase|change|raise)\w*\s.{0,40}(fee|rate|price)|(fee|rate|price)s?\s.{0,40}(adjust|increase|change|raise)/i},
+ {k:"price", label:"Pricing basis", re:/flat fee|per (booked )?appointment|per month|monthly fee/i},
+ {k:"data", label:"Data ownership", re:/(property of|own|owned by|ownership).{0,60}(data|record|recording|transcript)|(data|record|recording|transcript)s?.{0,60}(property of|owned by|ownership)/i},
+ {k:"consent", label:"Consent records", re:/consent/i},
+ {k:"numbers", label:"Phone numbers", re:/(telephone|phone) numbers?|\bport(ing)?\b/i}
+];
+var flagged = {};
+
+function $(id){return document.getElementById(id);}
+function num(id){var v=parseFloat($(id).value);return isFinite(v)&&v>=0?v:0;}
+function n(x){return (Math.round(x*10)/10).toLocaleString("en-US");}
+function usd(x){return "$"+Math.round(x).toLocaleString("en-US");}
+function usd2(x){return "$"+(Math.round(x*100)/100).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+
+function save(){
+  try{var o={};IDS.forEach(function(k){o[k]=$(k).value;});o.contract=$("contract").value;localStorage.setItem(KEY,JSON.stringify(o));}catch(e){}
+}
+function load(){
+  var o=null;
+  try{o=JSON.parse(localStorage.getItem(KEY)||"null");}catch(e){o=null;}
+  IDS.forEach(function(k){$(k).value=(o&&o[k]!==undefined)?o[k]:EX[k];});
+  $("contract").value=(o&&typeof o.contract==="string")?o.contract:SAMPLE;
+}
+
+function card(cls,tag,big,lines){
+  return '<div class="case '+cls+'"><div class="tag">'+tag+'</div><div class="big">'+big+'</div><div class="in">'+lines.join("<br>")+'</div></div>';
+}
+
+function render(){
+  var L=num("leads"),M=num("months"),flat=num("flat"),rate=num("rate"),bk=num("book")/100,term=num("term");
+  // Leads waited
+  if(L>0&&M>0){$("waited").textContent=n(L*M)+" leads waited over "+n(M)+" months.";}
+  else{$("waited").textContent="Enter leads/month and months to see the total.";}
+  var fwd=[["bad","Bad","signed the wrong term",term],["base","Base","pick and go live",3],["good","Good","fixed next month",1]];
+  $("leadCases").innerHTML=fwd.map(function(c){
+    return card(c[0],c[1]+": "+c[2],n(L*(M+c[3]))+" leads",[n(L)+" leads/month × ("+n(M)+" + "+n(c[3])+") months"]);
+  }).join("");
+
+  // Price cases
+  var cases=[
+    {cls:"bad",tag:"Bad: volume halves, rate doubles",L:L*0.5,r:rate*2},
+    {cls:"base",tag:"Base: your inputs",L:L,r:rate},
+    {cls:"good",tag:"Good: volume up by half",L:L*1.5,r:rate}
+  ];
+  $("priceCases").innerHTML=cases.map(function(c){
+    var ap=c.L*bk, per=ap*c.r, cpaF=ap>0?flat/ap:0;
+    var lower=per<flat?"Per appointment is lower by "+usd(flat-per)+"/month.":(per>flat?"Flat is lower by "+usd(per-flat)+"/month.":"Both cost the same.");
+    return card(c.cls,c.tag,usd(per)+"/month vs "+usd(flat)+"/month",[
+      "Inputs: "+n(c.L)+" leads/month, "+n(bk*100)+"% booked, "+usd(c.r)+"/appointment",
+      n(ap)+" appointments/month",
+      "Flat works out to "+(ap>0?usd2(cpaF)+"/appointment":"no appointments"),
+      lower]);
+  }).join("");
+
+  var b=cases[0], bAp=b.L*bk, bPer=bAp*b.r;
+  var survive=bPer<=flat&&bAp>0;
+  var maxRateBad=bAp>0?flat/bAp:0;
+  var beAp=rate>0?flat/rate:0, beLeads=bk>0?beAp/bk:0;
+  var v=$("priceVerdict");
+  if(L<=0||bk<=0||rate<=0||flat<=0){v.className="verdict fail";v.textContent="Enter leads, booking %, both prices to test the bad case.";}
+  else if(survive){
+    v.className="verdict";
+    v.innerHTML="<b>Per appointment survives the bad case:</b> "+usd(bPer)+"/month against "+usd(flat)+"/month flat at "+n(b.L)+" leads/month and "+usd(b.r)+"/appointment. "+
+      "It stays under flat until the rate reaches "+usd2(maxRateBad)+"/appointment at that volume. "+
+      "At "+usd(rate)+"/appointment it passes flat once you book more than "+n(beAp)+" appointments/month ("+n(beLeads)+" leads/month at "+n(bk*100)+"%). Past that point each appointment still costs "+usd(rate)+".";
+  } else {
+    v.className="verdict fail";
+    v.innerHTML="<b>Safer setting first:</b> cap the per-appointment rate at "+usd2(maxRateBad)+"/appointment in writing, or take flat with no auto-renewal. "+
+      "<b>Per appointment does not survive the bad case:</b> "+usd(bPer)+"/month against "+usd(flat)+"/month flat at "+n(b.L)+" leads/month and "+usd(b.r)+"/appointment.";
+  }
+
+  var bAP=L*bk;
+  $("shortcutTable").innerHTML=
+    "<tr><th>Path</th><th>Same inputs</th><th>Base</th><th>Bad case</th><th>Committed over "+n(term)+" months</th></tr>"+
+    "<tr><td><b>Usual: flat fee</b></td><td>"+usd(flat)+"/month, "+n(term)+"-month minimum</td><td>"+usd(flat)+"/month</td><td>"+usd(flat)+"/month, "+(bAp>0?usd2(flat/bAp)+"/appointment":"no appointments")+"</td><td>"+usd(flat*term)+" whatever happens</td></tr>"+
+    "<tr><td><b>Shortcut: per booked appointment</b></td><td>"+n(L)+" leads/month, "+n(bk*100)+"% booked, "+usd(rate)+"/appointment</td><td>"+usd(bAP*rate)+"/month</td><td>"+usd(bPer)+"/month at "+usd(b.r)+"/appointment</td><td>$0 minimum assumed. Confirm in writing.</td></tr>";
+
+  // AI
+  var A=num("atty"),V=num("vendors"),hF=num("hFull"),ai=num("aiCost");
+  var hc=[["bad","Bad: reader flags too much",num("hBad")],["base","Base",num("hBase")],["good","Good",num("hGood")]];
+  var without=V*hF*A;
+  $("aiCases").innerHTML=hc.map(function(c){
+    var w=V*(c[2]*A+ai);
+    return card(c[0],c[1],usd(w)+" with AI",[
+      usd(without)+" without AI",
+      "Saves "+usd(without-w)+" over "+n(V)+" vendors",
+      "Inputs: "+n(c[2])+" hours/vendor on flags vs "+n(hF)+" hours/vendor full read, "+usd(A)+"/hour, "+usd(ai)+"/vendor AI"]);
+  }).join("");
+  var badWith=V*(num("hBad")*A+ai), av=$("aiVerdict");
+  if(badWith<=without){av.className="verdict";av.innerHTML="<b>The AI read survives the bad case:</b> "+usd(badWith)+" against "+usd(without)+". It breaks even when counsel spends "+n(A>0?hF-ai/A:0)+" hours/vendor on flags.";}
+  else{av.className="verdict fail";av.innerHTML="<b>Safer setting first:</b> skip the reader and have counsel do the full read at "+usd(without)+". <b>The AI read does not survive the bad case:</b> "+usd(badWith)+" against "+usd(without)+".";}
+
+  renderSheet(L,M,flat,rate,bk,term,b);
+  save();
+}
+
+function check(){
+  var text=$("contract").value.replace(/\s+/g," ").trim();
+  flagged={};
+  var out=[];
+  if(text){
+    var parts=text.split(/(?:[.;])\s+/);
+    RULES.forEach(function(r){
+      for(var i=0;i<parts.length;i++){
+        if(r.re.test(parts[i])){
+          (flagged[r.k]=flagged[r.k]||[]).push(r.label);
+          out.push('<li><span class="key">'+esc(r.label)+':</span> "'+esc(parts[i].slice(0,220))+'"</li>');
+          break;
+        }
+      }
+    });
+  }
+  $("flags").innerHTML=out.length?out.join(""):"<li>No matches. Counsel still reads the permanent sections in full.</li>";
+  render();
+}
+
+function renderSheet(L,M,flat,rate,bk,term,b){
+  var ret=n(num("ret"));
+  var h='<div class="sh-head"><div><div class="sh-title">Permanent First, Five Views: questions before you sign</div>'+
+    '<div class="sh-total">'+n(L*M)+' leads waited over '+n(M)+' months at '+n(L)+' leads/month.</div></div>'+
+    '<div class="sh-meta">Vendor: <span class="blank"></span> Date: <span class="blank"></span></div></div>';
+  h+='<div class="legend"><b class="r">Red border</b> = permanent. Slow down. Sign beside it. Plain box = reversible. Change it next week. Under each question: answer in one sentence a child could follow, or mark it a fail.</div>';
+  h+='<div class="phone"><b>Before any question.</b> Fill their web form from your own phone as a fake lead. Seconds to first call: <span class="blank"></span> s. Your agent on the live call after: <span class="blank"></span> s. <b>Over 60 s to first call: end the meeting here.</b></div>';
+  h+='<div class="grid">';
+  VIEWS.forEach(function(v){
+    h+='<div><div class="vh">'+esc(v.name)+'<span>'+esc(v.sub)+'</span></div>';
+    v.qs.forEach(function(q){
+      var t=esc(q.t.replace("{ret}",ret));
+      h+='<div class="q'+(q.p?' p':'')+'"><div class="qt">'+t+'</div>';
+      if(q.p&&q.f&&flagged[q.f]){h+='<div class="fl">Draft flag: '+esc(flagged[q.f].join(", "))+'</div>';}
+      h+='<div class="ans"></div><div class="rule">One sentence a child follows: pass / fail</div>';
+      if(q.p){h+='<div class="sig">Signed: <i></i></div>';}
+      h+='</div>';
+    });
+    h+='</div>';
+  });
+  h+='</div>';
+  var ap=L*bk;
+  h+='<div class="price">'+
+    '<div><b>Flat fee</b>'+usd(flat)+'/month × '+n(term)+' months = '+usd(flat*term)+' committed</div>'+
+    '<div><b>Per booked appointment</b>'+usd(rate)+' × '+n(ap)+' appointments/month = '+usd(ap*rate)+'/month</div>'+
+    '<div><b>Bad case</b>'+n(b.L)+' leads/month at '+usd(b.r)+'/appointment = '+usd(b.L*bk*b.r)+'/month</div>'+
+    '<div><b>This vendor quoted</b>Flat <span class="blank" style="width:0.6in"></span> $/month. Per appointment <span class="blank" style="width:0.6in"></span> $/appointment.</div></div>';
+  h+='<div class="sh-foot"><span>Reviewed and signed by: <span class="blank" style="width:2in"></span> (E&amp;O counsel)</span><span>Questions only. Not legal advice. Call and consent rules vary by state and carrier.</span></div>';
+  $("sheet").innerHTML=h;
+  fitCheck();
+}
+
+function fitCheck(){
+  var limit=$("ruler").getBoundingClientRect().height||720;
+  var hgt=$("sheet").getBoundingClientRect().height;
+  var f=$("fit");
+  var inches=Math.round(hgt/limit*7.5*100)/100;
+  if(hgt<=limit){f.className="fit ok";f.textContent="Fits on 1 page: "+inches+" in of 7.5 in.";}
+  else{f.className="fit over";f.textContent="Runs past 1 page: "+inches+" in of 7.5 in. Shorten before printing.";}
+}
+
+IDS.forEach(function(k){$(k).addEventListener("input",render);});
+$("contract").addEventListener("input",function(){save();});
+$("checkBtn").addEventListener("click",check);
+$("file").addEventListener("change",function(e){
+  var f=e.target.files&&e.target.files[0]; if(!f)return;
+  var r=new FileReader();
+  r.onload=function(){$("contract").value=String(r.result||"");check();};
+  r.readAsText(f);
+});
+$("clearBtn").addEventListener("click",function(){$("leads").value="";$("months").value="";render();});
+$("resetBtn").addEventListener("click",function(){IDS.forEach(function(k){$(k).value=EX[k];});$("contract").value=SAMPLE;check();});
+$("printBtn").addEventListener("click",function(){window.print();});
+window.addEventListener("resize",fitCheck);
+
+load();
+check();
+})();
+</script>
+</body>
+</html>
