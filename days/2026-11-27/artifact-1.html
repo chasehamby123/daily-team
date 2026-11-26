@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Red List: your missed calls, before and after</title>
+<style>
+:root{--a:#C2410C;--ink:#111;--g1:#3a3a3a;--g2:#6b6b6b;--g3:#d6d6d6;--g4:#f4f4f4}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#fff;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:16px;line-height:1.45}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:40px;line-height:1.05;margin:0 0 6px;letter-spacing:-0.5px}
+h1 span{color:var(--a)}
+.sub{font-size:17px;color:var(--g1);margin:0 0 20px;max-width:640px}
+h2{font-size:22px;margin:36px 0 6px}
+.note{font-size:14px;color:var(--g2);margin:4px 0 12px;max-width:680px}
+.q{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:640px}
+.q label{display:block;font-size:14px;font-weight:600;color:var(--g1);margin-bottom:4px}
+.q input{width:100%;font:inherit;font-size:28px;font-weight:700;padding:8px 10px;border:2px solid var(--ink);border-radius:6px;background:#fff;color:var(--ink)}
+.q small{display:block;font-size:13px;color:var(--g2);margin-top:4px}
+input:focus{outline:3px solid var(--a);outline-offset:1px}
+.result{margin:22px 0 4px;border-top:4px solid var(--ink);padding-top:14px}
+.big{font-size:clamp(22px,4.6vw,34px);font-weight:700;line-height:1.2;margin:0 0 6px}
+.big b{color:var(--a)}
+.btns{margin-top:12px}
+button{font:inherit;font-size:14px;padding:6px 12px;border:1px solid var(--g2);border-radius:6px;background:#fff;color:var(--ink);cursor:pointer}
+.map{display:grid;grid-template-columns:30px 1fr 1fr;border-top:2px solid var(--ink);margin-top:10px}
+.map .h{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--g1);padding:8px 6px;border-bottom:2px solid var(--ink)}
+.map .n,.map .c{padding:9px 8px;border-bottom:1px solid var(--g3);font-size:15px}
+.map .n{color:var(--g2);font-variant-numeric:tabular-nums;padding-left:2px}
+.map .c{border-left:4px solid transparent}
+.tag{display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-top:3px}
+.r-counter .c,.r-counter .n{color:var(--g2);background:var(--g4)}
+.r-changed .b{text-decoration:line-through;text-decoration-color:var(--a);text-decoration-thickness:2px}
+.r-changed .af{border-left-color:var(--a)}
+.r-changed .af .tag{color:var(--a)}
+.r-kept .af{border-left-color:var(--ink);font-weight:600}
+.r-kept .af .tag{color:var(--ink)}
+.r-counter .tag{color:var(--g2)}
+.calls{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px}
+.phone{border:1px solid var(--g3);border-radius:14px;padding:6px 0;background:#fff}
+.phone .t{font-size:13px;font-weight:700;color:var(--g2);padding:6px 14px;text-transform:uppercase;letter-spacing:.4px}
+.row{display:flex;justify-content:space-between;gap:8px;padding:8px 14px;border-top:1px solid var(--g4);font-size:14px}
+.row .who{color:var(--g1)}
+.row .st{text-align:right;font-weight:600}
+.st.a{color:var(--a)}
+.st.k{color:var(--ink)}
+.st.g{color:var(--g2);font-weight:400}
+.more{font-size:13px;color:var(--g2);padding:6px 14px}
+.bar{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;align-items:end;height:130px;border-bottom:2px solid var(--ink);margin-top:10px;max-width:640px}
+.slot{display:flex;flex-direction:column-reverse;gap:3px}
+.sq{height:16px;border-radius:2px;background:var(--g3);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.sq.m{background:var(--a)}
+.axis{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;font-size:11px;color:var(--g2);max-width:640px;margin-top:3px}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:7px 8px;border-bottom:1px solid var(--g3);text-align:right;vertical-align:top}
+th:first-child,td:first-child{text-align:left}
+thead th{border-bottom:2px solid var(--ink);font-size:13px}
+thead th small{display:block;font-weight:400;color:var(--g2)}
+tr.sep td{border-top:2px solid var(--ink)}
+td.pos{color:var(--a);font-weight:700}
+.scroll{overflow-x:auto}
+.verdict{border-left:4px solid var(--a);padding:8px 12px;margin:14px 0;font-size:16px;max-width:720px}
+.verdict p{margin:4px 0}
+.assume{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px 16px;margin-top:10px}
+.assume label{font-size:13px;color:var(--g1);display:block;margin-bottom:3px}
+.assume input{width:100%;font:inherit;font-size:16px;padding:6px 8px;border:1px solid var(--g2);border-radius:5px}
+.assume small{font-size:12px;color:var(--g2)}
+.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px;background:var(--g4);padding:12px;border-radius:6px;white-space:pre-wrap;line-height:1.6}
+ul.keep{margin:6px 0;padding-left:20px}
+ul.keep li{margin:3px 0}
+.credits{font-size:13px;color:var(--g2);border-top:1px solid var(--g3);margin-top:36px;padding-top:12px}
+.foot{font-size:13px;color:var(--g2);margin-top:6px}
+@media (max-width:620px){
+  h1{font-size:32px}
+  .q{grid-template-columns:1fr}
+  .calls{grid-template-columns:1fr}
+  .map{grid-template-columns:22px 1fr 1fr}
+  .map .c{font-size:13px;padding:8px 5px}
+  .bar{height:110px}
+  .sq{height:13px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none;animation:none;scroll-behavior:auto}}
+@media print{
+  .btns{display:none}
+  .wrap{padding:0}
+  h2{break-after:avoid}
+  .map,.calls,table,.verdict{break-inside:avoid}
+  .q input,.assume input{border:1px solid var(--g2)}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>The <span>Red List</span></h1>
+<p class="sub">Your missed calls, step by step, today and with an answering assistant. Two numbers from your phone. The rest is worked out below, with every assumption printed.</p>
+
+<div class="q">
+  <div>
+    <label for="entries">Red entries in your call log last week</label>
+    <input id="entries" type="number" inputmode="decimal" min="0" step="1">
+    <small>Missed calls, read off the phone or the call report.</small>
+  </div>
+  <div>
+    <label for="months">Months the desk has been this short</label>
+    <input id="months" type="number" inputmode="decimal" min="0" step="1">
+    <small>How long the gap has run.</small>
+  </div>
+</div>
+
+<div class="result" aria-live="polite">
+  <p class="big" id="headMoney"></p>
+  <p class="big" id="headPeople"></p>
+  <p class="note" id="headNote"></p>
+  <div class="btns"><button type="button" id="reset">Back to the worked example</button></div>
+</div>
+
+<h2>The map: nine steps of a missed call</h2>
+<p class="note">One grey row for the counter, because that is why the phone goes unanswered. Orange marks the six steps that change or go. Black marks the three your people keep.</p>
+<div class="map" id="map"></div>
+
+<h2>Your recent calls, before and after</h2>
+<p class="note" id="callsNote"></p>
+<div class="calls">
+  <div class="phone"><div class="t">Recent calls, today</div><div id="before"></div></div>
+  <div class="phone"><div class="t">Recent calls, with an assistant</div><div id="after"></div></div>
+</div>
+
+<h2>Where the red comes from: one Monday, 8:00 to 9:00</h2>
+<p class="note">Example hour. 30 rings. Two people at the desk, one checking a patient in. 9 rings go unanswered. Each square is one ring. Orange squares are missed.</p>
+<div class="bar" id="bar" role="img" aria-label="Bar of 30 calls between 8:00 and 9:00, 9 missed, most in the first 25 minutes"></div>
+<div class="axis" id="axis"></div>
+
+<h2>Three cases, three ways to handle the list</h2>
+<p class="note">Monthly cost of missed calls, including bookings lost and desk time spent calling back. Lower is better. The usual path is the desk calling back. The shortcut is answering at the first ring, priced two ways.</p>
+<div class="scroll"><table id="cases"></table></div>
+<div class="verdict" id="verdict"></div>
+
+<h2>What a person still reviews</h2>
+<ul class="keep">
+  <li>Worried callers ring straight through to a person. About 15 of every 100 calls, marked on the desk screen.</li>
+  <li>Your practice manager writes and approves the list of calls that always go to a person. This page does not decide what is urgent.</li>
+  <li>Your desk checks insurer cover for each new booking.</li>
+  <li id="reviewLine"></li>
+</ul>
+
+<h2>Assumptions. Change any that are wrong for you.</h2>
+<p class="note">The 40% is a guess, printed so you can test it. Wages and fees depend on where you are. The assistant fees are example figures, not a quote. Enter one you were given.</p>
+<div class="assume">
+  <div><label for="loss">Missed callers who book elsewhere, %</label><input id="loss" type="number" inputmode="decimal" min="0" max="100" step="1"><small>Default 40</small></div>
+  <div><label for="value">Value of one booking, $</label><input id="value" type="number" inputmode="decimal" min="0" step="1"><small>Default 140</small></div>
+  <div><label for="tries">Callback tries per missed call</label><input id="tries" type="number" inputmode="decimal" min="0" step="0.1"><small>Default 1.5</small></div>
+  <div><label for="mins">Minutes per callback try</label><input id="mins" type="number" inputmode="decimal" min="0" step="0.5"><small>Default 4</small></div>
+  <div><label for="wage">Desk staff cost per hour, $</label><input id="wage" type="number" inputmode="decimal" min="0" step="1"><small>Local wages. Default 25</small></div>
+  <div><label for="recov">Lost bookings the assistant recovers, %</label><input id="recov" type="number" inputmode="decimal" min="0" max="100" step="1"><small>Default 70</small></div>
+  <div><label for="review">Desk review per recovered booking, min</label><input id="review" type="number" inputmode="decimal" min="0" step="0.5"><small>Default 1</small></div>
+  <div><label for="flat">Assistant fee, flat per month, $</label><input id="flat" type="number" inputmode="decimal" min="0" step="10"><small>Example 400</small></div>
+  <div><label for="per">Assistant fee, per recovered booking, $</label><input id="per" type="number" inputmode="decimal" min="0" step="1"><small>Example 9</small></div>
+</div>
+
+<h2>The formula</h2>
+<div class="formula" id="formula"></div>
+
+<p class="credits">Credits. Data journalist: the nine-step map, the printed 40% assumption, the result in months, the bad case. Animator: the recent-calls lists, the two inputs read off the phone, the Monday 8:00 to 9:00 bar. Clinic owner: plain words on every step, worried calls to a person, staff minutes beside dollars. Don Quixote: scope cut to the missed-call path plus one counter row, and the three steps left standing in black.</p>
+<p class="foot">Published by VoxxyAI. No sign-up. Your numbers stay in this browser.</p>
+
+</div>
+<script>
+(function(){
+var D={entries:22,months:6,loss:40,value:140,tries:1.5,mins:4,wage:25,recov:70,review:1,flat:400,per:9};
+var KEYS=Object.keys(D);
+var W=4.33;
+var KEY="redlist-v1";
+function el(id){return document.getElementById(id);}
+function money(x){var s=Math.round(Math.abs(x)).toLocaleString("en-US");return (x<0?"-$":"$")+s;}
+function n1(x){return (Math.round(x*10)/10).toLocaleString("en-US");}
+function n0(x){return Math.round(x).toLocaleString("en-US");}
+function read(){var p={};KEYS.forEach(function(k){var v=parseFloat(el(k).value);p[k]=isFinite(v)?Math.max(0,v):0;});return p;}
+function fill(o){KEYS.forEach(function(k){el(k).value=o[k];});}
+function save(p){try{localStorage.setItem(KEY,JSON.stringify(p));}catch(e){}}
+function load(){try{var s=localStorage.getItem(KEY);if(s){var o=JSON.parse(s);var out={};KEYS.forEach(function(k){out[k]=(typeof o[k]==="number")?o[k]:D[k];});return out;}}catch(e){}return null;}
+
+function model(p,entries,recov){
+  var r=(recov===undefined?p.recov:recov)/100;
+  var lostWk=p.loss/100*entries;
+  var lostMo=lostWk*p.value*W;
+  var cbMinWk=entries*p.tries*p.mins;
+  var cbMo=cbMinWk*W/60*p.wage;
+  var usual=lostMo+cbMo;
+  var recBk=lostWk*W*r;
+  var recVal=recBk*p.value;
+  var resid=lostMo-recVal;
+  var residCb=cbMo*(1-r);
+  var review=recBk*p.review/60*p.wage;
+  var base=resid+residCb+review;
+  var perFee=recBk*p.per;
+  return {entries:entries,lostWk:lostWk,lostMo:lostMo,cbMinWk:cbMinWk,cbMo:cbMo,usual:usual,recBk:recBk,recVal:recVal,
+    review:review,flat:base+p.flat,per:base+perFee,perFee:perFee,saveFlat:usual-(base+p.flat),savePer:usual-(base+perFee)};
+}
+
+var STEPS=[
+ {k:"counter",b:"Desk is checking a patient in at the counter.",a:"Desk is checking a patient in at the counter.",t:"Same as today"},
+ {k:"changed",b:"Phone rings six times. Nobody is free.",a:"The assistant answers at the first ring. Your desk sees the call on screen.",t:"Changed"},
+ {k:"changed",b:"Call rolls to voicemail.",a:"No voicemail. The caller is answered.",t:"Removed"},
+ {k:"changed",b:"Caller hangs up. Most leave no message.",a:"Caller says what they need.",t:"Removed"},
+ {k:"changed",b:"The call sits in the log as a red entry.",a:"A short note goes to the desk: who, why, what was booked.",t:"Changed"},
+ {k:"changed",b:"Desk dials back. {tries} tries, {mins} min each.",a:"No callback for routine calls.",t:"Removed"},
+ {k:"changed",b:"Desk asks why they rang, then books or moves the visit.",a:"The assistant books or moves routine visits into open slots.",t:"Changed"},
+ {k:"kept",b:"Someone decides what counts as worried.",a:"Your practice manager writes the list and signs it.",t:"Your desk keeps this"},
+ {k:"kept",b:"A worried caller speaks to a person.",a:"Worried callers ring straight through to a person.",t:"Your desk keeps this"},
+ {k:"kept",b:"Desk checks the insurer and the cover.",a:"Desk checks the insurer and the cover.",t:"Your desk keeps this"}
+];
+function renderMap(p){
+  var h='<div class="h">#</div><div class="h">Today</div><div class="h">With an assistant</div>';
+  STEPS.forEach(function(s,i){
+    var b=s.b.replace("{tries}",n1(p.tries)).replace("{mins}",n1(p.mins));
+    h+='<div class="r-'+s.k+'" style="display:contents">'+
+      '<div class="n">'+(i===0?"–":i)+'</div>'+
+      '<div class="c bf"><span class="b">'+b+'</span></div>'+
+      '<div class="c af">'+s.a+'<span class="tag">'+s.t+'</span></div></div>';
+  });
+  el("map").innerHTML=h;
+}
+
+var TIMES=["Mon 8:04","Mon 8:11","Mon 8:17","Mon 8:26","Mon 8:41","Mon 12:52","Tue 8:09","Wed 4:58"];
+var ENDS=["12","47","03","88","21","65","30","94"];
+var OUT=[["a","Booked Tue 2:15"],["a","Moved to Thu 9:30"],["g","Question answered, note to desk"],["a","Booked Wed 11:00"],["k","Rang through to desk"],["a","Booked Fri 3:45"],["g","Question answered, note to desk"],["a","Booked Mon 10:15"]];
+function renderCalls(p){
+  var total=Math.round(p.entries);var shown=Math.min(total,8);var b="",a="";
+  for(var i=0;i<shown;i++){
+    b+='<div class="row"><span class="who">Caller ending '+ENDS[i]+'<br><small>'+TIMES[i]+'</small></span><span class="st a">Missed</span></div>';
+    a+='<div class="row"><span class="who">Caller ending '+ENDS[i]+'<br><small>'+TIMES[i]+'</small></span><span class="st '+OUT[i][0]+'">'+OUT[i][1]+'</span></div>';
+  }
+  if(total>shown){var m='<div class="more">and '+n0(total-shown)+' more</div>';b+=m;a+=m;}
+  if(total===0){b='<div class="more">No red entries.</div>';a=b;}
+  el("before").innerHTML=b;el("after").innerHTML=a;
+  el("callsNote").textContent="The first "+shown+" of your "+n0(total)+" red entries, no names. Of every 100 calls, about 60 book or move a visit, 25 ask a question, 15 are worried and go to a person.";
+}
+
+function renderBar(){
+  var calls=[5,4,4,3,3,2,2,2,1,2,1,1],miss=[3,2,2,1,1,0,0,0,0,0,0,0];var h="",ax="";
+  for(var i=0;i<12;i++){
+    var s='<div class="slot">';
+    for(var j=0;j<calls[i];j++){s+='<div class="sq'+(j<miss[i]?" m":"")+'"></div>';}
+    h+=s+'</div>';
+    ax+='<span>'+(i%3===0?"8:"+(i*5<10?"0":"")+(i*5):"")+'</span>';
+  }
+  el("bar").innerHTML=h;el("axis").innerHTML=ax;
+}
+
+function renderCases(p){
+  var C=[{n:"Bad",d:"Half the calls",e:p.entries*0.5},{n:"Base",d:"Your log",e:p.entries},{n:"Good",d:"Busy weeks, ×1.5",e:p.entries*1.5}];
+  var M=C.map(function(c){return model(p,c.e);});
+  function row(label,f,cls){var r='<tr'+(cls?' class="'+cls+'"':'')+'><td>'+label+'</td>';M.forEach(function(m){r+=f(m);});return r+'</tr>';}
+  function td(v,pos){return '<td'+(pos?' class="pos"':'')+'>'+v+'</td>';}
+  var h='<thead><tr><th>Per month</th>';
+  C.forEach(function(c){h+='<th>'+c.n+'<small>'+c.d+'</small></th>';});
+  h+='</tr></thead><tbody>';
+  h+=row("Red entries a week",function(m){return td(n1(m.entries));});
+  h+=row("Book elsewhere ("+n1(p.loss)+"%), a week",function(m){return td(n1(m.lostWk));});
+  h+=row("Booking value",function(){return td(money(p.value));});
+  h+=row("Assistant recovers",function(){return td(n1(p.recov)+"%");});
+  h+=row("Callback minutes a week",function(m){return td(n0(m.cbMinWk));});
+  h+=row("Usual path: desk calls back",function(m){return td(money(m.usual));},"sep");
+  h+=row("Shortcut, flat fee "+money(p.flat),function(m){return td(money(m.flat));});
+  h+=row("Shortcut, "+money(p.per)+" per booking",function(m){return td(money(m.per));});
+  h+=row("Saved, flat fee",function(m){return td(money(m.saveFlat),m.saveFlat>0);},"sep");
+  h+=row("Saved, per booking",function(m){return td(money(m.savePer),m.savePer>0);});
+  h+=row("Desk minutes back a week",function(m){return td(n0(m.cbMinWk*p.recov/100-m.recBk/W*p.review));});
+  h+='</tbody>';
+  el("cases").innerHTML=h;
+  return M;
+}
+
+function renderVerdict(p,M){
+  var bad=M[0],base=M[1];var out="";
+  var one=model(p,1);var k=one.saveFlat+p.flat;
+  var perPerEntry=one.savePer;
+  var s100=model(p,p.entries,100).saveFlat;
+  var breakR=(s100+p.flat)>0?p.flat/(s100+p.flat)*100:null;
+  var breakE=k>0?p.flat/k:null;
+  if(bad.saveFlat>0&&bad.savePer>0){
+    out+='<p><strong>The plan holds in the bad case.</strong> At '+n1(bad.entries)+' red entries a week, the flat path saves '+money(bad.saveFlat)+' a month and the per-booking path saves '+money(bad.savePer)+'.</p>';
+  }else if(bad.savePer>0){
+    out+='<p><strong>Safer setting first: pay per booking.</strong> At '+n1(bad.entries)+' red entries a week, the per-booking path saves '+money(bad.savePer)+' a month. The flat path costs '+money(-bad.saveFlat)+' more than calling back.</p>';
+  }else if(bad.saveFlat>0){
+    out+='<p><strong>Safer setting first: the flat fee.</strong> At '+n1(bad.entries)+' red entries a week, the flat path saves '+money(bad.saveFlat)+' a month. The per-booking path does not.</p>';
+  }else{
+    out+='<p><strong>The plan does not hold in the bad case.</strong> Safer setting first: keep the desk calling back the list, count red entries for another month, and run this again.</p>';
+  }
+  if(breakE!==null){out+='<p>Flat fee breaks below '+n1(breakE)+' red entries a week, or below '+(breakR===null?"–":n0(breakR))+'% recovery at your call count.</p>';}
+  if(perPerEntry>0){out+='<p>Per-booking path stays ahead at any call count while a booking is worth more than '+money(p.per)+' plus review time.</p>';}
+  else{out+='<p>Per-booking path does not pay at these assumptions. The fee per booking is too high against the booking value.</p>';}
+  el("verdict").innerHTML=out;
+  el("reviewLine").textContent="Your desk reads each booking note the assistant leaves. About "+n0(base.recBk)+" a month at your numbers, "+n1(p.review)+" min each.";
+}
+
+function renderHead(p){
+  var m=model(p,p.entries);var total=m.lostMo*p.months;
+  el("headMoney").innerHTML='<b>'+money(total)+'</b> in bookings lost over '+n0(p.months)+' month'+(Math.round(p.months)===1?"":"s")+'.';
+  el("headPeople").textContent=n1(m.lostWk)+" patients a week ring, get no answer, and book somewhere else. Your desk spends "+n0(m.cbMinWk)+" minutes a week calling back.";
+  el("headNote").textContent="That is "+money(m.lostMo)+" a month, and it keeps running while the desk stays short. Based on "+n1(p.loss)+"% of missed callers booking elsewhere at "+money(p.value)+" a booking.";
+}
+
+function renderFormula(p){
+  var m=model(p,p.entries);
+  el("formula").textContent=
+"lost a week     = red entries × book-elsewhere rate = "+n1(p.entries)+" × "+n1(p.loss)+"% = "+n1(m.lostWk)+"\n"+
+"lost a month    = lost a week × booking value × 4.33 = "+n1(m.lostWk)+" × "+money(p.value)+" × 4.33 = "+money(m.lostMo)+"\n"+
+"total           = lost a month × months = "+money(m.lostMo)+" × "+n0(p.months)+" = "+money(m.lostMo*p.months)+"\n"+
+"callback min/wk = red entries × tries × minutes = "+n1(p.entries)+" × "+n1(p.tries)+" × "+n1(p.mins)+" = "+n0(m.cbMinWk)+"\n"+
+"usual path      = lost a month + callback min × 4.33 ÷ 60 × wage = "+money(m.usual)+"\n"+
+"recovered       = lost a week × 4.33 × recovery = "+n1(m.recBk)+" bookings a month\n"+
+"shortcut        = (lost a month − recovered × value) + callbacks × (1 − recovery)\n"+
+"                  + recovered × review min ÷ 60 × wage + fee\n"+
+"fee             = flat "+money(p.flat)+", or recovered × "+money(p.per)+" = "+money(m.perFee)+"\n"+
+"bad case        = red entries × 0.5    good case = red entries × 1.5";
+}
+
+function render(){
+  var p=read();save(p);
+  renderHead(p);renderMap(p);renderCalls(p);
+  var M=renderCases(p);renderVerdict(p,M);renderFormula(p);
+}
+
+fill(load()||D);
+renderBar();
+KEYS.forEach(function(k){el(k).addEventListener("input",render);});
+el("reset").addEventListener("click",function(){fill(D);render();});
+render();
+})();
+</script>
+</body>
+</html>
