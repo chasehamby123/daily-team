@@ -1,11 +1,12 @@
 # Archive
 
-Every daily team and the asset it made, newest first. 54 days recorded.
+Every daily team and the asset it made, newest first. 55 days recorded.
 
 [Today](README.md)
 
 | Date | Task | Team | Constraint | Asset |
 |---|---|---|---|---|
+| [2026-11-28](days/2026-11-28/) | The Pass Pile | Game designer · Industrial designer · Family office CIO · Benjamin Franklin | Touch targets at least 48 px. | [asset](days/2026-11-28/artifact-1.html) |
 | [2026-11-27](days/2026-11-27/) | The Red List | Data journalist · Animator · Clinic owner · Don Quixote | Uses a single accent color. | [asset](days/2026-11-27/artifact-1.html) |
 | [2026-11-26](days/2026-11-26/) | Permanent First, Five Views | Florist · Sculptor · Insurance agency owner · Katsushika Hokusai | Every number shows its unit. | [asset](days/2026-11-26/artifact-1.html) |
 | [2026-11-25](days/2026-11-25/) | Entrance Count | Beekeeper · Tailor · Corporate development head · Ibn al-Haytham | Every input has a visible label. | [asset](days/2026-11-25/artifact-1.html) |

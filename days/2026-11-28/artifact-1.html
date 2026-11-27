@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Pass Pile: what off-mandate deals and idle cash cost per month</title>
+<style>
+:root{--paper:#f3f0e6;--card:#fffdf6;--ink:#1c1c1a;--mute:#66635a;--rule:#d6cfbd;--green:#2e5a4c;--green2:#e3ece6;--red:#9b3426;--pass:#b8b2a3;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+.wrap{max-width:1120px;margin:0 auto;padding:16px}
+h1{font-size:40px;line-height:1.05;margin:4px 0 8px;letter-spacing:-.5px}
+h2{font-size:22px;line-height:1.2;margin:0 0 8px}
+h3{font-size:16px;margin:0 0 4px}
+p{margin:0 0 8px}
+.kicker{font:13px/1.4 var(--mono);text-transform:uppercase;letter-spacing:1px;color:var(--mute);margin:0}
+.lede{font-size:18px;max-width:640px}
+.mono{font-family:var(--mono)}
+.mute{color:var(--mute)}
+.small{font-size:14px}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:4px;padding:16px;margin:0 0 24px}
+button{min-height:48px;min-width:48px;font:inherit;border:1px solid var(--ink);background:var(--card);color:var(--ink);border-radius:4px;padding:0 14px;cursor:pointer}
+button:hover{background:var(--green2)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--green);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.top{display:grid;gap:24px;margin:16px 0 24px}
+@media(min-width:900px){.top{grid-template-columns:1fr 1fr}}
+.qs{display:grid;gap:16px}
+.field{margin:0 0 16px}
+.field label{display:block;font-weight:600}
+.field .u{font-weight:400;color:var(--mute);font-size:14px}
+.help{font-size:14px;color:var(--mute);margin:0 0 4px}
+.step{display:flex;gap:8px}
+.step input{min-height:48px;flex:1;min-width:0;font:18px var(--mono);padding:0 10px;border:1px solid var(--ink);background:#fff;color:var(--ink);border-radius:4px;text-align:right}
+.step button{width:48px;padding:0;font-size:24px;line-height:1}
+fieldset{border:1px solid var(--rule);border-radius:4px;padding:12px 16px 0;margin:0 0 16px;background:var(--card)}
+legend{font:13px var(--mono);text-transform:uppercase;letter-spacing:1px;padding:0 6px;color:var(--green)}
+.pilebox{background:var(--card);border:1px solid var(--rule);border-radius:4px;padding:16px}
+.fitspot{display:flex;align-items:center;gap:12px;min-height:56px;margin:0 0 12px;border-bottom:2px dashed var(--rule);padding-bottom:12px}
+.fit{width:40px;height:48px;border:2px dashed var(--green);border-radius:3px;display:flex;align-items:center;justify-content:center;font:11px var(--mono);color:var(--green);transition:transform .4s ease,background .4s}
+.fit.out{background:var(--green);color:#fff;border-style:solid;transform:translateY(-6px)}
+.pile{display:grid;grid-template-columns:repeat(auto-fill,18px);gap:4px}
+.t{width:18px;height:22px;border-radius:2px}
+.t.off{background:var(--pass)}
+.t.on{border:2px solid var(--ink);background:#fff}
+.headline{font:700 36px/1.1 var(--mono);margin:4px 0}
+.hgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.hgrid div{border-top:2px solid var(--ink);padding-top:6px}
+.hgrid b{display:block;font:700 20px var(--mono)}
+.main{display:grid;gap:24px}
+@media(min-width:900px){.main{grid-template-columns:360px 1fr;align-items:start}}
+.receipt{background:#fff;border:1px dashed var(--mute);padding:16px;font:15px/1.6 var(--mono);margin:0 0 24px}
+.receipt ol{margin:0;padding-left:28px}
+.receipt li{padding:4px 0;border-bottom:1px dotted var(--rule);overflow-wrap:anywhere}
+.receipt li:last-child{border-bottom:0}
+.receipt .tot{font-weight:700}
+.cases{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 0 0}
+.case{border:1px solid var(--rule);border-radius:4px;padding:10px;background:#fff;overflow-wrap:anywhere}
+.case.bad{border-top:4px solid var(--red)}
+.case.base{border-top:4px solid var(--ink)}
+.case.good{border-top:4px solid var(--green)}
+.case b{display:block;font:700 17px var(--mono)}
+.case .drv{font-size:13px;color:var(--mute);margin-top:6px}
+@media(max-width:560px){.cases{gap:6px}.case{padding:8px}.case b{font-size:14px}.headline{font-size:28px}h1{font-size:32px}}
+.seg{display:flex;gap:8px;margin:0 0 12px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.ledger{border:1px solid var(--ink);border-radius:4px;background:#fff}
+.lrow{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--rule)}
+.lrow:first-child{border-top:0}
+.lname{grid-column:1/3;padding:8px 12px 0;font-weight:600}
+.lcell{padding:4px 12px 8px;overflow-wrap:anywhere}
+.lcell+.lcell{border-left:1px solid var(--rule)}
+.lcell .val{display:block;font:16px var(--mono)}
+.fx{display:block;font:12px/1.4 var(--mono);color:var(--mute)}
+.eq .val{text-decoration:line-through;color:var(--mute)}
+.tag{font:12px var(--mono);color:var(--red);font-weight:400}
+.lhead .lcell{font-weight:600;font-size:14px;background:var(--green2)}
+.ltot .val{font-weight:700}
+.lbad .lcell{background:#f7ece9}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:right;padding:8px;border-bottom:1px solid var(--rule);font-family:var(--mono)}
+th:first-child,td:first-child{text-align:left;font-family:inherit}
+th{font-family:inherit;font-size:14px}
+.verdict{border-left:6px solid var(--green);padding:12px 16px;background:#fff;margin:0 0 12px}
+.verdict.no{border-left-color:var(--red)}
+.verdict ul{margin:8px 0 0;padding-left:20px}
+textarea{width:100%;min-height:120px;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:10px;border:1px solid var(--ink);border-radius:4px;background:#fff;color:var(--ink)}
+.checks{list-style:none;padding:0;margin:8px 0}
+.checks label{display:flex;align-items:center;gap:12px;min-height:48px;padding:0 8px;border:1px solid var(--rule);border-radius:4px;margin:0 0 8px;background:#fff;cursor:pointer}
+.checks input{width:24px;height:24px;margin:0}
+.txt{min-height:48px;width:100%;font:16px inherit;padding:0 10px;border:1px solid var(--ink);border-radius:4px;background:#fff}
+.slot{border:2px dashed var(--green);border-radius:4px;padding:16px;background:#fff}
+.slot.out{border-style:solid;background:var(--green2)}
+footer{border-top:1px solid var(--ink);margin-top:24px;padding-top:12px;font-size:14px;color:var(--mute)}
+footer ul{padding-left:18px;margin:4px 0 8px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}.fit.out{transform:none}}
+@media print{body{background:#fff}button,.noprint{display:none!important}.main,.top{display:block}.card,.receipt,fieldset,.ledger,.case{break-inside:avoid}.step input{border:0;text-align:left;padding:0}.wrap{max-width:none;padding:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+<p class="kicker">Cost-of-inaction calculator for family offices</p>
+<h1>The Pass Pile</h1>
+<p class="lede">Every deal starts as a pass. This page counts what each pass costs: the analyst hours spent saying no, and the cash that sits below target while you wait for one deal that fits.</p>
+</header>
+
+<section class="top" aria-label="Two questions and the pass pile">
+<div class="card" style="margin:0">
+<h2>Two questions</h2>
+<div class="qs" id="g-q"></div>
+</div>
+
+<div class="pilebox">
+<div class="fitspot">
+<div class="fit" id="fitTile" aria-hidden="true">FIT</div>
+<p class="small" id="fitCap" style="margin:0">Fit slot: open. One deal climbs out. Only one.</p>
+</div>
+<div class="pile" id="pile" aria-hidden="true"></div>
+<p class="small mute" id="pileCap" style="margin-top:12px"></p>
+<p class="kicker">Cost of the pile, base case</p>
+<p class="headline" id="hMonth">$0</p>
+<p class="mute" style="margin:0">per month</p>
+<div class="hgrid">
+<div><span class="small">Per year</span><b id="hYear">$0</b></div>
+<div><span class="small" id="hRunLbl">Run so far</span><b id="hSoFar">$0</b></div>
+</div>
+<p class="small" id="hBad"></p>
+</div>
+</section>
+
+<div class="main">
+
+<form id="desk" class="noprint-off" onsubmit="return false" aria-label="Figures from your desk">
+<h2>From your desk</h2>
+<p class="small mute">Each figure comes from a document the office already keeps. Change any value. The receipt reprints on each change.</p>
+<fieldset><legend>Inbound log</legend><div id="g-log"></div></fieldset>
+<fieldset><legend>Analyst timesheet</legend><div id="g-time"></div></fieldset>
+<fieldset><legend>Treasury report</legend><div id="g-treas"></div></fieldset>
+<fieldset><legend>Machine first read</legend><div id="g-ai"></div></fieldset>
+<fieldset><legend>Sourcing terms</legend><div id="g-src"></div></fieldset>
+<fieldset><legend>Contract review</legend><div id="g-law"></div></fieldset>
+<div class="row noprint">
+<button type="button" id="restore">Restore worked example</button>
+<button type="button" id="clear">Clear all</button>
+</div>
+<p class="small mute" id="store" style="margin-top:8px"></p>
+</form>
+
+<div>
+<section aria-labelledby="r-h">
+<h2 id="r-h">The receipt, base case</h2>
+<div class="receipt"><ol id="receipt"></ol></div>
+</section>
+
+<section class="card" aria-labelledby="c-h">
+<h2 id="c-h">Cost of inaction in three cases</h2>
+<p class="small mute">Same formula as the receipt. Only the drivers listed under each figure change.</p>
+<div class="cases" id="cases"></div>
+</section>
+
+<section class="card" aria-labelledby="l-h">
+<h2 id="l-h">Two-column ledger, 12 months</h2>
+<p class="small">Same inputs on both sides. Rows that cost the same are struck out. What survives the strikes is the decision.</p>
+<div class="seg noprint" role="group" aria-label="Case shown in the ledger">
+<button type="button" data-case="bad" aria-pressed="false">Bad</button>
+<button type="button" data-case="base" aria-pressed="true">Base</button>
+<button type="button" data-case="good" aria-pressed="false">Good</button>
+</div>
+<p class="small mute" id="lDrv"></p>
+<div class="ledger" id="ledger"></div>
+<h3 style="margin-top:16px">Totals, all three cases</h3>
+<table><thead><tr><th>Case</th><th>Usual path</th><th>Shortcut</th><th>Difference</th></tr></thead><tbody id="tot3"></tbody></table>
+</section>
+
+<section aria-labelledby="v-h">
+<h2 id="v-h">Does the shortcut survive the bad case</h2>
+<div class="verdict" id="verdict"></div>
+</section>
+
+<section class="card" aria-labelledby="a-h">
+<h2 id="a-h">Screening with and without a machine first read</h2>
+<p class="small">Cost of the first screen per month. Without: an analyst reads every off-mandate deck. With: a machine reads every deck first and an analyst reviews each read.</p>
+<table><thead><tr><th>Case</th><th>Without</th><th>With</th><th>Saved / year</th></tr></thead><tbody id="aiT"></tbody></table>
+<p class="small mute" id="aiF" style="margin-top:8px"></p>
+<h3 style="margin-top:12px">What the machine does</h3>
+<p class="small">Pulls ticket size, sector, geography and structure from each deck. Checks them against the mandate. Drafts a one-line pass reason.</p>
+<h3>What a person still reviews</h3>
+<ul class="small">
+<li>A named analyst reads every machine read and signs each pass.</li>
+<li>Any deal the machine marks as a possible fit gets a full analyst read.</li>
+<li>The general counsel signs every contract review.</li>
+<li>The principal decides on any deal that reaches the family.</li>
+</ul>
+</section>
+
+<section class="card" aria-labelledby="s-h">
+<h2 id="s-h">One line for the principal</h2>
+<p class="small mute">Built from your base and bad cases. Paste it into Monday's note.</p>
+<label for="sent" class="small">Sentence</label>
+<textarea id="sent" readonly></textarea>
+<div class="row noprint" style="margin-top:8px">
+<button type="button" id="copy">Copy sentence</button>
+<span class="small" id="copyMsg" role="status" style="align-self:center"></span>
+</div>
+</section>
+
+<section aria-labelledby="f-h">
+<h2 id="f-h">One deal that fits</h2>
+<div class="slot" id="slot">
+<p>The page ends on one slot, not a list. Ticket: <b class="mono" id="slotTicket"></b>.</p>
+<label for="sector" style="font-weight:600">Sector in your mandate</label>
+<p class="help">Stays on this device.</p>
+<input id="sector" class="txt" type="text" autocomplete="off" placeholder="e.g. vertical software">
+<ul class="checks">
+<li><label><input type="checkbox" class="chk">Ticket is within your range</label></li>
+<li><label><input type="checkbox" class="chk">Sector matches the mandate</label></li>
+<li><label><input type="checkbox" class="chk">Hold period fits the family's horizon</label></li>
+<li><label><input type="checkbox" class="chk">A named person will sign the diligence</label></li>
+</ul>
+<p id="slotMsg" role="status" style="margin:0;font-weight:600"></p>
+</div>
+</section>
+</div>
+</div>
+
+<footer>
+<p>Not investment, legal or tax advice. Fees, counsel rates, cash yields and tax treatment depend on your contracts and local rules. Enter your own figures. All figures stay in this browser.</p>
+<p><b>Credits.</b></p>
+<ul>
+<li>Game designer: the pass pile. Every deal starts as a pass, and only two questions sit at the top.</li>
+<li>Industrial designer: inputs taken from the inbound log, timesheet and treasury report, 48 px steppers, and the receipt.</li>
+<li>Family office CIO: no broker language, one sentence for the principal, and the single fit-deal slot.</li>
+<li>Benjamin Franklin: the two-column ledger, struck equal rows, and the bad case in body type at the foot of each column.</li>
+</ul>
+<p>Published by OuterHaven Advisory.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+var F=[
+{k:'ticket',g:'q',l:'Ticket size',h:'The cheque you write for one deal.',v:5000000,s:500000,u:'$'},
+{k:'monthsRun',g:'q',l:'Months since a fit deal last closed',h:'How long this has run.',v:9,s:1,u:'mo'},
+{k:'dealsIn',g:'log',l:'Deals in per month',h:'Count last month in the inbound log.',v:40,s:1},
+{k:'offShare',g:'log',l:'Share off-mandate',h:'A typed estimate. Count one month of the log if you can.',v:80,s:5,u:'%',max:100},
+{k:'hours',g:'time',l:'Analyst hours per screen',h:'Read, notes, reply to the broker.',v:3,s:0.5,u:'h'},
+{k:'rate',g:'time',l:'Loaded hourly rate',h:'Salary, bonus and overhead, divided by hours worked.',v:150,s:10,u:'$'},
+{k:'idle',g:'treas',l:'Idle capital',h:'Cash held back for the next fit deal.',v:20000000,s:1000000,u:'$'},
+{k:'target',g:'treas',l:'Target return, per year',h:'What the mandate expects once deployed.',v:8,s:0.5,u:'%'},
+{k:'cash',g:'treas',l:'Cash yield, per year',h:'What the cash earns now, after your local tax treatment.',v:4.5,s:0.25,u:'%'},
+{k:'reviewH',g:'ai',l:'Analyst review of one machine read',h:'Hours per deal. The bad case doubles it.',v:0.5,s:0.25,u:'h'},
+{k:'tool',g:'ai',l:'Screening tool cost per month',h:'Your own quote from any vendor. At 0 the page counts analyst time only.',v:0,s:250,u:'$'},
+{k:'retainer',g:'src',l:'Sourcing retainer per month',h:'Usual path. Paid until a deal closes.',v:10000,s:1000,u:'$'},
+{k:'fee',g:'src',l:'Close-only fee',h:'Share of the ticket, paid only at close.',v:1.5,s:0.25,u:'%'},
+{k:'closeMonth',g:'src',l:'Month a fit deal closes, base case',h:'Good case is 6 months earlier. Bad case is no close in 12 months.',v:10,s:1,u:'mo'},
+{k:'failed',g:'law',l:'Deals per year that fail in contract review',h:'Deals that reach counsel and then stop.',v:1,s:1},
+{k:'counselOut',g:'law',l:'Outside counsel per failed deal',h:'Usual path. Rates depend on your counsel and jurisdiction.',v:60000,s:5000,u:'$'},
+{k:'counselIn',g:'law',l:'Same review after machine screen, GC signs',h:'Shortcut path. Enter your own figure.',v:25000,s:5000,u:'$'}
+];
+var UL={'$':'in $','%':'%','h':'hours','mo':'months'};
+var KEY='passpile-v1',caseSel='base';
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+F.forEach(function(f){
+var d=document.createElement('div');d.className='field';
+d.innerHTML='<label for="f-'+f.k+'">'+f.l+(f.u?' <span class="u">('+UL[f.u]+')</span>':'')+'</label>'+
+(f.h?'<p class="help" id="h-'+f.k+'">'+f.h+'</p>':'')+
+'<div class="step"><button type="button" data-k="'+f.k+'" data-d="-1" aria-label="Decrease '+f.l+'">\u2212</button>'+
+'<input id="f-'+f.k+'" type="number" inputmode="decimal" min="0"'+(f.max?' max="'+f.max+'"':'')+' step="'+f.s+'"'+(f.h?' aria-describedby="h-'+f.k+'"':'')+'>'+
+'<button type="button" data-k="'+f.k+'" data-d="1" aria-label="Increase '+f.l+'">+</button></div>';
+$('g-'+f.g).appendChild(d);
+});
+
+function fmt(n){if(!isFinite(n))n=0;var r=Math.round(n);return(r<0?'\u2212$':'$')+Math.abs(r).toLocaleString('en-US')}
+function fN(n){if(!isFinite(n))n=0;return(Math.round(n*100)/100).toLocaleString('en-US',{maximumFractionDigits:2})}
+function fP(n){return Number.isInteger(Math.round(n*1000)/100)?n.toFixed(1):n.toFixed(2)}
+function read(){var v={};F.forEach(function(f){var x=parseFloat($('f-'+f.k).value);x=isFinite(x)?Math.max(0,x):0;if(f.max)x=Math.min(f.max,x);v[f.k]=x});return v}
+function setVals(o){F.forEach(function(f){$('f-'+f.k).value=(o&&o[f.k]!=null)?o[f.k]:f.v})}
+
+function calc(v,c){
+var dm=c==='bad'?0.5:c==='good'?1.25:1;
+var deals=v.dealsIn*dm,share=v.offShare/100,off=deals*share,on=deals-off;
+var r=v.reviewH*(c==='bad'?2:1);
+var sp=Math.max(0,v.target-v.cash)*(c==='bad'?0.5:1);
+var close=c==='bad'?null:c==='good'?Math.max(1,v.closeMonth-6):Math.max(1,v.closeMonth);
+if(close!==null&&close>12)close=null;
+var screen=off*v.hours*v.rate,idleM=v.idle*sp/100/12,review=deals*r*v.rate,onRead=on*v.hours*v.rate;
+var fee=v.ticket*v.fee/100,ret=v.retainer*(close===null?12:close),feeR=close===null?0:fee;
+var rows=[
+{n:'First screen',L:screen*12,Lf:fN(off)+' off-mandate \u00d7 '+fN(v.hours)+' h \u00d7 '+fmt(v.rate)+' \u00d7 12',R:review*12,Rf:fN(deals)+' deals \u00d7 '+fN(r)+' h review \u00d7 '+fmt(v.rate)+' \u00d7 12'},
+{n:'Full read of on-mandate deals',L:onRead*12,Lf:fN(on)+' \u00d7 '+fN(v.hours)+' h \u00d7 '+fmt(v.rate)+' \u00d7 12',R:onRead*12,Rf:'same'},
+{n:'Screening tool',L:0,Lf:'none',R:v.tool*12,Rf:fmt(v.tool)+' \u00d7 12'},
+{n:'Sourcing',L:ret,Lf:fmt(v.retainer)+' retainer \u00d7 '+(close===null?'12 months, no close':close+' months to close'),R:feeR,Rf:close===null?'no close, no fee':fmt(v.ticket)+' \u00d7 '+fP(v.fee)+'% at month '+close},
+{n:'Contract review, failed deals',L:v.failed*v.counselOut,Lf:fN(v.failed)+' \u00d7 '+fmt(v.counselOut)+' outside counsel',R:v.failed*v.counselIn,Rf:fN(v.failed)+' \u00d7 '+fmt(v.counselIn)+', GC signs'},
+{n:'Idle cash below target',L:idleM*12,Lf:fmt(v.idle)+' \u00d7 '+fP(sp)+'% spread',R:idleM*12,Rf:'same'}
+];
+var L=0,R=0;rows.forEach(function(x){L+=x.L;R+=x.R});
+return{c:c,deals:deals,off:off,on:on,r:r,sp:sp,close:close,screen:screen,idleM:idleM,inaction:screen+idleM,review:review,aiWith:review+v.tool,fee:fee,rows:rows,L:L,R:R};
+}
+function drivers(v,x){
+return fN(x.deals)+' deals in, '+fN(x.off)+' off-mandate. Spread '+fP(x.sp)+'%. Review '+fN(x.r)+' h. '+(x.close===null?'No close in 12 months.':'Close in month '+x.close+'.');
+}
+var CN={bad:'Bad',base:'Base',good:'Good'};
+
+function render(){
+var v=read(),C={bad:calc(v,'bad'),base:calc(v,'base'),good:calc(v,'good')},b=C.base,bad=C.bad;
+
+var n=Math.min(Math.round(v.dealsIn),200),off=Math.min(n,Math.round(v.dealsIn*v.offShare/100)),h='';
+for(var i=0;i<n;i++)h+='<div class="t '+(i<off?'off':'on')+'"></div>';
+$('pile').innerHTML=h;
+$('pileCap').textContent=fN(v.dealsIn)+' in this month. All '+fN(v.dealsIn)+' start as a pass. '+fN(b.off)+' stay a pass on page one (grey). '+fN(b.on)+' get a full read (outlined).'+(v.dealsIn>200?' The pile shows the first 200.':'');
+$('hMonth').textContent=fmt(b.inaction);
+$('hYear').textContent=fmt(b.inaction*12);
+$('hRunLbl').textContent='Run so far, '+fN(v.monthsRun)+' months';
+$('hSoFar').textContent=fmt(b.inaction*v.monthsRun);
+$('hBad').textContent='Bad case, half the volume and half the spread: '+fmt(bad.inaction)+' per month, '+fmt(bad.inaction*12)+' per year. It recurs every month until a fit deal closes.';
+
+var sp=Math.max(0,v.target-v.cash);
+$('receipt').innerHTML=[
+fN(v.dealsIn)+' deals \u00d7 '+fN(v.offShare)+'% = '+fN(b.off)+' off-mandate deals / month',
+fN(b.off)+' deals \u00d7 '+fN(v.hours)+' h \u00d7 '+fmt(v.rate)+' = '+fmt(b.screen)+' / month',
+fmt(v.idle)+' \u00d7 ('+fP(v.target)+'% \u2212 '+fP(v.cash)+'%) \u00f7 12 = '+fmt(b.idleM)+' / month'+(v.target<v.cash?' (cash above target, counted as 0)':''),
+'<span class="tot">'+fmt(b.screen)+' + '+fmt(b.idleM)+' = '+fmt(b.inaction)+' / month</span>',
+'<span class="tot">'+fmt(b.inaction)+' \u00d7 12 = '+fmt(b.inaction*12)+' / year</span>',
+fmt(b.inaction)+' \u00d7 '+fN(v.monthsRun)+' months = '+fmt(b.inaction*v.monthsRun)+' paid so far'
+].map(function(s){return'<li>'+s+'</li>'}).join('');
+
+$('cases').innerHTML=['bad','base','good'].map(function(k){var x=C[k];
+return'<div class="case '+k+'"><h3>'+CN[k]+'</h3><b>'+fmt(x.inaction)+'</b><span class="small">/ month</span><b>'+fmt(x.inaction*12)+'</b><span class="small">/ year</span><div class="drv">'+
+(k==='bad'?'Volume \u00d7 0.5, spread \u00d7 0.5. ':k==='good'?'Volume \u00d7 1.25. ':'As entered. ')+fN(x.off)+' off-mandate, spread '+fP(x.sp)+'%.</div></div>'}).join('');
+
+var x=C[caseSel];
+document.querySelectorAll('[data-case]').forEach(function(btn){btn.setAttribute('aria-pressed',btn.getAttribute('data-case')===caseSel?'true':'false')});
+$('lDrv').textContent=CN[caseSel]+' case. '+drivers(v,x);
+var lh='<div class="lrow lhead"><div class="lcell">Usual path: hand screening, sourcing retainer</div><div class="lcell">Shortcut: machine first read, named analyst signs, partner paid at close</div></div>';
+x.rows.forEach(function(r){var eq=Math.round(r.L)===Math.round(r.R);
+lh+='<div class="lrow'+(eq?' eq':'')+'"><div class="lname">'+r.n+(eq?' <span class="tag">equal, struck</span>':'')+'</div><div class="lcell"><span class="val">'+fmt(r.L)+'</span><span class="fx">'+esc(r.Lf)+'</span></div><div class="lcell"><span class="val">'+fmt(r.R)+'</span><span class="fx">'+esc(r.Rf)+'</span></div></div>'});
+lh+='<div class="lrow ltot"><div class="lname">Total, 12 months</div><div class="lcell"><span class="val">'+fmt(x.L)+'</span></div><div class="lcell"><span class="val">'+fmt(x.R)+'</span></div></div>';
+lh+='<div class="lrow lbad"><div class="lname">Bad case total</div><div class="lcell"><span class="val">'+fmt(bad.L)+'</span><span class="fx">no close, half volume</span></div><div class="lcell"><span class="val">'+fmt(bad.R)+'</span><span class="fx">no fee, review doubled</span></div></div>';
+$('ledger').innerHTML=lh;
+$('tot3').innerHTML=['bad','base','good'].map(function(k){var y=C[k];return'<tr><td>'+CN[k]+'</td><td>'+fmt(y.L)+'</td><td>'+fmt(y.R)+'</td><td>'+fmt(y.L-y.R)+'</td></tr>'}).join('');
+
+var diff=bad.L-bad.R,den=bad.deals*v.rate*12,rB=den>0?(bad.review*12+diff)/den:NaN,vh='',flip=v.retainer>0&&b.fee>0?Math.ceil(b.fee/v.retainer)-1:0;
+var flipTxt=flip>=1?'<li>The sourcing row alone favours the retainer if a fit deal closes in month '+Math.min(flip,12)+' or earlier. The good case (month '+C.good.close+') shows that row'+(C.good.rows[3].L<C.good.rows[3].R?' going to the retainer.':'.')+'</li>':'';
+if(diff>0){
+$('verdict').className='verdict';
+vh='<p><b>The shortcut survives the bad case.</b> With half the volume, review time doubled and no close in 12 months, it costs '+fmt(diff)+' less than the usual path.</p><p class="small">How far you can push before it breaks, bad case:</p><ul class="small">'+
+(isFinite(rB)?'<li>Analyst review per deal could reach '+fN(rB)+' h before both paths cost the same. You entered '+fN(v.reviewH)+' h; the bad case uses '+fN(bad.r)+' h.</li>':'')+
+'<li>A screening tool could cost up to '+fmt(v.tool+diff/12)+' per month before the shortcut loses.</li>'+flipTxt+'</ul>';
+}else{
+$('verdict').className='verdict no';
+vh='<p><b>Safer setting first:</b> keep hand screening and the retainer for now. Run the machine read on one month of the log next to the analyst, and switch only '+(isFinite(rB)&&rB>0?'if review stays under '+fN(rB/2)+' h per deal as entered (the bad case doubles it to '+fN(rB)+' h).':'if your counts change; at these inputs the usual path costs less.')+'</p><p><b>The shortcut does not survive the bad case.</b> It costs '+fmt(-diff)+' more over 12 months with half the volume, review doubled and no close.</p>'+(flipTxt?'<ul class="small">'+flipTxt+'</ul>':'');
+}
+$('verdict').innerHTML=vh;
+
+$('aiT').innerHTML=['base','bad'].map(function(k){var y=C[k];return'<tr><td>'+CN[k]+'</td><td>'+fmt(y.screen)+'/mo<br>'+fmt(y.screen*12)+'/yr</td><td>'+fmt(y.aiWith)+'/mo<br>'+fmt(y.aiWith*12)+'/yr</td><td>'+fmt((y.screen-y.aiWith)*12)+'</td></tr>'}).join('');
+$('aiF').textContent='Without = off-mandate deals \u00d7 hours per screen \u00d7 rate. With = all deals \u00d7 review hours \u00d7 rate + tool cost. Base: '+fN(b.off)+' \u00d7 '+fN(v.hours)+' \u00d7 '+fmt(v.rate)+' against '+fN(b.deals)+' \u00d7 '+fN(b.r)+' \u00d7 '+fmt(v.rate)+' + '+fmt(v.tool)+'. Bad: '+fN(bad.off)+' \u00d7 '+fN(v.hours)+' \u00d7 '+fmt(v.rate)+' against '+fN(bad.deals)+' \u00d7 '+fN(bad.r)+' \u00d7 '+fmt(v.rate)+' + '+fmt(v.tool)+'.';
+
+$('sent').value='By our own counts, screening '+fN(b.off)+' off-mandate deals a month and holding '+fmt(v.idle)+' below target costs about '+fmt(b.inaction)+' a month, or '+fmt(b.inaction*12)+' a year. It has run '+fN(v.monthsRun)+' months, about '+fmt(b.inaction*v.monthsRun)+' so far. With half the volume it still costs '+fmt(bad.inaction)+' a month.';
+$('slotTicket').textContent=fmt(v.ticket);
+slot();
+try{localStorage.setItem(KEY,JSON.stringify({v:v,s:$('sector').value}));$('store').textContent='Saved in this browser only.'}catch(e){$('store').textContent='Storage is blocked. The page still works; values reset on reload.'}
+}
+
+function slot(){
+var k=0;document.querySelectorAll('.chk').forEach(function(c){if(c.checked)k++});
+var sec=$('sector').value.trim(),out=k===4;
+$('slot').className='slot'+(out?' out':'');
+$('fitTile').className='fit'+(out?' out':'');
+$('slotMsg').textContent=out?'This one climbs out of the pass pile.':'Still a pass. '+k+' of 4 checks.';
+$('fitCap').textContent=out?'Fit: '+(sec||'one deal')+', '+fmt(read().ticket)+'. Out of the pile.':'Fit slot: open. One deal climbs out. Only one.';
+}
+
+document.addEventListener('click',function(e){
+var b=e.target.closest('button[data-k]');
+if(b){var k=b.getAttribute('data-k'),f=F.filter(function(q){return q.k===k})[0],el=$('f-'+k),x=parseFloat(el.value);if(!isFinite(x))x=0;
+x=Math.round((x+f.s*parseFloat(b.getAttribute('data-d')))*1000)/1000;x=Math.max(0,x);if(f.max)x=Math.min(f.max,x);el.value=x;render();return}
+var c=e.target.closest('button[data-case]');
+if(c){caseSel=c.getAttribute('data-case');render()}
+});
+$('desk').addEventListener('input',render);
+$('g-q').addEventListener('input',render);
+$('sector').addEventListener('input',render);
+document.querySelectorAll('.chk').forEach(function(c){c.addEventListener('change',slot)});
+$('restore').addEventListener('click',function(){setVals(null);render()});
+$('clear').addEventListener('click',function(){F.forEach(function(f){$('f-'+f.k).value=0});render()});
+$('copy').addEventListener('click',function(){
+var t=$('sent'),m=$('copyMsg');
+function fb(){try{t.removeAttribute('readonly');t.select();var ok=document.execCommand('copy');t.setAttribute('readonly','');m.textContent=ok?'Copied.':'Select the text and copy it.'}catch(e){m.textContent='Select the text and copy it.'}}
+try{if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(t.value).then(function(){m.textContent='Copied.'},fb)}else fb()}catch(e){fb()}
+});
+
+var saved=null;
+try{saved=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){saved=null}
+setVals(saved&&saved.v?saved.v:null);
+if(saved&&typeof saved.s==='string')$('sector').value=saved.s;
+render();
+})();
+</script>
+</body>
+</html>

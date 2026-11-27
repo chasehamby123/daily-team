@@ -7,17 +7,17 @@ Everything in `days/` is written by a language model and checked by scripts, not
 ## Today
 
 <!-- TODAY:START -->
-### 2026-11-27: The Red List
+### 2026-11-28: The Pass Pile
 
-<a href="days/2026-11-27/"><img src="days/2026-11-27/team.png" alt="Team for 2026-11-27: Data journalist · Animator · Clinic owner · Don Quixote" width="100%"></a>
+<a href="days/2026-11-28/"><img src="days/2026-11-28/team.png" alt="Team for 2026-11-28: Game designer · Industrial designer · Family office CIO · Benjamin Franklin" width="100%"></a>
 
-**Task:** Before-and-after map: today's process as a list of steps becomes a side-by-side view marking the steps that could be removed or automated.
+**Task:** Cost-of-inaction calculator: the buyer's current volumes and rates give what the problem costs per month and per year, with each step of the sum shown.
 
-**Decision:** The page turns two numbers from the owner's phone into a side-by-side map of the nine steps a missed call goes through, marks in one orange the six steps that change, and shows what the gap has cost over the months it has run.
+**Decision:** The page takes a family office's inbound deal count, screening hours, loaded rate, and idle capital, starts every deal in a pass pile, and prints, line by line, what screening off-mandate deals and leaving cash idle cost per month and pe...
 
-<a href="days/2026-11-27/"><img src="days/2026-11-27/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
+<a href="days/2026-11-28/"><img src="days/2026-11-28/artifact-1.png" alt="Screenshot of today's asset" width="100%"></a>
 
-[Open the day](days/2026-11-27/) · [Archive](ARCHIVE.md)
+[Open the day](days/2026-11-28/) · [Archive](ARCHIVE.md)
 <!-- TODAY:END -->
 
 ## This week
@@ -37,15 +37,15 @@ No open suggestions yet.
 <!-- RECENT:START -->
 | Date | Asset | Task | Team |
 |---|---|---|---|
+| [2026-11-28](days/2026-11-28/) | <a href="days/2026-11-28/"><img src="days/2026-11-28/artifact-1.png" alt="The Pass Pile" width="160"></a> | The Pass Pile | Game designer · Industrial designer · Family office CIO · Benjamin Franklin |
 | [2026-11-27](days/2026-11-27/) | <a href="days/2026-11-27/"><img src="days/2026-11-27/artifact-1.png" alt="The Red List" width="160"></a> | The Red List | Data journalist · Animator · Clinic owner · Don Quixote |
 | [2026-11-26](days/2026-11-26/) | <a href="days/2026-11-26/"><img src="days/2026-11-26/artifact-1.png" alt="Permanent First, Five Views" width="160"></a> | Permanent First, Five Views | Florist · Sculptor · Insurance agency owner · Katsushika Hokusai |
 | [2026-11-25](days/2026-11-25/) | <a href="days/2026-11-25/"><img src="days/2026-11-25/artifact-1.png" alt="Entrance Count" width="160"></a> | Entrance Count | Beekeeper · Tailor · Corporate development head · Ibn al-Haytham |
 | [2026-11-24](days/2026-11-24/) | <a href="days/2026-11-24/"><img src="days/2026-11-24/artifact-1.png" alt="The Repayment Schedule" width="160"></a> | The Repayment Schedule | Locksmith · Upholsterer · Private credit fund manager · Florence Nightingale |
 | [2026-11-22](days/2026-11-22/) | <a href="days/2026-11-22/"><img src="days/2026-11-22/artifact-1.png" alt="The Pass" width="160"></a> | The Pass | Chef · Cobbler · Merchant banker · Scheherazade |
 | [2026-11-21](days/2026-11-21/) | <a href="days/2026-11-21/"><img src="days/2026-11-21/artifact-1.png" alt="The Zero Ledger, Fixed-Width Docket" width="160"></a> | The Zero Ledger, Fixed-Width Docket | Weaver · Clockmaker · Multi-family office adviser · Alice |
-| [2026-11-20](days/2026-11-20/) | <a href="days/2026-11-20/"><img src="days/2026-11-20/artifact-1.png" alt="The Month Already Gone" width="160"></a> | The Month Already Gone | Data journalist · Animator · Home services owner · Odysseus |
 
-[All 54 days](ARCHIVE.md)
+[All 55 days](ARCHIVE.md)
 <!-- RECENT:END -->
 
 ## How it works
